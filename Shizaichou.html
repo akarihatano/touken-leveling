@@ -136,7 +136,7 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
     <div class="hdr-title"><h1>資材帳</h1><span class="hdr-sub">刀剣乱舞 資材管理</span></div>
     <div class="hdr-clock" id="clock"></div>
   </div>
-  <div class="hdr-ver">v1.0015</div>
+  <div class="hdr-ver">v1.0017</div>
 </div>
 
 <div class="tab-wrap">
@@ -351,7 +351,7 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
     </div>
     <div class="set-row">
       <div><div class="set-lbl">バージョン</div><div class="set-sub">資材帳 — 刀剣乱舞 資材管理ツール</div></div>
-      <div style="font-size:14px;font-weight:600;color:var(--t1)">v1.0015</div>
+      <div style="font-size:14px;font-weight:600;color:var(--t1)">v1.0017</div>
     </div>
     <div class="set-row">
       <div><div class="set-lbl">通知の許可</div><div class="set-sub">遠征・手入れ・鍛刀の終了時に通知</div></div>
@@ -976,39 +976,27 @@ async function gdSave(){
   if(!gdToken){gdSetSub('先にログインしてください');return;}
   gdSetSub('保存中…');
   try{
-    var data=JSON.stringify({version:'1.0015',resources:RES,events:EVS,notes:NTS},null,2);
-    var blob=new Blob([data],{type:'application/json'});
+    var payload=JSON.stringify({version:'1.0016',resources:RES,events:EVS,notes:NTS},null,2);
     var fid=await gdFindFile();
-    var url,method;
+    var resp;
     if(fid){
-      url='https://www.googleapis.com/upload/drive/v3/files/'+fid+'?uploadType=media';
-      method='PATCH';
+      resp=await fetch('https://www.googleapis.com/upload/drive/v3/files/'+fid+'?uploadType=media',
+        {method:'PATCH',headers:{Authorization:'Bearer '+gdToken,'Content-Type':'application/json'},body:payload});
     }else{
-      /* multipart upload to create in appDataFolder */
       var meta=JSON.stringify({name:GD_FILE,parents:['appDataFolder']});
-      var boundary='shizai_boundary_xyz';
-      var body='--'+boundary+'
-Content-Type: application/json; charset=UTF-8
-
-'+meta+'
-'
-              +'--'+boundary+'
-Content-Type: application/json
-
-'+data+'
-'
-              +'--'+boundary+'--';
-      var res2=await fetch(
-        'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
-        {method:'POST',headers:{Authorization:'Bearer '+gdToken,'Content-Type':'multipart/related; boundary='+boundary},body:body});
-      var d2=await res2.json();
-      if(d2.id)gdSetSub('Drive に保存しました ✓ ('+new Date().toLocaleTimeString('ja-JP')+')');
-      else gdSetSub('保存に失敗: '+(d2.error&&d2.error.message||JSON.stringify(d2)));
-      return;
+      var bd='shizaiboundary';
+      var NL='\r\n';
+      var parts=['--'+bd,
+        'Content-Type: application/json; charset=UTF-8','',meta,
+        '--'+bd,'Content-Type: application/json','',payload,
+        '--'+bd+'--'];
+      resp=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
+        {method:'POST',
+         headers:{Authorization:'Bearer '+gdToken,'Content-Type':'multipart/related; boundary='+bd},
+         body:parts.join(NL)});
     }
-    var res3=await fetch(url,{method:method,headers:{Authorization:'Bearer '+gdToken,'Content-Type':'application/json'},body:blob});
-    if(res3.ok)gdSetSub('Drive に保存しました ✓ ('+new Date().toLocaleTimeString('ja-JP')+')');
-    else{var e3=await res3.json();gdSetSub('保存に失敗: '+(e3.error&&e3.error.message||res3.status));}
+    if(resp.ok){gdSetSub('Drive に保存しました ✓ ('+new Date().toLocaleTimeString('ja-JP')+')');}
+    else{var e2=await resp.json();gdSetSub('保存に失敗: '+((e2.error&&e2.error.message)||resp.status));}
   }catch(e){gdSetSub('エラー: '+e.message);}
 }
 async function gdLoad(){
