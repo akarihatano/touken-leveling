@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>わたしの記録 - MyRecord</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root,[data-theme="moon"]{--bg:#0d0d1a;--bg2:#1a1a2e;--bg3:#111120;--border:#2a2a3a;--border2:#333;--text:#f0f0f0;--muted:#777;--muted2:#555;--accent:#c8a8e9;--accent2:#6bffb8;--danger:#ff6b6b;--hg:linear-gradient(135deg,#1a1a2e,#12122a);--sr1:#1c1c2e;--sr2:#2a2a3e;--obg:#06060f;}
+[data-theme="sun"]{--bg:#fff8f0;--bg2:#fff3e4;--bg3:#ffefd6;--border:#f0dfc0;--border2:#e8d0a8;--text:#3a2800;--muted:#a07840;--muted2:#c09860;--accent:#e07800;--accent2:#28a060;--danger:#d03020;--hg:linear-gradient(135deg,#fff0d0,#ffd88a);--sr1:#f8d080;--sr2:#e8b840;--obg:#f0e0b0;}
+[data-theme="sky"]{--bg:#f0f8ff;--bg2:#e4f1fc;--bg3:#d8eafa;--border:#b8d8f0;--border2:#a0c8e8;--text:#0a2840;--muted:#4880b0;--muted2:#80b0d0;--accent:#1a80d0;--accent2:#20c080;--danger:#e04040;--hg:linear-gradient(135deg,#d0eaff,#a0d0f8);--sr1:#80c0f0;--sr2:#50a0e0;--obg:#c0ddf5;}
+[data-theme="ocean"]{--bg:#020d1a;--bg2:#051828;--bg3:#031020;--border:#0a2840;--border2:#0d3050;--text:#c0e8ff;--muted:#3878a8;--muted2:#204860;--accent:#00c8f0;--accent2:#00f0a0;--danger:#ff5060;--hg:linear-gradient(135deg,#051828,#030e20);--sr1:#0a2840;--sr2:#104060;--obg:#010810;}
+[data-theme="sunset"]{--bg:#1a0808;--bg2:#2a1010;--bg3:#200c0c;--border:#401818;--border2:#501e1e;--text:#ffe8d0;--muted:#c07060;--muted2:#804040;--accent:#ff7830;--accent2:#ffb830;--danger:#ff3060;--hg:linear-gradient(135deg,#2a1010,#3a1800);--sr1:#502010;--sr2:#703018;--obg:#100404;}
+[data-force="dark"]{--bg:#0d0d1a!important;--bg2:#1a1a2e!important;--bg3:#111120!important;--border:#2a2a3a!important;--border2:#333!important;--text:#f0f0f0!important;--muted:#777!important;--muted2:#555!important;--obg:#06060f!important;}
+[data-force="light"]{--bg:#f8f8f8!important;--bg2:#ffffff!important;--bg3:#efefef!important;--border:#ddd!important;--border2:#ccc!important;--text:#1a1a1a!important;--muted:#888!important;--muted2:#aaa!important;--obg:#e0e0e0!important;}
+html,body{height:100%;font-family:'DM Mono','Courier New',monospace;}
+body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+::-webkit-scrollbar{width:3px;height:3px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* ═══════════════════════════════
+   LAYOUT MOBILE
+═══════════════════════════════ */
+#page-wrap{min-height:100vh;min-height:100dvh}
+
+/* mobile: centered phone shell */
+#page-wrap.layout-mobile{display:flex;justify-content:center;align-items:center;height:100dvh;padding:20px 12px;overflow:hidden;background:var(--obg);transition:background .3s;}
+#page-wrap.layout-mobile #shell-wrap{display:flex;flex-direction:column;width:390px;max-width:100%;height:calc(100dvh - 40px);max-height:860px;background:var(--bg);border-radius:40px;box-shadow:0 0 0 8px var(--sr1),0 0 0 11px var(--sr2),0 30px 80px rgba(0,0,0,.6);overflow:hidden;flex-shrink:0;transition:box-shadow .3s;}
+#page-wrap.layout-mobile #shell-wrap::before{content:'';display:block;width:100px;height:26px;background:var(--sr1);border-radius:0 0 16px 16px;margin:0 auto;flex-shrink:0;}
+#page-wrap.layout-mobile #app{flex:1;overflow:hidden;min-height:0;display:flex;flex-direction:column;}
+#page-wrap.layout-mobile #main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+#page-wrap.layout-mobile #tab-bar{display:flex;flex-shrink:0}
+#page-wrap.layout-mobile #sidebar{display:none}
+#page-wrap.layout-mobile #top-header{display:block}
+#page-wrap.layout-mobile .content{padding:14px}
+
+/* ═══════════════════════════════
+   LAYOUT DESKTOP
+═══════════════════════════════ */
+#page-wrap.layout-desktop{display:flex;flex-direction:row;min-height:100vh;background:var(--bg);justify-content:center;}
+#page-wrap.layout-desktop #shell-wrap{display:contents}
+#page-wrap.layout-desktop #app{display:flex;flex-direction:column;flex:1;min-height:100vh;min-width:0;max-width:780px;}
+#page-wrap.layout-desktop #sidebar{display:flex;flex-direction:column;width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border2);position:sticky;top:0;height:100vh;overflow-y:auto;order:-1;}
+#page-wrap.layout-desktop #main{flex:1;overflow-y:auto;padding-bottom:40px}
+#page-wrap.layout-desktop #tab-bar{display:none}
+#page-wrap.layout-desktop #top-header{display:none}
+#page-wrap.layout-desktop .content{padding:24px 28px}
+
+/* sidebar right: flip order and border */
+#page-wrap.layout-desktop.sb-right #sidebar{order:1;border-right:none;border-left:1px solid var(--border2);}
+
+/* ═══════════════════════════════
+   SIDEBAR
+═══════════════════════════════ */
+#sidebar-logo{padding:18px 18px 12px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between}
+#sidebar-logo .logo-txt .sub{font-size:9px;color:var(--accent);letter-spacing:3px;margin-bottom:3px}
+#sidebar-logo .logo-txt .title{font-size:15px;font-weight:700}
+.sb-tog-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:13px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0;}
+.sb-tog-btn:hover{border-color:var(--accent);color:var(--accent)}
+#sidebar-clock{padding:12px 18px;border-bottom:1px solid var(--border2)}
+#sidebar-clock .sc-date{font-size:10px;color:var(--muted);margin-bottom:2px}
+#sidebar-clock .sc-time{font-size:21px;font-weight:700;color:var(--accent);letter-spacing:2px}
+#sb-info{padding:12px 14px;border-bottom:1px solid var(--border2)}
+.si-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.si-item{background:var(--bg3);border-radius:8px;padding:7px 9px}
+.si-lbl{font-size:8px;color:var(--muted);letter-spacing:1px;margin-bottom:2px}
+.si-val{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sidebar-nav{padding:10px;flex:1}
+.snav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border:none;border-radius:8px;background:none;color:var(--muted);font-family:inherit;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;margin-bottom:3px;transition:all .15s;text-align:left;}
+.snav-btn:hover{background:rgba(128,128,128,.1);color:var(--text)}.snav-btn.active{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)}
+.snav-icon{font-size:14px}
+#sb-stats{padding:10px 14px;border-top:1px solid var(--border2)}
+.ss-title{font-size:8px;color:var(--muted);letter-spacing:2px;margin-bottom:6px}
+.ss-item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)}
+.ss-item:last-child{border-bottom:none}
+.ss-lbl{font-size:9px;color:var(--muted)}
+.ss-val{font-size:11px;font-weight:700}
+.ss-val.diff-up{color:var(--danger)}.ss-val.diff-dn{color:var(--accent2)}.ss-val.diff-eq{color:var(--muted)}
+
+/* ═══════════════════════════════
+   TOP HEADER (mobile)
+═══════════════════════════════ */
+#top-header{background:var(--hg);border-bottom:2px solid var(--accent);padding:12px 14px 10px;position:sticky;top:0;z-index:40;flex-shrink:0;}
+.th-row{display:flex;align-items:flex-start;justify-content:space-between}
+.th-left .th-sub{font-size:8px;color:var(--accent);letter-spacing:3px;margin-bottom:1px}
+.th-left .th-title{font-size:17px;font-weight:700}
+.th-right{display:flex;align-items:flex-start;gap:7px}
+.th-clock{text-align:right}.th-clock .tc-date{font-size:9px;color:var(--muted);margin-bottom:1px}
+.th-clock .tc-time{font-size:17px;font-weight:700;color:var(--accent);letter-spacing:1px}
+.hdr-tog-btn{background:none;border:1px solid rgba(255,255,255,.15);border-radius:6px;color:var(--muted);font-size:14px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0;margin-top:2px;}
+.hdr-tog-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ═══════════════════════════════
+   TAB BAR (mobile)
+═══════════════════════════════ */
+#tab-bar{background:var(--bg2);border-top:1px solid var(--border2)}
+.tab-btn{flex:1;padding:8px 0 10px;background:none;border:none;border-top:2px solid transparent;color:var(--muted2);font-family:inherit;font-size:10px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.tab-btn .ticon{font-size:15px}.tab-btn.active{border-top-color:var(--accent);color:var(--accent)}
+
+/* ═══════════════════════════════
+   COMMON COMPONENTS
+═══════════════════════════════ */
+.panel{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px;margin-bottom:14px}
+.panel-title{font-size:9px;color:var(--accent);letter-spacing:2px;margin-bottom:12px}
+.date-nav{display:flex;align-items:center;gap:6px;margin-bottom:12px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:9px 12px;}
+.dnav-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:18px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0;font-family:inherit;}
+.dnav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.date-disp-btn{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:inherit;font-size:13px;font-weight:700;padding:6px 10px;cursor:pointer;text-align:center;transition:all .15s;}
+.date-disp-btn:hover{border-color:var(--accent)}
+.today-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-family:inherit;font-size:9px;font-weight:700;letter-spacing:1px;padding:6px 8px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.today-btn:hover,.today-btn.active{border-color:var(--accent2);color:var(--accent2)}
+.group{margin-bottom:8px}
+.group-hd{display:flex;align-items:center;gap:8px;width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:inherit;font-size:11px;font-weight:700;letter-spacing:1px;padding:11px 14px;cursor:pointer;transition:all .15s;text-align:left;}
+.group-hd:hover{border-color:var(--accent)}.group-hd.open{border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom-color:transparent}
+.group-icon{font-size:14px}.group-title{flex:1}.group-arrow{color:var(--muted);font-size:12px;transition:transform .2s}
+.group-hd.open .group-arrow{transform:rotate(180deg)}
+.group-bd{background:var(--bg2);border:1px solid var(--border2);border-top:none;border-bottom-left-radius:10px;border-bottom-right-radius:10px;padding:14px;display:none;}
+.group-bd.open{display:block}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.form-grid .full{grid-column:1/-1}
+#page-wrap.layout-mobile .form-grid{grid-template-columns:1fr}
+.field{margin-bottom:10px}.field label{display:block;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:4px}
+.field input[type=number],.field input[type=text],.field input[type=time],.field select,.field-ta{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--text);padding:8px 11px;font-size:14px;font-family:inherit;outline:none;color-scheme:dark;transition:border-color .15s;}
+.field input:focus,.field select:focus,.field-ta:focus{border-color:var(--accent)}
+.field select{cursor:pointer}.field-ta{resize:vertical;min-height:66px}
+.input-pair{display:flex;gap:8px;align-items:center}.input-pair input{flex:1}
+.auto-row{display:flex;align-items:center;gap:5px;margin-top:3px}
+.auto-lbl{font-size:9px;color:var(--muted);letter-spacing:1px}.auto-val{font-size:13px;font-weight:700;color:var(--accent)}
+.hint-t{font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:8px}
+.emoji-grid{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.emoji-opt{width:36px;height:36px;font-size:19px;border:1.5px solid var(--border2);border-radius:8px;background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.emoji-opt:hover{border-color:var(--accent);transform:scale(1.1)}.emoji-opt.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 20%,transparent)}
+.log-entries{display:flex;flex-direction:column;gap:7px;margin-top:6px}
+.log-entry{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px}
+.le-hd{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.le-type{flex:1;font-size:11px;font-weight:700;color:var(--accent)}
+.le-rm{background:none;border:none;color:var(--muted2);font-size:15px;cursor:pointer;padding:0;line-height:1;transition:color .15s;}
+.le-rm:hover{color:var(--danger)}.le-row{display:flex;gap:7px;align-items:flex-end}
+.le-row .field{flex:1;margin-bottom:0}
+.le-sel{background:var(--bg3);border:1px solid var(--border2);border-radius:5px;color:var(--accent);font-family:inherit;font-size:11px;font-weight:700;padding:3px 6px;cursor:pointer}
+.le-in{background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--text);padding:8px 11px;font-size:14px;font-family:inherit;outline:none;width:100%}
+.le-in-t{background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--text);padding:7px 10px;font-size:13px;font-family:inherit;outline:none;color-scheme:dark;width:100%}
+.add-btn{display:flex;align-items:center;gap:6px;width:100%;background:none;border:1px dashed var(--border2);border-radius:8px;color:var(--muted);font-family:inherit;font-size:11px;font-weight:700;letter-spacing:1px;padding:10px;cursor:pointer;transition:all .15s;justify-content:center;margin-top:7px;}
+.add-btn:hover{border-color:var(--accent);color:var(--accent)}
+.period-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0}
+.ptoggle{position:relative;width:44px;height:24px;background:var(--bg3);border:1px solid var(--border2);border-radius:12px;cursor:pointer;transition:all .2s;}
+.ptoggle.on{background:color-mix(in srgb,#ff7eb3 40%,transparent);border-color:#ff7eb3}
+.ptoggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--muted);transition:all .2s;}
+.ptoggle.on::after{left:22px;background:#ff7eb3}
+.btn-p{background:var(--accent);border:none;border-radius:8px;color:var(--bg);font-weight:700;padding:11px 16px;font-size:12px;cursor:pointer;font-family:inherit;letter-spacing:1px;transition:opacity .15s;}
+.btn-p:hover{opacity:.82}
+.btn-g{background:none;border:1px solid var(--border2);border-radius:8px;color:var(--muted);padding:9px 13px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s;}
+.btn-g:hover{border-color:var(--accent);color:var(--accent)}
+.btn-d{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted2);padding:4px 9px;font-size:10px;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;}
+.btn-d:hover{border-color:var(--danger);color:var(--danger)}
+.btn-e{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);padding:4px 9px;font-size:10px;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;}
+.btn-e:hover{border-color:var(--accent);color:var(--accent)}
+.btn-row{display:flex;gap:8px;margin-top:14px}.btn-row .btn-p{flex:1}
+.cp-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-family:inherit;font-size:9px;font-weight:700;letter-spacing:1px;padding:5px 9px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.cp-btn:hover{border-color:var(--accent2);color:var(--accent2)}
+.month-group{margin-bottom:10px}
+.month-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;cursor:pointer;transition:all .15s;}
+.month-hd:hover{border-color:var(--accent)}.month-hd.open{border-bottom-left-radius:0;border-bottom-right-radius:0}
+.month-title{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:1px}
+.month-count{font-size:10px;color:var(--muted)}
+.month-arrow{color:var(--muted);font-size:12px;transition:transform .2s}.month-hd.open .month-arrow{transform:rotate(180deg)}
+.month-bd{background:var(--bg2);border:1px solid var(--border2);border-top:none;border-bottom-left-radius:10px;border-bottom-right-radius:10px;display:none;overflow:hidden;}
+.month-bd.open{display:block}
+.hcard{border-bottom:1px solid var(--border);padding:11px 13px}.hcard:last-child{border-bottom:none}
+.htop{display:flex;align-items:flex-start;justify-content:space-between}
+.hdate{font-size:10px;color:var(--muted);margin-bottom:2px}
+.hw{font-size:19px;font-weight:700}.hw span{font-size:11px;color:var(--muted2);margin-left:2px}
+.hdiff{font-size:10px;margin-top:1px}.hdiff.up{color:var(--danger)}.hdiff.dn{color:var(--accent2)}.hdiff.eq{color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+.chip{background:rgba(128,128,128,.06);border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-size:10px}
+.chip .cl{color:var(--muted)}.chip .cv{color:var(--text);font-weight:700}
+.hnote{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.5}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}.setting-label{font-size:12px}
+.setting-sub{font-size:9px;color:var(--muted);margin-top:2px}
+.tg-group{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.tg-opt{padding:5px 11px;border-radius:20px;font-size:10px;font-weight:700;font-family:inherit;cursor:pointer;border:1px solid var(--border2);background:none;color:var(--muted);transition:all .15s;white-space:nowrap;}
+.tg-opt.active{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.ts{border-radius:8px;padding:8px 6px;text-align:center;cursor:pointer;border:2px solid transparent;transition:all .15s;font-size:10px;font-weight:700;}
+.ts.active{border-color:var(--accent)}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--accent);color:var(--bg);font-weight:700;border-radius:20px;padding:9px 20px;font-size:12px;box-shadow:0 4px 20px rgba(0,0,0,.4);z-index:300;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s,transform .2s;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.empty{text-align:center;color:var(--muted2);padding:50px 0}.empty .ei{font-size:28px;margin-bottom:8px}
+
+/* ═══════════════════════════════
+   CHART
+═══════════════════════════════ */
+.chart-ctrl{margin-bottom:12px}
+.period-btns{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.period-btn{background:none;border:1px solid var(--border2);border-radius:20px;color:var(--muted);font-family:inherit;font-size:10px;font-weight:700;letter-spacing:.5px;padding:5px 12px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.period-btn.active{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.custom-range{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;margin-bottom:8px}
+.custom-range input[type=date]{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:inherit;font-size:12px;padding:5px 8px;outline:none;color-scheme:dark;}
+.custom-range input[type=date]:focus{border-color:var(--accent)}
+.cr-sep{color:var(--muted);font-size:11px}
+.chart-type-tabs{display:flex;border:1px solid var(--border2);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.ct-tab{flex:1;padding:9px 4px;background:none;border:none;border-right:1px solid var(--border2);color:var(--muted);font-family:inherit;font-size:10px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .15s;text-align:center;}
+.ct-tab:last-child{border-right:none}
+.ct-tab:hover{color:var(--text);background:rgba(128,128,128,.05)}
+.ct-tab.active{background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
+.chart-wrap{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px;margin-bottom:12px}
+.chart-canvas-con{position:relative;height:240px}
+.chart-metric-ctrl{margin-top:10px}
+.metric-mode-row{display:flex;gap:6px;margin-bottom:8px}
+.metric-picks{display:flex;flex-wrap:wrap;gap:6px}
+.mpick{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--border2);cursor:pointer;transition:all .15s;font-size:10px;font-weight:700;background:none;color:var(--muted);font-family:inherit;}
+.mpick.sel{color:var(--bg)}
+.mpick .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.chart-no-data{text-align:center;padding:60px 0;color:var(--muted2)}
+.chart-no-data .ni{font-size:26px;margin-bottom:8px}
+.ev-list{margin-top:6px}
+.ev-item{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;background:var(--bg2);border:1px solid var(--border2);border-left:3px solid #ffb830;border-radius:6px;margin-bottom:5px;font-size:10px;cursor:pointer;transition:all .15s;}
+.ev-item:hover{border-color:var(--accent)}
+.ev-item.hi{background:color-mix(in srgb,#ffb830 12%,transparent)}
+.ev-date{color:var(--muted);flex-shrink:0;margin-top:1px}
+.ev-title{font-weight:700}
+
+#dp-popup input[type=date]{color-scheme:dark}
+#dp-popup input[type=date]:focus{border-color:var(--accent)}
+
+
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+<div id="page-wrap">
+
+  <!-- ════════════════════════════
+       SHELL WRAP (mobile frame)
+  ════════════════════════════ -->
+  <div id="shell-wrap">
+    <div id="app">
+
+      <!-- mobile header -->
+      <div id="top-header">
+        <div class="th-row">
+          <div class="th-left"><div class="th-sub">MY RECORD</div><div class="th-title">わたしの記録</div></div>
+          <div class="th-right">
+            <div class="th-clock"><div class="tc-date" id="hdr-date"></div><div class="tc-time" id="hdr-time"></div></div>
+            <button class="hdr-tog-btn" id="hdr-tog" onclick="quickToggleLayout()" title="レイアウト切り替え">🖥️</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- main content -->
+      <div id="main"><div class="content">
+
+        <!-- LOG -->
+        <div id="tab-log">
+          <div class="date-nav">
+            <button class="dnav-btn" onclick="prevDay()">‹</button>
+            <div style="flex:1;position:relative">
+              <button class="date-disp-btn" id="date-disp" onclick="trigDP()" style="width:100%">—</button>
+              <div id="dp-popup" style="display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);z-index:200;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:10px;box-shadow:0 8px 30px rgba(0,0,0,.4);flex-direction:column;align-items:center;gap:6px;min-width:200px">
+                <div style="font-size:9px;color:var(--accent);letter-spacing:2px;margin-bottom:2px">日付を選択</div>
+                <input type="date" id="dp-input" onchange="onDP(event)" style="background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:inherit;font-size:14px;padding:7px 10px;outline:none;color-scheme:dark;width:100%">
+              </div>
+            </div>
+            <button class="dnav-btn" onclick="nextDay()">›</button>
+            <button class="today-btn" id="today-btn" onclick="goToday()">TODAY</button>
+          </div>
+          <div class="group" id="grp-body">
+            <button class="group-hd open" onclick="toggleGroup('body')"><span class="group-icon">📊</span><span class="group-title">体組成</span><span class="group-arrow">▾</span></button>
+            <div class="group-bd open" id="grpb-body">
+              <div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="cp-btn" onclick="copyPrev()">↩ 前回の値をコピー</button></div>
+              <div class="form-grid">
+                <div class="field"><label>体重 (kg)</label><input type="number" id="f-weight" step="0.1" placeholder="--" oninput="onBI()"></div>
+                <div class="field"><label>体脂肪率 (%)</label><input type="number" id="f-bodyfat" step="0.1" placeholder="--" oninput="onBI()"></div>
+                <div class="field"><label>筋肉量 (kg)</label><input type="number" id="f-muscle" step="0.1" placeholder="--" oninput="onMI()">
+                  <div class="auto-row" id="m-auto"><span class="auto-lbl">推定</span><span class="auto-val" id="m-av">--</span><span class="auto-lbl">kg</span></div></div>
+                <div class="field"><label>内臓脂肪 (レベル)</label><input type="number" id="f-visceral" step="0.5" placeholder="--"></div>
+                <div class="field"><label>基礎代謝 (kcal)</label><input type="number" id="f-metabolism" step="1" placeholder="--" oninput="onMeI()">
+                  <div class="auto-row" id="me-auto"><span class="auto-lbl">推定</span><span class="auto-val" id="me-av">--</span><span class="auto-lbl">kcal</span></div></div>
+                <div class="field"><label>BMI</label><input type="number" id="f-bmi" step="0.1" placeholder="--" oninput="onBMII()">
+                  <div class="auto-row" id="b-auto"><span class="auto-lbl">推定</span><span class="auto-val" id="b-av">--</span></div></div>
+                <div class="field"><label id="bust-lbl">バスト (cm)</label><input type="number" id="f-bust" step="0.5" placeholder="--"></div>
+                <div class="field"><label>ウエスト (cm)</label><input type="number" id="f-waist" step="0.5" placeholder="--"></div>
+                <div class="field full"><label>ヒップ (cm)</label><input type="number" id="f-hip" step="0.5" placeholder="--"></div>
+              </div>
+            </div>
+          </div>
+          <div class="group" id="grp-meal">
+            <button class="group-hd open" onclick="toggleGroup('meal')"><span class="group-icon">🍽️</span><span class="group-title">食事</span><span class="group-arrow">▾</span></button>
+            <div class="group-bd open" id="grpb-meal">
+              <div class="hint-t">朝食・昼食・夕食・間食など、1日に何件でも追加できます</div>
+              <div class="log-entries" id="meal-entries"></div>
+              <button class="add-btn" onclick="addMeal()">＋ 食事を追加</button>
+            </div>
+          </div>
+          <div class="group" id="grp-exercise">
+            <button class="group-hd" onclick="toggleGroup('exercise')"><span class="group-icon">🏃</span><span class="group-title">運動</span><span class="group-arrow">▾</span></button>
+            <div class="group-bd" id="grpb-exercise">
+              <div class="field"><label>歩数</label><input type="number" id="f-steps" step="1" placeholder="--"></div>
+              <div class="hint-t" style="margin-top:4px">運動セッション</div>
+              <div class="log-entries" id="ex-entries"></div>
+              <button class="add-btn" onclick="addEx()">＋ 運動を追加</button>
+            </div>
+          </div>
+          <div class="group" id="grp-health">
+            <button class="group-hd" onclick="toggleGroup('health')"><span class="group-icon">💉</span><span class="group-title">健康指標</span><span class="group-arrow">▾</span></button>
+            <div class="group-bd" id="grpb-health">
+              <div class="form-grid">
+                <div class="field full"><label>HbA1c (%)</label><input type="number" id="f-hba1c" step="0.1" placeholder="--"></div>
+                <div class="field full"><label>血圧</label>
+                  <div class="input-pair"><input type="number" id="f-bph" step="1" placeholder="上 mmHg"><span style="color:var(--muted);font-size:12px;flex-shrink:0">/</span><input type="number" id="f-bpl" step="1" placeholder="下 mmHg"></div>
+                </div>
+              </div>
+              <div class="hint-t" style="margin-top:4px">日内血糖値ログ</div>
+              <div class="log-entries" id="glc-entries"></div>
+              <button class="add-btn" onclick="addGlc()">＋ 血糖値を追加</button>
+            </div>
+          </div>
+          <div class="group" id="grp-condition">
+            <button class="group-hd open" onclick="toggleGroup('condition')"><span class="group-icon">🌸</span><span class="group-title">体調</span><span class="group-arrow">▾</span></button>
+            <div class="group-bd open" id="grpb-condition">
+              <div class="field"><label>気分</label><div class="emoji-grid" id="mood-grid"></div></div>
+              <div class="field" style="margin-top:8px"><label>天気</label><div class="emoji-grid" id="wth-grid"></div></div>
+              <div id="period-sec" style="display:none">
+                <div class="field" style="margin-top:10px"><label>生理</label>
+                  <div class="period-row"><span style="font-size:12px">開始日として記録</span><div class="ptoggle" id="ptoggle" onclick="togPeriod()"></div></div>
+                  <div id="pnote-wrap" style="margin-top:8px;display:none"><textarea class="field-ta" id="f-pnote" placeholder="備考（任意）" style="min-height:52px"></textarea></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="group" id="grp-note">
+            <button class="group-hd" onclick="toggleGroup('note')"><span class="group-icon">📝</span><span class="group-title">記録</span><span class="group-arrow">▾</span></button>
+            <div class="group-bd" id="grpb-note">
+              <div class="field"><label>備考</label><textarea class="field-ta" id="f-note" placeholder="この日のメモ（自由記述）"></textarea></div>
+              <div style="margin-top:12px">
+                <div class="hint-t">イベント（通院・薬の変更・旅行など）</div>
+                <div class="log-entries" id="ev-entries"></div>
+                <button class="add-btn" onclick="addEv()">＋ イベントを追加</button>
+              </div>
+            </div>
+          </div>
+          <div class="btn-row"><button class="btn-p" onclick="saveRec()">💾 保存</button><button class="btn-g" onclick="delRec()">削除</button></div>
+          <div style="height:10px"></div>
+        </div>
+
+        <!-- CHART -->
+        <div id="tab-chart" style="display:none">
+          <div class="chart-ctrl">
+            <!-- period buttons -->
+            <div class="period-btns">
+              <button class="period-btn active" id="period-1m" onclick="setPeriod('1m')">1ヶ月</button>
+              <button class="period-btn" id="period-3m" onclick="setPeriod('3m')">3ヶ月</button>
+              <button class="period-btn" id="period-6m" onclick="setPeriod('6m')">6ヶ月</button>
+              <button class="period-btn" id="period-all" onclick="setPeriod('all')">全期間</button>
+              <button class="period-btn" id="period-custom" onclick="setPeriod('custom')">カスタム</button>
+            </div>
+            <!-- custom date range -->
+            <div class="custom-range" id="custom-range" style="display:none">
+              <input type="date" id="chart-from" onchange="onChartRangeChange()">
+              <span class="cr-sep">〜</span>
+              <input type="date" id="chart-to" onchange="onChartRangeChange()">
+            </div>
+          </div>
+          <!-- energy chart mode toggle (shown only for energy tab) -->
+          <div id="energy-mode-row" style="display:none;margin-bottom:8px">
+            <div class="metric-mode-row">
+              <button class="tg-opt active" id="em-bar" onclick="setEnergyMode('bar')">棒グラフ</button>
+              <button class="tg-opt" id="em-line" onclick="setEnergyMode('line')">折れ線</button>
+            </div>
+          </div>
+          <!-- graph type tabs -->
+          <div class="chart-type-tabs">
+            <button class="ct-tab active" id="ct-body" onclick="setChartType('body')">📊 体組成</button>
+            <button class="ct-tab" id="ct-energy" onclick="setChartType('energy')">🍽️ エネルギー</button>
+            <button class="ct-tab" id="ct-glucose" onclick="setChartType('glucose')">💉 血糖値</button>
+          </div>
+          <!-- chart area -->
+          <div class="chart-wrap">
+            <div class="chart-canvas-con" id="chart-canvas-con">
+              <canvas id="chart-canvas"></canvas>
+            </div>
+            <!-- body metric selector -->
+            <div class="chart-metric-ctrl" id="body-metric-ctrl">
+              <div class="metric-mode-row">
+                <button class="tg-opt active" id="bm-group" onclick="setBodyMode('group')">グループ</button>
+                <button class="tg-opt" id="bm-custom" onclick="setBodyMode('custom')">カスタム</button>
+              </div>
+              <div class="metric-picks" id="group-picks" style="margin-bottom:6px"></div>
+              <div class="metric-picks" id="metric-picks" style="display:none"></div>
+            </div>
+          </div>
+          <!-- event list -->
+          <div id="chart-ev-wrap" style="display:none">
+            <div style="font-size:9px;color:var(--accent);letter-spacing:2px;margin-bottom:6px">EVENTS</div>
+            <div class="ev-list" id="chart-ev-list"></div>
+          </div>
+        </div>
+
+
+        <!-- HISTORY -->
+        <div id="tab-history" style="display:none">
+          <div id="hist-con"></div>
+          <div id="hist-empty" class="empty" style="display:none"><div class="ei">📋</div><div>まだ記録がありません</div></div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div id="tab-settings" style="display:none">
+          <div class="panel">
+            <div class="panel-title">👤 プロフィール</div>
+            <div class="form-grid">
+              <div class="field full"><label>身長 (cm)</label><input type="number" id="s-height" step="0.1" placeholder="例: 165.0" oninput="saveProfile()"></div>
+              <div class="field full"><label>生まれた年 <span style="color:var(--muted);font-weight:normal">（月・日は任意）</span></label>
+                <div style="display:flex;gap:6px;align-items:center">
+                  <input type="number" id="s-by" step="1" placeholder="例: 1990" oninput="saveProfile()" style="flex:2;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--text);padding:8px 11px;font-size:14px;font-family:inherit;outline:none;color-scheme:dark">
+                  <span style="color:var(--muted);font-size:12px">年</span>
+                  <input type="number" id="s-bm" min="1" max="12" step="1" placeholder="月" oninput="saveProfile()" style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--text);padding:8px 11px;font-size:14px;font-family:inherit;outline:none;color-scheme:dark">
+                  <span style="color:var(--muted);font-size:12px">月</span>
+                  <input type="number" id="s-bd" min="1" max="31" step="1" placeholder="日" oninput="saveProfile()" style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--text);padding:8px 11px;font-size:14px;font-family:inherit;outline:none;color-scheme:dark">
+                  <span style="color:var(--muted);font-size:12px">日</span>
+                </div>
+              </div>
+              <div class="field full"><label>性別</label>
+                <div style="display:flex;gap:6px;margin-top:2px">
+                  <button class="tg-opt" id="sex-unknown" onclick="setSex('unknown')">未設定</button>
+                  <button class="tg-opt" id="sex-male" onclick="setSex('male')">男性</button>
+                  <button class="tg-opt" id="sex-female" onclick="setSex('female')">女性</button>
+                </div>
+                <div id="sex-hint" style="font-size:9px;color:var(--accent);margin-top:6px;letter-spacing:1px"></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">📐 レイアウト</div>
+            <div class="setting-row">
+              <div><div class="setting-label">表示モード</div><div class="setting-sub">768px以上で自動的にPC表示になります</div></div>
+              <div class="tg-group">
+                <button class="tg-opt" id="tog-auto" onclick="setLayoutMode('auto')">自動</button>
+                <button class="tg-opt" id="tog-mobile" onclick="setLayoutMode('mobile')">📱 スマホ固定</button>
+                <button class="tg-opt" id="tog-desktop" onclick="setLayoutMode('desktop')">🖥️ PC固定</button>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">サイドバー位置</div><div class="setting-sub">PCモード時のサイドバーの位置</div></div>
+              <div class="tg-group">
+                <button class="tg-opt" id="tog-sb-left" onclick="setSbPos('left')">左</button>
+                <button class="tg-opt" id="tog-sb-right" onclick="setSbPos('right')">右</button>
+              </div>
+            </div>
+            <div class="setting-row" style="border-bottom:none">
+              <div><div class="setting-label">サイドバー統計</div><div class="setting-sub">体重・BMI・統計情報をサイドバーに表示</div></div>
+              <div class="tg-group">
+                <button class="tg-opt" id="tog-stats-on" onclick="setSbStats(true)">表示</button>
+                <button class="tg-opt" id="tog-stats-off" onclick="setSbStats(false)">非表示</button>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">🌓 ディスプレイ</div>
+            <div class="setting-row" style="border:none;padding:0">
+              <div><div class="setting-sub">テーマの明暗を上書きします</div></div>
+              <div class="tg-group">
+                <button class="tg-opt" id="disp-normal" onclick="setDisp('normal')">テーマに従う</button>
+                <button class="tg-opt" id="disp-dark" onclick="setDisp('dark')">🌙 ダーク</button>
+                <button class="tg-opt" id="disp-light" onclick="setDisp('light')">☀️ ライト</button>
+                <button class="tg-opt" id="disp-system" onclick="setDisp('system')">🖥 システム</button>
+              </div>
+            </div>
+          </div>
+          <div class="panel"><div class="panel-title">🎨 テーマ</div><div class="theme-grid" id="theme-grid"></div></div>
+          <div class="panel">
+            <div class="panel-title">💾 データ管理</div>
+            <div class="setting-row"><div><div class="setting-label">エクスポート</div><div class="setting-sub">JSONファイルに保存</div></div><button class="btn-g" style="font-size:11px;padding:6px 13px" onclick="exportD()">⬇ 書き出し</button></div>
+            <div class="setting-row" style="border-bottom:none"><div><div class="setting-label">インポート</div><div class="setting-sub">JSON（旧形式も可）</div></div><button class="btn-g" style="font-size:11px;padding:6px 13px" onclick="document.getElementById('imp-f').click()">⬆ 読み込み</button></div>
+            <input type="file" id="imp-f" accept=".json" style="display:none" onchange="importD(event)">
+          </div>
+          <div class="panel"><div class="panel-title">📊 統計サマリー</div><div id="stats-con"></div></div>
+          <div class="panel"><div class="setting-row" style="border:none;padding:0"><div><div class="setting-label">データをリセット</div><div class="setting-sub">全記録を削除します</div></div><button class="btn-d" onclick="resetD()">削除</button></div></div>
+        </div>
+
+      </div></div><!-- /content /main -->
+
+      <!-- mobile tab bar -->
+      <div id="tab-bar">
+        <button class="tab-btn active" data-tab="log" onclick="switchTab('log')"><span class="ticon">✏️</span>記録</button>
+        <button class="tab-btn" data-tab="chart" onclick="switchTab('chart')"><span class="ticon">📈</span>グラフ</button>
+        <button class="tab-btn" data-tab="history" onclick="switchTab('history')"><span class="ticon">📋</span>履歴</button>
+        <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')"><span class="ticon">⚙️</span>設定</button>
+      </div>
+
+    </div><!-- /app -->
+  </div><!-- /shell-wrap -->
+
+  <!-- ════════════════════════════
+       SIDEBAR (desktop only)
+       order:-1 = 左, order:1 = 右
+  ════════════════════════════ -->
+  <div id="sidebar">
+    <div id="sidebar-logo">
+      <div class="logo-txt"><div class="sub">MY RECORD</div><div class="title">わたしの記録</div></div>
+      <button class="sb-tog-btn" onclick="quickToggleLayout()" title="スマホ表示に切り替え">📱</button>
+    </div>
+    <div id="sidebar-clock"><div class="sc-date" id="sb-date"></div><div class="sc-time" id="sb-time"></div></div>
+    <div id="sb-info">
+      <div class="si-grid">
+        <div class="si-item"><div class="si-lbl">最新体重</div><div class="si-val" id="sd-weight">--</div></div>
+        <div class="si-item"><div class="si-lbl">BMI</div><div class="si-val" id="sd-bmi">--</div></div>
+        <div class="si-item"><div class="si-lbl">身長</div><div class="si-val" id="sd-height">--</div></div>
+        <div class="si-item"><div class="si-lbl">年齢</div><div class="si-val" id="sd-age">--</div></div>
+      </div>
+    </div>
+    <nav id="sidebar-nav">
+      <button class="snav-btn active" data-tab="log" onclick="switchTab('log')"><span class="snav-icon">✏️</span>記録</button>
+      <button class="snav-btn" data-tab="chart" onclick="switchTab('chart')"><span class="snav-icon">📈</span>グラフ</button>
+      <button class="snav-btn" data-tab="history" onclick="switchTab('history')"><span class="snav-icon">📋</span>履歴</button>
+      <button class="snav-btn" data-tab="settings" onclick="switchTab('settings')"><span class="snav-icon">⚙️</span>設定</button>
+    </nav>
+    <div id="sb-stats">
+      <div class="ss-title">STATS</div>
+      <div class="ss-item"><span class="ss-lbl">平均体重</span><span class="ss-val" id="sd-avg">--</span></div>
+      <div class="ss-item"><span class="ss-lbl">最低体重</span><span class="ss-val" id="sd-min">--</span></div>
+      <div class="ss-item"><span class="ss-lbl">記録数</span><span class="ss-val" id="sd-count">--</span></div>
+      <div class="ss-item"><span class="ss-lbl">前回比</span><span class="ss-val" id="sd-diff">--</span></div>
+    </div>
+  </div><!-- /sidebar -->
+
+</div><!-- /page-wrap -->
+<div id="toast"></div>
+<script>
+const SK='myrecord-v1',OLD_SK='body-tracker-data';
+const MOODS=['😊','😄','😐','😔','😢','😤','😴','🤒','😰','🥰'];
+const WEATHERS=['☀️','🌤️','⛅','☁️','🌧️','🌩️','🌨️','⛄'];
+const MEAL_T=['朝食','昼食','夕食','間食','夜食','その他'];
+const EX_T=['歩行','エアロバイク','ヨガ','フィットボクシング','筋トレ','ウォーキング','ランニング','その他'];
+const GLC_T=['空腹時','食後2時間','随時'];
+const THEMES=[{k:'moon',n:'月',bg:'#0d0d1a',ac:'#c8a8e9'},{k:'sun',n:'太陽',bg:'#fff8f0',ac:'#e07800'},{k:'sky',n:'空',bg:'#f0f8ff',ac:'#1a80d0'},{k:'ocean',n:'海',bg:'#020d1a',ac:'#00c8f0'},{k:'sunset',n:'夕日',bg:'#1a0808',ac:'#ff7830'}];
+let records=[],mealLogs=[],exerciseLogs=[],glucoseLogs=[],events=[];
+let goal=null,profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown'};
+let appL='auto',appT='moon',appD='normal',appSbRight=false,showSbStats=true;
+let og={body:true,meal:true,exercise:false,health:false,condition:true,note:false};
+let curDate=todayStr(),selMood=null,selWth=null,periodOn=false;
+let mMan=false,meMan=false,bmiMan=false;
+let tM=[],tE=[],tG=[],tEv=[];
+function todayStr(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function genId(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5);}
+function showToast(msg,ms=2200){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}
+function getNum(id){const v=document.getElementById(id)?.value;if(v===''||v==null)return null;const n=parseFloat(v);return isNaN(n)?null:n;}
+function setText(id,val){const e=document.getElementById(id);if(e)e.textContent=val;}
+function calcAge(){if(!profile.birthYear)return null;const now=new Date();let a=now.getFullYear()-profile.birthYear;if(profile.birthMonth&&profile.birthday&&now<new Date(now.getFullYear(),profile.birthMonth-1,profile.birthday))a--;return a;}
+function calcBMI(w,h){if(!w||!h)return null;return Math.round(w/(h/100)**2*10)/10;}
+function calcMuscle(w,bf){if(w==null||bf==null)return null;return Math.round(w*(1-bf/100)*10)/10;}
+function calcMeta(w,h,age,sex){if(!w||!h||!age)return null;let b=sex==='female'?655.1+9.563*w+1.850*h-4.676*age:66.5+13.75*w+5.003*h-6.75*age;return Math.round(b);}
+function loadData(){
+  const raw=localStorage.getItem(SK);
+  if(raw){try{const d=JSON.parse(raw);records=d.records||[];mealLogs=d.mealLogs||[];exerciseLogs=d.exerciseLogs||[];glucoseLogs=d.glucoseLogs||[];events=d.events||[];goal=d.goal??null;profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown',...(d.profile||{})};appL=d.layout??'auto';appT=d.theme||'moon';appD=d.display||'normal';appSbRight=d.sbRight??false;showSbStats=d.sbStats??true;og=d.og||og;return true;}catch(e){}}
+  const old=localStorage.getItem(OLD_SK);
+  if(old){try{const d=JSON.parse(old);records=(d.records||[]).map(r=>({bust:null,waist:null,hip:null,hba1c:null,bpHigh:null,bpLow:null,mood:null,weather:null,period:false,periodNote:'',muscleManual:false,bmiManual:false,...r}));goal=d.goal??null;profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown',...(d.profile||{})};return true;}catch(e){}}
+  return false;
+}
+function saveData(){localStorage.setItem(SK,JSON.stringify({records,mealLogs,exerciseLogs,glucoseLogs,events,goal,profile,layout:appL,theme:appT,display:appD,sbRight:appSbRight,sbStats:showSbStats,og}));}
+function getEff(){return appL==='auto'?(window.innerWidth>=768?'desktop':'mobile'):appL;}
+function applyLayout(){
+  const eff=getEff();
+  const pw=document.getElementById('page-wrap');
+  // set layout class + sidebar position
+  pw.className=(eff==='desktop'?'layout-desktop':'layout-mobile')+(appSbRight?' sb-right':'');
+  // preserve data-force attribute for display mode
+  // toggle button icons
+  const hdrTog=document.getElementById('hdr-tog');
+  if(hdrTog)hdrTog.textContent=eff==='desktop'?'📱':'🖥️';
+  // settings toggles
+  ['auto','mobile','desktop'].forEach(k=>document.getElementById('tog-'+k)?.classList.toggle('active',k===appL));
+  ['left','right'].forEach(k=>document.getElementById('tog-sb-'+k)?.classList.toggle('active',k===(appSbRight?'right':'left')));
+  updSidebar();
+}
+function setLayoutMode(m){appL=m;applyLayout();saveData();}
+function setSbPos(p){appSbRight=(p==='right');applyLayout();saveData();}
+function setSbStats(v){showSbStats=v;updSidebar();saveData();}
+function quickToggleLayout(){const eff=getEff();appL=eff==='desktop'?'mobile':'desktop';applyLayout();saveData();}
+function applyT(t){appT=t;document.documentElement.setAttribute('data-theme',t);renderTG();}
+function applyD(d){
+  appD=d;
+  const pw=document.getElementById('page-wrap');
+  pw.removeAttribute('data-force');
+  if(d==='dark')pw.setAttribute('data-force','dark');
+  else if(d==='light')pw.setAttribute('data-force','light');
+  else if(d==='system')pw.setAttribute('data-force',window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+  ['normal','dark','light','system'].forEach(k=>document.getElementById('disp-'+k)?.classList.toggle('active',k===d));
+}
+function setDisp(d){applyD(d);saveData();}
+function renderTG(){const g=document.getElementById('theme-grid');if(!g)return;g.innerHTML=THEMES.map(t=>`<div class="ts ${appT===t.k?'active':''}" style="background:${t.bg};color:${t.ac}" onclick="applyT('${t.k}');saveData()">${t.n}</div>`).join('');}
+function updSidebar(){
+  const latest=records.length?records[records.length-1]:null;
+  const age=calcAge();
+  const bmi=latest?.bmi??( latest?.weight&&profile.height?calcBMI(latest.weight,profile.height):null );
+  setText('sd-weight',latest?.weight!=null?latest.weight+' kg':'--');
+  setText('sd-bmi',bmi!=null?String(bmi):'--');
+  setText('sd-height',profile.height?profile.height+' cm':'--');
+  setText('sd-age',age?age+' 歳':'--');
+  const wt=records.filter(r=>r.weight!=null);
+  setText('sd-avg',wt.length?(wt.reduce((s,r)=>s+r.weight,0)/wt.length).toFixed(1)+' kg':'--');
+  setText('sd-min',wt.length?Math.min(...wt.map(r=>r.weight))+' kg':'--');
+  setText('sd-count',records.length?records.length+' 日':'--');
+  let diff='--',diffCls='';
+  if(wt.length>=2){const l=wt[wt.length-1].weight,p=wt[wt.length-2].weight;const d=Math.round((l-p)*10)/10;diff=d>0?'▲ '+d+' kg':d<0?'▼ '+Math.abs(d)+' kg':'→ ±0 kg';diffCls=d>0?'diff-up':d<0?'diff-dn':'diff-eq';}
+  const de=document.getElementById('sd-diff');if(de){de.textContent=diff;de.className='ss-val '+diffCls;}
+  const infoEl=document.getElementById('sb-info'),statsEl=document.getElementById('sb-stats');
+  if(infoEl)infoEl.style.display=showSbStats?'':'none';
+  if(statsEl)statsEl.style.display=showSbStats?'':'none';
+  document.getElementById('tog-stats-on')?.classList.toggle('active',showSbStats);
+  document.getElementById('tog-stats-off')?.classList.toggle('active',!showSbStats);
+}
+function tickClock(){const n=new Date();const ds=n.toLocaleDateString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit',weekday:'short'});const ts=n.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});['hdr-date','sb-date'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=ds;});['hdr-time','sb-time'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=ts;});}
+function switchTab(tab){['log','chart','history','settings'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'':'none');document.querySelectorAll('.tab-btn,.snav-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));if(tab==='history')renderHist();if(tab==='settings')renderSettings();if(tab==='chart')renderCharts();}
+function updDD(){const e=document.getElementById('date-disp');if(e)e.textContent=curDate;document.getElementById('today-btn')?.classList.toggle('active',curDate===todayStr());}
+function prevDay(){shiftDay(-1);}function nextDay(){shiftDay(1);}
+function shiftDay(n){
+  const d=new Date(curDate+'T00:00:00');d.setDate(d.getDate()+n);
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  curDate=`${y}-${m}-${day}`;updDD();loadForm(curDate);
+}
+function goToday(){curDate=todayStr();updDD();loadForm(curDate);}
+function trigDP(){
+  const pop=document.getElementById('dp-popup');
+  if(!pop)return;
+  if(pop.style.display==='none'||!pop.style.display){
+    document.getElementById('dp-input').value=curDate;
+    pop.style.display='flex';
+  } else {
+    pop.style.display='none';
+  }
+}
+function onDP(e){
+  if(!e.target.value)return;
+  curDate=e.target.value;
+  document.getElementById('dp-popup').style.display='none';
+  updDD();loadForm(curDate);
+}
+document.addEventListener('click',function(e){
+  const pop=document.getElementById('dp-popup');
+  if(pop&&pop.style.display==='flex'&&!pop.contains(e.target)&&e.target.id!=='date-disp')pop.style.display='none';
+});
+function toggleGroup(key){const hd=document.querySelector(`#grp-${key} .group-hd`);const bd=document.getElementById(`grpb-${key}`);const isO=bd.classList.contains('open');hd.classList.toggle('open',!isO);bd.classList.toggle('open',!isO);og[key]=!isO;saveData();}
+function buildEmoji(){const mg=document.getElementById('mood-grid');if(mg)mg.innerHTML=MOODS.map(e=>`<div class="emoji-opt" data-m="${e}" onclick="selM('${e}')">${e}</div>`).join('');const wg=document.getElementById('wth-grid');if(wg)wg.innerHTML=WEATHERS.map(e=>`<div class="emoji-opt" data-w="${e}" onclick="selW('${e}')">${e}</div>`).join('');}
+function selM(e){selMood=selMood===e?null:e;document.querySelectorAll('.emoji-opt[data-m]').forEach(el=>el.classList.toggle('sel',el.dataset.m===selMood));}
+function selW(e){selWth=selWth===e?null:e;document.querySelectorAll('.emoji-opt[data-w]').forEach(el=>el.classList.toggle('sel',el.dataset.w===selWth));}
+function togPeriod(){periodOn=!periodOn;document.getElementById('ptoggle').classList.toggle('on',periodOn);document.getElementById('pnote-wrap').style.display=periodOn?'':'none';}
+function updPeriodSec(){const s=document.getElementById('period-sec');if(s)s.style.display=profile.sex==='female'?'':'none';}
+function onBI(){
+  const w=getNum('f-weight'),bf=getNum('f-bodyfat');
+  if(!mMan){const m=calcMuscle(w,bf);setText('m-av',m??'--');document.getElementById('m-auto').style.display=m!=null?'':'none';}
+  if(!bmiMan){const b=calcBMI(w,profile.height);setText('b-av',b??'--');document.getElementById('b-auto').style.display=b!=null?'':'none';}
+  if(!meMan){const m=calcMeta(w,profile.height,calcAge(),profile.sex);setText('me-av',m??'--');document.getElementById('me-auto').style.display=m!=null?'':'none';}
+}
+function onMI(){mMan=document.getElementById('f-muscle').value!=='';document.getElementById('m-auto').style.display=mMan?'none':'';if(!mMan)onBI();}
+function onMeI(){meMan=document.getElementById('f-metabolism').value!=='';document.getElementById('me-auto').style.display=meMan?'none':'';if(!meMan)onBI();}
+function onBMII(){bmiMan=document.getElementById('f-bmi').value!=='';document.getElementById('b-auto').style.display=bmiMan?'none':'';if(!bmiMan)onBI();}
+function copyPrev(){const p=records.filter(r=>r.date<curDate).sort((a,b)=>b.date.localeCompare(a.date))[0];if(!p){showToast('前回の記録がありません');return;}[['f-weight','weight'],['f-bodyfat','bodyFat'],['f-visceral','visceralFat'],['f-bust','bust'],['f-waist','waist'],['f-hip','hip']].forEach(([id,k])=>{if(p[k]!=null)document.getElementById(id).value=p[k];});if(p.muscleManual&&p.muscle!=null)document.getElementById('f-muscle').value=p.muscle;onBI();showToast(`${p.date} の値をコピーしました`);}
+function mkSel(opts,cur,cb){return`<select class="le-sel" onchange="${cb}">${opts.map(t=>`<option value="${t}" ${cur===t?'selected':''}>${t}</option>`).join('')}</select>`;}
+function addMeal(){tM.push({id:genId(),time:'',type:'朝食',kcal:''});renderMeals();}
+function rmMeal(id){tM=tM.filter(e=>e.id!==id);renderMeals();}
+function upM(id,f,v){const e=tM.find(e=>e.id===id);if(e)e[f]=v;}
+function renderMeals(){document.getElementById('meal-entries').innerHTML=tM.map(e=>`<div class="log-entry"><div class="le-hd">${mkSel(MEAL_T,e.type,`upM('${e.id}','type',this.value)`)}<button class="le-rm" onclick="rmMeal('${e.id}')">×</button></div><div class="le-row"><div class="field"><label>時刻</label><input type="time" class="le-in-t" value="${e.time}" onchange="upM('${e.id}','time',this.value)"></div><div class="field"><label>摂取 kcal</label><input type="number" class="le-in" value="${e.kcal}" placeholder="0" oninput="upM('${e.id}','kcal',this.value)"></div></div></div>`).join('');}
+function addEx(){tE.push({id:genId(),time:'',type:'歩行',minutes:'',kcal:''});renderEx();}
+function rmEx(id){tE=tE.filter(e=>e.id!==id);renderEx();}
+function upE(id,f,v){const e=tE.find(e=>e.id===id);if(e)e[f]=v;}
+function renderEx(){document.getElementById('ex-entries').innerHTML=tE.map(e=>`<div class="log-entry"><div class="le-hd">${mkSel(EX_T,e.type,`upE('${e.id}','type',this.value)`)}<button class="le-rm" onclick="rmEx('${e.id}')">×</button></div><div class="le-row"><div class="field"><label>時刻</label><input type="time" class="le-in-t" value="${e.time}" onchange="upE('${e.id}','time',this.value)"></div><div class="field"><label>時間 (分)</label><input type="number" class="le-in" value="${e.minutes}" placeholder="0" oninput="upE('${e.id}','minutes',this.value)"></div><div class="field"><label>消費 kcal</label><input type="number" class="le-in" value="${e.kcal}" placeholder="0" oninput="upE('${e.id}','kcal',this.value)"></div></div></div>`).join('');}
+function addGlc(){tG.push({id:genId(),time:'',type:'随時',value:''});renderGlc();}
+function rmGlc(id){tG=tG.filter(e=>e.id!==id);renderGlc();}
+function upG(id,f,v){const e=tG.find(e=>e.id===id);if(e)e[f]=v;}
+function renderGlc(){document.getElementById('glc-entries').innerHTML=tG.map(e=>`<div class="log-entry"><div class="le-hd">${mkSel(GLC_T,e.type,`upG('${e.id}','type',this.value)`)}<button class="le-rm" onclick="rmGlc('${e.id}')">×</button></div><div class="le-row"><div class="field"><label>時刻</label><input type="time" class="le-in-t" value="${e.time}" onchange="upG('${e.id}','time',this.value)"></div><div class="field"><label>血糖値 (mg/dL)</label><input type="number" class="le-in" value="${e.value}" placeholder="0" oninput="upG('${e.id}','value',this.value)"></div></div></div>`).join('');}
+function addEv(){tEv.push({id:genId(),title:'',note:''});renderEv();}
+function rmEv(id){tEv=tEv.filter(e=>e.id!==id);renderEv();}
+function upEv(id,f,v){const e=tEv.find(e=>e.id===id);if(e)e[f]=v;}
+function renderEv(){document.getElementById('ev-entries').innerHTML=tEv.map(e=>`<div class="log-entry"><div class="le-hd"><span class="le-type">イベント</span><button class="le-rm" onclick="rmEv('${e.id}')">×</button></div><div class="field"><label>タイトル</label><input type="text" class="le-in" value="${e.title}" placeholder="例：通院、薬の変更..." oninput="upEv('${e.id}','title',this.value)"></div><div class="field"><label>メモ（任意）</label><textarea class="field-ta" style="min-height:48px" oninput="upEv('${e.id}','note',this.value)" placeholder="詳細メモ">${e.note}</textarea></div></div>`).join('');}
+function loadForm(date){
+  const r=records.find(r=>r.date===date);const nv=v=>(v!=null&&v!=='')?v:'';
+  mMan=false;meMan=false;bmiMan=false;
+  document.getElementById('f-weight').value=nv(r?.weight);document.getElementById('f-bodyfat').value=nv(r?.bodyFat);
+  document.getElementById('f-muscle').value=r?.muscleManual?nv(r?.muscle):'';document.getElementById('f-visceral').value=nv(r?.visceralFat);
+  document.getElementById('f-metabolism').value=r?.meAuto===false?nv(r?.metabolism):'';document.getElementById('f-bmi').value=r?.bmiManual?nv(r?.bmi):'';
+  document.getElementById('f-bust').value=nv(r?.bust);document.getElementById('f-waist').value=nv(r?.waist);document.getElementById('f-hip').value=nv(r?.hip);
+  document.getElementById('f-steps').value=nv(r?.steps);document.getElementById('f-hba1c').value=nv(r?.hba1c);
+  document.getElementById('f-bph').value=nv(r?.bpHigh);document.getElementById('f-bpl').value=nv(r?.bpLow);
+  document.getElementById('f-note').value=r?.note||'';document.getElementById('f-pnote').value=r?.periodNote||'';
+  selMood=r?.mood||null;selWth=r?.weather||null;
+  document.querySelectorAll('.emoji-opt[data-m]').forEach(el=>el.classList.toggle('sel',el.dataset.m===selMood));
+  document.querySelectorAll('.emoji-opt[data-w]').forEach(el=>el.classList.toggle('sel',el.dataset.w===selWth));
+  periodOn=r?.period||false;document.getElementById('ptoggle').classList.toggle('on',periodOn);document.getElementById('pnote-wrap').style.display=periodOn?'':'none';
+  tM=mealLogs.filter(m=>m.date===date).map(m=>({...m}));tE=exerciseLogs.filter(e=>e.date===date).map(e=>({...e}));tG=glucoseLogs.filter(g=>g.date===date).map(g=>({...g}));tEv=events.filter(ev=>ev.date===date).map(ev=>({...ev}));
+  renderMeals();renderEx();renderGlc();renderEv();onBI();
+}
+function saveRec(){
+  const w=getNum('f-weight'),bf=getNum('f-bodyfat');
+  const mIn=getNum('f-muscle'),mM=mIn!==null,muscle=mM?mIn:calcMuscle(w,bf);
+  const metIn=getNum('f-metabolism'),meA=metIn===null,meta=meA?calcMeta(w,profile.height,calcAge(),profile.sex):metIn;
+  const bIn=getNum('f-bmi'),bM=bIn!==null,bmi=bM?bIn:calcBMI(w,profile.height);
+  const rec={date:curDate,weight:w,bodyFat:bf,muscle,muscleManual:mM,visceralFat:getNum('f-visceral'),metabolism:meta,meAuto:meA,bmi,bmiManual:bM,bust:getNum('f-bust'),waist:getNum('f-waist'),hip:getNum('f-hip'),steps:getNum('f-steps'),hba1c:getNum('f-hba1c'),bpHigh:getNum('f-bph'),bpLow:getNum('f-bpl'),mood:selMood,weather:selWth,period:periodOn,periodNote:document.getElementById('f-pnote').value,note:document.getElementById('f-note').value};
+  const idx=records.findIndex(r=>r.date===curDate);if(idx>=0)records[idx]=rec;else records.push(rec);
+  records.sort((a,b)=>a.date.localeCompare(b.date));
+  mealLogs=mealLogs.filter(m=>m.date!==curDate);tM.filter(m=>m.kcal).forEach(m=>mealLogs.push({...m,date:curDate}));
+  exerciseLogs=exerciseLogs.filter(e=>e.date!==curDate);tE.filter(e=>e.type).forEach(e=>exerciseLogs.push({...e,date:curDate}));
+  glucoseLogs=glucoseLogs.filter(g=>g.date!==curDate);tG.filter(g=>g.value).forEach(g=>glucoseLogs.push({...g,date:curDate}));
+  events=events.filter(ev=>ev.date!==curDate);tEv.filter(ev=>ev.title).forEach(ev=>events.push({...ev,date:curDate}));
+  saveData();updSidebar();showToast('保存しました ✓');
+}
+function delRec(){if(!records.find(r=>r.date===curDate)){showToast('この日の記録はありません');return;}if(!confirm(`${curDate} の記録を削除しますか？`))return;records=records.filter(r=>r.date!==curDate);mealLogs=mealLogs.filter(x=>x.date!==curDate);exerciseLogs=exerciseLogs.filter(x=>x.date!==curDate);glucoseLogs=glucoseLogs.filter(x=>x.date!==curDate);events=events.filter(x=>x.date!==curDate);tM=[];tE=[];tG=[];tEv=[];renderMeals();renderEx();renderGlc();renderEv();saveData();loadForm(curDate);updSidebar();showToast('削除しました');}
+function renderHist(){
+  const con=document.getElementById('hist-con'),emp=document.getElementById('hist-empty');
+  if(!records.length){con.innerHTML='';emp.style.display='';return;}emp.style.display='none';
+  const months={};[...records].reverse().forEach(r=>{const ym=r.date.slice(0,7);if(!months[ym])months[ym]=[];months[ym].push(r);});
+  con.innerHTML=Object.keys(months).sort().reverse().map(ym=>{
+    const[y,m]=ym.split('-');const recs=months[ym];
+    const cards=recs.map(r=>{
+      const ri=records.findIndex(x=>x.date===r.date);const prev=ri>0?records[ri-1]:null;
+      let dh='';if(r.weight!=null&&prev?.weight!=null){const d=Math.round((r.weight-prev.weight)*10)/10;dh=d>0?`<div class="hdiff up">▲ ${d} kg</div>`:d<0?`<div class="hdiff dn">▼ ${Math.abs(d)} kg</div>`:`<div class="hdiff eq">→ 変化なし</div>`;}
+      const chips=[r.bodyFat!=null&&['体脂肪',r.bodyFat+'%'],r.muscle!=null&&['筋肉量',r.muscle+'kg'],r.waist!=null&&['ウエスト',r.waist+'cm'],r.steps!=null&&['歩数',r.steps.toLocaleString()+'歩'],r.hba1c!=null&&['HbA1c',r.hba1c+'%'],r.bpHigh!=null&&r.bpLow!=null&&['血圧',r.bpHigh+'/'+r.bpLow],r.mood!=null&&['気分',r.mood],r.weather!=null&&['天気',r.weather],r.period&&['生理','🌸']].filter(Boolean).map(([l,v])=>`<div class="chip"><span class="cl">${l} </span><span class="cv">${v}</span></div>`).join('');
+      const mc=mealLogs.filter(m=>m.date===r.date).length,ec=exerciseLogs.filter(e=>e.date===r.date).length,evl=events.filter(ev=>ev.date===r.date);
+      return`<div class="hcard"><div class="htop"><div><div class="hdate">${r.date}</div><div class="hw">${r.weight??'--'}<span>kg</span></div>${dh}</div><div style="display:flex;gap:5px;flex-shrink:0"><button class="btn-e" onclick="editDate('${r.date}')">編集</button><button class="btn-d" onclick="delDateRec('${r.date}')">削除</button></div></div>${chips?`<div class="chips">${chips}</div>`:''}${mc?`<div style="font-size:10px;color:var(--muted);margin-top:5px">🍽️ 食事 ${mc}件</div>`:''}${ec?`<div style="font-size:10px;color:var(--muted);margin-top:3px">🏃 運動 ${ec}件</div>`:''}${evl.map(ev=>`<div style="font-size:10px;color:var(--accent);margin-top:3px">📌 ${ev.title}</div>`).join('')}${r.note?`<div class="hnote">${r.note}</div>`:''}</div>`;
+    }).join('');
+    return`<div class="month-group"><div class="month-hd open" onclick="togMonth(this)"><span class="month-title">${y}年 ${parseInt(m)}月</span><div style="display:flex;align-items:center;gap:8px"><span class="month-count">${recs.length}件</span><span class="month-arrow">▾</span></div></div><div class="month-bd open">${cards}</div></div>`;
+  }).join('');
+}
+function togMonth(hd){const bd=hd.nextElementSibling;const isO=bd.classList.contains('open');hd.classList.toggle('open',!isO);bd.classList.toggle('open',!isO);}
+function editDate(date){curDate=date;updDD();loadForm(date);switchTab('log');}
+function delDateRec(date){if(!confirm(`${date} の記録を削除しますか？`))return;records=records.filter(r=>r.date!==date);mealLogs=mealLogs.filter(x=>x.date!==date);exerciseLogs=exerciseLogs.filter(x=>x.date!==date);glucoseLogs=glucoseLogs.filter(x=>x.date!==date);events=events.filter(x=>x.date!==date);saveData();updSidebar();renderHist();showToast('削除しました');}
+function renderSettings(){
+  document.getElementById('s-height').value=profile.height??'';document.getElementById('s-by').value=profile.birthYear??'';document.getElementById('s-bm').value=profile.birthMonth??'';document.getElementById('s-bd').value=profile.birthday??'';
+  ['unknown','male','female'].forEach(k=>document.getElementById('sex-'+k)?.classList.toggle('active',k===profile.sex));
+  updSexHint();applyD(appD);renderTG();
+  ['auto','mobile','desktop'].forEach(k=>document.getElementById('tog-'+k)?.classList.toggle('active',k===appL));
+  ['left','right'].forEach(k=>document.getElementById('tog-sb-'+k)?.classList.toggle('active',k===(appSbRight?'right':'left')));
+  document.getElementById('tog-stats-on')?.classList.toggle('active',showSbStats);
+  document.getElementById('tog-stats-off')?.classList.toggle('active',!showSbStats);
+  const sc=document.getElementById('stats-con');if(!records.length){sc.innerHTML='<div style="color:var(--muted);font-size:11px">まだ記録がありません</div>';return;}
+  const wt=records.filter(r=>r.weight!=null);const avg=wt.length?(wt.reduce((s,r)=>s+r.weight,0)/wt.length).toFixed(1):'--';const minW=wt.length?Math.min(...wt.map(r=>r.weight)):'--';const maxW=wt.length?Math.max(...wt.map(r=>r.weight)):'--';
+  sc.innerHTML=[['記録数',records.length+'日'],['平均体重',avg!=='--'?avg+' kg':'--'],['最低体重',minW!=='--'?minW+' kg':'--'],['最高体重',maxW!=='--'?maxW+' kg':'--'],['最初の記録',records[0]?.date??'--'],['最新の記録',records[records.length-1]?.date??'--'],['食事ログ',mealLogs.length+'件'],['運動ログ',exerciseLogs.length+'件'],['血糖値ログ',glucoseLogs.length+'件'],['イベント',events.length+'件']].map(([l,v])=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)"><span style="font-size:11px;color:var(--muted)">${l}</span><span style="font-size:12px;font-weight:700">${v}</span></div>`).join('');
+}
+function saveProfile(){profile.height=parseFloat(document.getElementById('s-height').value)||null;profile.birthYear=parseInt(document.getElementById('s-by').value)||null;profile.birthMonth=parseInt(document.getElementById('s-bm').value)||null;profile.birthday=parseInt(document.getElementById('s-bd').value)||null;saveData();updBustLbl();updPeriodSec();onBI();updSidebar();}
+function setSex(sex){profile.sex=sex;saveProfile();['unknown','male','female'].forEach(k=>document.getElementById('sex-'+k)?.classList.toggle('active',k===sex));updSexHint();updBustLbl();updPeriodSec();}
+function updSexHint(){const h=document.getElementById('sex-hint');if(!h)return;h.textContent=profile.sex==='female'?'✦ 女性向け機能（生理記録）が有効になります':profile.sex==='male'?'✦ バスト欄が「胸囲」として表示されます':'';}
+function updBustLbl(){const l=document.getElementById('bust-lbl');if(l)l.textContent=profile.sex==='male'?'胸囲 (cm)':'バスト (cm)';}
+function exportD(){const blob=new Blob([JSON.stringify({records,mealLogs,exerciseLogs,glucoseLogs,events,goal,profile,layout:appL,theme:appT,display:appD,sbRight:appSbRight,sbStats:showSbStats},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='myrecord-'+todayStr()+'.json';a.click();URL.revokeObjectURL(url);showToast('エクスポートしました ✓');}
+function importD(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{const d=JSON.parse(ev.target.result);const map={};records.forEach(r=>map[r.date]=r);(d.records||[]).forEach(r=>{map[r.date]={bust:null,waist:null,hip:null,hba1c:null,bpHigh:null,bpLow:null,mood:null,weather:null,period:false,periodNote:'',muscleManual:false,bmiManual:false,...r};});records=Object.values(map).sort((a,b)=>a.date.localeCompare(b.date));if(d.mealLogs)mealLogs=[...mealLogs,...d.mealLogs.filter(x=>!mealLogs.find(y=>y.id===x.id))];if(d.exerciseLogs)exerciseLogs=[...exerciseLogs,...d.exerciseLogs.filter(x=>!exerciseLogs.find(y=>y.id===x.id))];if(d.glucoseLogs)glucoseLogs=[...glucoseLogs,...d.glucoseLogs.filter(x=>!glucoseLogs.find(y=>y.id===x.id))];if(d.events)events=[...events,...d.events.filter(x=>!events.find(y=>y.id===x.id))];if(d.goal!=null)goal=d.goal;if(d.profile)profile={...profile,...d.profile};saveData();loadForm(curDate);updSidebar();showToast(Object.keys(map).length+'件を読み込みました ✓');}catch(err){showToast('読み込みに失敗しました');}e.target.value='';};reader.readAsText(file);}
+function resetD(){if(!confirm('全ての記録を削除しますか？\nプロフィールも含め、すべてのデータが消えます。\nこの操作は取り消せません。'))return;records=[];mealLogs=[];exerciseLogs=[];glucoseLogs=[];events=[];goal=null;profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown'};tM=[];tE=[];tG=[];tEv=[];saveData();loadForm(curDate);renderMeals();renderEx();renderGlc();renderEv();updSidebar();updBustLbl();updPeriodSec();showToast('データを削除しました');}
+function initApp(){buildEmoji();updDD();loadForm(curDate);updPeriodSec();updBustLbl();Object.keys(og).forEach(k=>{document.querySelector(`#grp-${k} .group-hd`)?.classList.toggle('open',og[k]);document.getElementById(`grpb-${k}`)?.classList.toggle('open',og[k]);});onBI();updSidebar();}
+loadData();
+applyLayout();
+applyT(appT);
+applyD(appD);
+initApp();
+tickClock();
+if(!window._ck){window._ck=true;setInterval(tickClock,1000);}
+let _rzTimer;window.addEventListener('resize',()=>{if(appL==='auto'){clearTimeout(_rzTimer);_rzTimer=setTimeout(applyLayout,150);}});
+window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{if(appD==='system')applyD('system');});
+// ══ CHART ══
+const METRICS={
+  weight:     {label:'体重',     unit:'kg',   axis:'y',  color:'#c8a8e9', type:'line'},
+  bodyFat:    {label:'体脂肪率', unit:'%',    axis:'y1', color:'#ff7eb3', type:'line'},
+  muscle:     {label:'筋肉量',   unit:'kg',   axis:'y',  color:'#6bffb8', type:'line'},
+  visceralFat:{label:'内臓脂肪', unit:'',     axis:'y1', color:'#ffb830', type:'line'},
+  bmi:        {label:'BMI',      unit:'',     axis:'y1', color:'#60a5fa', type:'line'},
+  waist:      {label:'ウエスト', unit:'cm',   axis:'y',  color:'#fb923c', type:'line'},
+  bust:       {label:'バスト',   unit:'cm',   axis:'y',  color:'#f9a8d4', type:'line'},
+  hip:        {label:'ヒップ',   unit:'cm',   axis:'y',  color:'#c4b5fd', type:'line'},
+  metabolism: {label:'基礎代謝', unit:'kcal', axis:'y',  color:'#fde68a', type:'line'},
+  steps:      {label:'歩数',     unit:'歩',   axis:'y2', color:'#86efac', type:'bar'},
+  hba1c:      {label:'HbA1c',    unit:'%',    axis:'y1', color:'#f472b6', type:'line'},
+  bpHigh:     {label:'最高血圧', unit:'mmHg', axis:'y',  color:'#f87171', type:'line'},
+  bpLow:      {label:'最低血圧', unit:'mmHg', axis:'y',  color:'#fca5a5', type:'line'},
+};
+const METRIC_GROUPS={
+  body:   {label:'体組成',   color:'#c8a8e9', metrics:['weight','bodyFat']},
+  health: {label:'健康指標', color:'#f472b6', metrics:['hba1c','bpHigh','bpLow']},
+};
+let chartPeriod='1m',chartFrom='',chartTo='',chartType='body';
+let chartBodyMode='group',chartBodyGroup='body',chartBodyMetrics=['weight','bodyFat'];
+let chartInst=null,hiEvDate=null,energyMode='bar';
+
+function cssV(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+function getChartRange(){
+  const today=new Date(),toStr=today.toISOString().slice(0,10);
+  if(chartPeriod==='custom')return{from:chartFrom||'2000-01-01',to:chartTo||toStr};
+  const f=new Date(today);
+  if(chartPeriod==='1m')f.setMonth(f.getMonth()-1);
+  else if(chartPeriod==='3m')f.setMonth(f.getMonth()-3);
+  else if(chartPeriod==='6m')f.setMonth(f.getMonth()-6);
+  else f.setFullYear(2000);
+  return{from:f.toISOString().slice(0,10),to:toStr};
+}
+function getFilteredRecs(){const{from,to}=getChartRange();return records.filter(r=>r.date>=from&&r.date<=to);}
+function getFilteredEvents(){const{from,to}=getChartRange();return events.filter(ev=>ev.date>=from&&ev.date<=to);}
+
+function setPeriod(p){
+  chartPeriod=p;
+  ['1m','3m','6m','all','custom'].forEach(k=>document.getElementById('period-'+k)?.classList.toggle('active',k===p));
+  document.getElementById('custom-range').style.display=p==='custom'?'flex':'none';
+  if(p!=='custom')renderCharts();
+}
+function onChartRangeChange(){
+  chartFrom=document.getElementById('chart-from').value;
+  chartTo=document.getElementById('chart-to').value;
+  if(chartFrom&&chartTo)renderCharts();
+}
+function setChartType(t){
+  chartType=t;
+  ['body','energy','glucose'].forEach(k=>document.getElementById('ct-'+k)?.classList.toggle('active',k===t));
+  const bmc=document.getElementById('body-metric-ctrl');
+  if(bmc)bmc.style.display=t==='body'?'':'none';
+  const emr=document.getElementById('energy-mode-row');
+  if(emr)emr.style.display=t==='energy'?'':'none';
+  renderCharts();
+}
+function setEnergyMode(m){
+  energyMode=m;
+  document.getElementById('em-bar')?.classList.toggle('active',m==='bar');
+  document.getElementById('em-line')?.classList.toggle('active',m==='line');
+  renderCharts();
+}
+function setBodyMode(m){
+  chartBodyMode=m;
+  document.getElementById('bm-group')?.classList.toggle('active',m==='group');
+  document.getElementById('bm-custom')?.classList.toggle('active',m==='custom');
+  document.getElementById('group-picks').style.display=m==='group'?'flex':'none';
+  document.getElementById('metric-picks').style.display=m==='custom'?'flex':'none';
+  renderCharts();
+}
+function setBodyGroup(g){
+  chartBodyGroup=g;
+  renderGroupPicks();
+  renderCharts();
+}
+function toggleMetric(mk){
+  const idx=chartBodyMetrics.indexOf(mk);
+  if(idx>=0)chartBodyMetrics.splice(idx,1);
+  else if(chartBodyMetrics.length<5)chartBodyMetrics.push(mk);
+  renderMetricPicks();renderCharts();
+}
+function renderGroupPicks(){
+  const con=document.getElementById('group-picks');if(!con)return;
+  con.innerHTML=Object.entries(METRIC_GROUPS).map(([gk,g])=>{
+    const sel=chartBodyGroup===gk;
+    return`<button class="mpick${sel?' sel':''}" style="${sel?`background:${g.color};border-color:${g.color}`:`border-color:${g.color}`}" onclick="setBodyGroup('${gk}')"><span class="dot" style="background:${g.color}"></span>${g.label}</button>`;
+  }).join('');
+}
+function renderMetricPicks(){
+  const con=document.getElementById('metric-picks');if(!con)return;
+  con.innerHTML=Object.entries(METRICS).map(([mk,m])=>{
+    const sel=chartBodyMetrics.includes(mk);
+    return`<button class="mpick${sel?' sel':''}" style="${sel?`background:${m.color};border-color:${m.color}`:`border-color:${m.color}`}" onclick="toggleMetric('${mk}')"><span class="dot" style="background:${m.color}"></span>${m.label}</button>`;
+  }).join('');
+}
+
+// ── イベント縦線プラグイン（fullLabelsで正確にマッチ） ──
+const evLinePlugin={
+  id:'evLines',
+  afterDraw(chart,args,opts){
+    const{ctx,chartArea,scales}=chart;
+    const evs=opts.events||[];
+    const fullLabels=opts.fullLabels||[];
+    evs.forEach(ev=>{
+      const xi=fullLabels.indexOf(ev.date);
+      if(xi<0)return;
+      const x=scales.x.getPixelForValue(xi);
+      if(x==null||x<chartArea.left||x>chartArea.right)return;
+      const isHi=ev.date===hiEvDate;
+      ctx.save();
+      ctx.strokeStyle=isHi?'#ffb830':'rgba(255,184,48,0.45)';
+      ctx.lineWidth=isHi?2:1.5;
+      ctx.setLineDash([4,3]);
+      ctx.beginPath();ctx.moveTo(x,chartArea.top);ctx.lineTo(x,chartArea.bottom);ctx.stroke();
+      if(isHi){
+        ctx.setLineDash([]);
+        ctx.fillStyle='#ffb830';
+        ctx.font='bold 10px DM Mono,monospace';
+        ctx.textAlign='center';
+        ctx.fillText('📌',x,chartArea.top+14);
+      }
+      ctx.restore();
+    });
+  }
+};
+
+function renderCharts(){
+  if(!document.getElementById('tab-chart')||document.getElementById('tab-chart').style.display==='none')return;
+  if(chartInst){chartInst.destroy();chartInst=null;}
+  renderGroupPicks();renderMetricPicks();
+  const recs=getFilteredRecs();
+  const evs=getFilteredEvents();
+  // events list
+  const evWrap=document.getElementById('chart-ev-wrap');
+  const evList=document.getElementById('chart-ev-list');
+  if(evs.length&&evWrap){
+    evWrap.style.display='';
+    evList.innerHTML=evs.map(ev=>`<div class="ev-item${hiEvDate===ev.date?' hi':''}" onclick="hiEvent('${ev.date}')"><span class="ev-date">${ev.date}</span><span class="ev-title">${ev.title}</span></div>`).join('');
+  } else if(evWrap){evWrap.style.display='none';}
+  const con=document.getElementById('chart-canvas-con');
+  const{from,to}=getChartRange();
+  if(chartType!=='glucose'&&!recs.length){
+    con.innerHTML='<div class="chart-no-data"><div class="ni">📊</div><div style="font-size:11px;color:var(--muted2)">この期間にデータがありません</div></div>';
+    return;
+  }
+  con.innerHTML='<canvas id="chart-canvas"></canvas>';
+  if(chartType==='body')renderBodyChart(recs,evs);
+  else if(chartType==='energy')renderEnergyChart(recs,evs);
+  else renderGlucoseChart(from,to,evs);
+}
+
+function hiEvent(date){hiEvDate=hiEvDate===date?null:date;renderCharts();}
+function chartColors(){
+  const text=cssV('--text')||'#f0f0f0';
+  const muted=cssV('--muted')||'#777';
+  return{text,muted,grid:'rgba(128,128,128,0.12)'};
+}
+function baseScales(text,muted,grid){
+  return{
+    x:{ticks:{color:muted,maxTicksLimit:8,maxRotation:45,font:{size:9}},grid:{color:grid}},
+    y:{position:'left',ticks:{color:muted,font:{size:9}},grid:{color:grid}},
+  };
+}
+
+// ── ① 体組成グラフ ──
+function renderBodyChart(recs,evs){
+  // bust label changes with sex
+  if(METRICS.bust) METRICS.bust.label = profile.sex==='male'?'胸囲':'バスト';
+  const metrics=chartBodyMode==='group'
+    ?(METRIC_GROUPS[chartBodyGroup]?.metrics||['weight','bodyFat'])
+    :chartBodyMetrics;
+  if(!metrics.length)return;
+  const fullLabels=recs.map(r=>r.date);
+  const labels=recs.map(r=>r.date.slice(5));
+  const{text,muted,grid}=chartColors();
+  const hasY1=metrics.some(mk=>METRICS[mk].axis==='y1');
+  const datasets=metrics.map(mk=>{
+    const m=METRICS[mk];
+    const data=recs.map(r=>{
+      if(r[mk]!=null)return r[mk];
+      if(mk==='bmi'&&r.weight&&profile.height)return calcBMI(r.weight,profile.height);
+      if(mk==='muscle'&&r.weight&&r.bodyFat)return calcMuscle(r.weight,r.bodyFat);
+      if(mk==='metabolism'&&r.metabolism==null&&r.weight&&profile.height&&calcAge()&&profile.sex)return calcMeta(r.weight,profile.height,calcAge(),profile.sex);
+      return null;
+    });
+    const isBar=m.type==='bar';
+    return{
+      label:m.label+(m.unit?` (${m.unit})`:''),
+      data,type:isBar?'bar':'line',
+      yAxisID:m.axis,borderColor:m.color,
+      backgroundColor:isBar?m.color+'80':m.color+'20',
+      borderWidth:2,pointRadius:isBar?0:3,pointHoverRadius:isBar?0:5,
+      tension:0.3,spanGaps:!isBar,
+    };
+  });
+  const ctx=document.getElementById('chart-canvas').getContext('2d');
+  const hasY2=metrics.includes('steps');
+  const sc=baseScales(text,muted,grid);
+  if(hasY1)sc.y1={position:'right',ticks:{color:muted,font:{size:9}},grid:{drawOnChartArea:false}};
+  if(hasY2)sc.y2={position:'right',ticks:{color:muted,font:{size:9},callback:v=>v>=1000?(v/1000).toFixed(1)+'k':v},grid:{drawOnChartArea:false},offset:hasY1};
+  chartInst=new Chart(ctx,{
+    type:'line',data:{labels,datasets},plugins:[evLinePlugin],
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        evLines:{events:evs,fullLabels},
+        legend:{labels:{color:text,font:{family:'DM Mono,monospace',size:10},boxWidth:12,padding:10}},
+        tooltip:{callbacks:{title:t=>{const i=t[0]?.dataIndex;return i!=null?fullLabels[i]:'';}}},
+      },
+      scales:sc,
+    }
+  });
+}
+
+// ── ② エネルギー収支グラフ（摂取↑・消費↓・血糖値右軸線） ──
+function renderEnergyChart(recs,evs){
+  const{text,muted,grid}=chartColors();
+  const fullLabels=recs.map(r=>r.date);
+  const labels=recs.map(r=>r.date.slice(5));
+  const intake=recs.map(r=>{
+    const t=mealLogs.filter(m=>m.date===r.date).reduce((s,m)=>s+(parseFloat(m.kcal)||0),0);
+    return t||null;
+  });
+  const burn=recs.map(r=>{
+    const t=exerciseLogs.filter(e=>e.date===r.date).reduce((s,e)=>s+(parseFloat(e.kcal)||0),0);
+    return t?-t:null;
+  });
+  // 日平均血糖値（右軸）
+  const glcAvg=recs.map(r=>{
+    const gs=glucoseLogs.filter(g=>g.date===r.date&&g.value);
+    if(!gs.length)return null;
+    return Math.round(gs.reduce((s,g)=>s+parseFloat(g.value),0)/gs.length);
+  });
+  const hasGlc=glcAvg.some(v=>v!=null);
+  const isLine=energyMode==='line';
+  const datasets=[
+    {label:'摂取 (kcal)',data:intake,type:energyMode,
+      backgroundColor:isLine?'transparent':'rgba(200,168,233,0.55)',
+      borderColor:'#c8a8e9',borderWidth:isLine?2:1,
+      fill:isLine?false:undefined,tension:0.3,spanGaps:true,
+      pointRadius:isLine?3:0,yAxisID:'y'},
+    {label:'消費 (kcal)',data:burn,type:energyMode,
+      backgroundColor:isLine?'transparent':'rgba(107,255,184,0.45)',
+      borderColor:'#6bffb8',borderWidth:isLine?2:1,
+      fill:isLine?false:undefined,tension:0.3,spanGaps:true,
+      pointRadius:isLine?3:0,yAxisID:'y'},
+  ];
+  if(hasGlc)datasets.push({label:'血糖値平均 (mg/dL)',data:glcAvg,type:'line',borderColor:'#f472b6',backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointHoverRadius:5,tension:0.3,spanGaps:true,yAxisID:'y1'});
+  const sc=baseScales(text,muted,grid);
+  if(hasGlc)sc.y1={position:'right',ticks:{color:muted,font:{size:9}},grid:{drawOnChartArea:false},title:{display:true,text:'mg/dL',color:muted,font:{size:8}}};
+  const ctx=document.getElementById('chart-canvas').getContext('2d');
+  chartInst=new Chart(ctx,{
+    type:'bar',data:{labels,datasets},plugins:[evLinePlugin],
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        evLines:{events:evs,fullLabels},
+        legend:{labels:{color:text,font:{family:'DM Mono,monospace',size:10},boxWidth:12,padding:10}},
+        tooltip:{callbacks:{
+          title:t=>{const i=t[0]?.dataIndex;return i!=null?fullLabels[i]:'';},
+          label:t=>`${t.dataset.label}: ${Math.abs(t.parsed.y).toLocaleString()}`,
+        }},
+      },
+      scales:sc,
+    }
+  });
+}
+
+// ── ③ 血糖値専用グラフ（日時軸・タイプ別色分け線グラフ） ──
+function renderGlucoseChart(from,to,evs){
+  const glcInRange=glucoseLogs.filter(g=>g.date>=from&&g.date<=to&&g.value);
+  const con=document.getElementById('chart-canvas-con');
+  if(!glcInRange.length){
+    con.innerHTML='<div class="chart-no-data"><div class="ni">💉</div><div style="font-size:11px;color:var(--muted2)">この期間に血糖値データがありません</div></div>';
+    return;
+  }
+  const sorted=[...glcInRange].sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
+  // ラベル：日付＋時刻（時刻があれば）
+  const allLabels=[...new Set(sorted.map(g=>g.time?`${g.date.slice(5)} ${g.time.slice(0,5)}`:g.date.slice(5)))];
+  const typeColors={'空腹時':'#60a5fa','食後2時間':'#ff7eb3','随時':'#6bffb8'};
+  const types=[...new Set(sorted.map(g=>g.type))];
+  const{text,muted,grid}=chartColors();
+  const datasets=types.map(tp=>{
+    const pts=sorted.filter(g=>g.type===tp);
+    const data=allLabels.map(lbl=>{
+      const match=pts.find(g=>(g.time?`${g.date.slice(5)} ${g.time.slice(0,5)}`:g.date.slice(5))===lbl);
+      return match?parseFloat(match.value):null;
+    });
+    return{
+      label:tp,data,
+      borderColor:typeColors[tp]||'#c8a8e9',
+      backgroundColor:(typeColors[tp]||'#c8a8e9')+'30',
+      borderWidth:2,pointRadius:4,pointHoverRadius:6,
+      tension:0.2,spanGaps:false,
+    };
+  });
+  con.innerHTML='<canvas id="chart-canvas"></canvas>';
+  const ctx=document.getElementById('chart-canvas').getContext('2d');
+  chartInst=new Chart(ctx,{
+    type:'line',data:{labels:allLabels,datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'nearest',intersect:true},
+      plugins:{
+        legend:{labels:{color:text,font:{family:'DM Mono,monospace',size:10},boxWidth:12,padding:10}},
+        tooltip:{callbacks:{label:t=>`${t.dataset.label}: ${t.parsed.y} mg/dL`}},
+      },
+      scales:{
+        x:{ticks:{color:muted,maxTicksLimit:10,maxRotation:45,font:{size:9}},grid:{color:grid}},
+        y:{ticks:{color:muted,font:{size:9}},grid:{color:grid},title:{display:true,text:'mg/dL',color:muted,font:{size:8}}},
+      }
+    }
+  });
+}
+
+</script>/html>

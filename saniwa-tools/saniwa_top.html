@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>審神者の道具箱</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a1a; }
+
+.bg {
+  min-height: 100vh;
+  background-image: url('background.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+.bg::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(45deg, rgba(0,0,0,.05) 0px, rgba(0,0,0,.05) 1px, transparent 1px, transparent 9px),
+    repeating-linear-gradient(-45deg, rgba(0,0,0,.04) 0px, rgba(0,0,0,.04) 1px, transparent 1px, transparent 9px);
+  pointer-events: none;
+}
+
+.layout {
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+/* 左カラム */
+.col-left { padding: 44px 28px 44px 44px; display: flex; flex-direction: column; gap: 22px; }
+
+.site-title {
+  display: inline-block;
+  background: rgba(255,255,255,.88);
+  border: 2px solid rgba(180,120,80,.4);
+  border-radius: 12px;
+  padding: 12px 26px;
+  font-size: 26px; font-weight: 700; letter-spacing: .15em; color: #2c1a10;
+  box-shadow: 2px 3px 14px rgba(0,0,0,.22);
+  align-self: flex-start;
+}
+
+.tool-card {
+  background: rgba(255,255,255,.82);
+  border: 1.5px solid rgba(180,120,80,.3);
+  border-radius: 16px;
+  padding: 22px 22px 22px 18px;
+  box-shadow: 3px 4px 16px rgba(0,0,0,.2);
+  display: flex; gap: 14px; align-items: flex-start;
+  text-decoration: none; color: inherit;
+  transition: transform .25s, box-shadow .25s, background .25s;
+}
+.tool-card:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 4px 8px 24px rgba(0,0,0,.28);
+  background: rgba(255,255,255,.95);
+}
+
+.cat-area { flex-shrink: 0; width: 80px; display: flex; align-items: center; justify-content: center; }
+.cat-area img { width: 80px; height: auto; }
+
+.card-body { flex: 1; }
+.card-title {
+  font-size: 22px; font-weight: 700; letter-spacing: .12em; color: #2c1a10;
+  margin-bottom: 10px; padding-bottom: 8px;
+  border-bottom: 1px solid rgba(160,100,60,.22);
+}
+.card-desc {
+  font-size: 13px; line-height: 2.1; color: #4a3020;
+  font-family: 'Noto Sans JP', sans-serif; font-weight: 400;
+}
+.card-link {
+  display: inline-block; margin-top: 12px;
+  font-size: 11px; letter-spacing: .15em; color: #8b4513;
+  border-bottom: 1px solid rgba(139,69,19,.35);
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* 右カラム */
+.col-right { padding: 36px 44px 44px 24px; display: flex; flex-direction: column; justify-content: center; }
+
+.info-panel {
+  background: rgba(0,0,0,.34);
+  border: 1px solid rgba(255,220,160,.18);
+  border-radius: 12px;
+  padding: 28px 30px;
+  backdrop-filter: blur(3px);
+}
+.info-heading {
+  font-size: 14px; font-weight: 600; letter-spacing: .3em; color: #f5e0c0;
+  text-align: center; margin-bottom: 20px; padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,220,160,.2);
+}
+.info-block { margin-bottom: 18px; }
+.info-block:last-child { margin-bottom: 0; }
+.info-text {
+  font-size: 13px; line-height: 2.1; color: #f0dcc0; text-align: justify;
+  font-family: 'Noto Sans JP', sans-serif; font-weight: 300;
+}
+.info-text em { font-style: normal; color: #f8eecc; font-weight: 500; }
+.info-note {
+  font-size: 12px; line-height: 1.9; color: #d4b898; margin-top: 8px;
+  padding-left: 12px; border-left: 2px solid rgba(255,200,120,.28);
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.info-section { font-size: 13px; font-weight: 500; color: #f0dcc0; letter-spacing: .08em; margin-bottom: 6px; font-family: 'Noto Sans JP', sans-serif; }
+
+footer {
+  position: relative; z-index: 1; text-align: center; padding: 18px;
+  background: rgba(0,0,0,.4);
+  font-size: 11px; color: rgba(240,220,190,.55); letter-spacing: .15em;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+@media (max-width: 680px) {
+  .layout { grid-template-columns: 1fr; }
+  .col-left { padding: 28px 20px 16px; }
+  .col-right { padding: 8px 20px 32px; }
+  .site-title { font-size: 20px; }
+  .card-title { font-size: 18px; }
+  .info-panel { padding: 20px 18px; }
+}
+</style>
+<meta name="google-site-verification" content="41PBQmId38sOlXSM_sEyzmUPCmkdAd6uwCU-YnOtzpA" />
+</head>
+<body>
+<div class="bg">
+<div class="layout">
+
+<!-- 左カラム -->
+<div class="col-left">
+  <div class="site-title">審神者の道具箱</div>
+
+  <a class="tool-card" href="Shizaichou.html">
+    <div class="cat-area">
+      <!-- cat.png を同じフォルダに入れると表示されます -->
+      <img src="cat1.png" alt="猫" onerror="this.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-title">資材帳</div>
+      <div class="card-desc">
+        木炭・玉鋼・冷却材・砥石などの<br>
+        資材や道具を<br>
+        記録・管理するツールです。<br>
+        推移をグラフで確認できます。
+      </div>
+      <span class="card-link">道具を開く →</span>
+    </div>
+  </a>
+
+  <a class="tool-card" href="touken_leveling_v4.html">
+    <div class="cat-area">
+      <img src="cat2.png" alt="猫" onerror="this.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-title">稽古録</div>
+      <div class="card-desc">
+        刀剣男士の<br>
+        レベルと累積経験値を<br>
+        記録・管理するツールです。<br>
+        グラフで確認できます。
+      </div>
+      <span class="card-link">道具を開く →</span>
+    </div>
+  </a>
+</div>
+
+<!-- 右カラム -->
+<div class="col-right">
+  <div class="info-panel">
+    <div class="info-heading">＊ 説 明 書 ＊</div>
+
+    <div class="info-block">
+      <div class="info-text">
+        これらのシステムアプリは<br>
+        ゲーム内のデータを取り込むこともありませんので、<br>
+        <em>"全て審神者本人の手入力によって"</em><br>
+        出来上がっていきます。
+      </div>
+    </div>
+
+    <div class="info-block">
+      <div class="info-text">
+        データはエクスポート、インポートすることができますので、<br>
+        <em>"必ずバックアップを定期的にとってください。"</em>
+      </div>
+      <div class="info-note">
+        ※「イベント・メモのデータ」と、「グラフのデータ」は<br>
+        　"別の場所"でインポート、エクスポートされます。
+      </div>
+    </div>
+
+    <div class="info-block">
+      <div class="info-text">
+        「イベント・メモのデータ」は<br>
+        資材帳、刀剣男士レベリング表ともに互換性がありますので、<br>
+        お互いのシステムアプリにて<br>
+        インポートしたものがエクスポートが可能です。
+      </div>
+    </div>
+
+    <div class="info-block">
+      <div class="info-section">・資材帳について</div>
+      <div class="info-text">
+        今までの資材の数値を記録したExcelデータがあれば<br>
+        グラフに取り込むことがあります。
+      </div>
+      <div class="info-note">
+        "設定の下部"に「Excel 読み込みについて」説明があります。<br>
+        "データ一覧"に「Excel読み込み」があります。<br>
+        ※からなず読み込めるということではありません。
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+</div>
+<footer>
+  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 -かじ
+</footer>
+</body>
+</html>
