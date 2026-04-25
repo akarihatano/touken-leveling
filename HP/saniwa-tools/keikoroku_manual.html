@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>稽古録 説明書 — 審神者の道具箱</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #5a1010; }
+.bg {
+  min-height: 100vh;
+  background: radial-gradient(ellipse at 20% 0%, #6b2010 0%, #3a0e0e 35%, #1a0a08 65%, #0e0a06 100%);
+  position: relative;
+}
+.bg::before {
+  content: ''; position: fixed; inset: 0;
+  background:
+    repeating-linear-gradient(45deg, rgba(0,0,0,.05) 0px, rgba(0,0,0,.05) 1px, transparent 1px, transparent 9px),
+    repeating-linear-gradient(-45deg, rgba(0,0,0,.04) 0px, rgba(0,0,0,.04) 1px, transparent 1px, transparent 9px);
+  pointer-events: none; z-index: 0;
+}
+.wrapper { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; padding: 32px 20px 60px; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-family: 'Noto Sans JP', sans-serif; color: rgba(240,220,190,.55); text-decoration: none; letter-spacing: .1em; transition: color .2s; margin-bottom: 16px; }
+.back-link:hover { color: #f0dcc0; }
+.page-title-block { background: rgba(255,255,255,.88); border: 2px solid rgba(180,120,80,.4); border-radius: 12px; padding: 16px 28px; display: inline-block; box-shadow: 2px 3px 14px rgba(0,0,0,.22); margin-bottom: 28px; }
+.page-title { font-size: 24px; font-weight: 700; letter-spacing: .18em; color: #2c1a10; display: flex; align-items: baseline; gap: 12px; }
+.page-title-sub { font-size: 12px; font-weight: 400; color: #6a4428; letter-spacing: .12em; font-family: 'Noto Sans JP', sans-serif; }
+.toc-panel { background: rgba(0,0,0,.30); border: 1px solid rgba(255,220,160,.16); border-radius: 12px; padding: 18px 22px; margin-bottom: 20px; backdrop-filter: blur(3px); }
+.toc-heading { font-size: 11px; font-weight: 500; letter-spacing: .28em; color: #e9d2ad; margin-bottom: 12px; font-family: 'Noto Sans JP', sans-serif; }
+.toc-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.toc-btn { font-size: 12px; font-family: 'Noto Sans JP', sans-serif; color: #e8c878; background: rgba(200,168,75,.08); border: 1px solid rgba(200,168,75,.25); border-radius: 20px; padding: 5px 14px; cursor: pointer; text-decoration: none; transition: background .2s, color .2s; display: inline-block; letter-spacing: .05em; }
+.toc-btn:hover { background: rgba(200,168,75,.2); color: #f8e8a0; }
+.section { background: rgba(0,0,0,.34); border: 1px solid rgba(255,220,160,.18); border-radius: 12px; padding: 24px 26px; margin-bottom: 16px; backdrop-filter: blur(3px); scroll-margin-top: 16px; }
+.section-heading { font-size: 18px; font-weight: 700; letter-spacing: .14em; color: #f0dcc0; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,220,160,.2); display: flex; align-items: center; gap: 10px; }
+.label { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; letter-spacing: .18em; color: #c8a84b; background: rgba(200,168,75,.12); border: 1px solid rgba(200,168,75,.25); border-radius: 4px; padding: 3px 10px; margin-bottom: 8px; font-family: 'Noto Sans JP', sans-serif; }
+.text { font-size: 13px; line-height: 2.1; color: #f0dcc0; text-align: justify; font-family: 'Noto Sans JP', sans-serif; font-weight: 300; }
+.text em { font-style: normal; color: #f8eecc; font-weight: 500; }
+.note { font-size: 12px; line-height: 1.9; color: #d4b898; margin-top: 8px; padding-left: 12px; border-left: 2px solid rgba(255,200,120,.28); font-family: 'Noto Sans JP', sans-serif; }
+.note em { font-style: normal; color: #f0c870; font-weight: 500; }
+.divider { height: 1px; background: rgba(255,220,160,.1); margin: 16px 0; }
+.block { margin-bottom: 14px; }
+.block:last-child { margin-bottom: 0; }
+.list { list-style: none; padding: 0; margin: 0; }
+.list li { font-size: 13px; line-height: 2.0; color: #f0dcc0; font-family: 'Noto Sans JP', sans-serif; font-weight: 300; padding-left: 14px; position: relative; }
+.list li::before { content: '・'; position: absolute; left: 0; color: #c8a84b; opacity: .7; }
+.warn { background: rgba(200,120,50,.15); border: 1px solid rgba(220,150,80,.25); border-radius: 8px; padding: 10px 14px; margin-top: 8px; }
+.warn-head { font-size: 11px; font-weight: 600; color: #e8b870; letter-spacing: .1em; margin-bottom: 5px; font-family: 'Noto Sans JP', sans-serif; }
+.warn-text { font-size: 12px; line-height: 1.9; color: #d4a870; font-family: 'Noto Sans JP', sans-serif; }
+.hint { background: rgba(42,170,122,.1); border: 1px solid rgba(42,170,122,.25); border-radius: 8px; padding: 10px 14px; margin-top: 8px; }
+.hint-head { font-size: 11px; font-weight: 600; color: #5adaaa; letter-spacing: .1em; margin-bottom: 5px; font-family: 'Noto Sans JP', sans-serif; }
+.hint-text { font-size: 12px; line-height: 1.9; color: #a8e8d0; font-family: 'Noto Sans JP', sans-serif; }
+.sub-section { margin-top: 14px; }
+.sub-heading { font-size: 13px; font-weight: 500; color: #e8c878; letter-spacing: .08em; margin-bottom: 6px; font-family: 'Noto Sans JP', sans-serif; display: flex; align-items: center; gap: 6px; }
+.sub-heading::before { content: '▸'; color: rgba(200,168,75,.6); font-size: 10px; }
+.ki-table { width: 100%; border-collapse: collapse; font-family: 'Noto Sans JP', sans-serif; font-size: 12px; margin-top: 10px; }
+.ki-table th { background: rgba(200,168,75,.15); color: #e8c878; font-weight: 600; letter-spacing: .06em; padding: 7px 12px; text-align: left; border-bottom: 1px solid rgba(255,220,160,.2); }
+.ki-table td { color: #f0dcc0; padding: 7px 12px; border-bottom: 1px solid rgba(255,220,160,.08); font-weight: 300; }
+.ki-table tr:last-child td { border-bottom: none; }
+.ki-table td.lv { font-variant-numeric: tabular-nums; color: #f8e8a0; }
+.ki-table .note-cell { font-size: 11px; color: #d4b898; }
+.option-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin-top: 10px; }
+.option-card { background: rgba(0,0,0,.2); border: 1px solid rgba(255,220,160,.12); border-radius: 8px; padding: 10px 12px; }
+.option-title { font-size: 12px; font-weight: 600; color: #e8c878; margin-bottom: 3px; font-family: 'Noto Sans JP', sans-serif; }
+.option-desc { font-size: 11px; color: #c0a880; font-family: 'Noto Sans JP', sans-serif; font-weight: 300; line-height: 1.7; }
+footer { position: relative; z-index: 1; text-align: center; padding: 18px; font-size: 11px; color: rgba(240,220,190,.45); letter-spacing: .15em; font-family: 'Noto Sans JP', sans-serif; margin-top: 10px; }
+.scroll-top { position: fixed; bottom: 24px; right: 20px; z-index: 50; width: 40px; height: 40px; background: rgba(200,168,75,.2); border: 1px solid rgba(200,168,75,.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #c8a84b; font-size: 16px; transition: all .2s; text-decoration: none; opacity: 0; pointer-events: none; }
+.scroll-top.visible { opacity: 1; pointer-events: auto; }
+.scroll-top:hover { background: rgba(200,168,75,.35); }
+@media (max-width: 600px) {
+  .wrapper { padding: 20px 14px 50px; }
+  .section { padding: 18px 16px; }
+  .page-title { font-size: 20px; }
+  .option-grid { grid-template-columns: 1fr 1fr; }
+  .ki-table th, .ki-table td { padding: 6px 8px; }
+}
+</style>
+</head>
+<body>
+<div class="bg">
+<div class="wrapper">
+
+<a class="back-link" href="saniwa_top.html">← 審神者の道具箱へ戻る</a>
+<div class="page-title-block">
+  <div class="page-title">稽古録 <span class="page-title-sub">説明書</span></div>
+</div>
+
+<nav class="toc-panel" id="top">
+  <div class="toc-heading">＊ 目 次 ＊</div>
+  <div class="toc-grid">
+    <a class="toc-btn" href="#about">このアプリについて</a>
+    <a class="toc-btn" href="#mainview">メイン画面の見かた</a>
+    <a class="toc-btn" href="#filter">フィルターとソート</a>
+    <a class="toc-btn" href="#register">刀剣男士を登録する</a>
+    <a class="toc-btn" href="#edit">レベル・経験値の記録</a>
+    <a class="toc-btn" href="#kiwame">修行（極変換）</a>
+    <a class="toc-btn" href="#graph-all">稽古録グラフ（全体）</a>
+    <a class="toc-btn" href="#graph-solo">この刀のあゆみ</a>
+    <a class="toc-btn" href="#event">期間・日別メモ</a>
+    <a class="toc-btn" href="#custom">仮登録（カスタム刀剣）</a>
+    <a class="toc-btn" href="#data">データ管理</a>
+    <a class="toc-btn" href="#settings">設定</a>
+    <a class="toc-btn" href="#backup">バックアップ</a>
+    <a class="toc-btn" href="#faq">よくある質問</a>
+  </div>
+</nav>
+
+<section class="section" id="about">
+  <div class="section-heading">📖 このアプリについて</div>
+  <div class="block">
+    <div class="label">概要</div>
+    <div class="text"><em>稽古録</em>は、刀剣男士のレベルと累積経験値を日々記録し、成長推移をグラフで確認できる管理ツールです。<br>ゲーム内のデータを自動取得することはありません。<em>すべて審神者本人の手入力</em>によって記録していくツールです。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="label">💾 データの保存</div>
+    <div class="text">データはお使いの端末のブラウザ内（ローカルストレージ）にのみ保存されます。管理人がデータを確認・アクセスすることは<em>一切ありません</em>。</div>
+    <div class="note">Google ドライブ同期はバックアップの一つとしてご利用ください。<br>※「所持データ」と「期間・日別メモのデータ」は<em>別々にエクスポート</em>する必要があります。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="label">🔄 資源帳との互換性</div>
+    <div class="text">「期間・日別メモのデータ」は<em>稽古録・資源帳で共通</em>して使えます。一方のアプリでエクスポートしたデータを、もう一方にインポートすることが可能です。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="label">🌐 推奨ブラウザ</div>
+    <ul class="list">
+      <li>PC：Chrome / Edge / Firefox</li>
+      <li>スマートフォン：Chrome / Firefox / Safari</li>
+    </ul>
+    <div class="warn" style="margin-top:10px">
+      <div class="warn-head">⚠ アプリ内ブラウザ（WebView）をお使いの方へ</div>
+      <div class="warn-text">SNS アプリなどのアプリ内ブラウザでは、Google ドライブとの同期が動作しません。同期を使う場合は推奨ブラウザからアクセスしてください。</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="mainview">
+  <div class="section-heading">⚔️ メイン画面の見かた</div>
+  <div class="block">
+    <div class="text">メイン画面には全刀剣男士のカードが並んでいます。所持登録している刀は色付きで強調表示されます。</div>
+  </div>
+  <div class="sub-section">
+    <div class="sub-heading">カードの色とマーク</div>
+    <div class="option-grid">
+      <div class="option-card"><div class="option-title" style="color:#c8a84b">金ライン（所持）</div><div class="option-desc">1振り登録済みの刀剣男士</div></div>
+      <div class="option-card"><div class="option-title" style="color:#dab888">橙ライン（複数所持）</div><div class="option-desc">2振り以上登録済み</div></div>
+      <div class="option-card"><div class="option-title" style="color:#2aaa7a">緑ライン（極）</div><div class="option-desc">極として登録済みの刀</div></div>
+      <div class="option-card"><div class="option-title" style="color:#808080">薄グレー（未所持）</div><div class="option-desc">まだ登録していない刀</div></div>
+    </div>
+    <div class="note">カード右下の「×N」は登録している振り数です。同じ刀剣男士を複数振り登録できます。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">グリッド表示 / リスト表示の切り替え</div>
+    <div class="text">サイドバー（PC）またはフィルタードロワー（スマホ）の上部にある「⊞ グリッド」「≡ リスト」ボタンで表示を切り替えられます。<br>リスト表示では各カードの下に所持中の振り（ニックネームとレベル）が展開表示されます。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">スマートフォンでの操作</div>
+    <div class="text">スマホ表示では左上の<em>☰ ボタン</em>でフィルタードロワーが開きます。<br>画面上部の2行目ヘッダーから「稽古録グラフ」「設定」「クラウド同期」に素早くアクセスできます。</div>
+  </div>
+</section>
+
+<section class="section" id="filter">
+  <div class="section-heading">🔍 フィルターとソート</div>
+  <div class="block">
+    <div class="text">サイドバー（PC）またはフィルタードロワー（スマホ）からカードの絞り込みや並び順を変更できます。</div>
+  </div>
+  <div class="sub-section">
+    <div class="sub-heading">ソート（並び順）</div>
+    <ul class="list">
+      <li><em>No順</em>：刀帳番号順（デフォルト）</li>
+      <li><em>種類</em>：短刀 → 脇差 → 打刀 → 太刀 → 大太刀 → 薙刀 → 槍 → 剣の順</li>
+      <li><em>刀派</em>：刀派のあいうえお順（刀派なしは末尾）</li>
+    </ul>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">絞り込み（フィルター）</div>
+    <ul class="list">
+      <li><em>刀種で絞り込み</em>：タップした刀種のみ表示（複数選択可）</li>
+      <li><em>刀派で絞り込み</em>：選択した刀派のみ表示</li>
+      <li><em>所持フィルター</em>：「全て」「所持のみ」「未所持のみ」から選択</li>
+    </ul>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">表示オプション</div>
+    <ul class="list">
+      <li><em>未所持の型を表示</em>：登録していない刀もカードに表示します（デフォルトON）</li>
+      <li><em>空きスロット表示</em>：刀帳番号の「空き」スロットを薄く表示します</li>
+      <li><em>極・特を個別カードで表示</em>：初と極を別カードで並べます。OFFにすると通常カードにまとめて表示します</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" id="register">
+  <div class="section-heading">➕ 刀剣男士を登録する</div>
+  <div class="block">
+    <div class="text">登録したい刀剣男士のカードをタップすると詳細画面が開きます。<br>「<em>＋ この刀を追加</em>」ボタンを押すと、その刀の設定画面が開きます。</div>
+    <div class="note">同じ刀剣男士を<em>複数振り</em>登録できます。それぞれ独立してレベル・経験値を管理できます。</div>
+  </div>
+  <div class="sub-section">
+    <div class="sub-heading">設定できる項目</div>
+    <div class="option-grid">
+      <div class="option-card"><div class="option-title">ニックネーム</div><div class="option-desc">刀名の代わりに表示する名前（省略可）</div></div>
+      <div class="option-card"><div class="option-title">レベル</div><div class="option-desc">初: 1〜99 / 極: 1〜199<br>±ボタンで1ずつ変更可</div></div>
+      <div class="option-card"><div class="option-title">累積経験値</div><div class="option-desc">ゲーム画面の値をそのまま入力</div></div>
+      <div class="option-card"><div class="option-title">カラー</div><div class="option-desc">10色からリスト表示用の色を選択</div></div>
+      <div class="option-card"><div class="option-title">絵文字マーク</div><div class="option-desc">⭐🌸🔥など15種から設定</div></div>
+      <div class="option-card"><div class="option-title">タグ</div><div class="option-desc">スペース区切りで複数設定可</div></div>
+      <div class="option-card"><div class="option-title">備考</div><div class="option-desc">自由なメモ欄</div></div>
+      <div class="option-card"><div class="option-title">📝 メモ</div><div class="option-desc">日付付きのメモ。個別グラフに縦線で表示される</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="edit">
+  <div class="section-heading">📝 レベル・経験値の記録</div>
+  <div class="block">
+    <div class="label">累積経験値の入力方法</div>
+    <div class="text">ゲーム内の刀剣詳細画面に表示される<em>「累積経験値」の数値をそのまま</em>入力してください。<br>初（通常〜特）の場合も、極の場合もゲーム内の表示値を入力します。</div>
+    <div class="hint">
+      <div class="hint-head">💡 記録のタイミング</div>
+      <div class="hint-text">毎日記録する必要はありません。ひと段落ついたときや、レベリング終了時などお好きなタイミングで記録してください。グラフにはその日の記録として保存されます（同日は上書き）。</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="label">記録日付の指定</div>
+    <div class="text">編集画面の「記録日付」欄で保存する日付を変更できます。デフォルトは今日（日本時間）です。<br>遡って記録したい場合は日付を変更してから保存してください。</div>
+  </div>
+<!--
+  <div class="divider"></div>
+  <div class="block">
+    <div class="label">髭切・膝丸の特段階</div>
+    <div class="text">髭切・膝丸は特段階（無印→特1→特2→特3）があります。編集画面にレベルに連動した<em>特段階バー</em>が表示されます。</div>
+    <ul class="list" style="margin-top:8px">
+      <li>特1：Lv.25 以上</li>
+      <li>特2：Lv.35 以上</li>
+      <li>特3（髭切のみ）：Lv.45 以上</li>
+    </ul>
+  </div>
+-->
+</section>
+
+<section class="section" id="kiwame">
+  <div class="section-heading">⚡ 修行（極変換）</div>
+  <div class="block">
+    <div class="text">刀のカード → 振りをタップ → 編集画面の「<em>修行に出す → 極</em>」ボタンで極に変換できます。<br><!--必要なレベル条件を満たしていない場合はボタンが表示されません。<--></div>
+  </div>
+<!--
+  <div class="sub-section">
+    <div class="sub-heading">刀種別の修行条件レベル</div>
+    <table class="ki-table">
+      <thead><tr><th>刀種</th><th>修行最低レベル</th><th>備考</th></tr></thead>
+      <tbody>
+        <tr><td>短刀</td><td class="lv">Lv.60</td><td class="note-cell">—</td></tr>
+        <tr><td>脇差</td><td class="lv">Lv.65</td><td class="note-cell">—</td></tr>
+        <tr><td>打刀</td><td class="lv">Lv.70</td><td class="note-cell">—</td></tr>
+        <tr><td>太刀</td><td class="lv">Lv.75</td><td class="note-cell">—</td></tr>
+        <tr><td>大太刀</td><td class="lv">Lv.80</td><td class="note-cell">—</td></tr>
+        <tr><td>薙刀</td><td class="lv">Lv.65</td><td class="note-cell">—</td></tr>
+        <tr><td>槍</td><td class="lv">Lv.65</td><td class="note-cell">—</td></tr>
+        <tr><td>剣</td><td class="lv">不明</td><td class="note-cell">⚠ ゲーム内で確認を推奨</td></tr>
+      </tbody>
+    </table>
+    <div class="warn" style="margin-top:10px">
+      <div class="warn-head">⚠ 剣について</div>
+      <div class="warn-text">剣の修行条件レベルは現在不明のため、アプリ内ではLv.1から操作を許可していますが、実際はゲーム内で条件を確認してから修行に出すことをおすすめします。</div>
+    </div>
+  </div>
+-->
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">修行後の経験値入力について</div>
+    <div class="text">修行から帰還すると刀が<em>「極」</em>になり、レベルが帰還レベルに戻ります。帰還後は極の累積経験値（ゲーム表示の値）を入力してください。<br><!--打刀のレア4（<em>大倶利伽羅・千子村正・同田貫正国・和泉守兼定</em>）は2スロ分の経験値テーブルを自動で使用します。</div>
+    <div class="note">帰還レベルは刀種によって異なります（短刀/脇差/打刀/槍/薙刀 → Lv.35、太刀/大太刀/剣 → Lv.34）。</div>
+  </div>-->
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">初に戻す</div>
+    <div class="text">間違えて極にした場合は、編集画面の「<em>↩ 初に戻す</em>」ボタンで元に戻せます。</div>
+  </div>
+</section>
+
+<section class="section" id="graph-all">
+  <div class="section-heading">📈 稽古録グラフ（全体）</div>
+  <div class="block">
+    <div class="text">PC 版はヘッダーの「📈 稽古録」ボタン、スマホ版は2行目の「📈 稽古録」ボタンで全体グラフを開けます。<br>複数の刀剣男士の成長推移を1枚のグラフで比較できます。</div>
+  </div>
+  <div class="sub-section">
+    <div class="sub-heading">表示する刀を選ぶ</div>
+    <div class="text">グラフ画面の上部にある<em>「男士を選ぶ」</em>ボタンを押すと選択画面が開きます。</div>
+    <ul class="list">
+      <li>名前で検索できます</li>
+      <li>刀種・ソートでフィルター可能</li>
+      <li>「全選択」「全解除」で一括操作</li>
+      <li>選択した順番でグラフに表示されます（選択チップを並べ替え可能）</li>
+    </ul>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">縦軸・表示期間の切り替え</div>
+    <ul class="list">
+      <li><em>縦軸</em>：累積経験値 / レベル / 両方から選択</li>
+      <li><em>表示期間</em>：全期間 / 1週間 / 1ヶ月 / 3ヶ月 / 6ヶ月</li>
+    </ul>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">「イベント」タブ</div>
+    <div class="text">グラフ画面の「イベント」タブでは期間メモ・日別メモの追加・管理ができます。<br>グラフには期間メモが帯で、日別メモが縦線で表示されます。</div>
+  </div>
+</section>
+
+<section class="section" id="graph-solo">
+  <div class="section-heading">📖 この刀のあゆみ（個別グラフ）</div>
+  <div class="block">
+    <div class="text">刀剣男士の編集画面にある<em>「📖 この刀のあゆみ（グラフ）」</em>ボタンで、その刀の成長推移を1人でじっくり確認できます。</div>
+  </div>
+  <div class="sub-section">
+    <div class="sub-heading">表示内容</div>
+    <ul class="list">
+      <li>累積経験値とレベルの推移（縦軸：両方 / 累積経験値 / レベル から選択）</li>
+      <li>表示期間：全期間 / 1週間 / 1ヶ月 / 3ヶ月 / 6ヶ月</li>
+      <li>期間メモのオーバーレイ（帯で表示）</li>
+      <li>全体の日別メモ（紫の縦線）</li>
+      <li><em>この刀のメモ</em>（オレンジの縦線・編集画面で追加可能）</li>
+    </ul>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">メモ縦線のタップ</div>
+    <div class="text">グラフ上でメモの縦線付近をタップすると、その縦線が<em>ハイライト</em>されてメモ内容が強調表示されます。もう一度タップするとハイライトが解除されます。</div>
+  </div>
+  <div class="hint">
+    <div class="hint-head">💡 この刀のメモの使い方例</div>
+    <div class="hint-text">「修行に出した」「極が来た」「特1になった」など、その刀のマイルストーンを日付付きで残しておくと、グラフを見ながらどのタイミングで経験値が増えたかを振り返られます。</div>
+  </div>
+</section>
+
+<section class="section" id="event">
+  <div class="section-heading">📅 期間・日別メモ</div>
+  <div class="block">
+    <div class="text">グラフ上にイベントや日々の出来事をオーバーレイ表示するための機能です。<br>稽古録グラフの「イベント」タブ、またはデータ管理画面から設定できます。</div>
+  </div>
+  <div class="sub-section">
+    <div class="sub-heading">期間メモ</div>
+    <div class="text">連隊戦やキャンペーン期間など、複数日にわたる期間をグラフ上に<em>帯</em>で表示します。<br>名前・開始日・終了日・表示色を設定して追加します。プリセットから連隊戦などのイベント名を選ぶこともできます。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">日別メモ</div>
+    <div class="text">特定の日に一言メモを残せます。グラフ上で<em>縦線</em>として表示されます。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">エクスポート / インポート</div>
+    <div class="text">データ管理の「イベント エクスポート」「イベント インポート」から操作します。</div>
+    <div class="note">このデータは<em>資源帳とも共通</em>です。資源帳でエクスポートしたデータを稽古録にインポートすることができます。</div>
+  </div>
+</section>
+
+<section class="section" id="custom">
+  <div class="section-heading">🗡️ 仮登録（カスタム刀剣）</div>
+  <div class="block">
+    <div class="label">こんなときに使う機能です</div>
+    <div class="text">ゲームに新しく実装された刀剣男士が、まだアプリのデータに追加されていない場合に<em>暫定的に登録</em>しておける機能です。<br>名前・刀種・刀派・レベル・累積経験値を自由に設定できます。</div>
+  </div>
+  <div class="sub-section">
+    <div class="sub-heading">仮登録の開き方</div>
+    <div class="text">PC 版はヘッダーの「🗡 仮登録」ボタン、スマホ版は設定から「仮登録」にアクセスできます。<br>登録した仮刀剣はメイン画面の下部に「⚙ カスタム刀剣（仮登録）」としてまとめて表示されます。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">正式刀剣への紐付け移行</div>
+    <div class="text">アプリが正式対応した際に、「正式刀剣への紐付け」からどの刀剣男士か選択して「<em>⚡ 紐付けして移行</em>」を押すと、仮登録のデータが正式刀剣に引き継がれます。</div>
+    <div class="hint">
+      <div class="hint-head">💡 グラフも引き継げます</div>
+      <div class="hint-text">仮登録時に記録した累積経験値の履歴（グラフデータ）も、紐付け移行でそのまま引き継がれます。</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="data">
+  <div class="section-heading">💾 データ管理</div>
+  <div class="block">
+    <div class="text">PC 版はヘッダーの「💾 データ」ボタン、スマホ版は設定内からデータ管理画面を開けます。</div>
+  </div>
+  <div class="sub-section">
+    <div class="sub-heading">全データ エクスポート / インポート</div>
+    <div class="text">所持刀剣・レベル・経験値履歴・仮登録・期間メモ・日別メモのすべてを JSON ファイルとして保存・復元できます。</div>
+    <div class="warn" style="margin-top:8px">
+      <div class="warn-head">⚠ インポートは上書きです</div>
+      <div class="warn-text">インポートすると現在のデータは上書きされます。現在のデータをバックアップしてからインポートしてください。</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">イベント・メモのみのエクスポート / インポート</div>
+    <div class="text">期間メモと日別メモだけを個別に書き出し・読み込みできます。<em>資源帳との共有</em>に使用します。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">全データ削除</div>
+    <div class="text">「🗑 全データ削除」ボタンで全ての所持データを削除します。操作は取り消せません。</div>
+  </div>
+</section>
+
+<section class="section" id="settings">
+  <div class="section-heading">⚙️ 設定</div>
+  <div class="block">
+    <div class="sub-heading">カラーテーマ（パレット）</div>
+    <ul class="list">
+      <li><em>🎋 和風</em>：温かみのある茶系・ライト基調（デフォルト）</li>
+      <li><em>🌸 桜</em>：ピンク系の可愛らしい配色</li>
+      <li><em>🍃 翠</em>：緑系の清涼感ある配色</li>
+      <li><em>⚔️ 鉄</em>：ブルー系のクールな配色・ダーク基調</li>
+    </ul>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="sub-heading">明暗モード</div>
+    <ul class="list">
+      <li><em>テーマに従う</em>：各テーマのデフォルト設定（デフォルト）</li>
+      <li><em>ライトモード / ダークモード</em>：強制切り替え</li>
+      <li><em>システムに従う</em>：端末の設定に自動で追従</li>
+    </ul>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="sub-heading">レイアウト</div>
+    <ul class="list">
+      <li><em>自動</em>：画面幅 600px 未満でスマートフォン向けレイアウトに自動切り替え（デフォルト）</li>
+      <li><em>PC / スマホ</em>：強制固定</li>
+    </ul>
+    <div class="note">ヘッダーの「📱 スマホ表示 / 🖥 PC表示」ボタンでもすぐ切り替えられます。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="sub-heading">クラウド同期（Google Drive）</div>
+    <div class="text">Google アカウントでログインすると、データを Google ドライブへ保存・読み込みできます。<br>PC 版はヘッダーに「↑ 保存」「↓ 読み込み」ボタンが表示されます。スマホ版は2行目の「☁」ボタンから操作します。</div>
+    <div class="note">「クラウドのデータの方が新しい場合に警告を表示する」チェックをONにしておくと、誤って古いデータで上書きするのを防げます。</div>
+    <div class="warn" style="margin-top:8px">
+      <div class="warn-head">⚠ SNS アプリ内ブラウザでは同期できません</div>
+      <div class="warn-text">X（Twitter）・LINE などのアプリ内ブラウザでは Google のセキュリティポリシーにより動作しません。Chrome・Safari などの外部ブラウザでご利用ください。</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="backup">
+  <div class="section-heading">🔒 バックアップについて</div>
+  <div class="block">
+    <div class="text">ブラウザのキャッシュ削除・機種変更・ブラウザ変更を行うとデータが消える場合があります。<em>定期的なバックアップ</em>を強くおすすめします。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="label">所持データのバックアップ</div>
+    <ul class="list">
+      <li>「💾 データ」→ <em>「全データ エクスポート」</em> でファイルとして保存</li>
+      <li>ヘッダー（PC）または「☁」ボタン（スマホ）→ <em>「↑ 保存」</em> で Google ドライブへ同期</li>
+    </ul>
+  </div>
+  <div class="block" style="margin-top:12px">
+    <div class="label">期間・日別メモのバックアップ</div>
+    <ul class="list">
+      <li>「💾 データ」→ <em>「イベント エクスポート」</em> でファイルとして保存</li>
+    </ul>
+    <div class="warn" style="margin-top:8px">
+      <div class="warn-head">⚠ 注意：2 つのデータは別々に保存が必要です</div>
+      <div class="warn-text">「所持データ」と「期間・日別メモ」は保存場所が異なります。Google ドライブ同期でバックアップできるのは所持データのみです。期間・日別メモは別途エクスポートして保存してください。</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="section-heading">❓ よくある質問</div>
+  <div class="block">
+    <div class="label">Q. データが消えてしまった</div>
+    <div class="text">ブラウザのキャッシュ・サイトデータを削除するとデータが消えます。「全データ エクスポート」または Google ドライブ同期で定期的にバックアップしてください。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="label">Q. グラフに何も表示されない</div>
+    <div class="text">刀のカード → 振りをタップ → 編集画面で「累積経験値」を入力して「保存」すると、その日の記録がグラフに追加されます。記録が1件以上ないとグラフは表示されません。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="label">Q. 同じ刀を2振り以上登録したい</div>
+    <div class="text">刀のカードをタップ → 詳細画面の「<em>＋ この刀を追加</em>」を押すたびに1振りずつ追加できます。それぞれ別のニックネームをつけておくと管理しやすくなります。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="label">Q. 新しく実装された刀剣男士がリストにない</div>
+    <div class="text">アプリへのデータ追加には時間がかかることがあります。その間は<em>「🗡 仮登録」</em>機能をお使いください。正式対応後に紐付けでデータを移行できます。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="label">Q. スマートフォンで文字が小さい・使いにくい</div>
+    <div class="text">ヘッダーの「📱 スマホ表示」ボタンでモバイル向けレイアウトに切り替えるとタップしやすくなります。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="label">Q. 複数の端末でデータを共有したい</div>
+    <div class="text">Google ドライブ同期をご利用ください。新しい端末では先に <em>「↓ 読み込み」</em> でクラウドのデータを取得してください。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="label">Q. Google ドライブにログインできない</div>
+    <div class="text">X（Twitter）・LINE などの<em>アプリ内ブラウザ</em>では Google のセキュリティポリシーにより動作しません。Chrome・Safari・Firefox などの外部ブラウザでアクセスしてください。</div>
+  </div>
+</section>
+
+</div></div>
+<footer>審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。</footer>
+<a class="scroll-top" id="scroll-top" href="#top" title="トップへ戻る">▲</a>
+<script>
+const scrollBtn = document.getElementById('scroll-top');
+window.addEventListener('scroll', () => { scrollBtn.classList.toggle('visible', window.scrollY > 300); }, { passive: true });
+</script>
+</body>
+</html>
