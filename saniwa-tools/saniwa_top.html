@@ -32,6 +32,7 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   grid-template-columns: 1fr 1fr;
   grid-template-areas:
     "apps info"
+    "wavebox wavebox"
     "mail mail";
   min-height: 100vh;
 }
@@ -437,6 +438,52 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   padding: 20px 24px;
   box-shadow: 3px 4px 16px rgba(0,0,0,.2);
 }
+.wavebox-panel {
+  grid-area: wavebox;
+  margin: 0 44px 12px;
+  background: rgba(255,255,255,.82);
+  border: 1.5px solid rgba(180,120,80,.3);
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 3px 4px 16px rgba(0,0,0,.2);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .22s, box-shadow .22s, background .22s;
+}
+.wavebox-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 8px 22px rgba(0,0,0,.25);
+  background: rgba(255,255,255,.93);
+}
+.wavebox-icon-area {
+  flex-shrink: 0;
+  width: 56px; height: 56px;
+  background: rgba(200,168,75,.1);
+  border: 1.5px dashed rgba(200,168,75,.4);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.wavebox-icon-area img {
+  width: 48px; height: 48px; object-fit: contain; border-radius: 8px;
+}
+.wavebox-body { flex: 1; }
+.wavebox-title {
+  font-size: 16px; font-weight: 700; letter-spacing: .12em; color: #2c1a10; margin-bottom: 5px;
+}
+.wavebox-desc {
+  font-size: 12px; line-height: 1.8; color: #4a3020;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.wavebox-link {
+  flex-shrink: 0;
+  font-size: 12px; letter-spacing: .12em; color: #8b4513;
+  border-bottom: 1px solid rgba(139,69,19,.35);
+  font-family: 'Noto Sans JP', sans-serif;
+  white-space: nowrap;
+}
 .mail-title {
   font-size: 16px;
   font-weight: 700;
@@ -475,6 +522,7 @@ footer {
       "apps"
       "sp-update"
       "info"
+      "wavebox"
       "mail";
   }
   .col-left { padding: 28px 20px 16px; }
@@ -483,6 +531,7 @@ footer {
   .card-title { font-size: 18px; }
   .info-panel { padding: 20px 18px; }
   .mail-panel { margin: 0 20px 24px; padding: 16px 18px; }
+  .wavebox-panel { margin: 0 20px 12px; padding: 16px 18px; }
   .sp-update-bar { display: block; }
   .update-panel { display: none; }
 }
@@ -785,6 +834,21 @@ footer {
     </div><!-- /timeline -->
   </div>
 </div>
+<!-- Waveboxパネル -->
+<a class="wavebox-panel" href="https://wavebox.me/wave/aiw6jfvnmqcd7mn7/" target="_blank" rel="noopener">
+  <div class="wavebox-icon-area">
+    <!-- wavebox_icon.png を同じフォルダに入れると表示されます -->
+    <img src="wavebox_icon.png" alt="Wavebox" onerror="this.style.display='none'">
+  </div>
+  <div class="wavebox-body">
+    <div class="wavebox-title">Wavebox</div>
+    <div class="wavebox-desc">
+      絵文字やメッセージを匿名で送ることができます。<br>
+      応援はこちらからどうぞ。
+    </div>
+  </div>
+  <span class="wavebox-link">開く →</span>
+</a>
 <!--
 <div class="mail-panel">
   <div class="mail-title">メールフォーム</div>
