@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>資源帳 説明書 — 審神者の道具箱</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Serif JP', serif;
+  min-height: 100vh;
+  background: #5a1010;
+}
+
+.bg {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 20% 0%, #6b2010 0%, #3a0e0e 35%, #1a0a08 65%, #0e0a06 100%);
+  position: relative;
+}
+.bg::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    repeating-linear-gradient(45deg, rgba(0,0,0,.05) 0px, rgba(0,0,0,.05) 1px, transparent 1px, transparent 9px),
+    repeating-linear-gradient(-45deg, rgba(0,0,0,.04) 0px, rgba(0,0,0,.04) 1px, transparent 1px, transparent 9px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrapper {
+  position: relative; z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+/* ── ヘッダー ── */
+.page-header {
+  margin-bottom: 28px;
+}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-family: 'Noto Sans JP', sans-serif;
+  color: rgba(240,220,190,.55);
+  text-decoration: none;
+  letter-spacing: .1em;
+  transition: color .2s;
+  margin-bottom: 16px;
+}
+.back-link:hover { color: #f0dcc0; }
+
+.page-title-block {
+  background: rgba(255,255,255,.88);
+  border: 2px solid rgba(180,120,80,.4);
+  border-radius: 12px;
+  padding: 16px 28px;
+  display: inline-block;
+  box-shadow: 2px 3px 14px rgba(0,0,0,.22);
+}
+.page-title {
+  font-size: 24px; font-weight: 700; letter-spacing: .18em; color: #2c1a10;
+  display: flex; align-items: baseline; gap: 12px;
+}
+.page-title-sub {
+  font-size: 12px; font-weight: 400; color: #6a4428; letter-spacing: .12em;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* ── 目次 ── */
+.toc-panel {
+  background: rgba(0,0,0,.30);
+  border: 1px solid rgba(255,220,160,.16);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(3px);
+}
+.toc-heading {
+  font-size: 11px; font-weight: 500; letter-spacing: .28em; color: #e9d2ad;
+  margin-bottom: 12px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.toc-grid {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.toc-btn {
+  font-size: 12px;
+  font-family: 'Noto Sans JP', sans-serif;
+  color: #e8c878;
+  background: rgba(200,168,75,.08);
+  border: 1px solid rgba(200,168,75,.25);
+  border-radius: 20px;
+  padding: 5px 14px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .2s, color .2s;
+  display: inline-block;
+  letter-spacing: .05em;
+}
+.toc-btn:hover {
+  background: rgba(200,168,75,.2);
+  color: #f8e8a0;
+}
+
+/* ── セクションパネル ── */
+.section {
+  background: rgba(0,0,0,.34);
+  border: 1px solid rgba(255,220,160,.18);
+  border-radius: 12px;
+  padding: 24px 26px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(3px);
+  scroll-margin-top: 16px;
+}
+
+.section-heading {
+  font-size: 18px; font-weight: 700; letter-spacing: .14em; color: #f0dcc0;
+  margin-bottom: 16px; padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,220,160,.2);
+  display: flex; align-items: center; gap: 10px;
+}
+.section-icon { font-size: 17px; }
+
+/* ── ラベル・共通パーツ ── */
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px; font-weight: 600; letter-spacing: .18em;
+  color: #c8a84b;
+  background: rgba(200,168,75,.12);
+  border: 1px solid rgba(200,168,75,.25);
+  border-radius: 4px;
+  padding: 3px 10px;
+  margin-bottom: 8px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.text {
+  font-size: 13px; line-height: 2.1; color: #f0dcc0; text-align: justify;
+  font-family: 'Noto Sans JP', sans-serif; font-weight: 300;
+}
+.text em { font-style: normal; color: #f8eecc; font-weight: 500; }
+
+.note {
+  font-size: 12px; line-height: 1.9; color: #d4b898; margin-top: 8px;
+  padding-left: 12px; border-left: 2px solid rgba(255,200,120,.28);
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.note em { font-style: normal; color: #f0c870; font-weight: 500; }
+
+.divider {
+  height: 1px;
+  background: rgba(255,220,160,.1);
+  margin: 16px 0;
+}
+
+.block { margin-bottom: 14px; }
+.block:last-child { margin-bottom: 0; }
+
+/* リスト */
+.list {
+  list-style: none; padding: 0; margin: 0;
+}
+.list li {
+  font-size: 13px; line-height: 2.0; color: #f0dcc0;
+  font-family: 'Noto Sans JP', sans-serif; font-weight: 300;
+  padding-left: 14px; position: relative;
+}
+.list li::before {
+  content: '・';
+  position: absolute; left: 0;
+  color: #c8a84b; opacity: .7;
+}
+
+/* 警告ボックス */
+.warn {
+  background: rgba(200,120,50,.15);
+  border: 1px solid rgba(220,150,80,.25);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 8px;
+}
+.warn-head {
+  font-size: 11px; font-weight: 600; color: #e8b870;
+  letter-spacing: .1em; margin-bottom: 5px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.warn-text {
+  font-size: 12px; line-height: 1.9; color: #d4a870;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* ヒントボックス（青寄り） */
+.hint {
+  background: rgba(91,159,232,.1);
+  border: 1px solid rgba(91,159,232,.25);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 8px;
+}
+.hint-head {
+  font-size: 11px; font-weight: 600; color: #90c4f0;
+  letter-spacing: .1em; margin-bottom: 5px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.hint-text {
+  font-size: 12px; line-height: 1.9; color: #b8d8f8;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* リソース表 */
+.res-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+.res-card {
+  background: rgba(0,0,0,.2);
+  border: 1px solid rgba(255,220,160,.12);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex; flex-direction: column; gap: 3px;
+}
+.res-name {
+  font-size: 13px; font-weight: 600; letter-spacing: .06em;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.res-cap {
+  font-size: 11px; color: rgba(255,220,160,.5);
+  font-family: 'Noto Sans JP', sans-serif; font-variant-numeric: tabular-nums;
+}
+
+/* タブ見出し（グラフ機能など複数項目） */
+.sub-section {
+  margin-top: 14px;
+}
+.sub-heading {
+  font-size: 13px; font-weight: 500; color: #e8c878;
+  letter-spacing: .08em; margin-bottom: 6px;
+  font-family: 'Noto Sans JP', sans-serif;
+  display: flex; align-items: center; gap: 6px;
+}
+.sub-heading::before {
+  content: '▸';
+  color: rgba(200,168,75,.6);
+  font-size: 10px;
+}
+
+/* フッター */
+footer {
+  position: relative; z-index: 1; text-align: center; padding: 18px;
+  font-size: 11px; color: rgba(240,220,190,.45); letter-spacing: .15em;
+  font-family: 'Noto Sans JP', sans-serif;
+  margin-top: 10px;
+}
+
+/* スクロールトップ */
+.scroll-top {
+  position: fixed; bottom: 24px; right: 20px; z-index: 50;
+  width: 40px; height: 40px;
+  background: rgba(200,168,75,.2);
+  border: 1px solid rgba(200,168,75,.4);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #c8a84b; font-size: 16px;
+  transition: all .2s;
+  text-decoration: none;
+  opacity: 0; pointer-events: none;
+}
+.scroll-top.visible { opacity: 1; pointer-events: auto; }
+.scroll-top:hover { background: rgba(200,168,75,.35); }
+
+@media (max-width: 600px) {
+  .wrapper { padding: 20px 14px 50px; }
+  .section { padding: 18px 16px; }
+  .page-title { font-size: 20px; }
+  .res-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="bg">
+<div class="wrapper">
+
+<!-- ヘッダー -->
+<div class="page-header">
+  <a class="back-link" href="saniwa_top.html">← 審神者の道具箱へ戻る</a>
+    <div class="page-title-block">
+      <div class="page-title">
+        資源帳
+        <span class="page-title-sub">説明書</span>
+      </div>
+  </div>
+</div>
+
+<!-- 目次 -->
+<nav class="toc-panel" id="top">
+  <div class="toc-heading">＊ 目 次 ＊</div>
+  <div class="toc-grid">
+    <a class="toc-btn" href="#about">このアプリについて</a>
+    <a class="toc-btn" href="#graph">グラフ</a>
+    <a class="toc-btn" href="#input">資源入力</a>
+    <a class="toc-btn" href="#event">期間・日別メモ</a>
+    <a class="toc-btn" href="#exped">遠征タイマー</a>
+    <a class="toc-btn" href="#repair">手入れタイマー</a>
+    <a class="toc-btn" href="#forge">鍛刀タイマー</a>
+    <a class="toc-btn" href="#data">データ一覧</a>
+    <a class="toc-btn" href="#settings">設定</a>
+    <a class="toc-btn" href="#backup">バックアップ</a>
+    <a class="toc-btn" href="#faq">よくある質問</a>
+  </div>
+</nav>
+
+<!-- このアプリについて -->
+<section class="section" id="about">
+  <div class="section-heading"><span class="section-icon">📖</span>このアプリについて</div>
+
+  <div class="block">
+    <div class="label">概要</div>
+    <div class="text">
+      <em>資源帳</em>は、刀剣乱舞の木炭・玉鋼・冷却材・砥石などの資源を日々記録し、推移をグラフで確認できる管理ツールです。<br>
+      ゲーム内のデータを自動取得することはありません。<em>すべて審神者本人の手入力</em>によって記録していくツールです。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">💾 データの保存</div>
+    <div class="text">
+      データはお使いの端末のブラウザ内（ローカルストレージ）にのみ保存されます。<br>
+      管理人がデータを確認・アクセスすることは<em>一切ありません</em>。
+    </div>
+    <div class="note">
+      Google ドライブ同期はバックアップの一つとしてご利用ください。<br>
+      ※「期間・日別メモのデータ」と「資源グラフのデータ」は<em>別の場所</em>でそれぞれインポート・エクスポートします。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">🔄 稽古録との互換性</div>
+    <div class="text">
+      「期間・日別メモのデータ」は<em>資源帳・稽古録で共通</em>して使えます。<br>
+      一方のアプリでエクスポートしたデータを、もう一方にインポートすることが可能です。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">🌐 推奨ブラウザ</div>
+    <ul class="list">
+      <li>PC：Chrome / Edge / Firefox</li>
+      <li>スマートフォン：Chrome / Firefox / Safari</li>
+    </ul>
+    <div class="warn" style="margin-top:10px">
+      <div class="warn-head">⚠ アプリ内ブラウザ（WebView）をお使いの方へ</div>
+      <div class="warn-text">
+        SNS アプリなどのアプリ内ブラウザでは、Google ドライブとの同期が動作しません。<br>
+        （Google のセキュリティポリシーによる制限です）<br>
+        同期を使う場合は推奨ブラウザからアクセスしてください。<br>
+        同期の代わりに「データ一覧」タブのインポート・エクスポートもご活用ください。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- グラフ -->
+<section class="section" id="graph">
+  <div class="section-heading"><span class="section-icon">📊</span>グラフタブ</div>
+
+  <div class="block">
+    <div class="text">
+      入力した資源の推移を折れ線グラフで確認できます。複数の資源を同時に表示し、傾向を一目で把握できます。
+    </div>
+  </div>
+
+  <div class="sub-section">
+    <div class="sub-heading">表示期間の切り替え</div>
+    <ul class="list">
+      <li><em>全期間</em>：記録したすべてのデータを表示します</li>
+      <li><em>1ヶ月 / 3ヶ月</em>：最新の記録から遡って表示します</li>
+      <li><em>カスタム</em>：開始日・終了日を自由に指定できます</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">増減差分・上限線</div>
+    <ul class="list">
+      <li><em>増減差分</em>ボタン：前回記録との差分（増減量）を表示します</li>
+      <li><em>上限線</em>ボタン：木炭・玉鋼・冷却材・砥石の上限（9,999,999）、依頼札・手伝い札の上限（99,999）を点線で表示します</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">凡例（資源の表示 / 非表示）</div>
+    <div class="text">
+      グラフ上部の凡例（色付きの名前）をタップすると、その資源のグラフ線を個別に表示・非表示にできます。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">期間メモの表示スタイル</div>
+    <div class="text">
+      グラフ上に期間メモを重ねて表示できます。表示スタイルは3種類から選べます。
+    </div>
+    <ul class="list">
+      <li><em>帯</em>：期間を半透明の帯で塗りつぶします（デフォルト）</li>
+      <li><em>ガントバー</em>：グラフ下にバー形式で表示します</li>
+      <li><em>ブラケット</em>：期間の両端に括弧形式で表示します</li>
+    </ul>
+    <div class="note">
+      期間メモ名をタップすると<em>ハイライト表示</em>できます。「すべて選択」「すべて解除」ボタンで一括操作も可能です。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">x 軸の日付形式</div>
+    <div class="text">
+      グラフ下の x 軸エリアをタップすると、日付の表示形式を切り替えられます。
+    </div>
+    <ul class="list">
+      <li>① 年-月-日（常にフル表示）</li>
+      <li>② 年切替時のみ年を表示（デフォルト）</li>
+      <li>③ 年 → 月 → 日（省略形式）</li>
+    </ul>
+    <div class="note">設定タブからも変更できます。</div>
+  </div>
+</section>
+
+<!-- 資源入力 -->
+<section class="section" id="input">
+  <div class="section-heading"><span class="section-icon">✏️</span>資源入力タブ</div>
+
+  <div class="block">
+    <div class="text">
+      その日の資源量を記録します。ゲームの資源画面を見ながら入力してください。
+    </div>
+  </div>
+
+  <div class="sub-section">
+    <div class="sub-heading">日付の選択</div>
+    <div class="text">
+      <em>今日</em>ボタンで本日の日付に切り替えられます。<em>←</em>・<em>→</em> で前後の日に移動できます。<br>
+      同じ日付のデータがすでにある場合は上書きされます。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">記録できる資源</div>
+    <div class="res-grid">
+      <div class="res-card">
+        <div class="res-name" style="color:#e8864a">木炭</div>
+        <div class="res-cap">上限 9,999,999</div>
+      </div>
+      <div class="res-card">
+        <div class="res-name" style="color:#5b9fe8">玉鋼</div>
+        <div class="res-cap">上限 9,999,999</div>
+      </div>
+      <div class="res-card">
+        <div class="res-name" style="color:#3dc8d4">冷却材</div>
+        <div class="res-cap">上限 9,999,999</div>
+      </div>
+      <div class="res-card">
+        <div class="res-name" style="color:#9b6cd8">砥石</div>
+        <div class="res-cap">上限 9,999,999</div>
+      </div>
+      <div class="res-card">
+        <div class="res-name" style="color:#dba820">小判</div>
+        <div class="res-cap">上限 9,999,999</div>
+      </div>
+      <div class="res-card">
+        <div class="res-name" style="color:#c0804a">依頼札</div>
+        <div class="res-cap">上限 99,999</div>
+      </div>
+      <div class="res-card">
+        <div class="res-name" style="color:#52c878">手伝い札</div>
+        <div class="res-cap">上限 99,999</div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:10px">
+      入力不要な項目は空白のままで構いません。入力した資源のみが記録されます。
+    </div>
+  </div>
+</section>
+
+<!-- 期間・日別メモ -->
+<section class="section" id="event">
+  <div class="section-heading"><span class="section-icon">📅</span>期間・日別メモタブ</div>
+
+  <div class="block">
+    <div class="text">
+      グラフ上にイベントや日々のメモをオーバーレイ表示するための機能です。
+    </div>
+  </div>
+
+  <div class="sub-section">
+    <div class="sub-heading">期間メモ</div>
+    <div class="text">
+      連隊戦やキャンペーン期間など、複数日にわたる期間をグラフ上に表示できます。
+    </div>
+    <ul class="list">
+      <li><em>プリセット</em>から選択すると名前が自動入力されます（手動修正も可能）</li>
+      <li>開始日・終了日と表示色を設定して「追加する」を押します</li>
+      <li>追加したメモはグラフ上に帯・ガントバー・ブラケットのいずれかで表示されます</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">日別メモ</div>
+    <div class="text">
+      特定の日付に一言メモを残せます。グラフ上で<em>縦線と連動</em>して表示され、タップすると内容を確認できます。
+    </div>
+    <div class="hint">
+      <div class="hint-head">💡 使い方の例</div>
+      <div class="hint-text">
+        「修行から帰還」「刀帳コンプ達成」「〇〇を入手」など、資源の変化と合わせて覚えておきたい出来事を記録しておくと便利です。
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">エクスポート / インポート</div>
+    <div class="text">
+      「期間・日別メモ エクスポート」でデータを JSON ファイルとして保存できます。<br>
+      「期間・日別メモ インポート」で JSON ファイルを読み込めます。
+    </div>
+    <div class="note">
+      このデータは<em>稽古録とも共通</em>です。稽古録でエクスポートしたデータをそのまま資源帳にインポートすることができます。
+    </div>
+  </div>
+</section>
+
+<!-- 遠征タイマー -->
+<section class="section" id="exped">
+  <div class="section-heading"><span class="section-icon">⛵</span>遠征タイマー</div>
+
+  <div class="block">
+    <div class="text">
+      遠征の残り時間をカウントダウンするタイマーです。複数の遠征を同時に管理できます。
+    </div>
+  </div>
+
+  <div class="sub-section">
+    <div class="sub-heading">遠征の開始方法</div>
+    <ul class="list">
+      <li><em>プリセット</em>からよく使う遠征を選ぶと、名前と時間が自動入力されます（1-1 〜 5-4 に対応）</li>
+      <li>プリセットにない遠征は遠征名・時間（時・分・秒）を手動で入力してください</li>
+      <li>入力したら<em>「出発」</em>ボタンを押すとカウントダウンが始まります</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">早め通知</div>
+    <div class="text">
+      「早め通知」にチェックを入れると、終了の<em>10〜60秒前</em>にも通知します。
+      うっかり見逃しを防ぎたい場合にご活用ください。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">タイマー一覧の並び替え</div>
+    <ul class="list">
+      <li><em>残り時間順</em>：もうすぐ終わる遠征を上に表示します</li>
+      <li><em>名前順</em>：遠征名のあいうえお順で表示します</li>
+    </ul>
+  </div>
+
+  <div class="hint">
+    <div class="hint-head">💡 通知について</div>
+    <div class="hint-text">
+      設定タブ → 「通知の許可」からブラウザへの通知許可を付与しておくと、タブが非アクティブでも音と通知バナーでお知らせします。<br>
+      まず「テスト通知を送る」で動作確認してみてください。
+    </div>
+  </div>
+</section>
+
+<!-- 手入れタイマー -->
+<section class="section" id="repair">
+  <div class="section-heading"><span class="section-icon">🔧</span>手入れタイマー</div>
+
+  <div class="block">
+    <div class="text">
+      刀剣男士の手入れ時間をカウントダウンするタイマーです。複数同時管理に対応しています。
+    </div>
+    <ul class="list" style="margin-top:10px">
+      <li>刀の名前を入力しておくと、完了時にどの刀の手入れが終わったか一目でわかります（省略可）</li>
+      <li>時間（時・分・秒）を入力して<em>「手入れ」</em>ボタンを押します</li>
+      <li>早め通知・並び替えも遠征タイマーと同様に使えます</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 鍛刀タイマー -->
+<section class="section" id="forge">
+  <div class="section-heading"><span class="section-icon">⚒️</span>鍛刀タイマー</div>
+
+  <div class="block">
+    <div class="text">
+      鍛刀の完成時間をカウントダウンするタイマーです。複数の鍛刀を同時に管理できます。
+    </div>
+    <ul class="list" style="margin-top:10px">
+      <li>時間（時・分・秒）を入力して<em>「鍛刀」</em>ボタンを押します</li>
+      <li>早め通知・並び替えも遠征・手入れタイマーと同様に使えます</li>
+    </ul>
+  </div>
+</section>
+
+<!-- データ一覧 -->
+<section class="section" id="data">
+  <div class="section-heading"><span class="section-icon">📋</span>データ一覧タブ</div>
+
+  <div class="block">
+    <div class="text">
+      記録したすべての資源データを一覧表示します。各行の編集・削除も行えます。
+    </div>
+  </div>
+
+  <div class="sub-section">
+    <div class="sub-heading">エクスポート（書き出し）</div>
+    <ul class="list">
+      <li><em>JSON 書き出し</em>：アプリ専用のバックアップ形式。インポートに完全対応</li>
+      <li><em>CSV 書き出し</em>：Excel などの表計算ソフトで開ける形式</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">インポート（読み込み）</div>
+    <ul class="list">
+      <li><em>JSON 読み込み</em>：このアプリからエクスポートした JSON を復元します</li>
+      <li><em>CSV 読み込み</em>：CSV ファイルから資源データを読み込みます</li>
+      <li><em>Excel 読み込み</em>：これまで Excel で記録していたデータを取り込めます（.xlsx / .xls）</li>
+    </ul>
+    <div class="warn" style="margin-top:8px">
+      <div class="warn-head">⚠ Excel 読み込みの形式について</div>
+      <div class="warn-text">
+        1行目はヘッダー行（日付列は「日付」「date」または空欄で自動検出）<br>
+        列名：木炭 / 玉鋼 / 冷却材（冷却水でも可）/ 砥石 / 小判 / 依頼札 / 手伝い札<br>
+        日付フォーマット：2025/11/12 または 2025-11-12<br>
+        ※必ず読み込めるわけではありません。文字列列はメモとして自動取り込みされます。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 設定 -->
+<section class="section" id="settings">
+  <div class="section-heading"><span class="section-icon">⚙️</span>設定タブ</div>
+
+  <div class="block">
+    <div class="sub-heading">カラーテーマ</div>
+    <ul class="list">
+      <li><em>夜刀</em>：青みがかった暗い配色</li>
+      <li><em>暁光</em>：暖色系の落ち着いた配色</li>
+      <li><em>翠嵐</em>：緑系の涼しげな配色</li>
+      <li><em>白磁</em>：モノクロ系のシンプルな配色（デフォルト）</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="sub-heading">明暗モード</div>
+    <ul class="list">
+      <li><em>テーマに従う</em>：各テーマのデフォルト設定に従います</li>
+      <li><em>ダーク / ライト</em>：強制的に明暗を固定します</li>
+      <li><em>システム</em>：端末の設定（ダーク / ライトモード）に自動で合わせます</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="sub-heading">レイアウト</div>
+    <ul class="list">
+      <li><em>自動</em>：画面幅 600px 未満でスマートフォン向けレイアウトに切り替わります（デフォルト）</li>
+      <li><em>PC / スマホ</em>：強制的にレイアウトを固定できます</li>
+    </ul>
+    <div class="note">ヘッダー右上のアイコンからもレイアウトを切り替えられます。</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="sub-heading">通知の許可</div>
+    <div class="text">
+      「許可を求める」ボタンからブラウザへの通知許可を設定できます。<br>
+      許可後は「テスト通知を送る」で動作確認ができます。
+    </div>
+    <div class="note">通知はページ内のバナーと効果音でもお知らせします。<br>
+      全ての端末で同じように動作するわけではありません。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="sub-heading">クラウド同期（Google Drive）</div>
+    <div class="text">
+      Google アカウントでログインすると、データを Google ドライブへ保存・読み込みできます。<br>
+      ヘッダーの <em>「↑ 保存」「↓ 読み込み」</em> ボタンから手動で同期します。
+    </div>
+    <div class="note">
+      「クラウドが新しい場合に警告を表示する」のチェックを入れておくと、クラウドのデータの方が新しいときに上書き確認ダイアログが表示されます。
+    </div>
+    <div class="warn" style="margin-top:8px">
+      <div class="warn-head">⚠ SNS アプリ内ブラウザでは同期できません</div>
+      <div class="warn-text">
+        X（Twitter）・LINE などのアプリ内ブラウザでは Google のセキュリティポリシーにより同期が機能しません。<br>
+        Chrome・Safari など外部ブラウザでご利用ください。
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="sub-heading">データのリセット</div>
+    <div class="text">
+      「リセット」ボタンを押すと、すべての資源データと記録が削除されます。
+    </div>
+    <div class="warn" style="margin-top:6px">
+      <div class="warn-head">⚠ 操作は取り消せません</div>
+      <div class="warn-text">
+        リセットする前に必ずデータ一覧タブからエクスポートしてバックアップを取ってください。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- バックアップ -->
+<section class="section" id="backup">
+  <div class="section-heading"><span class="section-icon">🔒</span>バックアップについて</div>
+
+  <div class="block">
+    <div class="text">
+      ブラウザのキャッシュ削除・機種変更・ブラウザ変更を行うとデータが消える場合があります。<br>
+      <em>定期的なバックアップ</em>を強くおすすめします。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">資源データのバックアップ</div>
+    <ul class="list">
+      <li>「データ一覧」タブ → <em>「JSON 書き出し」</em> でファイルとして保存</li>
+      <li>ヘッダーの <em>「↑ 保存」</em> ボタンで Google ドライブへ同期</li>
+    </ul>
+  </div>
+
+  <div class="block" style="margin-top:12px">
+    <div class="label">期間・日別メモのバックアップ</div>
+    <ul class="list">
+      <li>「期間・日別メモ」タブ → <em>「期間・日別メモ エクスポート」</em> でファイルとして保存</li>
+    </ul>
+    <div class="warn" style="margin-top:8px">
+      <div class="warn-head">⚠ 注意：2 つのデータは別々に保存が必要です</div>
+      <div class="warn-text">
+        「資源データ」と「期間・日別メモ」は保存場所が異なります。<br>
+        Google ドライブ同期でバックアップできるのは資源データのみです。<br>
+        期間・日別メモは別途エクスポートして保存してください。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- よくある質問 -->
+<section class="section" id="faq">
+  <div class="section-heading"><span class="section-icon">❓</span>よくある質問</div>
+
+  <div class="block">
+    <div class="label">Q. データが消えてしまった</div>
+    <div class="text">
+      ブラウザのキャッシュ・サイトデータを削除するとデータが消えます。<br>
+      JSON エクスポートまたは Google ドライブ同期でバックアップを取っておいてください。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">Q. スマートフォンで文字が小さい・使いにくい</div>
+    <div class="text">
+      設定タブ → レイアウト → <em>「スマホ」</em> に切り替えると、モバイル向けの表示になります。<br>
+      ヘッダー右上のレイアウトボタンからもすぐに切り替えられます。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">Q. 通知が届かない</div>
+    <div class="text">
+      設定タブ → 「通知の許可」からブラウザへの通知許可をオンにしてください。<br>
+      端末のブラウザ設定で通知がブロックされている場合は、端末の設定からも許可が必要です。<br>
+      また、SNS アプリなどのアプリ内ブラウザでは通知が機能しない場合があります。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">Q. Google ドライブにログインできない</div>
+    <div class="text">
+      X（Twitter）・LINE などの<em>アプリ内ブラウザ</em>では、Google のセキュリティポリシーにより動作しません。<br>
+      Chrome・Safari・Firefox などの外部ブラウザでアクセスしてください。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">Q. 複数の端末で同じデータを使いたい</div>
+    <div class="text">
+      Google ドライブ同期をご利用ください。各端末でログインし、手動で保存・読み込みすることでデータを共有できます。<br>
+      新しい端末では先に <em>「↓ 読み込み」</em> ボタンでクラウドのデータを取得してください。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">Q. グラフに何も表示されない</div>
+    <div class="text">
+      「資源入力」タブでデータを追加してください。<br>
+      データが 1 件以上ないとグラフは表示されません。<br>
+      また、表示期間の設定（1ヶ月・3ヶ月）がデータの記録日より新しい場合も表示されません。その場合は「全期間」に切り替えてご確認ください。
+    </div>
+  </div>
+</section>
+
+</div><!-- /wrapper -->
+</div><!-- /bg -->
+
+<footer>
+  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。
+</footer>
+
+<a class="scroll-top" id="scroll-top" href="#top" title="トップへ戻る">▲</a>
+
+<script>
+// スクロールトップボタンの表示制御
+const scrollBtn = document.getElementById('scroll-top');
+window.addEventListener('scroll', () => {
+  scrollBtn.classList.toggle('visible', window.scrollY > 300);
+}, { passive: true });
+</script>
+</body>
+</html>

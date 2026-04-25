@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>お問い合わせ — 審神者の道具箱</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a1a; }
+
+.bg {
+  min-height: 100vh;
+  background-image: url('background.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.bg::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(45deg, rgba(0,0,0,.05) 0px, rgba(0,0,0,.05) 1px, transparent 1px, transparent 9px),
+    repeating-linear-gradient(-45deg, rgba(0,0,0,.04) 0px, rgba(0,0,0,.04) 1px, transparent 1px, transparent 9px);
+  pointer-events: none;
+}
+
+.layout {
+  position: relative; z-index: 1;
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 44px 20px 44px;
+}
+
+.container { width: 100%; max-width: 600px; }
+
+.site-title {
+  display: inline-block;
+  background: rgba(255,255,255,.88);
+  border: 2px solid rgba(180,120,80,.4);
+  border-radius: 12px;
+  padding: 10px 24px;
+  font-size: 22px; font-weight: 700; letter-spacing: .15em; color: #2c1a10;
+  box-shadow: 2px 3px 14px rgba(0,0,0,.22);
+  margin-bottom: 24px;
+  text-decoration: none;
+}
+.site-title:hover { background: rgba(255,255,255,.95); }
+
+.panel {
+  background: rgba(255,255,255,.85);
+  border: 1.5px solid rgba(180,120,80,.3);
+  border-radius: 16px;
+  padding: 32px 32px 28px;
+  box-shadow: 3px 4px 16px rgba(0,0,0,.2);
+}
+
+.panel-heading {
+  font-size: 20px; font-weight: 700; letter-spacing: .2em; color: #2c1a10;
+  text-align: center; margin-bottom: 6px;
+}
+.panel-sub {
+  font-size: 12px; text-align: center; color: #7a5030; letter-spacing: .1em;
+  font-family: 'Noto Sans JP', sans-serif; font-weight: 400;
+  margin-bottom: 24px; padding-bottom: 18px;
+  border-bottom: 1px solid rgba(160,100,60,.2);
+}
+
+/* ステップインジケーター */
+.steps {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; margin-bottom: 28px;
+}
+.step-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-family: 'Noto Sans JP', sans-serif;
+  letter-spacing: .08em;
+}
+.step-circle {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 500;
+  border: 1.5px solid rgba(160,100,60,.35);
+  background: rgba(255,255,255,.6);
+  color: #9a7050;
+}
+.step-circle.active { background: #8b1a1a; color: #fff; border-color: #8b1a1a; }
+.step-circle.done { background: rgba(139,26,26,.15); color: #8b1a1a; border-color: rgba(139,26,26,.35); }
+.step-label { color: #9a7050; }
+.step-label.active { color: #4a2010; font-weight: 500; }
+.step-line {
+  width: 32px; height: 1px;
+  background: rgba(160,100,60,.25);
+  margin: 0 8px;
+}
+
+/* フォーム */
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.field { margin-bottom: 18px; }
+.field-label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 500; color: #4a3020; letter-spacing: .08em;
+  font-family: 'Noto Sans JP', sans-serif;
+  margin-bottom: 7px;
+}
+.badge-req {
+  font-size: 10px; background: #8b1a1a; color: #fff;
+  padding: 1px 6px; border-radius: 3px; letter-spacing: .05em;
+}
+.badge-opt {
+  font-size: 10px; background: rgba(139,69,19,.12); color: #7a5030;
+  padding: 1px 6px; border-radius: 3px; letter-spacing: .05em;
+  border: 1px solid rgba(139,69,19,.2);
+}
+input[type="text"], input[type="email"], select, textarea {
+  width: 100%; padding: 9px 12px;
+  background: rgba(255,252,248,.9);
+  border: 1px solid rgba(160,100,60,.3);
+  border-radius: 8px;
+  font-size: 13px; color: #4a3020;
+  font-family: 'Noto Sans JP', sans-serif;
+  outline: none;
+  transition: border-color .2s;
+  -webkit-appearance: none; appearance: none;
+}
+input[type="text"]:focus, input[type="email"]:focus, select:focus, textarea:focus {
+  border-color: rgba(139,26,26,.45);
+  background: rgba(255,255,255,.95);
+}
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b4513' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+textarea { min-height: 110px; resize: vertical; line-height: 1.9; }
+.field-note {
+  font-size: 11px; color: #9a7050; margin-top: 5px;
+  font-family: 'Noto Sans JP', sans-serif; line-height: 1.7;
+}
+
+/* エラー表示 */
+.error-msg {
+  font-size: 11px; color: #8b1a1a; margin-top: 4px;
+  font-family: 'Noto Sans JP', sans-serif;
+  display: none;
+}
+.field.has-error input,
+.field.has-error select,
+.field.has-error textarea {
+  border-color: rgba(139,26,26,.5);
+}
+.field.has-error .error-msg { display: block; }
+
+.form-note {
+  font-size: 11px; color: #9a7050; line-height: 1.9;
+  font-family: 'Noto Sans JP', sans-serif;
+  padding: 10px 14px;
+  background: rgba(200,150,80,.07);
+  border-left: 2px solid rgba(180,120,60,.28);
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 24px;
+}
+
+.btn-wrap { text-align: center; }
+.btn-primary {
+  display: inline-block;
+  background: #8b1a1a;
+  color: rgba(255,235,200,.95);
+  border: none; border-radius: 10px;
+  padding: 12px 52px;
+  font-size: 14px; font-weight: 700; letter-spacing: .25em;
+  font-family: 'Noto Serif JP', serif;
+  cursor: pointer;
+  transition: background .2s, transform .15s;
+}
+.btn-primary:hover { background: #701515; transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+
+/* 確認画面 */
+#step-confirm { display: none; }
+
+.confirm-table { width: 100%; margin-bottom: 24px; border-collapse: collapse; }
+.confirm-table tr { border-bottom: 1px solid rgba(160,100,60,.15); }
+.confirm-table tr:last-child { border-bottom: none; }
+.confirm-table th {
+  font-size: 12px; font-weight: 500; color: #7a5030; letter-spacing: .08em;
+  font-family: 'Noto Sans JP', sans-serif;
+  padding: 10px 12px 10px 0;
+  vertical-align: top; text-align: left;
+  width: 38%;
+}
+.confirm-table td {
+  font-size: 13px; color: #2c1a10;
+  font-family: 'Noto Sans JP', sans-serif;
+  padding: 10px 0;
+  vertical-align: top; line-height: 1.8;
+  word-break: break-all;
+}
+.confirm-table td.empty { color: #b09070; font-style: italic; }
+
+.confirm-note {
+  font-size: 12px; color: #7a5030; text-align: center;
+  font-family: 'Noto Sans JP', sans-serif;
+  margin-bottom: 22px; line-height: 1.8;
+}
+
+.btn-row {
+  display: flex; gap: 12px; justify-content: center; align-items: center;
+}
+.btn-secondary {
+  background: none;
+  color: #7a5030;
+  border: 1px solid rgba(160,100,60,.4);
+  border-radius: 10px;
+  padding: 11px 28px;
+  font-size: 13px; letter-spacing: .12em;
+  font-family: 'Noto Sans JP', sans-serif;
+  cursor: pointer;
+  transition: background .2s;
+}
+.btn-secondary:hover { background: rgba(200,150,80,.08); }
+
+footer {
+  position: relative; z-index: 1; text-align: center; padding: 18px;
+  background: rgba(0,0,0,.4);
+  font-size: 11px; color: rgba(240,220,190,.55); letter-spacing: .15em;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+@media (max-width: 600px) {
+  .layout { padding: 28px 16px 36px; }
+  .panel { padding: 24px 20px 22px; }
+  .row2 { grid-template-columns: 1fr; gap: 0; }
+  .site-title { font-size: 18px; }
+  .btn-row { flex-direction: column-reverse; }
+  .btn-secondary, .btn-primary { width: 100%; text-align: center; }
+}
+</style>
+</head>
+<body>
+<div class="bg">
+<div class="layout">
+<div class="container">
+
+  <a class="site-title" href="saniwa_top.html">審神者の道具箱</a>
+
+  <!-- ステップ1：フォーム入力 -->
+  <div class="panel" id="step-form">
+    <div class="panel-heading">お問い合わせ</div>
+    <div class="panel-sub">ご意見・ご要望・バグ報告などをお送りください</div>
+
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-circle active" id="sc1">1</div>
+        <span class="step-label active">入力</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-item">
+        <div class="step-circle" id="sc2">2</div>
+        <span class="step-label" id="sl2">確認</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-item">
+        <div class="step-circle" id="sc3">3</div>
+        <span class="step-label" id="sl3">送信完了</span>
+      </div>
+    </div>
+
+    <form id="contact-form" novalidate>
+      <div class="row2">
+        <div class="field" id="f-app">
+          <div class="field-label">対象アプリ <span class="badge-req">必須</span></div>
+          <select name="app" id="inp-app">
+            <option value="">選択してください</option>
+            <option value="資源帳">資源帳</option>
+            <option value="稽古録">稽古録</option>
+            <option value="その他・全般">その他・全般</option>
+          </select>
+          <div class="error-msg">対象アプリを選択してください</div>
+        </div>
+        <div class="field" id="f-cat">
+          <div class="field-label">カテゴリ <span class="badge-req">必須</span></div>
+          <select name="category" id="inp-cat">
+            <option value="">選択してください</option>
+            <option value="バグ報告">バグ報告</option>
+            <option value="機能要望">機能要望</option>
+            <option value="感想">感想</option>
+            <option value="その他">その他</option>
+          </select>
+          <div class="error-msg">カテゴリを選択してください</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">ハンドルネーム <span class="badge-opt">任意</span></div>
+        <input type="text" name="name" id="inp-name" placeholder="例：おもち">
+      </div>
+
+      <div class="field">
+        <div class="field-label">件名 <span class="badge-opt">任意</span></div>
+        <input type="text" name="subject" id="inp-subject" placeholder="例：○○機能についての要望">
+      </div>
+
+      <div class="field" id="f-body">
+        <div class="field-label">お問い合わせ内容 <span class="badge-req">必須</span></div>
+        <textarea name="body" id="inp-body" placeholder="お気軽にどうぞ。"></textarea>
+        <div class="error-msg">お問い合わせ内容を入力してください</div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">返信用メールアドレス <span class="badge-opt">任意</span></div>
+        <input type="email" name="email" id="inp-email" placeholder="返信を希望される場合はご記入ください">
+        <div class="error-msg" id="email-error">メールアドレスの形式が正しくありません</div>
+      </div>
+
+      <div class="form-note">
+        ※ いただいたお問い合わせには、必ずしも返信できるとは限りません。<br>
+        ※ 個人情報はお問い合わせ対応以外の目的には使用しません。
+      </div>
+
+      <div class="btn-wrap">
+        <button type="button" class="btn-primary" onclick="goConfirm()">確認画面へ</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ステップ2：確認画面 -->
+  <div class="panel" id="step-confirm">
+    <div class="panel-heading">入力内容の確認</div>
+    <div class="panel-sub">以下の内容で送信してよろしいですか？</div>
+
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-circle done">✓</div>
+        <span class="step-label">入力</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-item">
+        <div class="step-circle active">2</div>
+        <span class="step-label active">確認</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-item">
+        <div class="step-circle">3</div>
+        <span class="step-label">送信完了</span>
+      </div>
+    </div>
+
+    <table class="confirm-table">
+      <tr>
+        <th>対象アプリ</th>
+        <td id="conf-app"></td>
+      </tr>
+      <tr>
+        <th>カテゴリ</th>
+        <td id="conf-cat"></td>
+      </tr>
+      <tr>
+        <th>ハンドルネーム</th>
+        <td id="conf-name"></td>
+      </tr>
+      <tr>
+        <th>件名</th>
+        <td id="conf-subject"></td>
+      </tr>
+      <tr>
+        <th>お問い合わせ内容</th>
+        <td id="conf-body" style="white-space: pre-wrap;"></td>
+      </tr>
+      <tr>
+        <th>返信用メールアドレス</th>
+        <td id="conf-email"></td>
+      </tr>
+    </table>
+
+    <div class="confirm-note">
+      内容をご確認のうえ、「送信する」ボタンを押してください。
+    </div>
+
+    <form id="send-form" action="send.php" method="POST">
+      <input type="hidden" name="app" id="h-app">
+      <input type="hidden" name="category" id="h-cat">
+      <input type="hidden" name="name" id="h-name">
+      <input type="hidden" name="subject" id="h-subject">
+      <input type="hidden" name="body" id="h-body">
+      <input type="hidden" name="email" id="h-email">
+      <!-- ハニーポット（スパム対策） -->
+      <input type="text" name="url" style="display:none" tabindex="-1" autocomplete="off">
+
+      <div class="btn-row">
+        <button type="button" class="btn-secondary" onclick="goBack()">← 入力に戻る</button>
+        <button type="submit" class="btn-primary">送　信</button>
+      </div>
+    </form>
+  </div>
+
+</div>
+</div>
+
+<footer>
+  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。
+</footer>
+</div>
+
+<script>
+function goConfirm() {
+  let valid = true;
+
+  const app = document.getElementById('inp-app');
+  const cat = document.getElementById('inp-cat');
+  const body = document.getElementById('inp-body');
+  const email = document.getElementById('inp-email');
+
+  document.getElementById('f-app').classList.remove('has-error');
+  document.getElementById('f-cat').classList.remove('has-error');
+  document.getElementById('f-body').classList.remove('has-error');
+  email.parentElement.querySelector('.error-msg').style.display = 'none';
+
+  if (!app.value) { document.getElementById('f-app').classList.add('has-error'); valid = false; }
+  if (!cat.value) { document.getElementById('f-cat').classList.add('has-error'); valid = false; }
+  if (!body.value.trim()) { document.getElementById('f-body').classList.add('has-error'); valid = false; }
+  if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    document.getElementById('email-error').style.display = 'block';
+    valid = false;
+  }
+
+  if (!valid) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  const name = document.getElementById('inp-name').value.trim();
+  const subject = document.getElementById('inp-subject').value.trim();
+
+  document.getElementById('conf-app').textContent = app.value;
+  document.getElementById('conf-cat').textContent = cat.value;
+  setConfCell('conf-name', name);
+  setConfCell('conf-subject', subject);
+  document.getElementById('conf-body').textContent = body.value.trim();
+  setConfCell('conf-email', email.value.trim());
+
+  document.getElementById('h-app').value = app.value;
+  document.getElementById('h-cat').value = cat.value;
+  document.getElementById('h-name').value = name;
+  document.getElementById('h-subject').value = subject;
+  document.getElementById('h-body').value = body.value.trim();
+  document.getElementById('h-email').value = email.value.trim();
+
+  document.getElementById('step-form').style.display = 'none';
+  document.getElementById('step-confirm').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setConfCell(id, val) {
+  const el = document.getElementById(id);
+  if (val) {
+    el.textContent = val;
+    el.classList.remove('empty');
+  } else {
+    el.textContent = '（未入力）';
+    el.classList.add('empty');
+  }
+}
+
+function goBack() {
+  document.getElementById('step-confirm').style.display = 'none';
+  document.getElementById('step-form').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

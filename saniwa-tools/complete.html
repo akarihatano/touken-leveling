@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>送信完了 — 審神者の道具箱</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a1a; }
+
+.bg {
+  min-height: 100vh;
+  background-image: url('background.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.bg::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(45deg, rgba(0,0,0,.05) 0px, rgba(0,0,0,.05) 1px, transparent 1px, transparent 9px),
+    repeating-linear-gradient(-45deg, rgba(0,0,0,.04) 0px, rgba(0,0,0,.04) 1px, transparent 1px, transparent 9px);
+  pointer-events: none;
+}
+
+.layout {
+  position: relative; z-index: 1;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 44px 20px;
+}
+
+.container { width: 100%; max-width: 520px; }
+
+.site-title {
+  display: inline-block;
+  background: rgba(255,255,255,.88);
+  border: 2px solid rgba(180,120,80,.4);
+  border-radius: 12px;
+  padding: 10px 24px;
+  font-size: 22px; font-weight: 700; letter-spacing: .15em; color: #2c1a10;
+  box-shadow: 2px 3px 14px rgba(0,0,0,.22);
+  margin-bottom: 24px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+.site-title:hover { background: rgba(255,255,255,.95); }
+
+.panel {
+  background: rgba(255,255,255,.85);
+  border: 1.5px solid rgba(180,120,80,.3);
+  border-radius: 16px;
+  padding: 44px 36px 40px;
+  box-shadow: 3px 4px 16px rgba(0,0,0,.2);
+  text-align: center;
+}
+
+.complete-icon {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: rgba(139,26,26,.1);
+  border: 2px solid rgba(139,26,26,.25);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 24px;
+}
+
+.panel-heading {
+  font-size: 22px; font-weight: 700; letter-spacing: .2em; color: #2c1a10;
+  margin-bottom: 10px;
+}
+
+.divider {
+  width: 40px; height: 1px;
+  background: rgba(160,100,60,.3);
+  margin: 0 auto 22px;
+}
+
+.complete-text {
+  font-size: 13px; line-height: 2.2; color: #4a3020;
+  font-family: 'Noto Sans JP', sans-serif; font-weight: 400;
+  margin-bottom: 8px;
+}
+
+.complete-note {
+  font-size: 12px; line-height: 1.9; color: #9a7050;
+  font-family: 'Noto Sans JP', sans-serif;
+  margin-bottom: 32px;
+}
+
+.btn-wrap {
+  display: flex; flex-direction: column; gap: 10px; align-items: center;
+}
+.btn-primary {
+  display: inline-block;
+  background: #8b1a1a;
+  color: rgba(255,235,200,.95);
+  border: none; border-radius: 10px;
+  padding: 12px 40px;
+  font-size: 13px; font-weight: 700; letter-spacing: .2em;
+  font-family: 'Noto Serif JP', serif;
+  cursor: pointer; text-decoration: none;
+  transition: background .2s;
+}
+.btn-primary:hover { background: #701515; }
+
+.btn-link {
+  font-size: 12px; color: #8b4513; letter-spacing: .1em;
+  font-family: 'Noto Sans JP', sans-serif;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(139,69,19,.3);
+  padding-bottom: 1px;
+}
+.btn-link:hover { color: #5a2a08; }
+
+/* ステップインジケーター */
+.steps {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; margin-bottom: 32px;
+}
+.step-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-family: 'Noto Sans JP', sans-serif;
+  letter-spacing: .08em;
+}
+.step-circle {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 500;
+  border: 1.5px solid rgba(160,100,60,.35);
+  background: rgba(255,255,255,.6);
+  color: #9a7050;
+}
+.step-circle.done { background: rgba(139,26,26,.15); color: #8b1a1a; border-color: rgba(139,26,26,.35); }
+.step-circle.active { background: #8b1a1a; color: #fff; border-color: #8b1a1a; }
+.step-label { color: #9a7050; }
+.step-label.active { color: #4a2010; font-weight: 500; }
+.step-line {
+  width: 32px; height: 1px;
+  background: rgba(160,100,60,.25);
+  margin: 0 8px;
+}
+
+footer {
+  position: relative; z-index: 1; text-align: center; padding: 18px;
+  background: rgba(0,0,0,.4);
+  font-size: 11px; color: rgba(240,220,190,.55); letter-spacing: .15em;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+@media (max-width: 600px) {
+  .layout { padding: 28px 16px 36px; align-items: flex-start; }
+  .panel { padding: 32px 22px 28px; }
+}
+</style>
+</head>
+<body>
+<div class="bg">
+<div class="layout">
+<div class="container">
+
+  <a class="site-title" href="saniwa_top.html">審神者の道具箱</a>
+
+  <div class="panel">
+
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-circle done">✓</div>
+        <span class="step-label">入力</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-item">
+        <div class="step-circle done">✓</div>
+        <span class="step-label">確認</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-item">
+        <div class="step-circle active">3</div>
+        <span class="step-label active">送信完了</span>
+      </div>
+    </div>
+
+    <div class="complete-icon">✉</div>
+
+    <div class="panel-heading">送信完了</div>
+    <div class="divider"></div>
+
+    <p class="complete-text">
+      お問い合わせを受け付けました。<br>
+      ありがとうございます。
+    </p>
+    <p class="complete-note">
+      返信が必要な内容の場合は、<br>
+      ご入力いただいたメールアドレス宛にご連絡いたします。<br>
+      なお、内容によってはご返信できない場合もございます。
+    </p>
+
+    <div class="btn-wrap">
+      <a class="btn-primary" href="saniwa_top.html">トップへ戻る</a>
+      <a class="btn-link" href="contact.html">もう一件送る</a>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<footer>
+  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。
+</footer>
+</div>
+</body>
+</html>
