@@ -293,12 +293,12 @@ hr.mhr{border:none;border-top:1px solid var(--border);margin:12px 0}
       <span class="header-title">⚔ 刀剣乱舞 レベリング管理</span>
     </div>
     <div class="header-sep"></div>
-    <!-- スマホ/PC表示切替（常時表示） -->
-    <button class="btn sm" id="layout-btn" onclick="toggleLayoutBtn()" title="表示切り替え" style="flex-shrink:0"></button>
     <!-- PC時のみ表示されるボタン群 -->
     <div class="hdr-btns" id="hdrBtns">
+      <!-- スマホ表示切替 -->
+      <button class="btn sm" id="layout-btn" onclick="toggleLayoutBtn()" title="表示切り替え" style="flex-shrink:0"></button>
       <!-- A案/B案同期ボタン（PC用・updatePcSyncHdr()で動的生成） -->
-      <div id="pcSyncArea" style="display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0"></div>
+      <div id="pcSyncArea" style="display:flex;flex-direction:column;align-items:stretch;gap:2px;flex-shrink:0"></div>
       <button class="btn sm" id="hdrGraphBtn" onclick="showGraph()" style="flex-shrink:0">📈 稽古録</button>
       <button class="btn sm" onclick="showCustomList()">🗡 仮登録</button>
       <button class="btn sm" onclick="showIO()">💾 データ</button>
@@ -2791,23 +2791,28 @@ function updatePcSyncHdr(){
     area.innerHTML=`<button class="btn sm" onclick="gdSignIn()" style="border-color:var(--gold);color:var(--gold)">☁ 同期ログイン</button>`;
     return;
   }
-  const timeStr=_lastSyncTime?`<span style="font-size:9px;color:var(--text3);white-space:nowrap">${fmtSyncTime(_lastSyncTime)}</span>`:'';
+  // 最終同期時刻を永続化から復元
+  if(!_lastSyncTime){
+    const saved=localStorage.getItem('_lastSyncTime');
+    if(saved)_lastSyncTime=new Date(saved);
+  }
+  const timeStr=_lastSyncTime?`<div style="font-size:9px;color:var(--text3);text-align:center">${fmtSyncTime(_lastSyncTime)}</div>`:'';
   const mode=ST.syncMode||'manual';
   const syncing=area.dataset.syncing==='1';
   if(mode==='auto'){
     area.innerHTML=`
-      <div style="display:flex;align-items:center;gap:5px">
-        ${timeStr}
+      ${timeStr}
+      <div style="display:flex;gap:4px">
         <button class="btn sm" onclick="gdSyncUp()" style="${syncing?'color:var(--gold);border-color:var(--gold)':'color:var(--kiwame);border-color:var(--kiwame)'}">☁ ${syncing?'同期中…':'同期済'}</button>
+        <button class="btn sm" onclick="gdSignOut()" style="border-color:rgba(255,100,100,.5);color:rgba(255,160,160,.9)">ログアウト</button>
       </div>`;
   }else{
     area.innerHTML=`
-      <div style="display:flex;align-items:center;gap:6px">
-        ${timeStr}
-        <div style="display:flex;flex-direction:column;gap:3px">
-          <button class="btn sm" onclick="gdSyncUpWithCheck()" style="color:var(--kiwame);border-color:var(--kiwame);font-size:11px;padding:3px 8px">☁ ⬆ クラウドへ保存</button>
-          <button class="btn sm" onclick="gdSyncDown()" style="font-size:11px;padding:3px 8px">⬇ 読み込む</button>
-        </div>
+      ${timeStr}
+      <div style="display:flex;gap:4px">
+        <button class="btn sm" onclick="gdSyncUpWithCheck()" style="color:var(--kiwame);border-color:var(--kiwame)">☁ ⬆ 保存</button>
+        <button class="btn sm" onclick="gdSyncDown()">⬇ 読み込む</button>
+        <button class="btn sm" onclick="gdSignOut()" style="border-color:rgba(255,100,100,.5);color:rgba(255,160,160,.9)">ログアウト</button>
       </div>`;
   }
 }
@@ -2825,6 +2830,7 @@ function updateMobileHdr2Sync(){
 // 同期完了後に呼ぶ共通処理
 function onSyncDone(){
   _lastSyncTime=new Date();
+  localStorage.setItem('_lastSyncTime',_lastSyncTime.toISOString());
   updatePcSyncHdr();
   updateMobileHdr2Sync();
   renderCloudPopup();
