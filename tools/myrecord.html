@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>わたしの記録 - MyRecord</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap');
@@ -185,7 +185,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 .theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
 .ts{border-radius:8px;padding:8px 6px;text-align:center;cursor:pointer;border:2px solid transparent;transition:all .15s;font-size:10px;font-weight:700;}
 .ts.active{border-color:var(--accent)}
-#toast{position:fixed;bottom:max(24px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(10px);background:var(--accent);color:var(--bg);font-weight:700;border-radius:20px;padding:9px 20px;font-size:12px;box-shadow:0 4px 20px rgba(0,0,0,.4);z-index:300;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s,transform .2s;}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--accent);color:var(--bg);font-weight:700;border-radius:20px;padding:9px 20px;font-size:12px;box-shadow:0 4px 20px rgba(0,0,0,.4);z-index:300;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s,transform .2s;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .empty{text-align:center;color:var(--muted2);padding:50px 0}.empty .ei{font-size:28px;margin-bottom:8px}
 
@@ -240,9 +240,37 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 #dp-popup input[type=date]{color-scheme:dark}
 #dp-popup input[type=date]:focus{border-color:var(--accent)}
 
+/* ═══════════════════════════════
+   CLOUD SYNC
+═══════════════════════════════ */
+.sync-area{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.sync-time-lbl{font-size:8px;color:var(--muted);white-space:nowrap;min-height:12px;text-align:right;letter-spacing:.5px}
+.sync-btns-row{display:flex;gap:4px}
+.sync-io-btn{display:flex;align-items:center;gap:3px;padding:4px 8px;border:1px solid var(--border2);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;transition:all .15s;white-space:nowrap}
+.sync-io-btn:hover:not(:disabled){background:var(--bg2);color:var(--text);border-color:var(--accent)}
+.sync-io-btn:disabled{opacity:.35;cursor:default}
+.sync-login-btn{padding:4px 9px;border:1px solid var(--accent);border-radius:6px;background:transparent;color:var(--accent);cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;white-space:nowrap;transition:all .15s}
+.sync-login-btn:hover{background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.sync-logout-btn{padding:4px 9px;border:1px solid var(--border2);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:11px;white-space:nowrap;transition:all .15s}
+.sync-logout-btn:hover{color:var(--danger);border-color:var(--danger)}
+/* 警告バナー */
+.sync-warn{display:none;background:var(--bg2);border:1px solid #d4a020;border-radius:10px;padding:12px 14px;margin-bottom:12px}
+.sync-warn.show{display:flex;gap:10px;align-items:flex-start}
+.sync-warn-icon{font-size:16px;flex-shrink:0;color:#d4a020}
+.sync-warn-body{flex:1;min-width:0}
+.sync-warn-title{font-size:12px;font-weight:700;color:#c8980a;margin-bottom:4px}
+.sync-warn-text{font-size:11px;color:var(--muted);line-height:1.6}
+.sync-warn-btns{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.sync-warn-ok{padding:5px 13px;font-size:11px;border:1px solid #c8980a;border-radius:6px;background:transparent;color:#c8980a;cursor:pointer;font-family:inherit;transition:all .15s}
+.sync-warn-ok:hover{background:#c8980a22}
+.sync-warn-cancel{padding:5px 13px;font-size:11px;border:1px solid var(--border2);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s}
+.sync-warn-cancel:hover{background:var(--bg2)}
+.sync-warn-cb{display:flex;align-items:center;gap:6px;margin-top:7px;font-size:11px;color:var(--muted)}
+
 
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 <div id="page-wrap">
@@ -259,6 +287,15 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
           <div class="th-left"><div class="th-sub">MY RECORD</div><div class="th-title">わたしの記録</div></div>
           <div class="th-right">
             <div class="th-clock"><div class="tc-date" id="hdr-date"></div><div class="tc-time" id="hdr-time"></div></div>
+            <div class="sync-area" id="hdr-sync-area">
+              <div class="sync-time-lbl" id="hdr-sync-time"></div>
+              <div class="sync-btns-row" id="hdr-sync-btns" style="display:none">
+                <button class="sync-io-btn" id="hdr-up-btn" onclick="gdSaveWithCheck()" disabled title="クラウドへ保存">↑</button>
+                <button class="sync-io-btn" id="hdr-dn-btn" onclick="gdLoad()" disabled title="クラウドから読み込み">↓</button>
+              </div>
+              <button class="sync-login-btn" id="hdr-login-btn" onclick="gSignIn()">☁ 同期</button>
+              <button class="sync-logout-btn" id="hdr-logout-btn" onclick="gSignOut()" style="display:none">ログアウト</button>
+            </div>
             <button class="hdr-tog-btn" id="hdr-tog" onclick="quickToggleLayout()" title="レイアウト切り替え">🖥️</button>
           </div>
         </div>
@@ -437,6 +474,19 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 
         <!-- SETTINGS -->
         <div id="tab-settings" style="display:none">
+          <!-- 同期警告バナー -->
+          <div class="sync-warn" id="sync-warn">
+            <span class="sync-warn-icon">⚠</span>
+            <div class="sync-warn-body">
+              <div class="sync-warn-title">クラウドのデータの方が新しい</div>
+              <div class="sync-warn-text" id="sync-warn-text"></div>
+              <div class="sync-warn-btns">
+                <button class="sync-warn-ok" onclick="doOverwriteSave()">上書きして保存</button>
+                <button class="sync-warn-cancel" onclick="dismissWarn()">キャンセル</button>
+              </div>
+              <div class="sync-warn-cb"><input type="checkbox" id="warn-neverchk"><label for="warn-neverchk">次回から警告を表示しない</label></div>
+            </div>
+          </div>
           <div class="panel">
             <div class="panel-title">👤 プロフィール</div>
             <div class="form-grid">
@@ -500,6 +550,26 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
           </div>
           <div class="panel"><div class="panel-title">🎨 テーマ</div><div class="theme-grid" id="theme-grid"></div></div>
           <div class="panel">
+            <div class="panel-title">☁️ クラウド同期（Google Drive）</div>
+            <div class="setting-row">
+              <div><div class="setting-label">Google アカウント</div><div class="setting-sub" id="sync-sub">ログインしてデータを同期します</div></div>
+              <div class="tg-group">
+                <button class="tg-opt" id="sync-login-btn" onclick="gSignIn()">ログイン</button>
+                <button class="tg-opt" id="sync-logout-btn" onclick="gSignOut()" style="display:none;border-color:var(--danger);color:var(--danger)">ログアウト</button>
+              </div>
+            </div>
+            <div class="setting-row" id="sync-action-row" style="display:none">
+              <div><div class="setting-label">データ操作</div><div class="setting-sub">↑ 保存：このデバイスのデータをDriveへ<br>↓ 読み込み：Driveのデータをこのデバイスへ</div></div>
+              <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+                <button class="btn-g" style="font-size:11px;padding:6px 13px" onclick="gdSaveWithCheck()">↑ Driveへ保存</button>
+                <button class="btn-g" style="font-size:11px;padding:6px 13px" onclick="gdLoad()">↓ Driveから読込</button>
+              </div>
+            </div>
+            <div class="setting-row" id="sync-warn-row" style="display:none;border-bottom:none">
+              <div class="sync-warn-cb"><input type="checkbox" id="warn-toggle" onchange="toggleSyncWarnSetting(this.checked)"><label for="warn-toggle">クラウドが新しい場合に警告を表示する</label></div>
+            </div>
+          </div>
+          <div class="panel">
             <div class="panel-title">💾 データ管理</div>
             <div class="setting-row"><div><div class="setting-label">エクスポート</div><div class="setting-sub">JSONファイルに保存</div></div><button class="btn-g" style="font-size:11px;padding:6px 13px" onclick="exportD()">⬇ 書き出し</button></div>
             <div class="setting-row" style="border-bottom:none"><div><div class="setting-label">インポート</div><div class="setting-sub">JSON（旧形式も可）</div></div><button class="btn-g" style="font-size:11px;padding:6px 13px" onclick="document.getElementById('imp-f').click()">⬆ 読み込み</button></div>
@@ -532,6 +602,16 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
       <button class="sb-tog-btn" onclick="quickToggleLayout()" title="スマホ表示に切り替え">📱</button>
     </div>
     <div id="sidebar-clock"><div class="sc-date" id="sb-date"></div><div class="sc-time" id="sb-time"></div></div>
+    <div style="padding:8px 14px;border-bottom:1px solid var(--border2);display:flex;flex-direction:column;gap:3px">
+      <div style="font-size:8px;color:var(--muted);letter-spacing:1px;margin-bottom:1px">CLOUD SYNC</div>
+      <div class="sync-time-lbl" id="sb-sync-time" style="text-align:left"></div>
+      <div class="sync-btns-row" id="sb-sync-btns" style="display:none">
+        <button class="sync-io-btn" id="sb-up-btn" onclick="gdSaveWithCheck()" disabled title="クラウドへ保存">↑ 保存</button>
+        <button class="sync-io-btn" id="sb-dn-btn" onclick="gdLoad()" disabled title="クラウドから読み込み">↓ 読込</button>
+      </div>
+      <button class="sync-login-btn" id="sb-login-btn" onclick="gSignIn()" style="align-self:flex-start">☁ Googleでログイン</button>
+      <button class="sync-logout-btn" id="sb-logout-btn" onclick="gSignOut()" style="display:none;align-self:flex-start">ログアウト</button>
+    </div>
     <div id="sb-info">
       <div class="si-grid">
         <div class="si-item"><div class="si-lbl">最新体重</div><div class="si-val" id="sd-weight">--</div></div>
@@ -812,7 +892,192 @@ tickClock();
 if(!window._ck){window._ck=true;setInterval(tickClock,1000);}
 let _rzTimer;window.addEventListener('resize',()=>{if(appL==='auto'){clearTimeout(_rzTimer);_rzTimer=setTimeout(applyLayout,150);}});
 window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{if(appD==='system')applyD('system');});
-// ══ CHART ══
+// ══ GOOGLE DRIVE SYNC ══
+const GD_CLIENT_ID='1020015092975-eheh7mf0vjv55a7lufvbc1mi50ele8bv.apps.googleusercontent.com';
+const GD_SCOPE='https://www.googleapis.com/auth/drive.appdata';
+const GD_FILE='myrecord_data.json';
+let gdToken=null,gdTokenClient=null,_lastSyncTime=null,_gdFileId=null,syncWarnDisabled=false;
+
+function gdReady(){
+  if(typeof google==='undefined'||!google.accounts)return false;
+  if(!gdTokenClient){
+    gdTokenClient=google.accounts.oauth2.initTokenClient({
+      client_id:GD_CLIENT_ID,
+      scope:GD_SCOPE,
+      callback:function(resp){
+        if(resp.error){gdSetSub('ログインに失敗しました: '+resp.error);return;}
+        gdToken=resp.access_token;
+        gdSetSub('ログイン済み ✓');
+        updHdrSync();
+      }
+    });
+  }
+  return true;
+}
+function gSignIn(){
+  if(!gdReady()){gdSetSub('Google ライブラリ読み込み中…再度お試しください');return;}
+  gdTokenClient.requestAccessToken({prompt:'consent'});
+}
+function gSignOut(){
+  if(gdToken)google.accounts.oauth2.revoke(gdToken,function(){});
+  gdToken=null;
+  gdSetSub('ログアウトしました');
+  updHdrSync();
+}
+function gdSetSub(msg){const e=document.getElementById('sync-sub');if(e)e.textContent=msg;}
+function fmtSyncTime(d){
+  if(!d)return'';
+  const diff=Math.floor((Date.now()-d)/60000);
+  if(diff<1)return'たった今';
+  if(diff<60)return diff+'分前';
+  return d.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
+}
+function updHdrSync(){
+  const li=!!gdToken;
+  const show=(id,v)=>{const e=document.getElementById(id);if(e)e.style.display=v?'':'none';};
+  const dis=(id,v)=>{const e=document.getElementById(id);if(e)e.disabled=v;};
+  // モバイルヘッダー
+  show('hdr-login-btn',!li);
+  show('hdr-logout-btn',li);
+  show('hdr-sync-btns',li);
+  dis('hdr-up-btn',!li);
+  dis('hdr-dn-btn',!li);
+  const ht=document.getElementById('hdr-sync-time');
+  if(ht)ht.textContent=_lastSyncTime?'最終同期 '+fmtSyncTime(_lastSyncTime):'';
+  // サイドバー（デスクトップ）
+  show('sb-login-btn',!li);
+  show('sb-logout-btn',li);
+  show('sb-sync-btns',li);
+  dis('sb-up-btn',!li);
+  dis('sb-dn-btn',!li);
+  const st=document.getElementById('sb-sync-time');
+  if(st)st.textContent=_lastSyncTime?'最終同期 '+fmtSyncTime(_lastSyncTime):'';
+  // 設定タブ
+  show('sync-login-btn',!li);
+  show('sync-logout-btn',li);
+  show('sync-action-row',li);
+  show('sync-warn-row',li);
+  const wt=document.getElementById('warn-toggle');if(wt)wt.checked=!syncWarnDisabled;
+}
+function toggleSyncWarnSetting(checked){syncWarnDisabled=!checked;saveData();}
+
+// 警告バナー
+function showSyncWarn(cloudTime,localTime){
+  const el=document.getElementById('sync-warn');
+  const txt=document.getElementById('sync-warn-text');
+  const chk=document.getElementById('warn-neverchk');
+  if(!el)return;
+  const fmt=d=>d?d.toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'不明';
+  if(txt)txt.innerHTML='クラウド: '+fmt(cloudTime)+'&nbsp;／&nbsp;最終同期: '+fmt(localTime)+'<br>上書きするとクラウドのデータが失われます。続けますか？';
+  if(chk)chk.checked=false;
+  el.classList.add('show');
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function dismissWarn(){const el=document.getElementById('sync-warn');if(el)el.classList.remove('show');}
+async function doOverwriteSave(){
+  const chk=document.getElementById('warn-neverchk');
+  if(chk&&chk.checked){syncWarnDisabled=true;saveData();const wt=document.getElementById('warn-toggle');if(wt)wt.checked=false;}
+  dismissWarn();
+  await gdSave();
+}
+async function gdSaveWithCheck(){
+  if(!gdToken){showToast('先にGoogleログインしてください');return;}
+  if(syncWarnDisabled){await gdSave();return;}
+  try{
+    const fid=_gdFileId||(await gdFindFile());
+    if(fid&&_lastSyncTime){
+      const res=await fetch('https://www.googleapis.com/drive/v3/files/'+fid+'?fields=modifiedTime',
+        {headers:{Authorization:'Bearer '+gdToken}});
+      if(res.ok){
+        const d=await res.json();
+        const cloudMod=d.modifiedTime?new Date(d.modifiedTime):null;
+        if(cloudMod&&_lastSyncTime&&cloudMod>_lastSyncTime){showSyncWarn(cloudMod,_lastSyncTime);return;}
+      }
+    }
+  }catch(e){}
+  await gdSave();
+}
+
+// ── ファイル検索 ──
+async function gdFindFile(){
+  const res=await fetch(
+    'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name%3D%22'+GD_FILE+'%22&fields=files(id,name)',
+    {headers:{Authorization:'Bearer '+gdToken}});
+  const d=await res.json();
+  const fid=(d.files&&d.files.length)?d.files[0].id:null;
+  if(fid)_gdFileId=fid;
+  return fid;
+}
+
+// ── 保存 ──
+async function gdSave(){
+  if(!gdToken){gdSetSub('先にログインしてください');return;}
+  gdSetSub('保存中…');
+  try{
+    const payload=JSON.stringify({version:'1.0',records,mealLogs,exerciseLogs,glucoseLogs,events,goal,profile,layout:appL,theme:appT,display:appD,sbRight:appSbRight,sbStats:showSbStats,og},null,2);
+    const fid=await gdFindFile();
+    let resp;
+    if(fid){
+      resp=await fetch('https://www.googleapis.com/upload/drive/v3/files/'+fid+'?uploadType=media',
+        {method:'PATCH',headers:{Authorization:'Bearer '+gdToken,'Content-Type':'application/json'},body:payload});
+    }else{
+      const meta=JSON.stringify({name:GD_FILE,parents:['appDataFolder']});
+      const bd='myrecordboundary',NL='\r\n';
+      const parts=['--'+bd,'Content-Type: application/json; charset=UTF-8','',meta,'--'+bd,'Content-Type: application/json','',payload,'--'+bd+'--'];
+      resp=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
+        {method:'POST',headers:{Authorization:'Bearer '+gdToken,'Content-Type':'multipart/related; boundary='+bd},body:parts.join(NL)});
+    }
+    if(resp.ok){
+      _lastSyncTime=new Date();updHdrSync();
+      gdSetSub('Drive に保存しました ✓ ('+_lastSyncTime.toLocaleTimeString('ja-JP')+')');
+      showToast('クラウドに保存しました ✓');
+    }else{
+      const e2=await resp.json();
+      gdSetSub('保存に失敗: '+((e2.error&&e2.error.message)||resp.status));
+    }
+  }catch(e){gdSetSub('エラー: '+e.message);}
+}
+
+// ── 読み込み ──
+async function gdLoad(){
+  if(!gdToken){gdSetSub('先にログインしてください');return;}
+  gdSetSub('読み込み中…');
+  try{
+    const fid=await gdFindFile();
+    if(!fid){gdSetSub('Drive にデータが見つかりません');return;}
+    const res=await fetch('https://www.googleapis.com/drive/v3/files/'+fid+'?alt=media',
+      {headers:{Authorization:'Bearer '+gdToken}});
+    const d=await res.json();
+    if(d.records)records=d.records;
+    if(d.mealLogs)mealLogs=d.mealLogs;
+    if(d.exerciseLogs)exerciseLogs=d.exerciseLogs;
+    if(d.glucoseLogs)glucoseLogs=d.glucoseLogs;
+    if(d.events)events=d.events;
+    if(d.goal!=null)goal=d.goal;
+    if(d.profile)profile={...profile,...d.profile};
+    if(d.layout)appL=d.layout;
+    if(d.theme)appT=d.theme;
+    if(d.display)appD=d.display;
+    if(d.sbRight!=null)appSbRight=d.sbRight;
+    if(d.sbStats!=null)showSbStats=d.sbStats;
+    if(d.og)og={...og,...d.og};
+    _lastSyncTime=new Date();
+    saveData();
+    applyLayout();applyT(appT);applyD(appD);
+    loadForm(curDate);updSidebar();updPeriodSec();updBustLbl();
+    updHdrSync();
+    gdSetSub('Drive から読み込みました ✓ ('+new Date().toLocaleTimeString('ja-JP')+')');
+    showToast('クラウドから読み込みました ✓');
+  }catch(e){gdSetSub('エラー: '+e.message);}
+}
+
+// 同期時刻を毎分更新
+setInterval(()=>{
+  if(_lastSyncTime){
+    const ht=document.getElementById('hdr-sync-time');if(ht)ht.textContent='最終同期 '+fmtSyncTime(_lastSyncTime);
+    const st=document.getElementById('sb-sync-time');if(st)st.textContent='最終同期 '+fmtSyncTime(_lastSyncTime);
+  }
+},60000);
 const METRICS={
   weight:     {label:'体重',     unit:'kg',   axis:'y',  color:'#c8a8e9', type:'line'},
   bodyFat:    {label:'体脂肪率', unit:'%',    axis:'y1', color:'#ff7eb3', type:'line'},
