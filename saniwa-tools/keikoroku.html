@@ -1220,10 +1220,13 @@ let _igChart=null;
 let _igInstId=null;
 let _igPeriod='all';
 let igHlInst=null; // この刀のメモの強調ID
+let _igAllDates=[];   // タッチ操作用
+let _igPanMin=null;   // パン/ズーム状態（nullなら全表示）
+let _igPanMax=null;
 
 function showInstGraph(id){
   const inst=UD.instances.find(i=>i.id===id);if(!inst)return;
-  _igInstId=id;_igPeriod='all';
+  _igInstId=id;_igPeriod='all';_igPanMin=null;_igPanMax=null;
   document.getElementById('igOverlay').classList.remove('hidden');
   renderInstGraph();
 }
@@ -1243,7 +1246,8 @@ function renderInstGraph(){
   if(titleEl)titleEl.innerHTML=`<span style="width:10px;height:10px;border-radius:50%;background:${col};display:inline-block;margin-right:6px"></span>${nm}`;
   // 期間ボタン
   const perEl=document.getElementById('ig-periods');
-  if(perEl)perEl.innerHTML=PERIODS.map(p=>`<button class="btn sm ${_igPeriod===p.k?'on':''}" onclick="setIgPeriod('${p.k}')">${p.l}</button>`).join('');
+  if(perEl)perEl.innerHTML=PERIODS.map(p=>`<button class="btn sm ${_igPeriod===p.k?'on':''}" onclick="setIgPeriod('${p.k}')">${p.l}</button>`).join('')
+    +(_igPanMin!==null?`<button class="btn sm" onclick="_igPanMin=null;_igPanMax=null;renderInstGraph()" title="ズームリセット" style="margin-left:4px">🔍×</button>`:'');
 
   // 縦軸ボタン
   const igAxisBtns=document.getElementById('ig-axis-btns');
@@ -1271,6 +1275,7 @@ function renderInstGraph(){
   (inst.instNotes||[]).forEach(n=>{if(n.date)dateSet.add(n.date);});
   let allDates=[...dateSet].sort();
   if(fromStr)allDates=allDates.filter(d=>d>=fromStr);
+  _igAllDates=allDates; // タッチ操作用に保存
   const labels=allDates.map(d=>{const[y,m,dd]=d.split('-');return m+'/'+dd;});
   const sorted=[...inst.history].sort((a,bb)=>a.date.localeCompare(bb.date));
   const dark=resolveThemeAttr().endsWith('-dark');
@@ -1347,7 +1352,7 @@ function renderInstGraph(){
         else if(nearest&&nearestType==='inst'){igHlInst=(igHlInst===nearest)?null:nearest;if(_igChart)_igChart.update();renderInstGraph();}
       },
       scales:{
-        x:{grid:{color:gridCol},ticks:{color:textCol,font:{size:10},maxTicksLimit:12}},
+        x:{...(_igPanMin!==null?{min:_igPanMin,max:_igPanMax}:{}),grid:{color:gridCol},ticks:{color:textCol,font:{size:10},maxTicksLimit:12}},
         ...(igShowExp?{yExp:{type:'linear',position:'left',title:{display:true,text:'累積経験値（万）',color:textCol,font:{size:10}},
           grid:{color:gridCol},ticks:{color:textCol,font:{size:10},callback:v=>v+'万'}}}:{}),
         ...(igShowLv?{yLv:{type:'linear',position:igShowExp?'right':'left',min:1,title:{display:true,text:'Lv',color:textCol,font:{size:10}},
@@ -1359,6 +1364,7 @@ function renderInstGraph(){
       }
     }
   });
+  attachChartTouch(_igChart,()=>_igAllDates,(mn,mx)=>{_igPanMin=mn;_igPanMax=mx;});
   // イベント・メモ一覧
   const evnote=document.getElementById('ig-evnote');
   if(!evnote)return;
@@ -1384,7 +1390,7 @@ function renderInstGraph(){
   evnote.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px"><div><div class="gsect" style="margin-bottom:3px">📝 この刀のメモ（タップで強調）</div>${inL}</div><div><div class="gsect" style="margin-bottom:3px">全体メモ（タップで強調）</div>${ntL}</div><div><div class="gsect" style="margin-bottom:3px">期間メモ</div>${evL}</div></div>`;
 }
 
-function setIgPeriod(p){_igPeriod=p;renderInstGraph();}
+function setIgPeriod(p){_igPeriod=p;_igPanMin=null;_igPanMax=null;renderInstGraph();}
 function setIgAxisMode(m){_igAxisMode=m;renderInstGraph();}
 function igHlNote(d){hlNote=(hlNote===d)?null:d;if(_igChart)_igChart.update();renderInstGraph();}
 function igHlInstNote(nid){igHlInst=(igHlInst===nid)?null:nid;if(_igChart)_igChart.update();renderInstGraph();}
@@ -1612,7 +1618,7 @@ function saveCustom(cid,isNew){
 let _igCustomCid=null;
 function showCustomGraph(cid){
   const c=UD.customSwords.find(x=>x.cid===cid);if(!c)return;
-  _igCustomCid=cid;_igInstId=null;_igPeriod='all';igHlInst=null;
+  _igCustomCid=cid;_igInstId=null;_igPeriod='all';igHlInst=null;_igPanMin=null;_igPanMax=null;
   document.getElementById('igOverlay').classList.remove('hidden');
   renderCustomGraph();
 }
@@ -1622,7 +1628,8 @@ function renderCustomGraph(){
   const titleEl=document.getElementById('ig-title');
   if(titleEl)titleEl.innerHTML=`<span style="width:10px;height:10px;border-radius:50%;background:${col};display:inline-block;margin-right:6px"></span>${esc(c.name)}${c.isKiwame?' 極':''}`;
   const perEl=document.getElementById('ig-periods');
-  if(perEl)perEl.innerHTML=PERIODS.map(p=>`<button class="btn sm ${_igPeriod===p.k?'on':''}" onclick="_igPeriod='${p.k}';renderCustomGraph()">${p.l}</button>`).join('');
+  if(perEl)perEl.innerHTML=PERIODS.map(p=>`<button class="btn sm ${_igPeriod===p.k?'on':''}" onclick="_igPeriod='${p.k}';_igPanMin=null;_igPanMax=null;renderCustomGraph()">${p.l}</button>`).join('')
+    +(_igPanMin!==null?`<button class="btn sm" onclick="_igPanMin=null;_igPanMax=null;renderCustomGraph()" title="ズームリセット" style="margin-left:4px">🔍×</button>`:'');
   const igAxisBtns=document.getElementById('ig-axis-btns');
   if(igAxisBtns)igAxisBtns.innerHTML=[{k:'both',l:'両方'},{k:'exp',l:'累積経験値'},{k:'lv',l:'レベル'}].map(a=>`<button class="btn sm ${_igAxisMode===a.k?'on':''}" onclick="setIgAxisMode('${a.k}')">${a.l}</button>`).join('');
   if(!c.history||!c.history.length){
@@ -1643,6 +1650,7 @@ function renderCustomGraph(){
   (UD.notes||[]).forEach(n=>{if(n.date)dateSet.add(n.date);});
   let allDates=[...dateSet].sort();
   if(fromStr)allDates=allDates.filter(d=>d>=fromStr);
+  _igAllDates=allDates; // タッチ操作用に保存
   const labels=allDates.map(d=>{const[y,m,dd]=d.split('-');return m+'/'+dd;});
   const sorted=[...c.history].sort((a,b)=>a.date.localeCompare(b.date));
   const dark=resolveThemeAttr().endsWith('-dark');
@@ -1683,7 +1691,7 @@ function renderCustomGraph(){
         (UD.notes||[]).forEach(n=>{const nx=igX(chart,n.date);if(nx==null)return;const dist=Math.abs(x-nx);if(dist<minDist){minDist=dist;nearest=n.date;}});
         if(nearest){hlNote=(hlNote===nearest)?null:nearest;if(_igChart)_igChart.update();renderCustomGraph();}
       },
-      scales:{x:{grid:{color:gridCol},ticks:{color:textCol,font:{size:10},maxTicksLimit:12}},
+      scales:{x:{...(_igPanMin!==null?{min:_igPanMin,max:_igPanMax}:{}),grid:{color:gridCol},ticks:{color:textCol,font:{size:10},maxTicksLimit:12}},
         ...(igShowExp?{yExp:{type:'linear',position:'left',title:{display:true,text:'累積経験値（万）',color:textCol,font:{size:10}},grid:{color:gridCol},ticks:{color:textCol,font:{size:10},callback:v=>v+'万'}}}:{}),
         ...(igShowLv?{yLv:{type:'linear',position:igShowExp?'right':'left',min:1,title:{display:true,text:'Lv',color:textCol,font:{size:10}},grid:{display:igShowExp?false:true,color:gridCol},ticks:{color:textCol,font:{size:10}}}}:{}),
       },
@@ -1691,6 +1699,7 @@ function renderCustomGraph(){
         tooltip:{callbacks:{label:ctx=>{const v=ctx.parsed.y;if(v==null)return null;return ctx.dataset.yAxisID==='yExp'?Math.round(v)+'万exp':'Lv.'+v;}}}}
     }
   });
+  attachChartTouch(_igChart,()=>_igAllDates,(mn,mx)=>{_igPanMin=mn;_igPanMax=mx;});
   const evnote=document.getElementById('ig-evnote');if(!evnote)return;
   evnote.innerHTML=`<div style="font-size:11px;color:var(--text3);margin-top:6px">メモ・期間メモは稽古録の「期間メモ・日メモ」タブから追加できます。</div>`;
 }
@@ -1728,6 +1737,9 @@ const EVT_COLS=['#c8a84b','#70a0e8','#e87070','#70c880','#c870c8','#e8a070','#70
 let _gTab='chart'; // デフォルトをグラフに
 let _gChart=null;
 let _gSelIds=[];          // 選択順を保持するArray
+let _gAllDates=[];        // タッチ操作用
+let _gPanMin=null;        // パン/ズーム状態（nullなら全表示）
+let _gPanMax=null;
 let _evColIdx=0;
 let _gAxisMode='both';
 let _igAxisMode='both';
@@ -1828,7 +1840,8 @@ function renderGChart(body){
   try{
   if(_gChart){_gChart.destroy();_gChart=null;}
   const allInsts=UD.instances.filter(i=>i.history&&i.history.length>0);
-  const periodBtns=PERIODS.map(p=>`<button class="btn sm ${_gPeriod===p.k?'on':''}" onclick="setGPeriod('${p.k}')">${p.l}</button>`).join('');
+  const periodBtns=PERIODS.map(p=>`<button class="btn sm ${_gPeriod===p.k?'on':''}" onclick="setGPeriod('${p.k}')">${p.l}</button>`).join('')
+    +(_gPanMin!==null?`<button class="btn sm" onclick="_gPanMin=null;_gPanMax=null;renderGraphBody()" title="ズームリセット" style="margin-left:4px">🔍×</button>`:'');
   const axisBtns=[{k:'both',l:'両方'},{k:'exp',l:'累積経験値'},{k:'lv',l:'レベル'}].map(a=>`<button class="btn sm ${_gAxisMode===a.k?'on':''}" onclick="setGAxisMode('${a.k}')">${a.l}</button>`).join('');
   const noData=!allInsts.length?`<div class="no-data">📝 まだ記録がありません。<br>男士の設定画面で累積経験値を入力して保存すると記録されます。</div>`:'';
 
@@ -1912,7 +1925,7 @@ function toggleGChipType(t){
   }
   renderGraphBody();
 }
-function setGPeriod(p){_gPeriod=p;renderGraphBody();}
+function setGPeriod(p){_gPeriod=p;_gPanMin=null;_gPanMax=null;renderGraphBody();}
 function toggleGSel(id){
   const idx=_gSelIds.indexOf(id);
   if(idx>=0)_gSelIds.splice(idx,1);
@@ -1946,6 +1959,7 @@ function drawChart(selectedInsts){
   let allDates=[...dateSet].sort();
   if(fromStr)allDates=allDates.filter(d=>d>=fromStr);
   if(!allDates.length)return;
+  _gAllDates=allDates; // タッチ操作用に保存
 
   // 資材帳方式: 補間で日付→ピクセル（allDatesにない日付でも正確に配置）
   function gX(chart,d){
@@ -2065,7 +2079,7 @@ function drawChart(selectedInsts){
         if(nearest)setHlNote(nearest);
       },
       scales:{
-        x:{grid:{color:gridCol},ticks:{color:textCol,font:{size:10},maxTicksLimit:14}},
+        x:{...(_gPanMin!==null?{min:_gPanMin,max:_gPanMax}:{}),grid:{color:gridCol},ticks:{color:textCol,font:{size:10},maxTicksLimit:14}},
         ...(showExp?{yExp:{type:'linear',position:'left',
           title:{display:true,text:'累積経験値（万）',color:textCol,font:{size:10}},
           grid:{color:gridCol},ticks:{color:textCol,font:{size:10},callback:v=>v+'万'}
@@ -2088,10 +2102,123 @@ function drawChart(selectedInsts){
       }
     }
   });
+  attachChartTouch(_gChart,()=>_gAllDates,(mn,mx)=>{_gPanMin=mn;_gPanMax=mx;});
 }
 function setGAxisMode(m){_gAxisMode=m;renderGraphBody();}
 
-// ── 男士選択オーバーレイ（稽古録用）──────────────────────────
+// ── タッチ操作（スワイプ/ピンチ）共通ハンドラ ─────────────────
+// chart: Chart.jsインスタンス
+// getAllDates: ()=>日付配列
+// onSaveRange: (min,max)=>保存コールバック
+function attachChartTouch(chart,getAllDates,onSaveRange){
+  if(!chart||!chart.canvas)return;
+  const canvas=chart.canvas;
+  let t1x=null,t1y=null,t2x=null;
+  let startMin=null,startMax=null,startDist=null;
+  let isHorizontal=null; // null=未判定, true=横, false=縦
+
+  function getCurRange(){
+    const dates=getAllDates();
+    const total=dates.length;
+    const xsc=chart.scales&&chart.scales.x;
+    if(!xsc)return{min:0,max:total-1,total};
+    // Chart.js4: category scaleではmin/maxがオプション値、実際の表示範囲はmin/max
+    const mn=Math.max(0,Math.round(xsc.min??0));
+    const mx=Math.min(total-1,Math.round(xsc.max??(total-1)));
+    return{min:mn,max:mx,total};
+  }
+
+  function applyRange(min,max){
+    const total=getAllDates().length;
+    min=Math.max(0,min);
+    max=Math.min(total-1,max);
+    if(max-min<1)return;
+    if(!chart.options||!chart.options.scales||!chart.options.scales.x)return;
+    chart.options.scales.x.min=Math.round(min);
+    chart.options.scales.x.max=Math.round(max);
+    try{chart.update('none');}catch(e){}
+  }
+
+  canvas.addEventListener('touchstart',e=>{
+    if(e.touches.length===1){
+      const r=getCurRange();
+      t1x=e.touches[0].clientX; t1y=e.touches[0].clientY;
+      t2x=null; startDist=null;
+      startMin=r.min; startMax=r.max;
+      isHorizontal=null;
+      // touchstartではpreventDefaultしない（縦スクロールを妨げないため）
+    }else if(e.touches.length===2){
+      const r=getCurRange();
+      t1x=e.touches[0].clientX; t1y=e.touches[0].clientY;
+      t2x=e.touches[1].clientX;
+      startDist=Math.abs(t1x-t2x);
+      startMin=r.min; startMax=r.max;
+      isHorizontal=null;
+      e.preventDefault(); // ピンチは常にpreventDefault
+    }
+  },{passive:false});
+
+  canvas.addEventListener('touchmove',e=>{
+    if(e.touches.length>=2&&startDist!==null){
+      // ピンチズーム
+      e.preventDefault();
+      const d=Math.abs(e.touches[0].clientX-e.touches[1].clientX);
+      if(d<5)return;
+      const scale=startDist/d; // >1=ズームイン（指を閉じる）, <1=ズームアウト
+      const center=(startMin+startMax)/2;
+      const range=startMax-startMin;
+      const newRange=Math.max(2,Math.min(getAllDates().length-1,range*scale));
+      applyRange(center-newRange/2,center+newRange/2);
+    }else if(e.touches.length===1&&t1x!==null){
+      // 方向判定（初回のみ）
+      const dx=e.touches[0].clientX-t1x;
+      const dy=e.touches[0].clientY-t1y;
+      if(isHorizontal===null){
+        if(Math.abs(dx)>8||Math.abs(dy)>8){
+          isHorizontal=Math.abs(dx)>Math.abs(dy);
+        }
+      }
+      if(!isHorizontal)return; // 縦スクロールは親に任せる
+      e.preventDefault();
+      // スワイプパン
+      const w=canvas.clientWidth||300;
+      const range=startMax-startMin;
+      if(range<=0)return;
+      const perPx=range/w;
+      const shift=-dx*perPx;
+      const total=getAllDates().length;
+      const newMin=Math.max(0,Math.min(total-1-range,startMin+shift));
+      applyRange(newMin,newMin+range);
+    }
+  },{passive:false});
+
+  canvas.addEventListener('touchend',e=>{
+    if(e.touches.length===0){
+      // 指が全部離れたら状態を保存
+      const xsc=chart.scales&&chart.scales.x;
+      if(xsc&&(xsc.min!=null||xsc.max!=null)){
+        const total=getAllDates().length;
+        const mn=Math.max(0,Math.round(xsc.min??0));
+        const mx=Math.min(total-1,Math.round(xsc.max??(total-1)));
+        // 全範囲ならnullに戻す
+        if(mn<=0&&mx>=total-1) onSaveRange(null,null);
+        else onSaveRange(mn,mx);
+      }
+      t1x=null;t1y=null;t2x=null;startDist=null;startMin=null;startMax=null;isHorizontal=null;
+    }else if(e.touches.length===1){
+      // 2本→1本: ピンチ終了、現在位置から再スワイプ可能に
+      const r=getCurRange();
+      t1x=e.touches[0].clientX; t1y=e.touches[0].clientY;
+      t2x=null; startDist=null;
+      startMin=r.min; startMax=r.max;
+      isHorizontal=null;
+    }
+  },{passive:false});
+
+  canvas.addEventListener('touchcancel',()=>{
+    t1x=null;t1y=null;t2x=null;startDist=null;startMin=null;startMax=null;isHorizontal=null;
+  });
+}
 function openInstPick(){
   document.getElementById('instPickOverlay').classList.remove('hidden');
   renderInstPickControls();
