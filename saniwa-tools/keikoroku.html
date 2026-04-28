@@ -205,6 +205,9 @@ body.mobile.hdr-expand .mobile-menu-btn{display:inline-flex!important}
 body.mobile .hdr-btns{display:none!important}
 /* モバイル時はメインヘッダーの📈稽古録ボタンを非表示（2行目に移動） */
 body.mobile #hdrGraphBtn{display:none}
+/* モバイル1行目右端のレイアウト切替ボタン */
+.mobile-layout-btn{display:none}
+body.mobile .mobile-layout-btn{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
 /* ☁ポップアップ */
 #cloudPopup{display:none;position:fixed;top:calc(var(--header-h) + 38px);left:0;right:0;z-index:250;padding:0 8px}
 #cloudPopup.open{display:block}
@@ -295,6 +298,8 @@ hr.mhr{border:none;border-top:1px solid var(--border);margin:12px 0}
     <div class="header-sep"></div>
     <!-- PC時のみ表示されるボタン群 -->
     <div class="hdr-btns" id="hdrBtns">
+      <!-- 審神者の道具箱リンク（PC：アイコン＋テキスト） -->
+      <a href="saniwa_top.html" class="btn sm" style="flex-shrink:0;text-decoration:none;gap:5px" title="審神者の道具箱を開く"><img src="cat3.png" width="16" height="16" style="border-radius:2px;display:block;flex-shrink:0" alt=""> 審神者の道具箱</a>
       <!-- スマホ表示切替 -->
       <button class="btn sm" id="layout-btn" onclick="toggleLayoutBtn()" title="表示切り替え" style="flex-shrink:0"></button>
       <!-- A案/B案同期ボタン（PC用・updatePcSyncHdr()で動的生成） -->
@@ -304,7 +309,10 @@ hr.mhr{border:none;border-top:1px solid var(--border);margin:12px 0}
       <button class="btn sm" onclick="showIO()">💾 データ</button>
       <button class="btn sm" onclick="showSettings()">⚙ 設定</button>
     </div>
-    <!-- モバイル用：右端の「…」ボタン -->
+    <!-- モバイル用：1行目右端のレイアウト切替ボタン -->
+    <a href="saniwa_top.html" class="btn icon mobile-layout-btn" style="text-decoration:none" title="審神者の道具箱"><img src="cat3.png" width="18" height="18" style="border-radius:2px;display:block" alt="審神者の道具箱"></a>
+    <button class="btn icon mobile-layout-btn" id="mobileLayoutBtn" onclick="toggleLayoutBtn()" title="表示切り替え"></button>
+    <!-- モバイル用：右端の「…」ボタン（hdr-expandモード時のみ表示） -->
     <button class="btn icon mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()" title="メニュー">⋯</button>
   </header>
   <!-- モバイル2行目ヘッダー（案③常時表示 / 案②では⋯タップで開閉） -->
@@ -767,9 +775,10 @@ function updateMobilePositions(){
 }
 function updateLayoutBtn(){
   const btn=document.getElementById('layout-btn');
-  if(!btn)return;
+  const btnSp=document.getElementById('mobileLayoutBtn');
   const mob=currentIsMobile();
-  btn.textContent=mob?'🖥 PC表示':'📱 スマホ表示';
+  if(btn)btn.textContent=mob?'🖥 PC表示':'📱 スマホ表示';
+  if(btnSp)btnSp.textContent=mob?'🖥':'📱';
   // モバイルメニューをリセット
   const btns=document.getElementById('hdrBtns');
   const mbtn=document.getElementById('mobileMenuBtn');
@@ -2679,6 +2688,26 @@ function showSettings(){
   <div class="gsect" style="margin-bottom:8px">🗡 仮登録</div>
   <div style="font-size:11px;color:var(--text2);margin-bottom:8px">マスターデータにない刀剣を仮登録してグラフに表示できます。</div>
   <button class="btn" onclick="cM();showCustomList()" style="width:100%;justify-content:center">🗡 仮登録リストを開く</button>
+  <hr class="mhr">
+  <div class="gsect" style="margin-bottom:8px">🔗 関連ツール</div>
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <a href="saniwa_top.html" style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg2);text-decoration:none;color:var(--text)">
+      <img src="cat3.png" width="20" height="20" style="border-radius:3px;flex-shrink:0" alt="">
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--accent)">審神者の道具箱</div>
+        <div style="font-size:11px;color:var(--text3)">saniwa_top.html</div>
+      </div>
+      <span style="margin-left:auto;font-size:11px;color:var(--text3)">↗</span>
+    </a>
+    <a href="shizaichou.html" style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg2);text-decoration:none;color:var(--text)">
+      <span style="font-size:20px;flex-shrink:0;line-height:1">📒</span>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--accent)">資源帳</div>
+        <div style="font-size:11px;color:var(--text3)">shizaichou.html</div>
+      </div>
+      <span style="margin-left:auto;font-size:11px;color:var(--text3)">↗</span>
+    </a>
+  </div>
   <div class="mact"><button class="btn on" onclick="cM()">閉じる</button></div>`);
 }
 function setPalette(p){ST.palette=p;applyTheme();saveST();showSettings();}

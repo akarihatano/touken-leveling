@@ -190,8 +190,63 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 .empty{text-align:center;color:var(--muted2);padding:50px 0}.empty .ei{font-size:28px;margin-bottom:8px}
 
 /* ═══════════════════════════════
-   CHART
+   CALENDAR
 ═══════════════════════════════ */
+.hist-toggle{display:flex;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.ht-btn{flex:1;padding:8px 4px;background:none;border:none;border-right:1px solid var(--border2);color:var(--muted);font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .15s}
+.ht-btn:last-child{border-right:none}
+.ht-btn.active{background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
+.cal-ctrl{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.cal-month-lbl{font-size:13px;font-weight:700;color:var(--text);letter-spacing:1px}
+.cal-nav-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:16px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-family:inherit}
+.cal-nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.period-vis-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted2);font-size:13px;padding:3px 8px;cursor:pointer;transition:all .15s;font-family:inherit;letter-spacing:.5px;font-size:11px}
+.period-vis-btn.on{border-color:#ff7eb3;color:#ff7eb3;background:color-mix(in srgb,#ff7eb3 12%,transparent)}
+.cal-wdays{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:3px}
+.cal-wd{text-align:center;font-size:8px;font-weight:700;color:var(--muted);padding:3px 0}
+.cal-wd.sun{color:var(--danger)}.cal-wd.sat{color:var(--accent)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:10px}
+.cal-cell{background:var(--bg2);border:1px solid var(--border);border-radius:7px;min-height:50px;padding:4px 3px 3px;cursor:pointer;transition:all .15s;position:relative;display:flex;flex-direction:column}
+.cal-cell:hover{border-color:var(--accent);background:var(--bg3)}
+.cal-cell.today{border-color:var(--accent);border-width:1.5px}
+.cal-cell.empty{background:transparent;border-color:transparent;cursor:default;pointer-events:none}
+.cal-cell.no-rec{opacity:.55}
+.cal-dn{font-size:9px;font-weight:700;color:var(--muted);line-height:1;margin-bottom:2px}
+.cal-cell.today .cal-dn{color:var(--accent)}
+.cal-cell.sun .cal-dn{color:var(--danger)}
+.cal-emoji{font-size:11px;line-height:1;min-height:13px;margin-bottom:2px}
+.cal-dots{display:flex;flex-wrap:wrap;gap:2px;margin-top:auto}
+.cal-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.cal-legend{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px}
+.cal-leg{display:flex;align-items:center;gap:4px;font-size:8px;color:var(--muted);letter-spacing:.5px}
+.cal-leg-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* ═══════════════════════════════
+   DAY DETAIL OVERLAY
+═══════════════════════════════ */
+.day-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:center;justify-content:center;padding:16px}
+.day-overlay.show{display:flex}
+.day-panel{background:var(--bg);border:1px solid var(--border2);border-radius:14px;width:100%;max-width:480px;max-height:86vh;overflow-y:auto;padding:0 0 20px}
+#page-wrap.layout-desktop .day-panel{max-height:80vh}
+.dp-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--border2);z-index:1}
+.dp-nav{display:flex;align-items:center;gap:8px}
+.dp-nav-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:18px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-family:inherit}
+.dp-nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.dp-date{font-size:13px;font-weight:700;color:var(--text);letter-spacing:1px;min-width:120px;text-align:center}
+.dp-close{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:16px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
+.dp-close:hover{border-color:var(--danger);color:var(--danger)}
+.dp-body{padding:14px 16px}
+.dp-section{margin-bottom:12px}
+.dp-sec-title{font-size:8px;color:var(--accent);letter-spacing:2px;margin-bottom:6px}
+.dp-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)}
+.dp-row:last-child{border-bottom:none}
+.dp-lbl{font-size:10px;color:var(--muted)}
+.dp-val{font-size:12px;font-weight:700}
+.dp-chip{display:inline-flex;background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:5px;padding:2px 8px;font-size:10px;color:var(--accent);margin:2px 3px 2px 0}
+.dp-period-chip{background:color-mix(in srgb,#ff7eb3 12%,transparent);border-color:color-mix(in srgb,#ff7eb3 30%,transparent);color:#ff7eb3}
+.dp-empty{font-size:11px;color:var(--muted2);text-align:center;padding:20px 0}
+.dp-edit-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;background:var(--accent);border:none;border-radius:8px;color:var(--bg);font-weight:700;padding:11px;font-size:12px;cursor:pointer;font-family:inherit;letter-spacing:1px;margin-top:14px;transition:opacity .15s}
+.dp-edit-btn:hover{opacity:.82}
 .chart-ctrl{margin-bottom:12px}
 .period-btns{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
 .period-btn{background:none;border:1px solid var(--border2);border-radius:20px;color:var(--muted);font-family:inherit;font-size:10px;font-weight:700;letter-spacing:.5px;padding:5px 12px;cursor:pointer;transition:all .15s;white-space:nowrap;}
@@ -219,74 +274,6 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 .ev-item{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;background:var(--bg2);border:1px solid var(--border2);border-left:3px solid #ffb830;border-radius:6px;margin-bottom:5px;font-size:10px;cursor:pointer;transition:all .15s;}
 .ev-item:hover{border-color:var(--accent)}
 .ev-item.hi{background:color-mix(in srgb,#ffb830 12%,transparent)}
-/* ═══════════════════════════════
-   PERIOD DETAIL
-═══════════════════════════════ */
-.flow-btn{padding:6px 10px;border-radius:8px;border:1.5px solid var(--border2);background:var(--bg3);color:var(--muted);font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;}
-.flow-btn .fl-em{font-size:16px}.flow-btn .fl-lb{font-size:9px;letter-spacing:.3px;white-space:nowrap}
-.flow-btn.sel{border-color:#ff7eb3;background:color-mix(in srgb,#ff7eb3 22%,transparent);color:#ff7eb3;}
-.pain-lv-btn{min-width:42px;height:48px;border-radius:9px;border:1.5px solid var(--border2);background:var(--bg3);color:var(--muted);font-family:inherit;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;flex:1;}
-.pain-lv-btn .lv-n{font-size:16px;font-weight:700;line-height:1}
-.pain-lv-btn .lv-s{font-size:8px;line-height:1;white-space:nowrap}
-.pain-lv-btn.sel{border-color:#ff7eb3;background:color-mix(in srgb,#ff7eb3 22%,transparent);color:#ff7eb3;}
-.period-tag-btn{padding:5px 11px;border-radius:20px;border:1.5px solid var(--border2);background:none;color:var(--muted);font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
-.period-tag-btn.sel{background:color-mix(in srgb,#ff7eb3 20%,transparent);border-color:#ff7eb3;color:#ff7eb3;}
-.chip.period-d{border-color:color-mix(in srgb,#ff7eb3 40%,var(--border));background:color-mix(in srgb,#ff7eb3 8%,transparent)}
-.chip.period-d .cl{color:#ff7eb3}.chip.period-d .cv{color:#ff7eb3;font-weight:700}
-.swipe-hint{text-align:center;font-size:9px;color:var(--muted2);letter-spacing:1px;margin-top:6px;pointer-events:none;opacity:.7;}
-
-/* ══ CALENDAR HISTORY ══ */
-.hist-mode-tabs{display:flex;gap:5px;margin-bottom:10px}
-.hist-mode-tab{flex:1;padding:7px;border:1px solid var(--border2);border-radius:8px;background:none;color:var(--muted);font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .15s}
-.hist-mode-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
-.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.cal-nav-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:14px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
-.cal-nav-btn:hover{border-color:var(--accent);color:var(--accent)}
-.cal-month-lbl{font-size:15px;font-weight:700;color:var(--text);letter-spacing:1px}
-.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px}
-.cal-dow span{text-align:center;font-size:9px;color:var(--muted);letter-spacing:.5px;padding:3px 0}
-.cal-dow span:first-child{color:color-mix(in srgb,var(--accent) 80%,#f66)}
-.cal-dow span:last-child{color:color-mix(in srgb,var(--accent) 80%,#66f)}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.cal-cell{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;transition:background .12s;position:relative;min-width:0}
-.cal-cell:hover{background:var(--bg3)}
-.cal-cell.empty{cursor:default;pointer-events:none}
-.cal-cell.today{outline:1.5px solid var(--accent);outline-offset:-1px}
-.cal-cell.cal-sel{background:color-mix(in srgb,var(--accent) 18%,transparent)}
-.cal-day{font-size:10px;color:var(--text);line-height:1;font-weight:500}
-.cal-cell.today .cal-day{color:var(--accent);font-weight:700}
-.cal-cell.other-m .cal-day{color:var(--muted);opacity:.35}
-.cal-dots{display:flex;gap:1.5px;margin-top:2px;height:5px;align-items:center;justify-content:center}
-.cdot{width:4px;height:4px;border-radius:50%;flex-shrink:0}
-.cdot-w{background:var(--accent)}
-.cdot-p{background:#ff7eb3}
-.cdot-e{background:#6bca9a}
-.cdot-ev{background:#ffb830}
-.cal-detail{margin-top:10px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:12px;animation:fadeIn .15s}
-.cd-head{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1px;margin-bottom:8px}
-.cd-row{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:12px;color:var(--text)}
-.cd-lbl{color:var(--muted);font-size:11px;min-width:60px}
-.cd-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
-.cd-chip{font-size:10px;padding:3px 8px;border-radius:10px;border:1px solid var(--border2);color:var(--muted);background:var(--bg3)}
-.cd-chip.pink{border-color:color-mix(in srgb,#ff7eb3 40%,transparent);color:#ff7eb3;background:color-mix(in srgb,#ff7eb3 8%,transparent)}
-.cd-chip.green{border-color:color-mix(in srgb,#6bca9a 40%,transparent);color:#6bca9a;background:color-mix(in srgb,#6bca9a 8%,transparent)}
-.cd-chip.amber{border-color:color-mix(in srgb,#ffb830 40%,transparent);color:#ffb830;background:color-mix(in srgb,#ffb830 8%,transparent)}
-.cd-edit-btn{margin-top:10px;width:100%;padding:7px;border:1px solid var(--border2);border-radius:7px;background:none;color:var(--text);font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.5px;transition:all .15s}
-.cd-edit-btn:hover{border-color:var(--accent);color:var(--accent)}
-.cal-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;padding-top:8px;border-top:1px solid var(--border)}
-.cl-item{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--muted);letter-spacing:.5px}
-
-/* ══ GROUP DRAG & DROP ══ */
-.grp-drag-handle{display:flex;flex-direction:column;gap:3px;padding:6px 8px 6px 12px;cursor:grab;flex-shrink:0;touch-action:none}
-.grp-drag-handle span{display:block;width:13px;height:1.5px;background:var(--border2);border-radius:1px;transition:background .12s}
-.group-hd:hover .grp-drag-handle span,.group.dnd-dragging .grp-drag-handle span{background:var(--accent)}
-.group.dnd-dragging{opacity:.35;outline:1.5px dashed var(--accent);border-radius:10px}
-.group.dnd-over{outline:2px solid var(--accent);border-radius:10px;outline-offset:2px}
-.dnd-mode-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:color-mix(in srgb,var(--accent) 10%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:9px;margin-bottom:10px}
-.dnd-mode-lbl{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1px}
-.dnd-mode-hint{font-size:9px;color:var(--muted);letter-spacing:.3px}
-.dnd-mode-done{padding:5px 13px;border:1px solid var(--accent);border-radius:7px;background:none;color:var(--accent);font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s}
-.dnd-mode-done:hover{background:var(--accent);color:var(--bg)}
 .ev-date{color:var(--muted);flex-shrink:0;margin-top:1px}
 .ev-title{font-weight:700}
 
@@ -294,36 +281,54 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 #dp-popup input[type=date]:focus{border-color:var(--accent)}
 
 /* ═══════════════════════════════
-   CLOUD SYNC
+   PERIOD DETAIL CONTROLS
 ═══════════════════════════════ */
-.sync-area{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
-.sync-time-lbl{font-size:8px;color:var(--muted);white-space:nowrap;min-height:12px;text-align:right;letter-spacing:.5px}
+.blood-grid{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.bv-btn{padding:5px 13px;border-radius:20px;border:1.5px solid var(--border2);background:none;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;}
+.bv-btn:hover{border-color:#ff7eb3;color:#ff7eb3}
+.bv-btn.sel{background:color-mix(in srgb,#ff7eb3 25%,transparent);border-color:#ff7eb3;color:var(--text)}
+.pain-scale{display:flex;gap:4px;margin-top:4px}
+.ps-btn{flex:1;padding:6px 2px;border-radius:7px;font-size:9px;font-weight:700;border:1.5px solid var(--border2);background:none;color:var(--muted);cursor:pointer;transition:all .15s;text-align:center;font-family:inherit;line-height:1.4;}
+.ps-btn:hover{opacity:.8}
+.ploc-grid{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.ploc-btn{padding:5px 11px;border-radius:7px;border:1.5px solid var(--border2);background:none;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;}
+.ploc-btn:hover{border-color:#f472b6;color:#f472b6}
+.ploc-btn.sel{background:color-mix(in srgb,#f472b6 20%,transparent);border-color:#f472b6;color:var(--text)}
+.sym-grid{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.sym-btn{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border2);background:none;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;}
+.sym-btn:hover{border-color:#c084fc;color:#c084fc}
+.sym-btn.sel{background:color-mix(in srgb,#c084fc 20%,transparent);border-color:#c084fc;color:var(--text)}
+.period-detail{margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+/* ═══════════════════════════════
+   GDRIVE SYNC UI
+═══════════════════════════════ */
+.sync-group{display:flex;flex-direction:column;align-items:center;gap:3px}
+.sync-time-lbl{font-size:9px;color:var(--muted);white-space:nowrap;min-height:12px;text-align:center}
 .sync-btns-row{display:flex;gap:4px}
-.sync-io-btn{display:flex;align-items:center;gap:3px;padding:4px 8px;border:1px solid var(--border2);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;transition:all .15s;white-space:nowrap}
+.sync-io-btn{display:flex;align-items:center;gap:3px;padding:5px 9px;border:1px solid var(--border2);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:11px;transition:all .15s;white-space:nowrap}
 .sync-io-btn:hover:not(:disabled){background:var(--bg2);color:var(--text);border-color:var(--accent)}
 .sync-io-btn:disabled{opacity:.35;cursor:default}
-.sync-login-btn{padding:4px 9px;border:1px solid var(--accent);border-radius:6px;background:transparent;color:var(--accent);cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;white-space:nowrap;transition:all .15s}
-.sync-login-btn:hover{background:color-mix(in srgb,var(--accent) 12%,transparent)}
-.sync-logout-btn{padding:4px 9px;border:1px solid var(--border2);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:11px;white-space:nowrap;transition:all .15s}
-.sync-logout-btn:hover{color:var(--danger);border-color:var(--danger)}
-/* 警告バナー */
-.sync-warn{display:none;background:var(--bg2);border:1px solid #d4a020;border-radius:10px;padding:12px 14px;margin-bottom:12px}
+.sync-login-btn{padding:3px 9px;border:1px solid var(--accent);border-radius:5px;background:transparent;color:var(--accent);cursor:pointer;font-family:inherit;font-size:10px;white-space:nowrap;transition:all .15s}
+.sync-login-btn:hover{background:color-mix(in srgb,var(--accent) 15%,transparent)}
+.sync-logout-btn{padding:3px 9px;border:1px solid transparent;border-radius:5px;background:transparent;color:var(--danger);cursor:pointer;font-family:inherit;font-size:10px;white-space:nowrap;transition:all .15s}
+.sync-logout-btn:hover{background:color-mix(in srgb,var(--danger) 10%,transparent);border-color:var(--danger)}
+.sync-warn{display:none;background:var(--bg2);border:1px solid #d4a020;border-radius:10px;padding:13px 14px;margin-bottom:12px}
 .sync-warn.show{display:flex;gap:10px;align-items:flex-start}
 .sync-warn-icon{font-size:16px;flex-shrink:0;color:#d4a020}
 .sync-warn-body{flex:1;min-width:0}
 .sync-warn-title{font-size:12px;font-weight:700;color:#c8980a;margin-bottom:4px}
 .sync-warn-text{font-size:11px;color:var(--muted);line-height:1.6}
-.sync-warn-btns{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.sync-warn-btns{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
 .sync-warn-ok{padding:5px 13px;font-size:11px;border:1px solid #c8980a;border-radius:6px;background:transparent;color:#c8980a;cursor:pointer;font-family:inherit;transition:all .15s}
-.sync-warn-ok:hover{background:#c8980a22}
+.sync-warn-ok:hover{background:rgba(200,152,10,.15)}
 .sync-warn-cancel{padding:5px 13px;font-size:11px;border:1px solid var(--border2);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s}
-.sync-warn-cancel:hover{background:var(--bg2)}
+.sync-warn-cancel:hover{background:var(--bg3)}
 .sync-warn-cb{display:flex;align-items:center;gap:6px;margin-top:7px;font-size:11px;color:var(--muted)}
 
 
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
 <div id="page-wrap">
@@ -339,16 +344,16 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
         <div class="th-row">
           <div class="th-left"><div class="th-sub">MY RECORD</div><div class="th-title">わたしの記録</div></div>
           <div class="th-right">
-            <div class="th-clock"><div class="tc-date" id="hdr-date"></div><div class="tc-time" id="hdr-time"></div></div>
-            <div class="sync-area" id="hdr-sync-area">
+            <div class="sync-group" id="hdr-sync-group">
               <div class="sync-time-lbl" id="hdr-sync-time"></div>
-              <div class="sync-btns-row" id="hdr-sync-btns" style="display:none">
-                <button class="sync-io-btn" id="hdr-up-btn" onclick="gdSaveWithCheck()" disabled title="クラウドへ保存">↑</button>
-                <button class="sync-io-btn" id="hdr-dn-btn" onclick="gdLoad()" disabled title="クラウドから読み込み">↓</button>
+              <div class="sync-btns-row" id="hdr-sync-btns">
+                <button class="sync-io-btn" id="hdr-up-btn" onclick="gdSaveWithCheck()" disabled title="クラウドへ保存">↑ 保存</button>
+                <button class="sync-io-btn" id="hdr-dn-btn" onclick="gdLoad()" disabled title="クラウドから読み込み">↓ 読込</button>
               </div>
-              <button class="sync-login-btn" id="hdr-login-btn" onclick="gSignIn()">☁ 同期</button>
+              <button class="sync-login-btn" id="hdr-login-btn" onclick="gSignIn()">同期ログイン</button>
               <button class="sync-logout-btn" id="hdr-logout-btn" onclick="gSignOut()" style="display:none">ログアウト</button>
             </div>
+            <div class="th-clock"><div class="tc-date" id="hdr-date"></div><div class="tc-time" id="hdr-time"></div></div>
             <button class="hdr-tog-btn" id="hdr-tog" onclick="quickToggleLayout()" title="レイアウト切り替え">🖥️</button>
           </div>
         </div>
@@ -356,6 +361,18 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 
       <!-- main content -->
       <div id="main"><div class="content">
+      <div class="sync-warn" id="sync-warn">
+        <span class="sync-warn-icon">⚠</span>
+        <div class="sync-warn-body">
+          <div class="sync-warn-title">クラウドのデータの方が新しい</div>
+          <div class="sync-warn-text" id="sync-warn-text"></div>
+          <div class="sync-warn-btns">
+            <button class="sync-warn-ok" onclick="doOverwriteSave()">上書きして保存</button>
+            <button class="sync-warn-cancel" onclick="dismissWarn()">キャンセル</button>
+          </div>
+          <div class="sync-warn-cb"><input type="checkbox" id="warn-neverchk"><label for="warn-neverchk">今後この警告を表示しない</label></div>
+        </div>
+      </div>
 
         <!-- LOG -->
         <div id="tab-log">
@@ -371,13 +388,8 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
             <button class="dnav-btn" onclick="nextDay()">›</button>
             <button class="today-btn" id="today-btn" onclick="goToday()">TODAY</button>
           </div>
-          <!-- DnD mode bar (hidden by default) -->
-          <div class="dnd-mode-bar" id="dnd-mode-bar" style="display:none">
-            <div><div class="dnd-mode-lbl">並び替え中</div><div class="dnd-mode-hint">グループをドラッグして順序を変更</div></div>
-            <button class="dnd-mode-done" onclick="exitDndMode()">完了</button>
-          </div>
-          <div class="group" id="grp-body" draggable="false" data-grpkey="body">
-            <button class="group-hd open" onclick="toggleGroup('body')"><div class="grp-drag-handle" id="dh-body" style="display:none" onclick="event.stopPropagation()" title="ドラッグして移動"><span></span><span></span><span></span></div><span class="group-icon">📊</span><span class="group-title">体組成</span><span class="group-arrow">▾</span></button>
+          <div class="group" id="grp-body">
+            <button class="group-hd open" onclick="toggleGroup('body')"><span class="group-icon">📊</span><span class="group-title">体組成</span><span class="group-arrow">▾</span></button>
             <div class="group-bd open" id="grpb-body">
               <div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="cp-btn" onclick="copyPrev()">↩ 前回の値をコピー</button></div>
               <div class="form-grid">
@@ -396,16 +408,16 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
               </div>
             </div>
           </div>
-          <div class="group" id="grp-meal" draggable="false" data-grpkey="meal">
-            <button class="group-hd open" onclick="toggleGroup('meal')"><div class="grp-drag-handle" id="dh-meal" style="display:none" onclick="event.stopPropagation()"><span></span><span></span><span></span></div><span class="group-icon">🍽️</span><span class="group-title">食事</span><span class="group-arrow">▾</span></button>
+          <div class="group" id="grp-meal">
+            <button class="group-hd open" onclick="toggleGroup('meal')"><span class="group-icon">🍽️</span><span class="group-title">食事</span><span class="group-arrow">▾</span></button>
             <div class="group-bd open" id="grpb-meal">
               <div class="hint-t">朝食・昼食・夕食・間食など、1日に何件でも追加できます</div>
               <div class="log-entries" id="meal-entries"></div>
               <button class="add-btn" onclick="addMeal()">＋ 食事を追加</button>
             </div>
           </div>
-          <div class="group" id="grp-exercise" draggable="false" data-grpkey="exercise">
-            <button class="group-hd" onclick="toggleGroup('exercise')"><div class="grp-drag-handle" id="dh-exercise" style="display:none" onclick="event.stopPropagation()"><span></span><span></span><span></span></div><span class="group-icon">🏃</span><span class="group-title">運動</span><span class="group-arrow">▾</span></button>
+          <div class="group" id="grp-exercise">
+            <button class="group-hd" onclick="toggleGroup('exercise')"><span class="group-icon">🏃</span><span class="group-title">運動</span><span class="group-arrow">▾</span></button>
             <div class="group-bd" id="grpb-exercise">
               <div class="field"><label>歩数</label><input type="number" id="f-steps" step="1" placeholder="--"></div>
               <div class="hint-t" style="margin-top:4px">運動セッション</div>
@@ -413,8 +425,8 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
               <button class="add-btn" onclick="addEx()">＋ 運動を追加</button>
             </div>
           </div>
-          <div class="group" id="grp-health" draggable="false" data-grpkey="health">
-            <button class="group-hd" onclick="toggleGroup('health')"><div class="grp-drag-handle" id="dh-health" style="display:none" onclick="event.stopPropagation()"><span></span><span></span><span></span></div><span class="group-icon">💉</span><span class="group-title">健康指標</span><span class="group-arrow">▾</span></button>
+          <div class="group" id="grp-health">
+            <button class="group-hd" onclick="toggleGroup('health')"><span class="group-icon">💉</span><span class="group-title">健康指標</span><span class="group-arrow">▾</span></button>
             <div class="group-bd" id="grpb-health">
               <div class="form-grid">
                 <div class="field full"><label>HbA1c (%)</label><input type="number" id="f-hba1c" step="0.1" placeholder="--"></div>
@@ -427,35 +439,28 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
               <button class="add-btn" onclick="addGlc()">＋ 血糖値を追加</button>
             </div>
           </div>
-          <div class="group" id="grp-condition" draggable="false" data-grpkey="condition">
-            <button class="group-hd open" onclick="toggleGroup('condition')"><div class="grp-drag-handle" id="dh-condition" style="display:none" onclick="event.stopPropagation()"><span></span><span></span><span></span></div><span class="group-icon">🌸</span><span class="group-title">体調</span><span class="group-arrow">▾</span></button>
+          <div class="group" id="grp-condition">
+            <button class="group-hd open" onclick="toggleGroup('condition')"><span class="group-icon">🌸</span><span class="group-title">体調</span><span class="group-arrow">▾</span></button>
             <div class="group-bd open" id="grpb-condition">
+              <div id="sex-setting-hint" style="display:none;font-size:9px;color:var(--muted);background:var(--bg3);border-radius:7px;padding:7px 10px;margin-bottom:10px;letter-spacing:.5px;line-height:1.6">⚙️ プロフィールで性別を設定すると、追加の項目が表示されます</div>
               <div class="field"><label>気分</label><div class="emoji-grid" id="mood-grid"></div></div>
               <div class="field" style="margin-top:8px"><label>天気</label><div class="emoji-grid" id="wth-grid"></div></div>
               <div id="period-sec" style="display:none">
                 <div class="field" style="margin-top:10px"><label>🌸 生理</label>
-                  <div class="period-row"><span style="font-size:12px">生理日として記録</span><div class="ptoggle" id="ptoggle" onclick="togPeriod()"></div></div>
-                  <div id="period-detail" style="margin-top:12px;display:none">
-                    <div class="field"><label>血量</label>
-                      <div style="display:flex;gap:6px;margin-top:2px" id="flow-grid"></div>
-                    </div>
-                    <div class="field"><label>痛みの強さ</label>
-                      <div style="display:flex;gap:4px;margin-top:2px" id="pain-level-grid"></div>
-                    </div>
-                    <div class="field"><label>痛みの場所</label>
-                      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px" id="pain-area-grid"></div>
-                    </div>
-                    <div class="field"><label>症状</label>
-                      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px" id="symptom-grid"></div>
-                    </div>
-                    <div class="field"><label>備考（任意）</label><textarea class="field-ta" id="f-pnote" placeholder="この日のメモ" style="min-height:52px"></textarea></div>
-                  </div>
+                  <div class="period-row"><span style="font-size:12px">開始日として記録</span><div class="ptoggle" id="ptoggle" onclick="togPeriod()"></div></div>
+                </div>
+                <div class="period-detail">
+                  <div class="field"><label>経血量</label><div class="blood-grid" id="blood-grid"></div></div>
+                  <div class="field" style="margin-top:8px"><label>痛みの強さ</label><div class="pain-scale" id="pain-scale"></div></div>
+                  <div class="field" style="margin-top:8px"><label>痛みの場所 <span style="color:var(--muted);font-weight:normal;font-size:8px">複数可</span></label><div class="ploc-grid" id="ploc-grid"></div></div>
+                  <div class="field" style="margin-top:8px"><label>症状</label><div class="sym-grid" id="sym-grid"></div></div>
+                  <div class="field" style="margin-top:8px"><label>メモ</label><textarea class="field-ta" id="f-pnote" placeholder="生理に関するメモ（任意）" style="min-height:48px"></textarea></div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="group" id="grp-note" draggable="false" data-grpkey="note">
-            <button class="group-hd" onclick="toggleGroup('note')"><div class="grp-drag-handle" id="dh-note" style="display:none" onclick="event.stopPropagation()"><span></span><span></span><span></span></div><span class="group-icon">📝</span><span class="group-title">記録</span><span class="group-arrow">▾</span></button>
+          <div class="group" id="grp-note">
+            <button class="group-hd" onclick="toggleGroup('note')"><span class="group-icon">📝</span><span class="group-title">記録</span><span class="group-arrow">▾</span></button>
             <div class="group-bd" id="grpb-note">
               <div class="field"><label>備考</label><textarea class="field-ta" id="f-note" placeholder="この日のメモ（自由記述）"></textarea></div>
               <div style="margin-top:12px">
@@ -465,7 +470,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
               </div>
             </div>
           </div>
-          <div class="btn-row"><button class="btn-p" onclick="saveRec()">💾 保存</button><button class="btn-g" onclick="delRec()">削除</button><button class="btn-g" onclick="enterDndMode()" title="グループの並び替え" style="padding:0 12px">⠿</button></div>
+          <div class="btn-row"><button class="btn-p" onclick="saveRec()">💾 保存</button><button class="btn-g" onclick="delRec()">削除</button></div>
           <div style="height:10px"></div>
         </div>
 
@@ -514,7 +519,6 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
               <div class="metric-picks" id="group-picks" style="margin-bottom:6px"></div>
               <div class="metric-picks" id="metric-picks" style="display:none"></div>
             </div>
-            <div class="swipe-hint">← スワイプで期間を移動 →</div>
           </div>
           <!-- event list -->
           <div id="chart-ev-wrap" style="display:none">
@@ -526,47 +530,17 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 
         <!-- HISTORY -->
         <div id="tab-history" style="display:none">
-          <div class="hist-mode-tabs">
-            <button class="hist-mode-tab active" id="hmtab-list" onclick="setHistMode('list')">📋 リスト</button>
-            <button class="hist-mode-tab" id="hmtab-cal" onclick="setHistMode('cal')">📅 カレンダー</button>
+          <div class="hist-toggle">
+            <button class="ht-btn active" id="ht-cal" onclick="setHistView('cal')">📅 カレンダー</button>
+            <button class="ht-btn" id="ht-list" onclick="setHistView('list')">📋 リスト</button>
           </div>
-          <div id="hist-list-view">
-            <div id="hist-con"></div>
-            <div id="hist-empty" class="empty" style="display:none"><div class="ei">📋</div><div>まだ記録がありません</div></div>
-          </div>
-          <div id="hist-cal-view" style="display:none">
-            <div class="cal-nav">
-              <button class="cal-nav-btn" onclick="calPrevMonth()">‹</button>
-              <span class="cal-month-lbl" id="cal-month-lbl"></span>
-              <button class="cal-nav-btn" onclick="calNextMonth()">›</button>
-            </div>
-            <div class="cal-dow"><span>日</span><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span></div>
-            <div class="cal-grid" id="cal-grid"></div>
-            <div id="cal-detail-panel"></div>
-            <div class="cal-legend">
-              <div class="cl-item"><span class="cdot cdot-w"></span>体重</div>
-              <div class="cl-item"><span class="cdot cdot-p"></span>生理</div>
-              <div class="cl-item"><span class="cdot cdot-e"></span>運動</div>
-              <div class="cl-item"><span class="cdot cdot-ev"></span>イベント</div>
-            </div>
-          </div>
+          <div id="hist-cal-view"></div>
+          <div id="hist-con" style="display:none"></div>
+          <div id="hist-empty" class="empty" style="display:none"><div class="ei">📋</div><div>まだ記録がありません</div></div>
         </div>
 
         <!-- SETTINGS -->
         <div id="tab-settings" style="display:none">
-          <!-- 同期警告バナー -->
-          <div class="sync-warn" id="sync-warn">
-            <span class="sync-warn-icon">⚠</span>
-            <div class="sync-warn-body">
-              <div class="sync-warn-title">クラウドのデータの方が新しい</div>
-              <div class="sync-warn-text" id="sync-warn-text"></div>
-              <div class="sync-warn-btns">
-                <button class="sync-warn-ok" onclick="doOverwriteSave()">上書きして保存</button>
-                <button class="sync-warn-cancel" onclick="dismissWarn()">キャンセル</button>
-              </div>
-              <div class="sync-warn-cb"><input type="checkbox" id="warn-neverchk"><label for="warn-neverchk">次回から警告を表示しない</label></div>
-            </div>
-          </div>
           <div class="panel">
             <div class="panel-title">👤 プロフィール</div>
             <div class="form-grid">
@@ -630,23 +604,36 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
           </div>
           <div class="panel"><div class="panel-title">🎨 テーマ</div><div class="theme-grid" id="theme-grid"></div></div>
           <div class="panel">
-            <div class="panel-title">☁️ クラウド同期（Google Drive）</div>
-            <div class="setting-row">
-              <div><div class="setting-label">Google アカウント</div><div class="setting-sub" id="sync-sub">ログインしてデータを同期します</div></div>
+            <div class="panel-title">🌸 生理表示設定</div>
+            <div class="setting-row" style="border-bottom:none">
+              <div><div class="setting-label">カレンダーに生理ドットを表示</div><div class="setting-sub">オフにすると他人に見せる際に非表示になります</div></div>
               <div class="tg-group">
-                <button class="tg-opt" id="sync-login-btn" onclick="gSignIn()">ログイン</button>
-                <button class="tg-opt" id="sync-logout-btn" onclick="gSignOut()" style="display:none;border-color:var(--danger);color:var(--danger)">ログアウト</button>
+                <button class="tg-opt" id="pdots-on" onclick="setPeriodDots(true)">表示</button>
+                <button class="tg-opt active" id="pdots-off" onclick="setPeriodDots(false)">非表示</button>
               </div>
             </div>
-            <div class="setting-row" id="sync-action-row" style="display:none">
-              <div><div class="setting-label">データ操作</div><div class="setting-sub">↑ 保存：このデバイスのデータをDriveへ<br>↓ 読み込み：Driveのデータをこのデバイスへ</div></div>
-              <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
-                <button class="btn-g" style="font-size:11px;padding:6px 13px" onclick="gdSaveWithCheck()">↑ Driveへ保存</button>
-                <button class="btn-g" style="font-size:11px;padding:6px 13px" onclick="gdLoad()">↓ Driveから読込</button>
+          </div>
+          <div class="panel">
+            <div class="panel-title">☁️ クラウド同期（Google Drive）</div>
+            <div style="font-size:10px;color:var(--muted);line-height:1.7;margin-bottom:10px">Googleアカウントでログインすると、データをDriveに保存・読み込みできます。データは各自のGoogleアカウントに非公開で保存されます。</div>
+            <div class="setting-row">
+              <div><div class="setting-label">ログイン状態</div><div class="setting-sub" id="sync-sub">ログインしていません</div></div>
+              <div style="display:flex;gap:6px">
+                <button class="btn-g" id="sync-login-btn" onclick="gSignIn()" style="font-size:11px;padding:6px 13px">Googleでログイン</button>
+                <button class="btn-d" id="sync-logout-btn" onclick="gSignOut()" style="display:none;font-size:11px;padding:6px 13px">ログアウト</button>
               </div>
             </div>
-            <div class="setting-row" id="sync-warn-row" style="display:none;border-bottom:none">
-              <div class="sync-warn-cb"><input type="checkbox" id="warn-toggle" onchange="toggleSyncWarnSetting(this.checked)"><label for="warn-toggle">クラウドが新しい場合に警告を表示する</label></div>
+            <div class="setting-row">
+              <div><div class="setting-label">保存</div><div class="setting-sub">現在のデータをDriveに保存</div></div>
+              <button class="btn-g" id="sync-save-btn" onclick="gdSaveWithCheck()" disabled style="font-size:11px;padding:6px 13px">↑ Driveへ保存</button>
+            </div>
+            <div class="setting-row" style="border-bottom:none">
+              <div><div class="setting-label">読み込み</div><div class="setting-sub">Driveのデータをこのデバイスへ反映</div></div>
+              <button class="btn-g" id="sync-load-btn" onclick="gdLoad()" disabled style="font-size:11px;padding:6px 13px">↓ Driveから読込</button>
+            </div>
+            <div class="setting-row" style="border-bottom:none;padding-top:0">
+              <div><div class="setting-label">上書き警告</div><div class="setting-sub">クラウドが新しい時に確認する</div></div>
+              <input type="checkbox" id="warn-toggle" onchange="toggleSyncWarnSetting(this.checked)" checked style="width:18px;height:18px;cursor:pointer;accent-color:var(--accent)">
             </div>
           </div>
           <div class="panel">
@@ -682,15 +669,17 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
       <button class="sb-tog-btn" onclick="quickToggleLayout()" title="スマホ表示に切り替え">📱</button>
     </div>
     <div id="sidebar-clock"><div class="sc-date" id="sb-date"></div><div class="sc-time" id="sb-time"></div></div>
-    <div style="padding:8px 14px;border-bottom:1px solid var(--border2);display:flex;flex-direction:column;gap:3px">
-      <div style="font-size:8px;color:var(--muted);letter-spacing:1px;margin-bottom:1px">CLOUD SYNC</div>
-      <div class="sync-time-lbl" id="sb-sync-time" style="text-align:left"></div>
-      <div class="sync-btns-row" id="sb-sync-btns" style="display:none">
-        <button class="sync-io-btn" id="sb-up-btn" onclick="gdSaveWithCheck()" disabled title="クラウドへ保存">↑ 保存</button>
-        <button class="sync-io-btn" id="sb-dn-btn" onclick="gdLoad()" disabled title="クラウドから読み込み">↓ 読込</button>
+    <div style="padding:8px 14px;border-bottom:1px solid var(--border2)">
+      <div style="font-size:8px;color:var(--accent);letter-spacing:2px;margin-bottom:6px">CLOUD SYNC</div>
+      <div id="sb-sync-btns" style="display:flex;gap:5px;flex-wrap:wrap">
+        <button class="sync-io-btn" id="sb-up-btn" onclick="gdSaveWithCheck()" disabled>↑ 保存</button>
+        <button class="sync-io-btn" id="sb-dn-btn" onclick="gdLoad()" disabled>↓ 読込</button>
       </div>
-      <button class="sync-login-btn" id="sb-login-btn" onclick="gSignIn()" style="align-self:flex-start">☁ Googleでログイン</button>
-      <button class="sync-logout-btn" id="sb-logout-btn" onclick="gSignOut()" style="display:none;align-self:flex-start">ログアウト</button>
+      <div style="margin-top:5px;display:flex;gap:5px">
+        <button class="sync-login-btn" id="sb-login-btn" onclick="gSignIn()">Googleでログイン</button>
+        <button class="sync-logout-btn" id="sb-logout-btn" onclick="gSignOut()" style="display:none">ログアウト</button>
+      </div>
+      <div class="sync-time-lbl" id="sb-sync-time" style="margin-top:4px;text-align:left"></div>
     </div>
     <div id="sb-info">
       <div class="si-grid">
@@ -716,6 +705,19 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
   </div><!-- /sidebar -->
 
 </div><!-- /page-wrap -->
+<div class="day-overlay" id="day-overlay" onclick="closeDayPanel(event)">
+  <div class="day-panel" id="day-panel" onclick="event.stopPropagation()">
+    <div class="dp-hd">
+      <div class="dp-nav">
+        <button class="dp-nav-btn" onclick="navDayPanel(-1)">‹</button>
+        <div class="dp-date" id="dp-date-lbl"></div>
+        <button class="dp-nav-btn" onclick="navDayPanel(1)">›</button>
+      </div>
+      <button class="dp-close" onclick="closeDayPanel()">✕</button>
+    </div>
+    <div class="dp-body" id="dp-body"></div>
+  </div>
+</div>
 <div id="toast"></div>
 <script>
 const SK='myrecord-v1',OLD_SK='body-tracker-data';
@@ -725,21 +727,19 @@ const MEAL_T=['朝食','昼食','夕食','間食','夜食','その他'];
 const EX_T=['歩行','エアロバイク','ヨガ','フィットボクシング','筋トレ','ウォーキング','ランニング','その他'];
 const GLC_T=['空腹時','食後2時間','随時'];
 const THEMES=[{k:'moon',n:'月',bg:'#0d0d1a',ac:'#c8a8e9'},{k:'sun',n:'太陽',bg:'#fff8f0',ac:'#e07800'},{k:'sky',n:'空',bg:'#f0f8ff',ac:'#1a80d0'},{k:'ocean',n:'海',bg:'#020d1a',ac:'#00c8f0'},{k:'sunset',n:'夕日',bg:'#1a0808',ac:'#ff7830'}];
-const PERIOD_FLOW_OPTS=[{k:'light',label:'少ない',em:'💧'},{k:'normal',label:'普通',em:'🩸'},{k:'heavy',label:'多い',em:'🩸🩸'},{k:'very_heavy',label:'非常に多い',em:'🩸🩸🩸'}];
-const PERIOD_PAIN_AREAS=['下腹部','腰','背中','太もも','頭'];
-const PERIOD_SYMPTOMS=['頭痛','腰痛','むくみ','気分の落ち込み','胸の張り','吐き気','便秘','疲労感'];
-const PAIN_LABELS=['なし','軽い','やや','中程度','強い','激しい'];
+const BLOOD_VOLS=['少ない','普通','多い','非常に多い'];
+const PAIN_LEVELS=[{n:'なし',c:'var(--muted)'},{n:'軽い',c:'#86efac'},{n:'中程度',c:'#fde68a'},{n:'強い',c:'#fb923c'},{n:'非常に強い',c:'#f87171'},{n:'激痛',c:'#dc2626'}];
+const PAIN_LOCS=['下腹部','腰','太もも','頭','その他'];
+const SYMPTOMS=['頭痛','腰痛','むくみ','気分の落ち込み','吐き気','だるさ','胸の張り'];
 let records=[],mealLogs=[],exerciseLogs=[],glucoseLogs=[],events=[];
 let goal=null,profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown'};
-let appL='auto',appT='moon',appD='normal',appSbRight=false,showSbStats=true;
+let appL='auto',appT='sky',appD='normal',appSbRight=false,showSbStats=true;
 let og={body:true,meal:true,exercise:false,health:false,condition:true,note:false};
-const DEFAULT_GROUP_ORDER=['body','meal','exercise','health','condition','note'];
-const GRP_KEYS=['body','meal','exercise','health','condition','note'];
-let groupOrder=[...DEFAULT_GROUP_ORDER];
-let histMode='list',calYear=0,calMonth=0,calSelDate=null;
 let curDate=todayStr(),selMood=null,selWth=null,periodOn=false;
-let periodFlow=null,periodPainLevel=null,periodPainAreas=[],periodSymptoms=[];
+let selBloodVol=null,selPainLevel=null,selPainLocs=new Set(),selSymptoms=new Set();
 let mMan=false,meMan=false,bmiMan=false;
+let histView='cal',calYear=new Date().getFullYear(),calMonth=new Date().getMonth(),showPeriodDots=false;
+let dpDate=null;
 let tM=[],tE=[],tG=[],tEv=[];
 function todayStr(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function genId(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5);}
@@ -752,12 +752,12 @@ function calcMuscle(w,bf){if(w==null||bf==null)return null;return Math.round(w*(
 function calcMeta(w,h,age,sex){if(!w||!h||!age)return null;let b=sex==='female'?655.1+9.563*w+1.850*h-4.676*age:66.5+13.75*w+5.003*h-6.75*age;return Math.round(b);}
 function loadData(){
   const raw=localStorage.getItem(SK);
-  if(raw){try{const d=JSON.parse(raw);records=d.records||[];mealLogs=d.mealLogs||[];exerciseLogs=d.exerciseLogs||[];glucoseLogs=d.glucoseLogs||[];events=d.events||[];goal=d.goal??null;profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown',...(d.profile||{})};appL=d.layout??'auto';appT=d.theme||'moon';appD=d.display||'normal';appSbRight=d.sbRight??false;showSbStats=d.sbStats??true;og=d.og||og;groupOrder=d.groupOrder||[...DEFAULT_GROUP_ORDER];return true;}catch(e){}}
+  if(raw){try{const d=JSON.parse(raw);records=d.records||[];mealLogs=d.mealLogs||[];exerciseLogs=d.exerciseLogs||[];glucoseLogs=d.glucoseLogs||[];events=d.events||[];goal=d.goal??null;profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown',...(d.profile||{})};appL=d.layout??'auto';appT=d.theme||'sky';appD=d.display||'normal';appSbRight=d.sbRight??false;showSbStats=d.sbStats??true;og=d.og||og;showPeriodDots=d.showPeriodDots??false;return true;}catch(e){}}
   const old=localStorage.getItem(OLD_SK);
   if(old){try{const d=JSON.parse(old);records=(d.records||[]).map(r=>({bust:null,waist:null,hip:null,hba1c:null,bpHigh:null,bpLow:null,mood:null,weather:null,period:false,periodNote:'',muscleManual:false,bmiManual:false,...r}));goal=d.goal??null;profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown',...(d.profile||{})};return true;}catch(e){}}
   return false;
 }
-function saveData(){localStorage.setItem(SK,JSON.stringify({records,mealLogs,exerciseLogs,glucoseLogs,events,goal,profile,layout:appL,theme:appT,display:appD,sbRight:appSbRight,sbStats:showSbStats,og,groupOrder}));}
+function saveData(){localStorage.setItem(SK,JSON.stringify({records,mealLogs,exerciseLogs,glucoseLogs,events,goal,profile,layout:appL,theme:appT,display:appD,sbRight:appSbRight,sbStats:showSbStats,og,showPeriodDots}));}
 function getEff(){return appL==='auto'?(window.innerWidth>=768?'desktop':'mobile'):appL;}
 function applyLayout(){
   const eff=getEff();
@@ -811,7 +811,18 @@ function updSidebar(){
   document.getElementById('tog-stats-off')?.classList.toggle('active',!showSbStats);
 }
 function tickClock(){const n=new Date();const ds=n.toLocaleDateString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit',weekday:'short'});const ts=n.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});['hdr-date','sb-date'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=ds;});['hdr-time','sb-time'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=ts;});}
-function switchTab(tab){['log','chart','history','settings'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'':'none');document.querySelectorAll('.tab-btn,.snav-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));if(tab==='history'){if(histMode==='cal')renderCal();else renderHist();}if(tab==='settings')renderSettings();if(tab==='chart')renderCharts();}
+function switchTab(tab){
+  ['log','chart','history','settings'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'':'none');
+  document.querySelectorAll('.tab-btn,.snav-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  if(tab==='history'){
+    // カレンダーを今月に合わせてから描画
+    const now=new Date();calYear=now.getFullYear();calMonth=now.getMonth();
+    setHistView(histView);
+  }
+  if(tab==='settings')renderSettings();
+  if(tab==='chart')renderCharts();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('day-overlay')?.classList.remove('show');});
 function updDD(){const e=document.getElementById('date-disp');if(e)e.textContent=curDate;document.getElementById('today-btn')?.classList.toggle('active',curDate===todayStr());}
 function prevDay(){shiftDay(-1);}function nextDay(){shiftDay(1);}
 function shiftDay(n){
@@ -844,22 +855,32 @@ function toggleGroup(key){const hd=document.querySelector(`#grp-${key} .group-hd
 function buildEmoji(){const mg=document.getElementById('mood-grid');if(mg)mg.innerHTML=MOODS.map(e=>`<div class="emoji-opt" data-m="${e}" onclick="selM('${e}')">${e}</div>`).join('');const wg=document.getElementById('wth-grid');if(wg)wg.innerHTML=WEATHERS.map(e=>`<div class="emoji-opt" data-w="${e}" onclick="selW('${e}')">${e}</div>`).join('');}
 function selM(e){selMood=selMood===e?null:e;document.querySelectorAll('.emoji-opt[data-m]').forEach(el=>el.classList.toggle('sel',el.dataset.m===selMood));}
 function selW(e){selWth=selWth===e?null:e;document.querySelectorAll('.emoji-opt[data-w]').forEach(el=>el.classList.toggle('sel',el.dataset.w===selWth));}
-function togPeriod(){periodOn=!periodOn;document.getElementById('ptoggle').classList.toggle('on',periodOn);const pd=document.getElementById('period-detail');if(pd)pd.style.display=periodOn?'':'none';if(periodOn)buildPeriodUI();}
-function buildPeriodUI(){
-  const fg=document.getElementById('flow-grid');
-  if(fg)fg.innerHTML=PERIOD_FLOW_OPTS.map(o=>`<button class="flow-btn${periodFlow===o.k?' sel':''}" onclick="selFlow('${o.k}')"><span class="fl-em">${o.em}</span><span class="fl-lb">${o.label}</span></button>`).join('');
-  const plg=document.getElementById('pain-level-grid');
-  if(plg)plg.innerHTML=PAIN_LABELS.map((lbl,i)=>`<button class="pain-lv-btn${periodPainLevel===i?' sel':''}" onclick="selPainLevel(${i})"><span class="lv-n">${i}</span><span class="lv-s">${lbl}</span></button>`).join('');
-  const pag=document.getElementById('pain-area-grid');
-  if(pag)pag.innerHTML=PERIOD_PAIN_AREAS.map(a=>`<button class="period-tag-btn${periodPainAreas.includes(a)?' sel':''}" onclick="togPainArea('${a}')">${a}</button>`).join('');
-  const sg=document.getElementById('symptom-grid');
-  if(sg)sg.innerHTML=PERIOD_SYMPTOMS.map(s=>`<button class="period-tag-btn${periodSymptoms.includes(s)?' sel':''}" onclick="togSymptom('${s}')">${s}</button>`).join('');
+function togPeriod(){periodOn=!periodOn;document.getElementById('ptoggle').classList.toggle('on',periodOn);}
+function buildPeriodCtrls(){
+  // 経血量
+  const bg=document.getElementById('blood-grid');
+  if(bg)bg.innerHTML=BLOOD_VOLS.map(v=>`<button class="bv-btn${selBloodVol===v?' sel':''}" onclick="selBV('${v}')">${v}</button>`).join('');
+  // 痛みの強さ
+  const ps=document.getElementById('pain-scale');
+  if(ps)ps.innerHTML=PAIN_LEVELS.map((p,i)=>`<button class="ps-btn${selPainLevel===i?' sel':''}" style="${selPainLevel===i?`background:${p.c};border-color:${p.c};color:#000`:''}" onclick="selPL(${i})">${i}<br><span style="font-size:8px">${p.n}</span></button>`).join('');
+  // 痛みの場所
+  const pl=document.getElementById('ploc-grid');
+  if(pl)pl.innerHTML=PAIN_LOCS.map(v=>`<button class="ploc-btn${selPainLocs.has(v)?' sel':''}" onclick="togPLoc('${v}')">${v}</button>`).join('');
+  // 症状
+  const sg=document.getElementById('sym-grid');
+  if(sg)sg.innerHTML=SYMPTOMS.map(v=>`<button class="sym-btn${selSymptoms.has(v)?' sel':''}" onclick="togSym('${v}')">${v}</button>`).join('');
 }
-function selFlow(k){periodFlow=periodFlow===k?null:k;buildPeriodUI();}
-function selPainLevel(n){periodPainLevel=periodPainLevel===n?null:n;buildPeriodUI();}
-function togPainArea(a){const i=periodPainAreas.indexOf(a);if(i>=0)periodPainAreas.splice(i,1);else periodPainAreas.push(a);buildPeriodUI();}
-function togSymptom(s){const i=periodSymptoms.indexOf(s);if(i>=0)periodSymptoms.splice(i,1);else periodSymptoms.push(s);buildPeriodUI();}
-function updPeriodSec(){const s=document.getElementById('period-sec');if(s)s.style.display=profile.sex==='female'?'':'none';}
+function selBV(v){selBloodVol=selBloodVol===v?null:v;buildPeriodCtrls();}
+function selPL(i){selPainLevel=selPainLevel===i?null:i;buildPeriodCtrls();}
+function togPLoc(v){selPainLocs.has(v)?selPainLocs.delete(v):selPainLocs.add(v);buildPeriodCtrls();}
+function togSym(v){selSymptoms.has(v)?selSymptoms.delete(v):selSymptoms.add(v);buildPeriodCtrls();}
+function updPeriodSec(){
+  const s=document.getElementById('period-sec');
+  const h=document.getElementById('sex-setting-hint');
+  const isFemale=profile.sex==='female';
+  if(s)s.style.display=isFemale?'':'none';
+  if(h)h.style.display=profile.sex==='unknown'?'':'none';
+}
 function onBI(){
   const w=getNum('f-weight'),bf=getNum('f-bodyfat');
   if(!mMan){const m=calcMuscle(w,bf);setText('m-av',m??'--');document.getElementById('m-auto').style.display=m!=null?'':'none';}
@@ -900,8 +921,12 @@ function loadForm(date){
   selMood=r?.mood||null;selWth=r?.weather||null;
   document.querySelectorAll('.emoji-opt[data-m]').forEach(el=>el.classList.toggle('sel',el.dataset.m===selMood));
   document.querySelectorAll('.emoji-opt[data-w]').forEach(el=>el.classList.toggle('sel',el.dataset.w===selWth));
-  periodOn=r?.period||false;periodFlow=r?.periodFlow||null;periodPainLevel=r?.periodPainLevel??null;periodPainAreas=r?.periodPainAreas?[...r.periodPainAreas]:[];periodSymptoms=r?.periodSymptoms?[...r.periodSymptoms]:[];
-  document.getElementById('ptoggle').classList.toggle('on',periodOn);const _pd=document.getElementById('period-detail');if(_pd)_pd.style.display=periodOn?'':'none';if(periodOn)buildPeriodUI();
+  periodOn=r?.period||false;document.getElementById('ptoggle').classList.toggle('on',periodOn);
+  selBloodVol=r?.bloodVol??null;
+  selPainLevel=r?.painLevel??null;
+  selPainLocs=new Set(r?.painLocs||[]);
+  selSymptoms=new Set(r?.symptoms||[]);
+  buildPeriodCtrls();
   tM=mealLogs.filter(m=>m.date===date).map(m=>({...m}));tE=exerciseLogs.filter(e=>e.date===date).map(e=>({...e}));tG=glucoseLogs.filter(g=>g.date===date).map(g=>({...g}));tEv=events.filter(ev=>ev.date===date).map(ev=>({...ev}));
   renderMeals();renderEx();renderGlc();renderEv();onBI();
 }
@@ -910,7 +935,7 @@ function saveRec(){
   const mIn=getNum('f-muscle'),mM=mIn!==null,muscle=mM?mIn:calcMuscle(w,bf);
   const metIn=getNum('f-metabolism'),meA=metIn===null,meta=meA?calcMeta(w,profile.height,calcAge(),profile.sex):metIn;
   const bIn=getNum('f-bmi'),bM=bIn!==null,bmi=bM?bIn:calcBMI(w,profile.height);
-  const rec={date:curDate,weight:w,bodyFat:bf,muscle,muscleManual:mM,visceralFat:getNum('f-visceral'),metabolism:meta,meAuto:meA,bmi,bmiManual:bM,bust:getNum('f-bust'),waist:getNum('f-waist'),hip:getNum('f-hip'),steps:getNum('f-steps'),hba1c:getNum('f-hba1c'),bpHigh:getNum('f-bph'),bpLow:getNum('f-bpl'),mood:selMood,weather:selWth,period:periodOn,periodFlow:periodOn?periodFlow:null,periodPainLevel:periodOn?periodPainLevel:null,periodPainAreas:periodOn?[...periodPainAreas]:[],periodSymptoms:periodOn?[...periodSymptoms]:[],periodNote:document.getElementById('f-pnote').value,note:document.getElementById('f-note').value};
+  const rec={date:curDate,weight:w,bodyFat:bf,muscle,muscleManual:mM,visceralFat:getNum('f-visceral'),metabolism:meta,meAuto:meA,bmi,bmiManual:bM,bust:getNum('f-bust'),waist:getNum('f-waist'),hip:getNum('f-hip'),steps:getNum('f-steps'),hba1c:getNum('f-hba1c'),bpHigh:getNum('f-bph'),bpLow:getNum('f-bpl'),mood:selMood,weather:selWth,period:periodOn,bloodVol:selBloodVol,painLevel:selPainLevel,painLocs:[...selPainLocs],symptoms:[...selSymptoms],periodNote:document.getElementById('f-pnote').value,note:document.getElementById('f-note').value};
   const idx=records.findIndex(r=>r.date===curDate);if(idx>=0)records[idx]=rec;else records.push(rec);
   records.sort((a,b)=>a.date.localeCompare(b.date));
   mealLogs=mealLogs.filter(m=>m.date!==curDate);tM.filter(m=>m.kcal).forEach(m=>mealLogs.push({...m,date:curDate}));
@@ -920,7 +945,23 @@ function saveRec(){
   saveData();updSidebar();showToast('保存しました ✓');
 }
 function delRec(){if(!records.find(r=>r.date===curDate)){showToast('この日の記録はありません');return;}if(!confirm(`${curDate} の記録を削除しますか？`))return;records=records.filter(r=>r.date!==curDate);mealLogs=mealLogs.filter(x=>x.date!==curDate);exerciseLogs=exerciseLogs.filter(x=>x.date!==curDate);glucoseLogs=glucoseLogs.filter(x=>x.date!==curDate);events=events.filter(x=>x.date!==curDate);tM=[];tE=[];tG=[];tEv=[];renderMeals();renderEx();renderGlc();renderEv();saveData();loadForm(curDate);updSidebar();showToast('削除しました');}
+function setHistView(v){
+  histView=v;
+  document.getElementById('ht-cal').classList.toggle('active',v==='cal');
+  document.getElementById('ht-list').classList.toggle('active',v==='list');
+  document.getElementById('hist-cal-view').style.display=v==='cal'?'':'none';
+  document.getElementById('hist-con').style.display=v==='list'?'':'none';
+  renderHist();
+}
+function setPeriodDots(v){
+  showPeriodDots=v;
+  document.getElementById('pdots-on')?.classList.toggle('active',v);
+  document.getElementById('pdots-off')?.classList.toggle('active',!v);
+  saveData();
+  if(histView==='cal')renderHist();
+}
 function renderHist(){
+  if(histView==='cal'){renderCalendar();return;}
   const con=document.getElementById('hist-con'),emp=document.getElementById('hist-empty');
   if(!records.length){con.innerHTML='';emp.style.display='';return;}emp.style.display='none';
   const months={};[...records].reverse().forEach(r=>{const ym=r.date.slice(0,7);if(!months[ym])months[ym]=[];months[ym].push(r);});
@@ -929,26 +970,161 @@ function renderHist(){
     const cards=recs.map(r=>{
       const ri=records.findIndex(x=>x.date===r.date);const prev=ri>0?records[ri-1]:null;
       let dh='';if(r.weight!=null&&prev?.weight!=null){const d=Math.round((r.weight-prev.weight)*10)/10;dh=d>0?`<div class="hdiff up">▲ ${d} kg</div>`:d<0?`<div class="hdiff dn">▼ ${Math.abs(d)} kg</div>`:`<div class="hdiff eq">→ 変化なし</div>`;}
-      const chips=[r.bodyFat!=null&&['体脂肪',r.bodyFat+'%'],r.muscle!=null&&['筋肉量',r.muscle+'kg'],r.waist!=null&&['ウエスト',r.waist+'cm'],r.steps!=null&&['歩数',r.steps.toLocaleString()+'歩'],r.hba1c!=null&&['HbA1c',r.hba1c+'%'],r.bpHigh!=null&&r.bpLow!=null&&['血圧',r.bpHigh+'/'+r.bpLow],r.mood!=null&&['気分',r.mood],r.weather!=null&&['天気',r.weather]].filter(Boolean).map(([l,v])=>`<div class="chip"><span class="cl">${l} </span><span class="cv">${v}</span></div>`).join('');
-      const FLOW_EMOJI={light:'💧 少ない',normal:'🩸 普通',heavy:'🩸🩸 多い',very_heavy:'🩸🩸🩸 非常に多い'};
-      let pdChips='';
-      if(r.period){
-        pdChips+=`<div class="chip period-d"><span class="cl">生理 </span><span class="cv">🌸${r.periodFlow&&FLOW_EMOJI[r.periodFlow]?' '+FLOW_EMOJI[r.periodFlow]:''}</span></div>`;
-        if(r.periodPainLevel!=null&&r.periodPainLevel>0)pdChips+=`<div class="chip period-d"><span class="cl">痛み </span><span class="cv">${r.periodPainLevel}/5 (${PAIN_LABELS[r.periodPainLevel]||''})</span></div>`;
-        if(r.periodPainAreas?.length)pdChips+=`<div class="chip period-d"><span class="cl">場所 </span><span class="cv">${r.periodPainAreas.join('・')}</span></div>`;
-        if(r.periodSymptoms?.length)pdChips+=`<div class="chip period-d"><span class="cl">症状 </span><span class="cv">${r.periodSymptoms.join('・')}</span></div>`;
-      }
+      const chips=[r.bodyFat!=null&&['体脂肪',r.bodyFat+'%'],r.muscle!=null&&['筋肉量',r.muscle+'kg'],r.waist!=null&&['ウエスト',r.waist+'cm'],r.steps!=null&&['歩数',r.steps.toLocaleString()+'歩'],r.hba1c!=null&&['HbA1c',r.hba1c+'%'],r.bpHigh!=null&&r.bpLow!=null&&['血圧',r.bpHigh+'/'+r.bpLow],r.mood!=null&&['気分',r.mood],r.weather!=null&&['天気',r.weather],r.period&&['生理','🌸'],r.bloodVol&&['経血量',r.bloodVol],r.painLevel!=null&&r.painLevel>0&&['痛み',PAIN_LEVELS[r.painLevel]?.n]].filter(Boolean).map(([l,v])=>`<div class="chip"><span class="cl">${l} </span><span class="cv">${v}</span></div>`).join('');
       const mc=mealLogs.filter(m=>m.date===r.date).length,ec=exerciseLogs.filter(e=>e.date===r.date).length,evl=events.filter(ev=>ev.date===r.date);
-      return`<div class="hcard"><div class="htop"><div><div class="hdate">${r.date}</div><div class="hw">${r.weight??'--'}<span>kg</span></div>${dh}</div><div style="display:flex;gap:5px;flex-shrink:0"><button class="btn-e" onclick="editDate('${r.date}')">編集</button><button class="btn-d" onclick="delDateRec('${r.date}')">削除</button></div></div>${chips||pdChips?`<div class="chips">${chips}${pdChips}</div>`:''}${mc?`<div style="font-size:10px;color:var(--muted);margin-top:5px">🍽️ 食事 ${mc}件</div>`:''}${ec?`<div style="font-size:10px;color:var(--muted);margin-top:3px">🏃 運動 ${ec}件</div>`:''}${evl.map(ev=>`<div style="font-size:10px;color:var(--accent);margin-top:3px">📌 ${ev.title}</div>`).join('')}${r.note?`<div class="hnote">${r.note}</div>`:''}</div>`;
+      return`<div class="hcard"><div class="htop"><div><div class="hdate">${r.date}</div><div class="hw">${r.weight??'--'}<span>kg</span></div>${dh}</div><div style="display:flex;gap:5px;flex-shrink:0"><button class="btn-e" onclick="editDate('${r.date}')">編集</button><button class="btn-d" onclick="delDateRec('${r.date}')">削除</button></div></div>${chips?`<div class="chips">${chips}</div>`:''}${mc?`<div style="font-size:10px;color:var(--muted);margin-top:5px">🍽️ 食事 ${mc}件</div>`:''}${ec?`<div style="font-size:10px;color:var(--muted);margin-top:3px">🏃 運動 ${ec}件</div>`:''}${evl.map(ev=>`<div style="font-size:10px;color:var(--accent);margin-top:3px">📌 ${ev.title}</div>`).join('')}${r.note?`<div class="hnote">${r.note}</div>`:''}</div>`;
     }).join('');
     return`<div class="month-group"><div class="month-hd open" onclick="togMonth(this)"><span class="month-title">${y}年 ${parseInt(m)}月</span><div style="display:flex;align-items:center;gap:8px"><span class="month-count">${recs.length}件</span><span class="month-arrow">▾</span></div></div><div class="month-bd open">${cards}</div></div>`;
   }).join('');
 }
 function togMonth(hd){const bd=hd.nextElementSibling;const isO=bd.classList.contains('open');hd.classList.toggle('open',!isO);bd.classList.toggle('open',!isO);}
 function editDate(date){curDate=date;updDD();loadForm(date);switchTab('log');}
+function navCal(dir){
+  calMonth+=dir;
+  if(calMonth>11){calMonth=0;calYear++;}
+  if(calMonth<0){calMonth=11;calYear--;}
+  renderCalendar();
+}
+function renderCalendar(){
+  const con=document.getElementById('hist-cal-view');
+  if(!con)return;
+  const y=calYear,m=calMonth;
+  const firstDay=new Date(y,m,1).getDay();
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const today=todayStr();
+  const DOT_COLORS={body:'var(--accent)',meal:'#fb923c',exercise:'#6bffb8',health:'#f87171',note:'#ffb830',period:'#ff7eb3'};
+  const WDAYS=['日','月','火','水','木','金','土'];
+  let cells='';
+  for(let i=0;i<firstDay;i++)cells+=`<div class="cal-cell empty"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const r=records.find(x=>x.date===ds);
+    const hasMeal=mealLogs.some(x=>x.date===ds);
+    const hasEx=exerciseLogs.some(x=>x.date===ds);
+    const hasGlc=glucoseLogs.some(x=>x.date===ds);
+    const hasEv=events.some(x=>x.date===ds);
+    const isToday=ds===today;
+    const dow=new Date(y,m,d).getDay();
+    const isSun=dow===0;
+    let dots='';
+    if(r){
+      const hasBody=r.weight!=null||r.bodyFat!=null||r.muscle!=null||r.bust!=null||r.waist!=null||r.hip!=null;
+      const hasHealth=r.hba1c!=null||r.bpHigh!=null||r.steps!=null;
+      const hasNote=r.note||hasEv;
+      if(hasBody)dots+=`<div class="cal-dot" style="background:${DOT_COLORS.body}"></div>`;
+      if(hasMeal)dots+=`<div class="cal-dot" style="background:${DOT_COLORS.meal}"></div>`;
+      if(hasEx)dots+=`<div class="cal-dot" style="background:${DOT_COLORS.exercise}"></div>`;
+      if(hasHealth||hasGlc)dots+=`<div class="cal-dot" style="background:${DOT_COLORS.health}"></div>`;
+      if(hasNote)dots+=`<div class="cal-dot" style="background:${DOT_COLORS.note}"></div>`;
+      if(showPeriodDots&&r.period)dots+=`<div class="cal-dot" style="background:${DOT_COLORS.period}"></div>`;
+    }
+    const emoji=r?(r.mood||r.weather||''):'';
+    const hasRec=!!r;
+    cells+=`<div class="cal-cell${isToday?' today':''}${isSun?' sun':''}${!hasRec?' no-rec':''}" onclick="openDayPanel('${ds}')">
+      <div class="cal-dn">${d}</div>
+      <div class="cal-emoji">${emoji}</div>
+      <div class="cal-dots">${dots}</div>
+    </div>`;
+  }
+  const legendItems=[
+    {c:'var(--accent)',l:'体組成'},{c:'#fb923c',l:'食事'},{c:'#6bffb8',l:'運動'},
+    {c:'#f87171',l:'健康指標'},{c:'#ffb830',l:'メモ'},
+    ...(showPeriodDots?[{c:'#ff7eb3',l:'生理'}]:[])
+  ].map(x=>`<div class="cal-leg"><div class="cal-leg-dot" style="background:${x.c}"></div>${x.l}</div>`).join('');
+  const periodBtnCls=showPeriodDots?'on':'';
+  con.innerHTML=`
+    <div class="cal-ctrl">
+      <button class="cal-nav-btn" onclick="navCal(-1)">‹</button>
+      <span class="cal-month-lbl">${y}年 ${m+1}月</span>
+      <div style="display:flex;gap:5px;align-items:center">
+        <button class="period-vis-btn ${periodBtnCls}" onclick="setPeriodDots(${!showPeriodDots})" title="生理ドット表示切替">🌸</button>
+        <button class="cal-nav-btn" onclick="navCal(1)">›</button>
+      </div>
+    </div>
+    <div class="cal-wdays">${WDAYS.map((w,i)=>`<div class="cal-wd${i===0?' sun':i===6?' sat':''}">${w}</div>`).join('')}</div>
+    <div class="cal-grid">${cells}</div>
+    <div class="cal-legend">${legendItems}</div>`;
+}
+function openDayPanel(date){
+  dpDate=date;
+  renderDayPanel();
+  document.getElementById('day-overlay').classList.add('show');
+}
+function closeDayPanel(e){
+  if(e&&e.target!==document.getElementById('day-overlay'))return;
+  document.getElementById('day-overlay').classList.remove('show');
+}
+function navDayPanel(dir){
+  const d=new Date(dpDate+'T00:00:00');d.setDate(d.getDate()+dir);
+  const y=d.getFullYear(),mo=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  dpDate=`${y}-${mo}-${day}`;
+  renderDayPanel();
+}
+function renderDayPanel(){
+  const date=dpDate;
+  const r=records.find(x=>x.date===date);
+  const meals=mealLogs.filter(x=>x.date===date);
+  const exs=exerciseLogs.filter(x=>x.date===date);
+  const glcs=glucoseLogs.filter(x=>x.date===date);
+  const evs=events.filter(x=>x.date===date);
+  const d=new Date(date+'T00:00:00');
+  const DOW=['日','月','火','水','木','金','土'];
+  document.getElementById('dp-date-lbl').textContent=`${date} (${DOW[d.getDay()]})`;
+  let html='';
+  if(!r&&!meals.length&&!exs.length&&!glcs.length&&!evs.length){
+    html=`<div class="dp-empty">📋<br><br>この日の記録はありません</div>`;
+  } else {
+    if(r){
+      const rows=[];
+      if(r.weight!=null)rows.push(['体重',r.weight+' kg']);
+      if(r.bodyFat!=null)rows.push(['体脂肪率',r.bodyFat+' %']);
+      if(r.muscle!=null)rows.push(['筋肉量',r.muscle+' kg']);
+      if(r.waist!=null)rows.push(['ウエスト',r.waist+' cm']);
+      if(r.steps!=null)rows.push(['歩数',r.steps.toLocaleString()+' 歩']);
+      if(r.bpHigh!=null&&r.bpLow!=null)rows.push(['血圧',r.bpHigh+'/'+r.bpLow+' mmHg']);
+      if(r.hba1c!=null)rows.push(['HbA1c',r.hba1c+' %']);
+      if(rows.length)html+=`<div class="dp-section"><div class="dp-sec-title">体組成 / 健康指標</div>${rows.map(([l,v])=>`<div class="dp-row"><span class="dp-lbl">${l}</span><span class="dp-val">${v}</span></div>`).join('')}</div>`;
+      const condRows=[];
+      if(r.mood)condRows.push(['気分',r.mood]);
+      if(r.weather)condRows.push(['天気',r.weather]);
+      if(condRows.length)html+=`<div class="dp-section"><div class="dp-sec-title">体調</div>${condRows.map(([l,v])=>`<div class="dp-row"><span class="dp-lbl">${l}</span><span class="dp-val">${v}</span></div>`).join('')}</div>`;
+      if(r.period){
+        let phtml=`<div class="dp-section"><div class="dp-sec-title">🌸 生理</div>`;
+        const prows=[];
+        if(r.bloodVol)prows.push(['経血量',r.bloodVol]);
+        if(r.painLevel!=null)prows.push(['痛みの強さ',PAIN_LEVELS[r.painLevel]?.n??'']);
+        if(prows.length)phtml+=prows.map(([l,v])=>`<div class="dp-row"><span class="dp-lbl">${l}</span><span class="dp-val">${v}</span></div>`).join('');
+        if(r.painLocs?.length)phtml+=`<div style="margin-top:6px">${r.painLocs.map(x=>`<span class="dp-chip dp-period-chip">${x}</span>`).join('')}</div>`;
+        if(r.symptoms?.length)phtml+=`<div style="margin-top:4px">${r.symptoms.map(x=>`<span class="dp-chip dp-period-chip">${x}</span>`).join('')}</div>`;
+        if(r.periodNote)phtml+=`<div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5">${r.periodNote}</div>`;
+        phtml+='</div>';html+=phtml;
+      }
+    }
+    if(meals.length){
+      const total=meals.reduce((s,m)=>s+(parseFloat(m.kcal)||0),0);
+      html+=`<div class="dp-section"><div class="dp-sec-title">食事 (合計 ${total} kcal)</div>${meals.map(m=>`<div class="dp-row"><span class="dp-lbl">${m.type}${m.time?' '+m.time.slice(0,5):''}</span><span class="dp-val">${m.kcal||'--'} kcal</span></div>`).join('')}</div>`;
+    }
+    if(exs.length){
+      html+=`<div class="dp-section"><div class="dp-sec-title">運動</div>${exs.map(e=>`<div class="dp-row"><span class="dp-lbl">${e.type}${e.time?' '+e.time.slice(0,5):''}</span><span class="dp-val">${e.minutes?e.minutes+'分 ':''} ${e.kcal?e.kcal+' kcal':''}</span></div>`).join('')}</div>`;
+    }
+    if(glcs.length){
+      html+=`<div class="dp-section"><div class="dp-sec-title">血糖値</div>${glcs.map(g=>`<div class="dp-row"><span class="dp-lbl">${g.type}${g.time?' '+g.time.slice(0,5):''}</span><span class="dp-val">${g.value} mg/dL</span></div>`).join('')}</div>`;
+    }
+    if(evs.length){
+      html+=`<div class="dp-section"><div class="dp-sec-title">イベント</div>${evs.map(e=>`<div class="dp-row"><span class="dp-lbl">📌 ${e.title}</span></div>`).join('')}</div>`;
+    }
+    if(r?.note){
+      html+=`<div class="dp-section"><div class="dp-sec-title">メモ</div><div style="font-size:11px;color:var(--text);line-height:1.6">${r.note}</div></div>`;
+    }
+  }
+  html+=`<button class="dp-edit-btn" onclick="editDate('${date}');closeDayPanel()">✏️ この日を編集する</button>`;
+  document.getElementById('dp-body').innerHTML=html;
+}
 function delDateRec(date){if(!confirm(`${date} の記録を削除しますか？`))return;records=records.filter(r=>r.date!==date);mealLogs=mealLogs.filter(x=>x.date!==date);exerciseLogs=exerciseLogs.filter(x=>x.date!==date);glucoseLogs=glucoseLogs.filter(x=>x.date!==date);events=events.filter(x=>x.date!==date);saveData();updSidebar();renderHist();showToast('削除しました');}
 function renderSettings(){
   document.getElementById('s-height').value=profile.height??'';document.getElementById('s-by').value=profile.birthYear??'';document.getElementById('s-bm').value=profile.birthMonth??'';document.getElementById('s-bd').value=profile.birthday??'';
+  document.getElementById('pdots-on')?.classList.toggle('active',showPeriodDots);
+  document.getElementById('pdots-off')?.classList.toggle('active',!showPeriodDots);
   ['unknown','male','female'].forEach(k=>document.getElementById('sex-'+k)?.classList.toggle('active',k===profile.sex));
   updSexHint();applyD(appD);renderTG();
   ['auto','mobile','desktop'].forEach(k=>document.getElementById('tog-'+k)?.classList.toggle('active',k===appL));
@@ -966,7 +1142,7 @@ function updBustLbl(){const l=document.getElementById('bust-lbl');if(l)l.textCon
 function exportD(){const blob=new Blob([JSON.stringify({records,mealLogs,exerciseLogs,glucoseLogs,events,goal,profile,layout:appL,theme:appT,display:appD,sbRight:appSbRight,sbStats:showSbStats},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='myrecord-'+todayStr()+'.json';a.click();URL.revokeObjectURL(url);showToast('エクスポートしました ✓');}
 function importD(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{const d=JSON.parse(ev.target.result);const map={};records.forEach(r=>map[r.date]=r);(d.records||[]).forEach(r=>{map[r.date]={bust:null,waist:null,hip:null,hba1c:null,bpHigh:null,bpLow:null,mood:null,weather:null,period:false,periodNote:'',muscleManual:false,bmiManual:false,...r};});records=Object.values(map).sort((a,b)=>a.date.localeCompare(b.date));if(d.mealLogs)mealLogs=[...mealLogs,...d.mealLogs.filter(x=>!mealLogs.find(y=>y.id===x.id))];if(d.exerciseLogs)exerciseLogs=[...exerciseLogs,...d.exerciseLogs.filter(x=>!exerciseLogs.find(y=>y.id===x.id))];if(d.glucoseLogs)glucoseLogs=[...glucoseLogs,...d.glucoseLogs.filter(x=>!glucoseLogs.find(y=>y.id===x.id))];if(d.events)events=[...events,...d.events.filter(x=>!events.find(y=>y.id===x.id))];if(d.goal!=null)goal=d.goal;if(d.profile)profile={...profile,...d.profile};saveData();loadForm(curDate);updSidebar();showToast(Object.keys(map).length+'件を読み込みました ✓');}catch(err){showToast('読み込みに失敗しました');}e.target.value='';};reader.readAsText(file);}
 function resetD(){if(!confirm('全ての記録を削除しますか？\nプロフィールも含め、すべてのデータが消えます。\nこの操作は取り消せません。'))return;records=[];mealLogs=[];exerciseLogs=[];glucoseLogs=[];events=[];goal=null;profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown'};tM=[];tE=[];tG=[];tEv=[];saveData();loadForm(curDate);renderMeals();renderEx();renderGlc();renderEv();updSidebar();updBustLbl();updPeriodSec();showToast('データを削除しました');}
-function initApp(){buildEmoji();updDD();loadForm(curDate);updPeriodSec();updBustLbl();Object.keys(og).forEach(k=>{document.querySelector(`#grp-${k} .group-hd`)?.classList.toggle('open',og[k]);document.getElementById(`grpb-${k}`)?.classList.toggle('open',og[k]);});onBI();updSidebar();applyGroupOrder();initGroupDnD();const t=new Date();calYear=t.getFullYear();calMonth=t.getMonth();}
+function initApp(){buildEmoji();buildPeriodCtrls();updDD();loadForm(curDate);updPeriodSec();updBustLbl();Object.keys(og).forEach(k=>{document.querySelector(`#grp-${k} .group-hd`)?.classList.toggle('open',og[k]);document.getElementById(`grpb-${k}`)?.classList.toggle('open',og[k]);});onBI();updSidebar();}
 loadData();
 applyLayout();
 applyT(appT);
@@ -976,398 +1152,103 @@ tickClock();
 if(!window._ck){window._ck=true;setInterval(tickClock,1000);}
 let _rzTimer;window.addEventListener('resize',()=>{if(appL==='auto'){clearTimeout(_rzTimer);_rzTimer=setTimeout(applyLayout,150);}});
 window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{if(appD==='system')applyD('system');});
-// ══ CALENDAR HISTORY ══
-const CAL_DOW=['日','月','火','水','木','金','土'];
-const CAL_FLOW_EM={light:'💧',normal:'🩸',heavy:'🩸🩸',very_heavy:'🩸🩸🩸'};
+// ══ CHART TOUCH（スワイプパン・ピンチズーム）══
+// keikoroku.html より移植
+function attachChartTouch(chart,getAllDates,onSaveRange){
+  if(!chart||!chart.canvas)return;
+  const canvas=chart.canvas;
+  let t1x=null,t1y=null,t2x=null;
+  let startMin=null,startMax=null,startDist=null;
+  let isHorizontal=null;
 
-function setHistMode(mode){
-  histMode=mode;
-  document.getElementById('hmtab-list').classList.toggle('active',mode==='list');
-  document.getElementById('hmtab-cal').classList.toggle('active',mode==='cal');
-  document.getElementById('hist-list-view').style.display=mode==='list'?'':'none';
-  document.getElementById('hist-cal-view').style.display=mode==='cal'?'':'none';
-  if(mode==='cal'){
-    if(!calYear){const t=new Date();calYear=t.getFullYear();calMonth=t.getMonth();}
-    renderCal();
-  }else{renderHist();}
-}
-function calPrevMonth(){calMonth--;if(calMonth<0){calMonth=11;calYear--;}calSelDate=null;renderCal();}
-function calNextMonth(){calMonth++;if(calMonth>11){calMonth=0;calYear++;}calSelDate=null;renderCal();}
-
-function renderCal(){
-  const lbl=document.getElementById('cal-month-lbl');
-  if(lbl)lbl.textContent=`${calYear}年 ${calMonth+1}月`;
-  const first=new Date(calYear,calMonth,1).getDay();
-  const last=new Date(calYear,calMonth+1,0).getDate();
-  const today=todayStr();
-  // build date→record map for this month
-  const pad=n=>String(n).padStart(2,'0');
-  const recMap={};
-  records.forEach(r=>{recMap[r.date]=r;});
-  const exDates=new Set(exerciseLogs.map(e=>e.date));
-  const evDates=new Set(events.map(e=>e.date));
-  const meaDates=new Set(mealLogs.map(e=>e.date));
-
-  let html='';
-  for(let i=0;i<first;i++)html+=`<div class="cal-cell empty"></div>`;
-  for(let d=1;d<=last;d++){
-    const ds=`${calYear}-${pad(calMonth+1)}-${pad(d)}`;
-    const rec=recMap[ds];
-    const isToday=ds===today;
-    const isSel=ds===calSelDate;
-    let cls='cal-cell'+(isToday?' today':'')+(isSel?' cal-sel':'');
-    let dots='';
-    if(rec?.weight!=null)dots+=`<span class="cdot cdot-w"></span>`;
-    if(rec?.period)dots+=`<span class="cdot cdot-p"></span>`;
-    if(exDates.has(ds))dots+=`<span class="cdot cdot-e"></span>`;
-    if(evDates.has(ds))dots+=`<span class="cdot cdot-ev"></span>`;
-    html+=`<div class="${cls}" onclick="calSelectDay('${ds}')"><span class="cal-day">${d}</span><div class="cal-dots">${dots}</div></div>`;
+  function getCurRange(){
+    const dates=getAllDates();
+    const total=dates.length;
+    const xsc=chart.scales&&chart.scales.x;
+    if(!xsc)return{min:0,max:total-1,total};
+    const mn=Math.max(0,Math.round(xsc.min??0));
+    const mx=Math.min(total-1,Math.round(xsc.max??(total-1)));
+    return{min:mn,max:mx,total};
   }
-  // fill remaining cells to complete grid (optional)
-  const filled=first+last;
-  const rem=(7-filled%7)%7;
-  for(let i=0;i<rem;i++)html+=`<div class="cal-cell empty other-m"></div>`;
-
-  const grid=document.getElementById('cal-grid');
-  if(grid)grid.innerHTML=html;
-  renderCalDetail();
-}
-
-function calSelectDay(ds){
-  calSelDate=calSelDate===ds?null:ds;
-  renderCal();
-}
-
-function renderCalDetail(){
-  const panel=document.getElementById('cal-detail-panel');
-  if(!panel)return;
-  if(!calSelDate){panel.innerHTML='';return;}
-  const rec=records.find(r=>r.date===calSelDate);
-  const exs=exerciseLogs.filter(e=>e.date===calSelDate);
-  const evs=events.filter(e=>e.date===calSelDate);
-  const meals=mealLogs.filter(e=>e.date===calSelDate);
-  const d=new Date(calSelDate+'T00:00:00');
-  const dowStr=['日','月','火','水','木','金','土'][d.getDay()];
-  const dateStr=`${d.getMonth()+1}月${d.getDate()}日（${dowStr}）`;
-  let html=`<div class="cal-detail"><div class="cd-head">${dateStr}</div>`;
-  if(!rec&&!exs.length&&!evs.length&&!meals.length){
-    html+=`<div style="font-size:11px;color:var(--muted)">記録がありません</div>`;
-  }else{
-    if(rec?.weight!=null)html+=`<div class="cd-row"><span class="cd-lbl">体重</span><span>${rec.weight} kg</span></div>`;
-    if(rec?.bodyFat!=null)html+=`<div class="cd-row"><span class="cd-lbl">体脂肪率</span><span>${rec.bodyFat} %</span></div>`;
-    if(rec?.muscle!=null)html+=`<div class="cd-row"><span class="cd-lbl">筋肉量</span><span>${rec.muscle} kg</span></div>`;
-    if(rec?.steps!=null)html+=`<div class="cd-row"><span class="cd-lbl">歩数</span><span>${rec.steps.toLocaleString()} 歩</span></div>`;
-    if(rec?.mood!=null)html+=`<div class="cd-row"><span class="cd-lbl">気分</span><span>${rec.mood}</span></div>`;
-    let chips='<div class="cd-chips">';
-    if(rec?.period){
-      const fe=CAL_FLOW_EM[rec.periodFlow]||'';
-      chips+=`<span class="cd-chip pink">🌸 生理${fe?' '+fe:''}</span>`;
-      if(rec.periodPainLevel>0)chips+=`<span class="cd-chip pink">痛み ${rec.periodPainLevel}/5</span>`;
-      (rec.periodSymptoms||[]).forEach(s=>chips+=`<span class="cd-chip pink">${s}</span>`);
-    }
-    if(meals.length)chips+=`<span class="cd-chip">🍽️ 食事 ${meals.length}件</span>`;
-    if(exs.length)chips+=`<span class="cd-chip green">🏃 運動 ${exs.length}件</span>`;
-    evs.forEach(ev=>chips+=`<span class="cd-chip amber">📌 ${ev.title||'イベント'}</span>`);
-    chips+='</div>';
-    if(chips!=='<div class="cd-chips"></div>')html+=chips;
-    if(rec?.note)html+=`<div style="font-size:11px;color:var(--muted);margin-top:6px">${rec.note}</div>`;
+  function applyRange(min,max){
+    const total=getAllDates().length;
+    min=Math.max(0,min);max=Math.min(total-1,max);
+    if(max-min<1)return;
+    if(!chart.options?.scales?.x)return;
+    chart.options.scales.x.min=Math.round(min);
+    chart.options.scales.x.max=Math.round(max);
+    try{chart.update('none');}catch(e){}
   }
-  html+=`<button class="cd-edit-btn" onclick="editDate('${calSelDate}')">✏️ 編集する</button>`;
-  html+='</div>';
-  panel.innerHTML=html;
-}
-
-// ══ GROUP DRAG & DROP ══
-let dndActive=false,dndDragKey=null,dndOverKey=null;
-
-function enterDndMode(){
-  dndActive=true;
-  document.getElementById('dnd-mode-bar').style.display='flex';
-  GRP_KEYS.forEach(k=>{
-    const g=document.getElementById('grp-'+k);
-    const dh=document.getElementById('dh-'+k);
-    if(g)g.draggable=true;
-    if(dh)dh.style.display='flex';
-  });
-  applyGroupOrder();
-  showToast('グループをドラッグして並び替えできます');
-}
-function exitDndMode(){
-  dndActive=false;
-  document.getElementById('dnd-mode-bar').style.display='none';
-  GRP_KEYS.forEach(k=>{
-    const g=document.getElementById('grp-'+k);
-    const dh=document.getElementById('dh-'+k);
-    if(g){g.draggable=false;g.classList.remove('dnd-dragging','dnd-over');}
-    if(dh)dh.style.display='none';
-  });
-  saveData();
-  showToast('並び替えを保存しました');
-}
-function applyGroupOrder(){
-  const container=document.getElementById('grp-body')?.parentElement;
-  if(!container)return;
-  // Validate: ensure all keys exist
-  const toOrder=[...groupOrder,...GRP_KEYS.filter(k=>!groupOrder.includes(k))];
-  groupOrder=toOrder;
-  toOrder.forEach(k=>{
-    const el=document.getElementById('grp-'+k);
-    if(el)container.appendChild(el);
-  });
-}
-
-function initGroupDnD(){
-  const container=document.getElementById('grp-body')?.parentElement;
-  if(!container)return;
-  GRP_KEYS.forEach(k=>{
-    const g=document.getElementById('grp-'+k);
-    if(!g)return;
-    g.addEventListener('dragstart',e=>{
-      if(!dndActive)return;
-      dndDragKey=k;
-      g.classList.add('dnd-dragging');
-      e.dataTransfer.effectAllowed='move';
-    });
-    g.addEventListener('dragend',e=>{
-      g.classList.remove('dnd-dragging');
-      GRP_KEYS.forEach(k2=>document.getElementById('grp-'+k2)?.classList.remove('dnd-over'));
-      dndDragKey=null;dndOverKey=null;
-    });
-    g.addEventListener('dragover',e=>{
-      if(!dndActive||!dndDragKey||dndDragKey===k)return;
-      e.preventDefault();e.dataTransfer.dropEffect='move';
-      if(dndOverKey!==k){
-        GRP_KEYS.forEach(k2=>document.getElementById('grp-'+k2)?.classList.remove('dnd-over'));
-        g.classList.add('dnd-over');
-        dndOverKey=k;
-      }
-    });
-    g.addEventListener('drop',e=>{
-      if(!dndActive||!dndDragKey||dndDragKey===k)return;
+  canvas.addEventListener('touchstart',e=>{
+    if(e.touches.length===1){
+      const r=getCurRange();
+      t1x=e.touches[0].clientX;t1y=e.touches[0].clientY;
+      t2x=null;startDist=null;
+      startMin=r.min;startMax=r.max;
+      isHorizontal=null;
+    }else if(e.touches.length===2){
+      const r=getCurRange();
+      t1x=e.touches[0].clientX;t1y=e.touches[0].clientY;
+      t2x=e.touches[1].clientX;
+      startDist=Math.abs(t1x-t2x);
+      startMin=r.min;startMax=r.max;
+      isHorizontal=null;
       e.preventDefault();
-      const from=groupOrder.indexOf(dndDragKey);
-      const to=groupOrder.indexOf(k);
-      if(from>=0&&to>=0){
-        groupOrder.splice(from,1);
-        groupOrder.splice(to,0,dndDragKey);
-        applyGroupOrder();
+    }
+  },{passive:false});
+  canvas.addEventListener('touchmove',e=>{
+    if(e.touches.length>=2&&startDist!==null){
+      e.preventDefault();
+      const d=Math.abs(e.touches[0].clientX-e.touches[1].clientX);
+      if(d<5)return;
+      const scale=startDist/d;
+      const center=(startMin+startMax)/2;
+      const range=startMax-startMin;
+      const newRange=Math.max(2,Math.min(getAllDates().length-1,range*scale));
+      applyRange(center-newRange/2,center+newRange/2);
+    }else if(e.touches.length===1&&t1x!==null){
+      const dx=e.touches[0].clientX-t1x;
+      const dy=e.touches[0].clientY-t1y;
+      if(isHorizontal===null){
+        if(Math.abs(dx)>8||Math.abs(dy)>8)isHorizontal=Math.abs(dx)>Math.abs(dy);
       }
-    });
-    // touch support
-    let touchY=0;
-    g.addEventListener('touchstart',e=>{if(!dndActive)return;dndDragKey=k;g.classList.add('dnd-dragging');touchY=e.touches[0].clientY;},{passive:true});
-    g.addEventListener('touchmove',e=>{
-      if(!dndActive||!dndDragKey)return;
-      const el=document.elementFromPoint(e.touches[0].clientX,e.touches[0].clientY);
-      const target=el?.closest('.group[data-grpkey]');
-      const tk=target?.dataset.grpkey;
-      if(tk&&tk!==dndDragKey){
-        GRP_KEYS.forEach(k2=>document.getElementById('grp-'+k2)?.classList.remove('dnd-over'));
-        target.classList.add('dnd-over');
-        dndOverKey=tk;
+      if(!isHorizontal)return;
+      e.preventDefault();
+      const w=canvas.clientWidth||300;
+      const range=startMax-startMin;
+      if(range<=0)return;
+      const perPx=range/w;
+      const shift=-dx*perPx;
+      const total=getAllDates().length;
+      const newMin=Math.max(0,Math.min(total-1-range,startMin+shift));
+      applyRange(newMin,newMin+range);
+    }
+  },{passive:false});
+  canvas.addEventListener('touchend',e=>{
+    if(e.touches.length===0){
+      const xsc=chart.scales&&chart.scales.x;
+      if(xsc&&(xsc.min!=null||xsc.max!=null)){
+        const total=getAllDates().length;
+        const mn=Math.max(0,Math.round(xsc.min??0));
+        const mx=Math.min(total-1,Math.round(xsc.max??(total-1)));
+        if(mn<=0&&mx>=total-1)onSaveRange(null,null);
+        else onSaveRange(mn,mx);
       }
-    },{passive:true});
-    g.addEventListener('touchend',e=>{
-      if(!dndActive)return;
-      g.classList.remove('dnd-dragging');
-      if(dndOverKey&&dndOverKey!==dndDragKey){
-        const from=groupOrder.indexOf(dndDragKey);
-        const to=groupOrder.indexOf(dndOverKey);
-        if(from>=0&&to>=0){groupOrder.splice(from,1);groupOrder.splice(to,0,dndDragKey);applyGroupOrder();}
-      }
-      GRP_KEYS.forEach(k2=>document.getElementById('grp-'+k2)?.classList.remove('dnd-over'));
-      dndDragKey=null;dndOverKey=null;
-    });
+      t1x=null;t1y=null;t2x=null;startDist=null;startMin=null;startMax=null;isHorizontal=null;
+    }else if(e.touches.length===1){
+      const r=getCurRange();
+      t1x=e.touches[0].clientX;t1y=e.touches[0].clientY;
+      t2x=null;startDist=null;
+      startMin=r.min;startMax=r.max;
+      isHorizontal=null;
+    }
+  },{passive:false});
+  canvas.addEventListener('touchcancel',()=>{
+    t1x=null;t1y=null;t2x=null;startDist=null;startMin=null;startMax=null;isHorizontal=null;
   });
 }
 
-// ══ GOOGLE DRIVE SYNC ══
-const GD_CLIENT_ID='1020015092975-eheh7mf0vjv55a7lufvbc1mi50ele8bv.apps.googleusercontent.com';
-const GD_SCOPE='https://www.googleapis.com/auth/drive.appdata';
-const GD_FILE='myrecord_data.json';
-let gdToken=null,gdTokenClient=null,_lastSyncTime=null,_gdFileId=null,syncWarnDisabled=false;
-
-function gdReady(){
-  if(typeof google==='undefined'||!google.accounts)return false;
-  if(!gdTokenClient){
-    gdTokenClient=google.accounts.oauth2.initTokenClient({
-      client_id:GD_CLIENT_ID,
-      scope:GD_SCOPE,
-      callback:function(resp){
-        if(resp.error){gdSetSub('ログインに失敗しました: '+resp.error);return;}
-        gdToken=resp.access_token;
-        gdSetSub('ログイン済み ✓');
-        updHdrSync();
-      }
-    });
-  }
-  return true;
-}
-function gSignIn(){
-  if(!gdReady()){gdSetSub('Google ライブラリ読み込み中…再度お試しください');return;}
-  gdTokenClient.requestAccessToken({prompt:'consent'});
-}
-function gSignOut(){
-  if(gdToken)google.accounts.oauth2.revoke(gdToken,function(){});
-  gdToken=null;
-  gdSetSub('ログアウトしました');
-  updHdrSync();
-}
-function gdSetSub(msg){const e=document.getElementById('sync-sub');if(e)e.textContent=msg;}
-function fmtSyncTime(d){
-  if(!d)return'';
-  const diff=Math.floor((Date.now()-d)/60000);
-  if(diff<1)return'たった今';
-  if(diff<60)return diff+'分前';
-  return d.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
-}
-function updHdrSync(){
-  const li=!!gdToken;
-  const show=(id,v)=>{const e=document.getElementById(id);if(e)e.style.display=v?'':'none';};
-  const dis=(id,v)=>{const e=document.getElementById(id);if(e)e.disabled=v;};
-  // モバイルヘッダー
-  show('hdr-login-btn',!li);
-  show('hdr-logout-btn',li);
-  show('hdr-sync-btns',li);
-  dis('hdr-up-btn',!li);
-  dis('hdr-dn-btn',!li);
-  const ht=document.getElementById('hdr-sync-time');
-  if(ht)ht.textContent=_lastSyncTime?'最終同期 '+fmtSyncTime(_lastSyncTime):'';
-  // サイドバー（デスクトップ）
-  show('sb-login-btn',!li);
-  show('sb-logout-btn',li);
-  show('sb-sync-btns',li);
-  dis('sb-up-btn',!li);
-  dis('sb-dn-btn',!li);
-  const st=document.getElementById('sb-sync-time');
-  if(st)st.textContent=_lastSyncTime?'最終同期 '+fmtSyncTime(_lastSyncTime):'';
-  // 設定タブ
-  show('sync-login-btn',!li);
-  show('sync-logout-btn',li);
-  show('sync-action-row',li);
-  show('sync-warn-row',li);
-  const wt=document.getElementById('warn-toggle');if(wt)wt.checked=!syncWarnDisabled;
-}
-function toggleSyncWarnSetting(checked){syncWarnDisabled=!checked;saveData();}
-
-// 警告バナー
-function showSyncWarn(cloudTime,localTime){
-  const el=document.getElementById('sync-warn');
-  const txt=document.getElementById('sync-warn-text');
-  const chk=document.getElementById('warn-neverchk');
-  if(!el)return;
-  const fmt=d=>d?d.toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'不明';
-  if(txt)txt.innerHTML='クラウド: '+fmt(cloudTime)+'&nbsp;／&nbsp;最終同期: '+fmt(localTime)+'<br>上書きするとクラウドのデータが失われます。続けますか？';
-  if(chk)chk.checked=false;
-  el.classList.add('show');
-  el.scrollIntoView({behavior:'smooth',block:'nearest'});
-}
-function dismissWarn(){const el=document.getElementById('sync-warn');if(el)el.classList.remove('show');}
-async function doOverwriteSave(){
-  const chk=document.getElementById('warn-neverchk');
-  if(chk&&chk.checked){syncWarnDisabled=true;saveData();const wt=document.getElementById('warn-toggle');if(wt)wt.checked=false;}
-  dismissWarn();
-  await gdSave();
-}
-async function gdSaveWithCheck(){
-  if(!gdToken){showToast('先にGoogleログインしてください');return;}
-  if(syncWarnDisabled){await gdSave();return;}
-  try{
-    const fid=_gdFileId||(await gdFindFile());
-    if(fid&&_lastSyncTime){
-      const res=await fetch('https://www.googleapis.com/drive/v3/files/'+fid+'?fields=modifiedTime',
-        {headers:{Authorization:'Bearer '+gdToken}});
-      if(res.ok){
-        const d=await res.json();
-        const cloudMod=d.modifiedTime?new Date(d.modifiedTime):null;
-        if(cloudMod&&_lastSyncTime&&cloudMod>_lastSyncTime){showSyncWarn(cloudMod,_lastSyncTime);return;}
-      }
-    }
-  }catch(e){}
-  await gdSave();
-}
-
-// ── ファイル検索 ──
-async function gdFindFile(){
-  const res=await fetch(
-    'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name%3D%22'+GD_FILE+'%22&fields=files(id,name)',
-    {headers:{Authorization:'Bearer '+gdToken}});
-  const d=await res.json();
-  const fid=(d.files&&d.files.length)?d.files[0].id:null;
-  if(fid)_gdFileId=fid;
-  return fid;
-}
-
-// ── 保存 ──
-async function gdSave(){
-  if(!gdToken){gdSetSub('先にログインしてください');return;}
-  gdSetSub('保存中…');
-  try{
-    const payload=JSON.stringify({version:'1.0',records,mealLogs,exerciseLogs,glucoseLogs,events,goal,profile,layout:appL,theme:appT,display:appD,sbRight:appSbRight,sbStats:showSbStats,og,groupOrder},null,2);
-    const fid=await gdFindFile();
-    let resp;
-    if(fid){
-      resp=await fetch('https://www.googleapis.com/upload/drive/v3/files/'+fid+'?uploadType=media',
-        {method:'PATCH',headers:{Authorization:'Bearer '+gdToken,'Content-Type':'application/json'},body:payload});
-    }else{
-      const meta=JSON.stringify({name:GD_FILE,parents:['appDataFolder']});
-      const bd='myrecordboundary',NL='\r\n';
-      const parts=['--'+bd,'Content-Type: application/json; charset=UTF-8','',meta,'--'+bd,'Content-Type: application/json','',payload,'--'+bd+'--'];
-      resp=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
-        {method:'POST',headers:{Authorization:'Bearer '+gdToken,'Content-Type':'multipart/related; boundary='+bd},body:parts.join(NL)});
-    }
-    if(resp.ok){
-      _lastSyncTime=new Date();updHdrSync();
-      gdSetSub('Drive に保存しました ✓ ('+_lastSyncTime.toLocaleTimeString('ja-JP')+')');
-      showToast('クラウドに保存しました ✓');
-    }else{
-      const e2=await resp.json();
-      gdSetSub('保存に失敗: '+((e2.error&&e2.error.message)||resp.status));
-    }
-  }catch(e){gdSetSub('エラー: '+e.message);}
-}
-
-// ── 読み込み ──
-async function gdLoad(){
-  if(!gdToken){gdSetSub('先にログインしてください');return;}
-  gdSetSub('読み込み中…');
-  try{
-    const fid=await gdFindFile();
-    if(!fid){gdSetSub('Drive にデータが見つかりません');return;}
-    const res=await fetch('https://www.googleapis.com/drive/v3/files/'+fid+'?alt=media',
-      {headers:{Authorization:'Bearer '+gdToken}});
-    const d=await res.json();
-    if(d.records)records=d.records;
-    if(d.mealLogs)mealLogs=d.mealLogs;
-    if(d.exerciseLogs)exerciseLogs=d.exerciseLogs;
-    if(d.glucoseLogs)glucoseLogs=d.glucoseLogs;
-    if(d.events)events=d.events;
-    if(d.goal!=null)goal=d.goal;
-    if(d.profile)profile={...profile,...d.profile};
-    if(d.layout)appL=d.layout;
-    if(d.theme)appT=d.theme;
-    if(d.display)appD=d.display;
-    if(d.sbRight!=null)appSbRight=d.sbRight;
-    if(d.sbStats!=null)showSbStats=d.sbStats;
-    if(d.og)og={...og,...d.og};
-    if(d.groupOrder)groupOrder=d.groupOrder;
-    _lastSyncTime=new Date();
-    saveData();
-    applyLayout();applyT(appT);applyD(appD);applyGroupOrder();
-    loadForm(curDate);updSidebar();updPeriodSec();updBustLbl();
-    updHdrSync();
-    gdSetSub('Drive から読み込みました ✓ ('+new Date().toLocaleTimeString('ja-JP')+')');
-    showToast('クラウドから読み込みました ✓');
-  }catch(e){gdSetSub('エラー: '+e.message);}
-}
-
-// 同期時刻を毎分更新
-setInterval(()=>{
-  if(_lastSyncTime){
-    const ht=document.getElementById('hdr-sync-time');if(ht)ht.textContent='最終同期 '+fmtSyncTime(_lastSyncTime);
-    const st=document.getElementById('sb-sync-time');if(st)st.textContent='最終同期 '+fmtSyncTime(_lastSyncTime);
-  }
-},60000);
+// ══ CHART ══
 const METRICS={
   weight:     {label:'体重',     unit:'kg',   axis:'y',  color:'#c8a8e9', type:'line'},
   bodyFat:    {label:'体脂肪率', unit:'%',    axis:'y1', color:'#ff7eb3', type:'line'},
@@ -1518,38 +1399,9 @@ function renderCharts(){
   if(chartType==='body')renderBodyChart(recs,evs);
   else if(chartType==='energy')renderEnergyChart(recs,evs);
   else renderGlucoseChart(from,to,evs);
-  // スワイプ操作を初期化
-  setTimeout(initChartSwipe,50);
 }
 
 function hiEvent(date){hiEvDate=hiEvDate===date?null:date;renderCharts();}
-
-// ── チャートスワイプ操作 ──
-let _swipeX=0,_swipeY=0;
-function initChartSwipe(){
-  const canvas=document.getElementById('chart-canvas');
-  if(!canvas)return;
-  canvas.addEventListener('touchstart',e=>{_swipeX=e.touches[0].clientX;_swipeY=e.touches[0].clientY;},{passive:true});
-  canvas.addEventListener('touchend',e=>{
-    const dx=e.changedTouches[0].clientX-_swipeX;
-    const dy=e.changedTouches[0].clientY-_swipeY;
-    if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.5){shiftChartRange(dx<0?1:-1);}
-  },{passive:true});
-}
-function shiftChartRange(dir){
-  const{from,to}=getChartRange();
-  const f=new Date(from+'T00:00:00'),t=new Date(to+'T00:00:00');
-  const days=Math.max(7,Math.round((t-f)/86400000));
-  f.setDate(f.getDate()+days*dir);t.setDate(t.getDate()+days*dir);
-  const todayD=new Date();todayD.setHours(0,0,0,0);
-  if(t>todayD&&dir>0){const diff=Math.round((t-todayD)/86400000);f.setDate(f.getDate()-diff);t.setTime(todayD.getTime());}
-  chartPeriod='custom';chartFrom=f.toISOString().slice(0,10);chartTo=t.toISOString().slice(0,10);
-  ['1m','3m','6m','all','custom'].forEach(k=>document.getElementById('period-'+k)?.classList.toggle('active',k==='custom'));
-  const cr=document.getElementById('custom-range');if(cr)cr.style.display='flex';
-  const cf=document.getElementById('chart-from'),ct2=document.getElementById('chart-to');
-  if(cf)cf.value=chartFrom;if(ct2)ct2.value=chartTo;
-  renderCharts();
-}
 function chartColors(){
   const text=cssV('--text')||'#f0f0f0';
   const muted=cssV('--muted')||'#777';
@@ -1611,6 +1463,7 @@ function renderBodyChart(recs,evs){
       scales:sc,
     }
   });
+  attachChartTouch(chartInst,()=>fullLabels,()=>{});
 }
 
 // ── ② エネルギー収支グラフ（摂取↑・消費↓・血糖値右軸線） ──
@@ -1666,6 +1519,7 @@ function renderEnergyChart(recs,evs){
       scales:sc,
     }
   });
+  attachChartTouch(chartInst,()=>fullLabels,()=>{});
 }
 
 // ── ③ 血糖値専用グラフ（日時軸・タイプ別色分け線グラフ） ──
@@ -1713,6 +1567,126 @@ function renderGlucoseChart(from,to,evs){
       }
     }
   });
+  attachChartTouch(chartInst,()=>allLabels,()=>{});
 }
 
-</script>/html>
+// ══ GOOGLE DRIVE SYNC ══
+const GD_CLIENT_ID='1020015092975-eheh7mf0vjv55a7lufvbc1mi50ele8bv.apps.googleusercontent.com';
+const GD_SCOPE='https://www.googleapis.com/auth/drive.appdata';
+const GD_FILE='myrecord_data.json';
+let gdToken=null,gdTokenClient=null,_gdFileId=null,_lastSyncTime=null,syncWarnDisabled=false;
+
+function gdReady(){
+  if(typeof google==='undefined'||!google.accounts)return false;
+  if(!gdTokenClient){
+    gdTokenClient=google.accounts.oauth2.initTokenClient({
+      client_id:GD_CLIENT_ID,scope:GD_SCOPE,
+      callback:function(resp){
+        if(resp.error){gdSetSub('ログインに失敗しました: '+resp.error);return;}
+        gdToken=resp.access_token;
+        gdSetSub('ログイン済み ✓');
+        updGDSync();
+      }
+    });
+  }
+  return true;
+}
+function gSignIn(){if(!gdReady()){gdSetSub('Googleライブラリ読み込み中…再度お試しください');return;}gdTokenClient.requestAccessToken({prompt:'consent'});}
+function gSignOut(){if(gdToken)google.accounts.oauth2.revoke(gdToken,function(){});gdToken=null;_gdFileId=null;updGDSync();gdSetSub('ログアウトしました');}
+function gdSetSub(msg){const e=document.getElementById('sync-sub');if(e)e.textContent=msg;}
+function toggleSyncWarnSetting(v){syncWarnDisabled=!v;}
+function updGDSync(){
+  const on=!!gdToken;
+  const ids=['hdr-up-btn','hdr-dn-btn','sb-up-btn','sb-dn-btn','sync-save-btn','sync-load-btn'];
+  ids.forEach(id=>{const e=document.getElementById(id);if(e)e.disabled=!on;});
+  ['hdr-login-btn','sb-login-btn','sync-login-btn'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display=on?'none':'';});
+  ['hdr-logout-btn','sb-logout-btn','sync-logout-btn'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display=on?'':'none';});
+  const tl=_lastSyncTime?('最終同期 '+fmtSyncTime(_lastSyncTime)):'';
+  ['hdr-sync-time','sb-sync-time'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=tl;});
+}
+function fmtSyncTime(d){const now=new Date();const diff=Math.round((now-d)/60000);if(diff<1)return 'たった今';if(diff<60)return diff+'分前';const h=Math.floor(diff/60);if(h<24)return h+'時間前';return d.toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'});}
+function showSyncWarn(cloudTime,localTime){
+  const el=document.getElementById('sync-warn');const txt=document.getElementById('sync-warn-text');
+  if(!el)return;
+  const fmt=d=>d?d.toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'不明';
+  if(txt)txt.innerHTML='クラウド: '+fmt(cloudTime)+'&nbsp;／&nbsp;最終同期: '+fmt(localTime)+'<br>上書きするとクラウドのデータが失われます。続けますか？';
+  el.classList.add('show');el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function dismissWarn(){const el=document.getElementById('sync-warn');if(el)el.classList.remove('show');}
+async function doOverwriteSave(){
+  const chk=document.getElementById('warn-neverchk');
+  if(chk&&chk.checked){syncWarnDisabled=true;const wt=document.getElementById('warn-toggle');if(wt)wt.checked=false;}
+  dismissWarn();await gdSave();
+}
+async function gdFindFile(){
+  const res=await fetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name%3D%22'+GD_FILE+'%22&fields=files(id,name)',{headers:{Authorization:'Bearer '+gdToken}});
+  const d=await res.json();
+  const fid=(d.files&&d.files.length)?d.files[0].id:null;
+  if(fid)_gdFileId=fid;
+  return fid;
+}
+async function gdSaveWithCheck(){
+  if(!gdToken){showToast('先にGoogleログインしてください');return;}
+  if(syncWarnDisabled){await gdSave();return;}
+  try{
+    const fid=_gdFileId||(await gdFindFile());
+    if(fid&&_lastSyncTime){
+      const res=await fetch('https://www.googleapis.com/drive/v3/files/'+fid+'?fields=modifiedTime',{headers:{Authorization:'Bearer '+gdToken}});
+      if(res.ok){
+        const d=await res.json();
+        const cloudMod=d.modifiedTime?new Date(d.modifiedTime):null;
+        if(cloudMod&&_lastSyncTime&&cloudMod>_lastSyncTime){showSyncWarn(cloudMod,_lastSyncTime);return;}
+      }
+    }
+  }catch(e){}
+  await gdSave();
+}
+async function gdSave(){
+  if(!gdToken){gdSetSub('先にログインしてください');return;}
+  gdSetSub('保存中…');showToast('Driveに保存中…');
+  try{
+    const payload=JSON.stringify({version:'myrecord-v1',records,mealLogs,exerciseLogs,glucoseLogs,events,goal,profile,layout:appL,theme:appT,display:appD,sbRight:appSbRight,sbStats:showSbStats},null,2);
+    let fid=_gdFileId||(await gdFindFile());
+    let resp;
+    if(fid){
+      resp=await fetch('https://www.googleapis.com/upload/drive/v3/files/'+fid+'?uploadType=media',{method:'PATCH',headers:{Authorization:'Bearer '+gdToken,'Content-Type':'application/json'},body:payload});
+    }else{
+      const meta=JSON.stringify({name:GD_FILE,parents:['appDataFolder']});
+      const bd='myrecordboundary';const NL='\r\n';
+      const parts=['--'+bd,'Content-Type: application/json; charset=UTF-8','',meta,'--'+bd,'Content-Type: application/json','',payload,'--'+bd+'--'];
+      resp=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+gdToken,'Content-Type':'multipart/related; boundary='+bd},body:parts.join(NL)});
+    }
+    if(resp.ok){_lastSyncTime=new Date();updGDSync();gdSetSub('Driveに保存しました ✓ ('+_lastSyncTime.toLocaleTimeString('ja-JP')+')');showToast('Driveに保存しました ✓');}
+    else{const e2=await resp.json();gdSetSub('保存に失敗: '+((e2.error&&e2.error.message)||resp.status));showToast('保存に失敗しました');}
+  }catch(e){gdSetSub('エラー: '+e.message);showToast('エラーが発生しました');}
+}
+async function gdLoad(){
+  if(!gdToken){gdSetSub('先にログインしてください');return;}
+  gdSetSub('読み込み中…');showToast('Driveから読み込み中…');
+  try{
+    const fid=_gdFileId||(await gdFindFile());
+    if(!fid){gdSetSub('Driveにデータが見つかりません');showToast('Driveにデータがありません');return;}
+    const res=await fetch('https://www.googleapis.com/drive/v3/files/'+fid+'?alt=media',{headers:{Authorization:'Bearer '+gdToken}});
+    const d=await res.json();
+    if(d.records)records=d.records;
+    if(d.mealLogs)mealLogs=d.mealLogs;
+    if(d.exerciseLogs)exerciseLogs=d.exerciseLogs;
+    if(d.glucoseLogs)glucoseLogs=d.glucoseLogs;
+    if(d.events)events=d.events;
+    if(d.goal!=null)goal=d.goal;
+    if(d.profile)profile={...profile,...d.profile};
+    if(d.layout)appL=d.layout;
+    if(d.theme)appT=d.theme;
+    if(d.display)appD=d.display;
+    if(d.sbRight!=null)appSbRight=d.sbRight;
+    if(d.sbStats!=null)showSbStats=d.sbStats;
+    _lastSyncTime=new Date();
+    saveData();applyLayout();applyT(appT);applyD(appD);
+    loadForm(curDate);updSidebar();
+    updGDSync();gdSetSub('Driveから読み込みました ✓ ('+new Date().toLocaleTimeString('ja-JP')+')');
+    showToast('同期完了 ✓');
+  }catch(e){gdSetSub('エラー: '+e.message);showToast('読み込みに失敗しました');}
+}
+
+</script>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>コットンカード ─ 安心デッキ</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Antique+Soft&family=Klee+One&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#f7f3ed;--warm-white:#fdfaf6;--cotton:#e2d8cc;
+  --sage:#8aaa88;--sage-light:#b4cab2;--sage-dark:#5a7a58;
+  --text-soft:#6a5a50;--text-warm:#8a7060;
+  --gold:#c9a84c;--gold-dim:#8a7040;
+}
+body{
+  background:var(--cream);color:var(--text-soft);
+  font-family:'Klee One','Hiragino Kaku Gothic ProN',sans-serif;
+  min-height:100vh;overflow-x:hidden;transition:background .5s;
+}
+body.nouveau-mode{background:#f0ece0}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 15%,rgba(180,202,178,.15) 0%,transparent 60%),
+    radial-gradient(ellipse 70% 80% at 85% 85%,rgba(200,168,112,.08) 0%,transparent 60%);
+  pointer-events:none;z-index:0;
+}
+body.nouveau-mode::before{
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 15%,rgba(201,168,76,.12) 0%,transparent 60%),
+    radial-gradient(ellipse 70% 80% at 85% 85%,rgba(201,168,76,.08) 0%,transparent 60%);
+}
+.container{
+  position:relative;z-index:1;max-width:520px;margin:0 auto;
+  padding:52px 24px 80px;
+  display:flex;flex-direction:column;align-items:center;gap:36px;
+}
+header{text-align:center}
+.header-ornament{font-size:16px;color:var(--sage);margin-bottom:14px;letter-spacing:10px;opacity:.65;transition:color .5s}
+body.nouveau-mode .header-ornament{color:var(--gold)}
+h1{font-family:'Zen Antique Soft',serif;font-size:clamp(20px,5vw,30px);color:var(--text-soft);letter-spacing:5px;font-weight:400;line-height:1.5}
+.subtitle{font-size:11px;color:var(--text-warm);letter-spacing:3px;margin-top:10px;opacity:.75}
+
+/* デッキ切り替え */
+.deck-switcher{display:flex;border-radius:40px;overflow:hidden;border:1.5px solid var(--sage-light);transition:border-color .5s}
+body.nouveau-mode .deck-switcher{border-color:var(--gold-dim)}
+.deck-btn{
+  background:transparent;border:none;
+  font-family:'Zen Antique Soft',serif;font-size:12px;letter-spacing:2px;
+  padding:10px 24px;cursor:pointer;color:var(--text-warm);transition:background .3s,color .3s;
+}
+.deck-btn.active{background:var(--sage-light);color:var(--sage-dark)}
+body.nouveau-mode .deck-btn.active{background:var(--gold-dim);color:#fff8ee}
+.deck-btn:not(.active):hover{background:rgba(0,0,0,.04)}
+
+.divider{display:flex;align-items:center;gap:14px;width:100%;max-width:280px}
+.divider-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--sage-light));transition:background .5s}
+.divider-line:last-child{background:linear-gradient(to left,transparent,var(--sage-light))}
+body.nouveau-mode .divider-line{background:linear-gradient(to right,transparent,var(--gold-dim))}
+body.nouveau-mode .divider-line:last-child{background:linear-gradient(to left,transparent,var(--gold-dim))}
+.divider-leaf{color:var(--sage);font-size:13px;transition:color .5s}
+body.nouveau-mode .divider-leaf{color:var(--gold)}
+
+/* draw-btn 削除済み */
+
+.card-area{width:100%;display:flex;flex-direction:column;align-items:center;gap:20px}
+
+/* カード本体：絵だけ */
+.card-scene{
+  perspective:1200px;
+  width:260px;height:325px;
+  cursor:pointer;flex-shrink:0;
+  animation:floatIn .6s ease forwards;
+}
+.card-scene.nouveau-size{width:240px;height:360px}
+.card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.25,0,.1,1)}
+.card-scene.flipped .card-inner{transform:rotateY(180deg)}
+.card-face{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:16px;box-shadow:0 8px 32px rgba(100,88,76,.15);
+}
+
+/* 裏面 */
+.card-back{overflow:hidden;border-radius:16px}
+.card-back img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* 表面：画像のみ（テキストなし） */
+.card-front{
+  transform:rotateY(180deg);
+  border-radius:16px;overflow:hidden;
+}
+.card-front img{width:100%;height:100%;object-fit:cover;object-position:center center;display:block}
+
+.tap-hint{font-size:11px;color:var(--text-warm);letter-spacing:2px;opacity:.55;margin-top:0}
+
+/* メッセージパネル：番号・タイトル・キーワード・区切り・メッセージ */
+.message-panel{
+  width:100%;max-width:380px;
+  background:var(--warm-white);
+  border:1px solid var(--cotton);
+  border-radius:18px;
+  padding:22px 28px 24px;
+  text-align:center;
+  box-shadow:0 4px 20px rgba(100,90,80,.06);
+  position:relative;
+  transition:border-color .5s;
+}
+body.nouveau-mode .message-panel{border-color:rgba(201,168,76,.35)}
+
+.msg-topline{
+  height:2px;width:48px;margin:0 auto 16px;border-radius:1px;
+  background:linear-gradient(to right,transparent,var(--sage-light),transparent);
+  transition:background .5s;
+}
+body.nouveau-mode .msg-topline{background:linear-gradient(to right,transparent,var(--gold-dim),transparent)}
+
+.card-num{font-size:10px;letter-spacing:3px;color:var(--text-warm);opacity:.7;margin-bottom:5px}
+.card-title{
+  font-family:'Zen Antique Soft',serif;
+  font-size:15px;letter-spacing:3px;color:var(--text-soft);
+  margin-bottom:6px;font-weight:400;
+}
+.card-keywords{
+  font-size:10px;letter-spacing:2px;
+  color:var(--sage-dark);opacity:.85;
+  margin-bottom:14px;
+  transition:color .5s;
+}
+body.nouveau-mode .card-keywords{color:var(--gold-dim)}
+
+.msg-sep{
+  height:1px;width:36px;margin:0 auto 14px;
+  background:var(--cotton);
+  transition:background .5s;
+}
+body.nouveau-mode .msg-sep{background:rgba(201,168,76,.3)}
+
+.message-label{font-size:9px;letter-spacing:4px;color:var(--sage-dark);opacity:.6;margin-bottom:10px;transition:color .5s}
+body.nouveau-mode .message-label{color:var(--gold-dim)}
+
+.message-text{
+  font-family:'Zen Antique Soft',serif;
+  font-size:14px;line-height:2.2;
+  color:var(--text-soft);white-space:pre-line;
+}
+
+.reset-btn{
+  background:transparent;border:1px solid var(--sage-light);
+  color:var(--text-warm);font-family:'Klee One',sans-serif;
+  font-size:12px;letter-spacing:3px;padding:10px 32px;
+  cursor:pointer;transition:all .3s;border-radius:40px;
+}
+.reset-btn:hover{border-color:var(--sage);color:var(--sage-dark);background:rgba(138,170,136,.06)}
+body.nouveau-mode .reset-btn{border-color:var(--gold-dim)}
+body.nouveau-mode .reset-btn:hover{border-color:var(--gold);color:var(--gold-dim);background:rgba(201,168,76,.06)}
+
+@keyframes floatIn{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:380px){
+  .card-scene{width:210px;height:263px}
+  .card-scene.nouveau-size{width:210px;height:315px}
+  .message-panel{padding:18px 20px 20px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="header-ornament" id="headerOrnament">𖤣 𖥧 𖡼 𖥧 𖤣</div>
+    <h1>コットンカード</h1>
+    <div class="subtitle">安心デッキ ─ 全22枚</div>
+  </header>
+
+  <div class="deck-switcher">
+    <button class="deck-btn active" id="btnCotton" onclick="switchDeck('cotton')">コットン</button>
+    <button class="deck-btn" id="btnNouveau" onclick="switchDeck('nouveau')">アールヌーボー</button>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-leaf">✿</div><div class="divider-line"></div></div>
+
+  <div class="card-area" id="cardArea">
+
+    <div class="card-scene" id="cardScene" onclick="tapCard()">
+      <div class="card-inner" id="cardInner">
+        <!-- 裏面 -->
+        <div class="card-face card-back">
+          <img id="cardBack" src="images/cotton/back.png" alt="">
+        </div>
+        <!-- 表面：絵のみ -->
+        <div class="card-face card-front">
+          <img id="cardImg" src="" alt="">
+        </div>
+      </div>
+    </div>
+
+    <div class="tap-hint" id="tapHint">カードをタップして引く</div>
+
+    <!-- テキストエリア：番号・タイトル・キーワード・メッセージ -->
+    <div class="message-panel" id="messagePanel" style="display:none;">
+      <div class="msg-topline"></div>
+      <div class="card-num" id="cardNum"></div>
+      <div class="card-title" id="cardTitle"></div>
+      <div class="card-keywords" id="cardKeywords"></div>
+      <div class="msg-sep"></div>
+      <div class="message-label">Message</div>
+      <div class="message-text" id="messageText"></div>
+    </div>
+
+    <button class="reset-btn" id="resetBtn" style="display:none;" onclick="reset()">もう一度引く ✿</button>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-leaf">✿</div><div class="divider-line"></div></div>
+</div>
+
+<script>
+const CARDS = [
+  { num:  0, title:"はじまりの白",       keywords:"可能性・余白・再出発",   message:"なにも決まっていなくていい\nなにも持っていなくていい\nここから、やさしく始めよう" },
+  { num:  1, title:"そのままでいい",       keywords:"受容・肯定",             message:"なおさなくていいよ\nいまのままのあなたに、ちゃんと価値がある" },
+  { num:  2, title:"すこし休もう",         keywords:"休息・回復",             message:"動けない日は、止まる日でいい\nそれもちゃんと、進んでいる" },
+  { num:  3, title:"ひとりじゃない",       keywords:"つながり・見えない支え", message:"見えなくても、そばにあるよ\nあなたを想う気持ちは、消えない" },
+  { num:  4, title:"だいじょうぶの種",     keywords:"希望・小さな安心",       message:"ほんの少しでいい\n\"だいじょうぶかも\"って思えたら、それが種になる" },
+  { num:  5, title:"ここまで来たね",       keywords:"労い・自己承認",         message:"ちゃんと歩いてきたよ\n気づいていないだけで、あなたはもう十分がんばってる" },
+  { num:  6, title:"やわらかく境界を",     keywords:"距離・守る力",           message:"近づきすぎなくていい\nやさしさは、距離をとることでも守れる" },
+  { num:  7, title:"ゆっくりでいい",       keywords:"ペース・安心",           message:"はやくなくていい\nあなたの歩幅が、いちばん合っている" },
+  { num:  8, title:"心のあたたかい場所",   keywords:"内側・安心",             message:"外に探さなくていい\n安心は、ちゃんと中にある" },
+  { num:  9, title:"手をゆるめる",         keywords:"手放し・緊張の解放",     message:"握りしめなくていい\nゆるめた手に、やさしさが戻ってくる" },
+  { num: 10, title:"今日を越えたね",       keywords:"日々・達成",             message:"それだけでいい\n今日を生きたこと、それがもう十分なんだよ" },
+  { num: 11, title:"そのまま眠っていい",   keywords:"回復・無防備",           message:"ちゃんとしてなくていい\n眠れるなら、それがいちばんの回復だよ" },
+  { num: 12, title:"うまくできなくていい", keywords:"不完全・許し",           message:"できない日もあなた\nそれでも、価値は減らない" },
+  { num: 13, title:"小さなよろこび",       keywords:"日常・感受性",           message:"ほんの少しでいい\nあ、いいなって思えたら、それで今日は十分" },
+  { num: 14, title:"安心して離れていい",   keywords:"手放し・関係",           message:"離れることは、逃げじゃない\nあなたを守る、ちゃんとした選択だよ" },
+  { num: 15, title:"まだ途中でいい",       keywords:"過程・成長",             message:"完成してなくていい\nいまは途中、それでちゃんと意味がある" },
+  { num: 16, title:"やさしさは残っている", keywords:"本質・信頼",             message:"疲れても、すり減っても\nあなたのやさしさは、ちゃんとここにある" },
+  { num: 17, title:"比べなくていい",       keywords:"自己・安心",             message:"誰かと違っていい\nあなたはあなたの形で、ちゃんと生きてる" },
+  { num: 18, title:"ここにいていい",       keywords:"存在・居場所",           message:"理由がなくてもいい\nここにいるだけで、あなたは受け入れられている" },
+  { num: 19, title:"少しずつでいい",       keywords:"継続・安心",             message:"一歩でも、半歩でもいい\n止まりながらでも、それは前に進んでる" },
+  { num: 20, title:"ちゃんと戻ってこれる", keywords:"回帰・安心",             message:"どこに行ってもいい\nあなたはいつでも、自分に戻ってこれる" },
+  { num: 21, title:"おやすみ、また明日",   keywords:"区切り・安心・継続",     message:"今日はここまででいい\n続きは、また明日のあなたにまかせよう" },
+];
+
+const DECK = {
+  cotton:  { backSrc:'images/cotton/back.png',  cardSrc:n=>`images/cotton/card${String(n).padStart(2,'0')}.png`,  ornament:'𖤣 𖥧 𖡼 𖥧 𖤣' },
+  nouveau: { backSrc:'images/nouveau/back.png', cardSrc:n=>`images/nouveau/card${String(n).padStart(2,'0')}.png`, ornament:'✦ ✦ ✦' },
+};
+
+const NUM_LABEL = ['⓪','①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩','⑪','⑫','⑬','⑭','⑮','⑯','⑰','⑱','⑲','⑳','㉑'];
+
+let currentDeck = 'cotton';
+let flipped = false;
+
+// 裏面だけ見せる状態に戻す
+function showBack() {
+  flipped = false;
+  const scene = document.getElementById('cardScene');
+  scene.classList.remove('flipped');
+  scene.style.animation = 'none';
+  scene.offsetHeight;
+  scene.style.animation = '';
+  document.getElementById('messagePanel').style.display = 'none';
+  document.getElementById('resetBtn').style.display = 'none';
+  document.getElementById('tapHint').style.display = 'block';
+}
+
+function switchDeck(deck) {
+  if (currentDeck === deck) return;
+  currentDeck = deck;
+  const isN = deck === 'nouveau';
+  document.body.classList.toggle('nouveau-mode', isN);
+  document.getElementById('btnCotton').classList.toggle('active', !isN);
+  document.getElementById('btnNouveau').classList.toggle('active', isN);
+  document.getElementById('headerOrnament').textContent = DECK[deck].ornament;
+  document.getElementById('cardScene').classList.toggle('nouveau-size', isN);
+  document.getElementById('cardBack').src = DECK[deck].backSrc;
+  showBack();
+}
+
+function tapCard() {
+  if (flipped) return;
+
+  // カードを引く（ランダム選択）
+  const card = CARDS[Math.floor(Math.random() * CARDS.length)];
+  const deck = DECK[currentDeck];
+  document.getElementById('cardImg').src = deck.cardSrc(card.num);
+  document.getElementById('cardNum').textContent = NUM_LABEL[card.num] + '　No.' + card.num;
+  document.getElementById('cardTitle').textContent = card.title;
+  document.getElementById('cardKeywords').textContent = card.keywords;
+  document.getElementById('messageText').textContent = card.message;
+
+  // そのままフリップ
+  flipped = true;
+  document.getElementById('tapHint').style.display = 'none';
+  document.getElementById('cardScene').classList.add('flipped');
+  setTimeout(() => {
+    document.getElementById('messagePanel').style.display = 'block';
+    document.getElementById('resetBtn').style.display = 'block';
+  }, 900);
+}
+
+function reset() {
+  showBack();
+}
+
+// 初期表示
+showBack();
+</script>
+</body>
+</html>

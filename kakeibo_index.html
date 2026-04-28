@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pawtal — 猫も入る Catbinet</title>
+<title>家計簿 — Pawtal</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -60,6 +60,19 @@ body {
   background: rgba(90,74,53,0.3);
 }
 
+.back-link {
+  position: fixed;
+  top: 20px; left: 64px;
+  font-size: 11px;
+  color: rgba(90,74,53,0.55);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  z-index: 100;
+  transition: color 0.15s;
+}
+
+.back-link:hover { color: rgba(90,74,53,0.9); }
+
 .pc-main {
   margin-left: 52px;
   flex: 1;
@@ -71,13 +84,11 @@ body {
 
 .pc-cards {
   flex: 1;
-  display: grid;
-  grid-template-columns: repeat(2, 185px);
-  grid-template-rows: repeat(2, auto);
-  gap: 24px;
-  align-content: center;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  padding: 40px 40px 60px 40px;
+  gap: 32px;
+  padding: 60px 40px 80px 40px;
 }
 
 .app-card {
@@ -85,9 +96,9 @@ body {
   backdrop-filter: blur(10px);
   border: 0.5px solid rgba(170,145,105,0.35);
   border-radius: 3px;
-  padding: 26px 20px 22px;
-  width: 185px;
-  min-height: 230px;
+  padding: 32px 24px 26px;
+  width: 220px;
+  min-height: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -115,39 +126,33 @@ body {
   box-shadow: 0 8px 28px rgba(80,60,30,0.12);
 }
 
-.card-cat {
-  width: 78px; height: 78px;
-  object-fit: contain;
-  margin-bottom: 14px;
-}
-
-.card-en {
+.card-version {
   font-style: italic;
-  font-size: 12px;
-  color: #9a8870;
-  letter-spacing: 0.06em;
-  margin-bottom: 3px;
+  font-size: 11px;
+  color: #b0997a;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
 }
 
 .card-ja {
-  font-size: 16px;
+  font-size: 18px;
   color: #3a2e20;
   letter-spacing: 0.14em;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .card-desc {
   font-size: 11px;
   color: #7a6a52;
-  line-height: 1.75;
+  line-height: 1.85;
   letter-spacing: 0.05em;
   flex: 1;
-  margin-bottom: 18px;
+  margin-bottom: 22px;
 }
 
 .card-btn {
   display: inline-block;
-  padding: 6px 18px;
+  padding: 7px 22px;
   border: 0.5px solid rgba(110,88,55,0.55);
   border-radius: 2px;
   font-size: 11px;
@@ -163,15 +168,6 @@ body {
 .card-btn:hover {
   background: rgba(210,185,145,0.35);
   border-color: rgba(110,88,55,0.85);
-}
-
-.coming-soon {
-  position: absolute;
-  bottom: 24px; right: 48px;
-  font-style: italic;
-  font-size: 13px;
-  color: rgba(90,74,53,0.4);
-  letter-spacing: 0.1em;
 }
 
 /* ========== スマホ ========== */
@@ -202,18 +198,27 @@ body {
 
 .sp-header { margin-bottom: 36px; }
 
-.sp-logo-en {
-  font-style: italic;
-  font-size: 22px;
-  color: #3a2e20;
-  letter-spacing: 0.06em;
+.sp-back {
+  display: inline-block;
+  font-size: 11px;
+  color: rgba(90,74,53,0.6);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
 }
 
 .sp-logo-ja {
-  font-size: 12px;
+  font-size: 22px;
+  color: #3a2e20;
+  letter-spacing: 0.14em;
+}
+
+.sp-logo-sub {
+  font-size: 11px;
   color: #7a6a52;
-  letter-spacing: 0.16em;
-  margin-top: 3px;
+  letter-spacing: 0.1em;
+  margin-top: 4px;
+  font-style: italic;
 }
 
 .sp-cards {
@@ -228,10 +233,10 @@ body {
   backdrop-filter: blur(12px);
   border: 0.5px solid rgba(170,145,105,0.35);
   border-radius: 3px;
-  padding: 18px 20px;
+  padding: 20px 20px;
   display: flex;
-  align-items: center;
-  gap: 16px;
+  flex-direction: column;
+  gap: 8px;
   text-decoration: none;
   position: relative;
   transition: background 0.15s, transform 0.15s;
@@ -255,19 +260,22 @@ body {
   transform: translateX(4px);
 }
 
-.sp-card-cat {
-  width: 54px; height: 54px;
-  object-fit: contain;
-  flex-shrink: 0;
+.sp-card-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
 }
 
-.sp-card-text { flex: 1; }
-
-.sp-card-en {
+.sp-card-version {
   font-style: italic;
   font-size: 11px;
-  color: #9a8870;
-  letter-spacing: 0.06em;
+  color: #b0997a;
+  letter-spacing: 0.08em;
+}
+
+.sp-card-arrow {
+  font-size: 18px;
+  color: #b0997a;
 }
 
 .sp-card-ja {
@@ -279,94 +287,49 @@ body {
 .sp-card-desc {
   font-size: 11px;
   color: #7a6a52;
-  line-height: 1.6;
-  margin-top: 4px;
+  line-height: 1.7;
   letter-spacing: 0.04em;
 }
 
-.sp-card-arrow {
-  font-size: 18px;
-  color: #b0997a;
-  flex-shrink: 0;
-}
-
-.sp-coming {
-  margin-top: 24px;
-  text-align: right;
-  font-style: italic;
-  font-size: 12px;
-  color: rgba(90,74,53,0.45);
-  letter-spacing: 0.1em;
-}
-
 @media (max-width: 680px) {
-  .pc-layout, .side-logo { display: none !important; }
+  .pc-layout, .side-logo, .back-link { display: none !important; }
   .sp-layout { display: block; }
 }
 </style>
 </head>
 <body>
 
-<!--
-  ======================================================
-  猫画像の差し替えについて
-  ======================================================
-  このHTMLと同じフォルダに「images」フォルダを作り、
-  以下のファイル名でPNG画像を入れてください：
-    images/cat1.png  → MyRecord カード用
-    images/cat2.png  → 在庫管理 カード用
-    images/cat3.png  → 家計簿 カード用
-    images/cotton_card_back.png  → コットンカード用（カード裏面画像）
-  ======================================================
--->
-
 <!-- ===== PC ===== -->
 <div class="pc-layout">
 
   <div class="side-logo">
-    <span class="logo-text en">Pawtal</span>
+    <span class="logo-text">家</span>
+    <span class="logo-text">計</span>
+    <span class="logo-text">簿</span>
     <div class="logo-divider"></div>
-    <span class="logo-text">猫も入る</span>
-    <span class="logo-text">Catbinet</span>
+    <span class="logo-text en">Kakeibo</span>
   </div>
+
+  <a href="index.html" class="back-link">← Pawtal</a>
 
   <div class="pc-main">
     <div class="pc-cards">
 
       <div class="app-card">
-        <img class="card-cat" src="images/cat1.png" alt="cat">
-        <div class="card-en">MyRecord</div>
-        <div class="card-ja">わたしの記録</div>
-        <div class="card-desc">体調や体重など<br>たくさんの項目を記録し<br>グラフで管理できます</div>
-        <a href="tools/myrecord.html" class="card-btn">使ってみる</a>
+        <div class="card-version">v1</div>
+        <div class="card-ja">はじまりの家計簿</div>
+        <div class="card-desc">週次の記録から月次レポート、<br>資産・カード管理まで。<br>機能をとことん詰め込んだ<br>多機能版。</div>
+        <a href="tools/kakeibo.html" class="card-btn">使ってみる</a>
       </div>
 
       <div class="app-card">
-        <img class="card-cat" src="images/cat2.png" alt="cat">
-        <div class="card-en">Inventory</div>
-        <div class="card-ja">在庫管理</div>
-        <div class="card-desc">在庫の場所と不足を<br>一覧とマップで<br>管理できます</div>
-        <a href="tools/zaiko.html" class="card-btn">使ってみる</a>
-      </div>
-
-      <div class="app-card">
-        <img class="card-cat" src="images/cat3.png" alt="cat">
-        <div class="card-en">Kakeibo</div>
-        <div class="card-ja">家計簿</div>
-        <div class="card-desc">支出・予算・資産を<br>記録してグラフで<br>見える化できます</div>
-        <a href="kakeibo_index.html" class="card-btn">使ってみる</a>
-      </div>
-
-      <div class="app-card">
-        <img class="card-cat" src="images/cotton_card_back.png" alt="cotton card" style="width:78px;height:105px;object-fit:cover;border-radius:4px;">
-        <div class="card-en">Oracle Card</div>
-        <div class="card-ja">コットンカード</div>
-        <div class="card-desc">カードを引いて<br>今日のメッセージを<br>受け取ろう</div>
-        <a href="cotton_cards.html" class="card-btn">引いてみる</a>
+        <div class="card-version">v2</div>
+        <div class="card-ja">まとまりの家計簿</div>
+        <div class="card-desc">ホーム画面で今月の収支・<br>予算・予定をひと目で。<br>シンプルに絞った<br>すっきり版。</div>
+        <a href="tools/kakeibo2.html" class="card-btn">使ってみる</a>
       </div>
 
     </div>
-    <div class="coming-soon">coming soon……</div>
   </div>
 </div>
 
@@ -375,55 +338,33 @@ body {
   <div class="sp-inner">
 
     <div class="sp-header">
-      <div class="sp-logo-en">Pawtal</div>
-      <div class="sp-logo-ja">猫も入る Catbinet</div>
+      <a href="index.html" class="sp-back">← Pawtal</a>
+      <div class="sp-logo-ja">家計簿</div>
+      <div class="sp-logo-sub">Kakeibo</div>
     </div>
 
     <div class="sp-cards">
 
-      <a href="tools/myrecord.html" class="sp-card">
-        <img class="sp-card-cat" src="images/cat1.png" alt="">
-        <div class="sp-card-text">
-          <div class="sp-card-en">MyRecord</div>
-          <div class="sp-card-ja">わたしの記録</div>
-          <div class="sp-card-desc">体調・体重などを記録してグラフで管理</div>
+      <a href="tools/kakeibo.html" class="sp-card">
+        <div class="sp-card-top">
+          <span class="sp-card-version">v1</span>
+          <span class="sp-card-arrow">›</span>
         </div>
-        <span class="sp-card-arrow">›</span>
+        <div class="sp-card-ja">はじまりの家計簿</div>
+        <div class="sp-card-desc">週次の記録から月次レポート、資産・カード管理まで。機能をとことん詰め込んだ多機能版。</div>
       </a>
 
-      <a href="tools/zaiko.html" class="sp-card">
-        <img class="sp-card-cat" src="images/cat2.png" alt="">
-        <div class="sp-card-text">
-          <div class="sp-card-en">Inventory</div>
-          <div class="sp-card-ja">在庫管理</div>
-          <div class="sp-card-desc">在庫の場所と不足を一覧とマップで管理</div>
+      <a href="tools/kakeibo2.html" class="sp-card">
+        <div class="sp-card-top">
+          <span class="sp-card-version">v2</span>
+          <span class="sp-card-arrow">›</span>
         </div>
-        <span class="sp-card-arrow">›</span>
-      </a>
-
-      <a href="kakeibo_index.html" class="sp-card">
-        <img class="sp-card-cat" src="images/cat3.png" alt="">
-        <div class="sp-card-text">
-          <div class="sp-card-en">Kakeibo</div>
-          <div class="sp-card-ja">家計簿</div>
-          <div class="sp-card-desc">支出・予算・資産を記録してグラフで確認</div>
-        </div>
-        <span class="sp-card-arrow">›</span>
-      </a>
-
-      <a href="cotton_cards.html" class="sp-card">
-        <img class="sp-card-cat" src="images/cotton_card_back.png" alt="" style="border-radius:3px;object-fit:cover;">
-        <div class="sp-card-text">
-          <div class="sp-card-en">Oracle Card</div>
-          <div class="sp-card-ja">コットンカード</div>
-          <div class="sp-card-desc">カードを引いて今日のメッセージを</div>
-        </div>
-        <span class="sp-card-arrow">›</span>
+        <div class="sp-card-ja">まとまりの家計簿</div>
+        <div class="sp-card-desc">ホーム画面で今月の収支・予算・予定をひと目で。シンプルに絞ったすっきり版。</div>
       </a>
 
     </div>
 
-    <div class="sp-coming">coming soon……</div>
   </div>
 </div>
 

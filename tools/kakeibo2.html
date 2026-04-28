@@ -1,0 +1,2341 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="家計簿">
+<title>家計簿</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+/* ══ THEMES ══ */
+:root{
+  --bg:#f2f2f0;--surface:#fff;--surface-2:#f7f7f5;
+  --border:rgba(0,0,0,0.06);--border-med:rgba(0,0,0,0.11);
+  --text:#111;--text-2:#5a5a5a;--text-3:#aaa;
+  --accent:#1d4ed8;--accent-soft:rgba(29,78,216,0.08);
+  --success:#15803d;--success-bg:#f0fdf4;
+  --danger:#b91c1c;--danger-bg:#fef2f2;
+  --warn:#b45309;--warn-bg:#fffbeb;
+  --radius:16px;--radius-sm:10px;--radius-xs:7px;
+  --tab-h:58px;--header-h:54px;--max-w:430px;
+}
+[data-theme=light]{--bg:#f2f2f0;--surface:#fff;--surface-2:#f7f7f5;--border:rgba(0,0,0,0.06);--border-med:rgba(0,0,0,0.11);--text:#111;--text-2:#5a5a5a;--text-3:#aaa;--accent:#1d4ed8;--accent-soft:rgba(29,78,216,0.08);}
+[data-theme=blue-light]{--bg:#eff6ff;--surface:#fff;--surface-2:#dbeafe;--border:rgba(59,130,246,0.12);--border-med:rgba(59,130,246,0.22);--text:#1e3a5f;--text-2:#3b6fa0;--text-3:#93c5fd;--accent:#2563eb;--accent-soft:rgba(37,99,235,0.1);}
+[data-theme=cream]{--bg:#fefce8;--surface:#fffef0;--surface-2:#fef9c3;--border:rgba(180,160,0,0.1);--border-med:rgba(180,160,0,0.18);--text:#3d3000;--text-2:#7a6500;--text-3:#c8b400;--accent:#b45309;--accent-soft:rgba(180,83,9,0.08);}
+[data-theme=rose-light]{--bg:#fff1f2;--surface:#fff;--surface-2:#ffe4e6;--border:rgba(244,63,94,0.1);--border-med:rgba(244,63,94,0.2);--text:#4c0519;--text-2:#9f1239;--text-3:#fca5a5;--accent:#e11d48;--accent-soft:rgba(225,29,72,0.08);}
+[data-theme=purple-light]{--bg:#f5f3ff;--surface:#fff;--surface-2:#ede9fe;--border:rgba(124,58,237,0.1);--border-med:rgba(124,58,237,0.2);--text:#2e1065;--text-2:#6d28d9;--text-3:#c4b5fd;--accent:#7c3aed;--accent-soft:rgba(124,58,237,0.08);}
+[data-theme=green-light]{--bg:#f0fdf4;--surface:#fff;--surface-2:#dcfce7;--border:rgba(22,163,74,0.1);--border-med:rgba(22,163,74,0.2);--text:#052e16;--text-2:#15803d;--text-3:#86efac;--accent:#16a34a;--accent-soft:rgba(22,163,74,0.08);}
+[data-theme=dark]{--bg:#0a0a0a;--surface:#161616;--surface-2:#1e1e1e;--border:rgba(255,255,255,0.06);--border-med:rgba(255,255,255,0.12);--text:#f0f0f0;--text-2:#888;--text-3:#555;--accent:#3b82f6;--accent-soft:rgba(59,130,246,0.1);--success-bg:#052e16;--danger-bg:#1c0a0a;--warn-bg:#1c1200;}
+[data-theme=blue-dark]{--bg:#071520;--surface:#0f2336;--surface-2:#1a3a54;--border:rgba(59,130,246,0.12);--border-med:rgba(59,130,246,0.22);--text:#bfdbfe;--text-2:#60a5fa;--text-3:#4b7cc7;--accent:#60a5fa;--accent-soft:rgba(96,165,250,0.12);}
+[data-theme=yellow-dark]{--bg:#0c0a00;--surface:#1a1500;--surface-2:#261f00;--border:rgba(234,179,8,0.1);--border-med:rgba(234,179,8,0.2);--text:#fef08a;--text-2:#ca8a04;--text-3:#856c00;--accent:#eab308;--accent-soft:rgba(234,179,8,0.1);}
+[data-theme=red-dark]{--bg:#0c0000;--surface:#1c0000;--surface-2:#2d0000;--border:rgba(220,38,38,0.12);--border-med:rgba(220,38,38,0.22);--text:#fecaca;--text-2:#f87171;--text-3:#7f2020;--accent:#f87171;--accent-soft:rgba(248,113,113,0.1);}
+[data-theme=purple-dark]{--bg:#0a0014;--surface:#140022;--surface-2:#1f0036;--border:rgba(167,139,250,0.1);--border-med:rgba(167,139,250,0.2);--text:#ede9fe;--text-2:#a78bfa;--text-3:#5b3ea8;--accent:#a78bfa;--accent-soft:rgba(167,139,250,0.1);}
+[data-theme=green-dark]{--bg:#001208;--surface:#001f0f;--surface-2:#00301a;--border:rgba(34,197,94,0.1);--border-med:rgba(34,197,94,0.2);--text:#bbf7d0;--text-2:#4ade80;--text-3:#1a5c36;--accent:#4ade80;--accent-soft:rgba(74,222,128,0.1);}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme]){--bg:#0a0a0a;--surface:#161616;--surface-2:#1e1e1e;--border:rgba(255,255,255,0.06);--border-med:rgba(255,255,255,0.12);--text:#f0f0f0;--text-2:#888;--text-3:#444;--accent:#3b82f6;--accent-soft:rgba(59,130,246,0.1);--success-bg:#052e16;--danger-bg:#1c0a0a;--warn-bg:#1c1200;}
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,'Hiragino Sans',sans-serif;transition:background 0.2s,color 0.2s;}
+body{display:flex;flex-direction:column;max-width:var(--max-w);margin:0 auto;}
+
+/* ── Header ── */
+.header{height:var(--header-h);display:flex;align-items:center;padding:0 18px;background:var(--surface);border-bottom:0.5px solid var(--border);position:sticky;top:0;z-index:20;gap:0;}
+.header h1{font-size:17px;font-weight:700;letter-spacing:-0.5px;}
+.header-right{margin-left:auto;text-align:right;line-height:1.3;}
+.header-date{font-size:11px;color:var(--text-3);font-weight:500;}
+.header-time{font-size:14px;font-weight:700;color:var(--text-2);letter-spacing:-0.3px;}
+
+/* ── Tab bar ── */
+.tabbar{height:calc(var(--tab-h) + env(safe-area-inset-bottom));display:flex;background:var(--surface);border-top:0.5px solid var(--border);position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:var(--max-w);z-index:20;padding-bottom:env(safe-area-inset-bottom);}
+.tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;background:none;color:var(--text-3);font-size:9px;font-weight:500;cursor:pointer;padding-top:6px;transition:color 0.15s;}
+.tabbar button.active{color:var(--accent);}
+.tabbar button svg{width:22px;height:22px;stroke-width:1.7;}
+
+/* ── Content ── */
+.content{flex:1;overflow-y:auto;padding:12px 12px calc(var(--tab-h) + env(safe-area-inset-bottom) + 16px);-webkit-overflow-scrolling:touch;}
+.section{display:none;}.section.active{display:block;}
+
+/* ── Cards ── */
+.card{background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border);padding:16px;margin-bottom:10px;}
+.card-title{font-size:10.5px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;}
+
+/* ── Metrics ── */
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.metric{background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border);padding:14px 14px 12px;}
+.metric.full{grid-column:1/-1;}
+.metric-label{font-size:10px;color:var(--text-3);margin-bottom:6px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.metric-value{font-size:22px;font-weight:700;letter-spacing:-0.5px;line-height:1.1;}
+.metric-value.lg{font-size:28px;}
+.metric-sub{font-size:11px;color:var(--text-3);margin-top:4px;}
+
+/* ── Sub-tabs ── */
+.subtabs{display:flex;gap:6px;margin-bottom:12px;}
+.subtab{flex:1;padding:8px 4px;border:0.5px solid var(--border-med);border-radius:var(--radius-sm);background:none;color:var(--text-2);font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all 0.12s;}
+.subtab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* ── Forms ── */
+.form-group{margin-bottom:12px;}
+.form-label{font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block;}
+.form-input{width:100%;background:var(--surface-2);border:0.5px solid var(--border-med);border-radius:var(--radius-sm);padding:11px 12px;font-size:15px;color:var(--text);font-family:inherit;outline:none;transition:border-color 0.12s;-webkit-appearance:none;appearance:none;}
+.form-input:focus{border-color:var(--accent);}
+.form-row{display:flex;gap:8px;}
+.form-row .form-group{flex:1;min-width:0;}
+
+/* ── Tax toggle ── */
+.amount-wrap{display:flex;gap:6px;align-items:flex-end;}
+.amount-wrap .form-group{flex:1;min-width:0;margin-bottom:0;}
+.tax-toggle{display:flex;border:0.5px solid var(--border-med);border-radius:var(--radius-sm);overflow:hidden;flex-shrink:0;}
+.tax-btn{border:none;background:none;color:var(--text-2);font-size:11px;font-weight:700;cursor:pointer;padding:0 10px;height:44px;white-space:nowrap;transition:all 0.1s;}
+.tax-btn.active{background:var(--accent);color:#fff;}
+
+/* ── Chips ── */
+.chip-group{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{padding:6px 12px;border:0.5px solid var(--border-med);border-radius:20px;background:none;color:var(--text-2);font-size:12px;font-weight:500;cursor:pointer;transition:all 0.1s;font-family:inherit;}
+.chip.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* ── Buttons ── */
+.btn{width:100%;padding:14px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;transition:opacity 0.12s;font-family:inherit;text-align:center;}
+.btn:active{opacity:0.8;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-secondary{background:var(--surface-2);color:var(--text);border:0.5px solid var(--border-med);}
+.btn-danger{background:var(--danger-bg);color:var(--danger);border:0.5px solid var(--danger);}
+.btn-sm{padding:8px 14px;font-size:12px;width:auto;border-radius:var(--radius-xs);}
+
+/* ── Nav btn ── */
+.nav-btn{width:36px;height:36px;flex-shrink:0;border:0.5px solid var(--border-med);border-radius:var(--radius-sm);background:var(--surface);color:var(--text-2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+
+/* ── Month nav ── */
+.month-nav{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.month-nav-label{flex:1;text-align:center;font-size:15px;font-weight:700;letter-spacing:-0.3px;}
+
+/* ── Section label ── */
+.sec-label{font-size:10.5px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.7px;margin:14px 0 8px;}
+
+/* ── History list ── */
+.hist-item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:0.5px solid var(--border);cursor:pointer;}
+.hist-item:last-child{border-bottom:none;}
+.hist-cat{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.hist-info{flex:1;min-width:0;}
+.hist-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hist-meta{font-size:11px;color:var(--text-3);margin-top:2px;}
+.hist-amount{font-size:15px;font-weight:700;color:var(--danger);white-space:nowrap;}
+
+/* ── Budget bars ── */
+.budget-item{margin-bottom:12px;}
+.budget-item:last-child{margin-bottom:0;}
+.budget-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.budget-name{font-size:13px;font-weight:600;}
+.budget-amt{font-size:12px;color:var(--text-2);}
+.budget-bar-bg{height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden;}
+.budget-bar-fill{height:100%;border-radius:3px;transition:width 0.4s ease;}
+
+/* ── Manage items ── */
+.manage-item{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;cursor:pointer;}
+.manage-icon{font-size:24px;flex-shrink:0;width:36px;text-align:center;}
+.manage-info{flex:1;min-width:0;}
+.manage-name{font-size:14px;font-weight:600;}
+.manage-sub{font-size:11px;color:var(--text-3);margin-top:2px;}
+.manage-amount{font-size:15px;font-weight:700;text-align:right;white-space:nowrap;}
+
+/* ── Account items ── */
+.acc-item{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;cursor:pointer;}
+.acc-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.acc-info{flex:1;}
+.acc-name{font-size:14px;font-weight:600;}
+.acc-type{font-size:11px;color:var(--text-3);}
+.acc-balance{font-size:16px;font-weight:700;white-space:nowrap;}
+
+/* ── Upcoming list ── */
+.upcoming-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--border);}
+.upcoming-item:last-child{border-bottom:none;}
+.upcoming-date{font-size:11px;color:var(--text-3);width:40px;flex-shrink:0;text-align:center;}
+.upcoming-info{flex:1;min-width:0;}
+.upcoming-name{font-size:13px;font-weight:600;}
+.upcoming-diff{font-size:11px;color:var(--text-3);}
+.upcoming-amt{font-size:14px;font-weight:700;white-space:nowrap;}
+
+/* ── Ribo table ── */
+.ribo-table{width:100%;border-collapse:collapse;font-size:12px;}
+.ribo-table th{text-align:left;padding:6px 4px;color:var(--text-3);font-weight:700;border-bottom:0.5px solid var(--border-med);}
+.ribo-table td{padding:6px 4px;border-bottom:0.5px solid var(--border);}
+.ribo-table td:not(:first-child){text-align:right;}
+.ribo-table tr:last-child td{border-bottom:none;}
+
+/* ── Theme grid ── */
+.theme-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:8px;}
+.theme-sw{height:38px;border-radius:8px;border:2px solid transparent;cursor:pointer;transition:transform 0.1s;position:relative;overflow:hidden;}
+.theme-sw.active{border-color:var(--accent);transform:scale(1.08);}
+.theme-sw-dot{position:absolute;bottom:4px;right:4px;width:10px;height:10px;border-radius:50%;}
+
+/* ── Modal / Sheet ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:50;display:none;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;}
+.sheet{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));width:100%;max-width:var(--max-w);max-height:88vh;overflow-y:auto;}
+.sheet-title{font-size:17px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+.sheet-close{border:none;background:none;color:var(--text-3);font-size:24px;cursor:pointer;line-height:1;padding:0;}
+.sheet-actions{display:flex;gap:8px;margin-top:6px;}
+.sheet-actions .btn{flex:1;}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:calc(var(--tab-h) + env(safe-area-inset-bottom) + 14px);left:50%;transform:translateX(-50%) translateY(12px);background:var(--text);color:var(--bg);padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;z-index:100;opacity:0;transition:all 0.22s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── Divider ── */
+.divider{height:0.5px;background:var(--border);margin:10px 0;}
+
+/* ── Empty state ── */
+.empty{text-align:center;padding:24px 0;color:var(--text-3);font-size:13px;}
+</style>
+</head>
+<body>
+
+<!-- ════ HEADER ════ -->
+<header class="header">
+  <h1>💰 家計簿</h1>
+  <div id="hdr-sync" style="display:flex;flex-direction:column;align-items:center;gap:2px;margin-left:auto;margin-right:8px;">
+    <div style="display:flex;gap:4px;">
+      <button id="hdr-sync-login" onclick="gSignIn()" style="font-size:11px;padding:5px 8px;border:0.5px solid var(--accent);border-radius:7px;background:none;color:var(--accent);cursor:pointer;white-space:nowrap;">☁ ログイン</button>
+      <button id="hdr-sync-up" onclick="gdSave()" style="display:none;font-size:11px;padding:5px 8px;border:0.5px solid var(--border-med);border-radius:7px;background:none;color:var(--text-2);cursor:pointer;" title="クラウドへ保存">↑ 保存</button>
+      <button id="hdr-sync-dn" onclick="gdLoad()" style="display:none;font-size:11px;padding:5px 8px;border:0.5px solid var(--border-med);border-radius:7px;background:none;color:var(--text-2);cursor:pointer;" title="クラウドから読み込み">↓ 読込</button>
+    </div>
+    <div id="hdr-sync-time" style="font-size:9px;color:var(--text-3);white-space:nowrap;min-height:11px;"></div>
+  </div>
+  <div class="header-right">
+    <div class="header-date" id="hdr-date"></div>
+    <div class="header-time" id="hdr-time"></div>
+  </div>
+</header>
+
+<!-- ════ CONTENT ════ -->
+<div class="content">
+
+  <!-- ─── ホーム ─── -->
+  <div id="sec-home" class="section active">
+    <div class="metrics">
+      <div class="metric full">
+        <div class="metric-label">総資産</div>
+        <div class="metric-value lg" id="home-total">¥—</div>
+        <div class="metric-sub" id="home-accsub"></div>
+      </div>
+    </div>
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-label">今月の支出</div>
+        <div class="metric-value" id="home-spend" style="color:var(--danger);">¥—</div>
+        <div class="metric-sub" id="home-spend-sub"></div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">今月の収入</div>
+        <div class="metric-value" id="home-income" style="color:var(--success);">¥—</div>
+        <div class="metric-sub" id="home-income-sub"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">資産推移</div>
+      <canvas id="chart-asset" height="150"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="card-title">今月の予算進捗</div>
+      <div id="home-budget"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">近日の支出・収入予定</div>
+      <div id="home-upcoming"></div>
+    </div>
+  </div>
+
+  <!-- ─── 記録 ─── -->
+  <div id="sec-record" class="section">
+    <div class="card">
+      <div class="card-title">支出を記録する</div>
+
+      <div class="form-row">
+        <div class="form-group" style="flex:1.2;">
+          <label class="form-label">日付</label>
+          <input type="date" class="form-input" id="rec-date">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">商品・店名</label>
+        <input type="text" class="form-input" id="rec-name" placeholder="例：スーパー、ランチ…">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">金額</label>
+        <div class="amount-wrap">
+          <div class="form-group">
+            <input type="number" class="form-input" id="rec-amount" placeholder="0" inputmode="numeric" oninput="updateTaxPreview()">
+          </div>
+          <div class="tax-toggle">
+            <button class="tax-btn active" id="tbtn-inc" onclick="setTaxMode('inc')">税込</button>
+            <button class="tax-btn" id="tbtn-exc" onclick="setTaxMode('exc')">税抜</button>
+          </div>
+          <div class="tax-toggle">
+            <button class="tax-btn active" id="tbtn-10" onclick="setTaxRate(10)">10%</button>
+            <button class="tax-btn" id="tbtn-8"  onclick="setTaxRate(8)">8%</button>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:5px;" id="tax-preview"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">カテゴリ</label>
+        <div class="chip-group" id="rec-cats"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">支払方法</label>
+        <div class="chip-group" id="rec-pay"></div>
+      </div>
+
+      <div class="form-group" id="g-card" style="display:none;">
+        <label class="form-label">カード</label>
+        <select class="form-input" id="rec-card"></select>
+      </div>
+
+      <div class="form-group" id="g-dpay" style="display:none;">
+        <label class="form-label">d払いの支払方法</label>
+        <div class="chip-group" id="rec-dpay"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">メモ（任意）</label>
+        <input type="text" class="form-input" id="rec-memo" placeholder="備考など…">
+      </div>
+
+      <button class="btn btn-primary" onclick="saveRecord()">記録する</button>
+    </div>
+
+    <!-- 履歴 -->
+    <div class="card">
+      <div class="month-nav">
+        <button class="nav-btn" onclick="histNav(-1)">‹</button>
+        <div class="month-nav-label" id="hist-label"></div>
+        <button class="nav-btn" onclick="histNav(1)">›</button>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div style="font-size:12px;color:var(--text-3);" id="hist-total"></div>
+        <div style="display:flex;gap:5px;">
+          <button class="btn btn-secondary btn-sm" onclick="histSelectAll(true)" style="font-size:10px;padding:4px 8px;">✓ 全済み</button>
+          <button class="btn btn-secondary btn-sm" onclick="histSelectAll(false)" style="font-size:10px;padding:4px 8px;">✗ 全未払い</button>
+        </div>
+      </div>
+      <div id="hist-list"></div>
+    </div>
+  </div>
+
+  <!-- ─── 支出管理 ─── -->
+  <div id="sec-manage" class="section">
+    <div class="subtabs" id="manage-subtabs">
+      <button class="subtab active" onclick="switchManage('cards',this)">💳 カード</button>
+      <button class="subtab" onclick="switchManage('fixed',this)">📋 固定費</button>
+      <button class="subtab" onclick="switchManage('install',this)">🗓 分割</button>
+      <button class="subtab" onclick="switchManage('ribo',this)">🔄 リボ</button>
+    </div>
+
+    <div id="mp-cards">
+      <div id="cards-list"></div>
+      <button class="btn btn-secondary" style="margin-top:4px;" onclick="openCardSheet(null)">＋ カードを追加</button>
+    </div>
+
+    <div id="mp-fixed" style="display:none;">
+      <div class="month-nav" style="margin-bottom:8px;">
+        <button class="nav-btn" onclick="fixedNavMonth(-1)">‹</button>
+        <div class="month-nav-label" id="fixed-nav-label"></div>
+        <button class="nav-btn" onclick="fixedNavMonth(1)">›</button>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:10px;">
+        <button class="btn btn-secondary btn-sm" onclick="fixedSelectAll(true)">✓ 全部済み</button>
+        <button class="btn btn-secondary btn-sm" onclick="fixedSelectAll(false)">✗ 全部未払いに</button>
+      </div>
+      <div id="fixed-list"></div>
+      <button class="btn btn-secondary" style="margin-top:8px;" onclick="openFixedSheet(null)">＋ 固定費を追加</button>
+    </div>
+
+    <div id="mp-install" style="display:none;">
+      <div id="install-list"></div>
+      <button class="btn btn-secondary" style="margin-top:4px;" onclick="openInstallSheet(null)">＋ 分割払いを追加</button>
+    </div>
+
+    <div id="mp-ribo" style="display:none;">
+      <div id="ribo-list"></div>
+    </div>
+  </div>
+
+  <!-- ─── 設定 ─── -->
+  <div id="sec-settings" class="section">
+    <div class="sec-label">口座・現金</div>
+    <div id="set-accounts"></div>
+    <button class="btn btn-secondary" style="margin-bottom:14px;" onclick="openAccountSheet(null)">＋ 口座を追加</button>
+
+    <div class="sec-label">収入スケジュール</div>
+    <div id="set-incomes"></div>
+    <button class="btn btn-secondary" style="margin-bottom:14px;" onclick="openIncomeSheet(null)">＋ 収入を追加</button>
+
+    <div class="sec-label">カテゴリ予算</div>
+    <div class="card" id="set-budget"></div>
+
+    <div class="sec-label">テーマ</div>
+    <div class="card">
+      <div style="font-size:11px;color:var(--text-3);margin-bottom:8px;font-weight:700;">ライト</div>
+      <div class="theme-grid" id="tgrid-light"></div>
+      <div style="font-size:11px;color:var(--text-3);margin:10px 0 8px;font-weight:700;">ダーク</div>
+      <div class="theme-grid" id="tgrid-dark"></div>
+    </div>
+
+    <div class="sec-label">データ</div>
+    <div class="card">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn btn-secondary" onclick="exportData()">📤 エクスポート（JSON）</button>
+        <label class="btn btn-secondary" style="cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+          📥 インポート（JSON / 旧CSV）
+          <input type="file" accept=".json,.csv" style="display:none;" onchange="importData(event)">
+        </label>
+        <div style="height:4px;border-top:0.5px solid var(--border);margin:2px 0;"></div>
+        <button class="btn" style="background:var(--danger-bg);color:var(--danger);border:0.5px solid var(--danger);" onclick="deleteAllData()">🗑 全データを削除する</button>
+      </div>
+    </div>
+
+    <div style="height:8px;"></div>
+  </div>
+
+</div><!-- end .content -->
+
+<!-- ════ TABBAR ════ -->
+<nav class="tabbar">
+  <button class="active" id="tab-home" onclick="switchTab('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    ホーム
+  </button>
+  <button id="tab-record" onclick="switchTab('record')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    記録
+  </button>
+  <button id="tab-manage" onclick="switchTab('manage')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+    支出管理
+  </button>
+  <button id="tab-settings" onclick="switchTab('settings')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+    設定
+  </button>
+</nav>
+
+<!-- ════ SHEETS ════ -->
+
+<!-- 口座シート -->
+<div class="overlay" id="ov-account" onclick="closeSheet('account')">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-title">
+      <span id="acc-title">口座を追加</span>
+      <button class="sheet-close" onclick="closeSheet('account')">×</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">口座名</label>
+      <input type="text" class="form-input" id="acc-name" placeholder="例：楽天銀行、財布">
+    </div>
+    <div class="form-group">
+      <label class="form-label">種類</label>
+      <select class="form-input" id="acc-type">
+        <option value="bank">銀行口座</option>
+        <option value="cash">現金</option>
+        <option value="savings">貯蓄・定期</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">現在残高</label>
+      <input type="number" class="form-input" id="acc-bal" placeholder="0" inputmode="numeric">
+    </div>
+    <div class="form-group">
+      <label class="form-label">カラー</label>
+      <div class="chip-group" id="acc-colors"></div>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn btn-danger btn-sm" id="acc-del" style="display:none;flex:0 0 auto;" onclick="deleteAccount()">削除</button>
+      <button class="btn btn-primary" onclick="saveAccount()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- カードシート -->
+<div class="overlay" id="ov-card" onclick="closeSheet('card')">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-title">
+      <span id="card-title">カードを追加</span>
+      <button class="sheet-close" onclick="closeSheet('card')">×</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">カード名</label>
+      <input type="text" class="form-input" id="card-name" placeholder="例：楽天カード">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">種類</label>
+        <select class="form-input" id="card-type" onchange="toggleCardDates()">
+          <option value="credit">クレジット</option>
+          <option value="debit">デビット</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">アイコン</label>
+        <input type="text" class="form-input" id="card-icon" placeholder="💳" maxlength="2">
+      </div>
+    </div>
+    <div id="card-dates">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">締め日</label>
+          <input type="number" class="form-input" id="card-close" placeholder="27" min="1" max="31" inputmode="numeric">
+        </div>
+        <div class="form-group">
+          <label class="form-label">引き落とし日（翌月）</label>
+          <input type="number" class="form-input" id="card-pay" placeholder="27" min="1" max="31" inputmode="numeric">
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">引き落とし口座</label>
+      <select class="form-input" id="card-account"></select>
+    </div>
+    <!-- リボ払い設定 -->
+    <div class="divider"></div>
+    <div class="form-group">
+      <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" id="card-ribo" onchange="toggleRiboFields()" style="width:16px;height:16px;">
+        リボ払いを使用している
+      </label>
+    </div>
+    <div id="ribo-fields" style="display:none;">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">現在の残高</label>
+          <input type="number" class="form-input" id="card-ribo-bal" placeholder="207765" inputmode="numeric">
+        </div>
+        <div class="form-group">
+          <label class="form-label">月々の支払額</label>
+          <input type="number" class="form-input" id="card-ribo-pay" placeholder="5000" inputmode="numeric">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">実質年率（%）</label>
+          <input type="number" class="form-input" id="card-ribo-rate" placeholder="17.64" step="0.01" inputmode="decimal">
+        </div>
+        <div class="form-group">
+          <label class="form-label">計算方式</label>
+          <select class="form-input" id="card-ribo-mode">
+            <option value="auto">自動計算</option>
+            <option value="manual">手入力</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">手入力時：支払額の内訳</label>
+        <div class="chip-group">
+          <button class="chip active" id="ribo-input-principal" onclick="selRiboInputType('principal',this)">元金のみ入力</button>
+          <button class="chip" id="ribo-input-total" onclick="selRiboInputType('total',this)">利息込み合計を入力</button>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn btn-danger btn-sm" id="card-del" style="display:none;flex:0 0 auto;" onclick="deleteCard()">削除</button>
+      <button class="btn btn-primary" onclick="saveCard()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 固定費シート -->
+<div class="overlay" id="ov-fixed" onclick="closeSheet('fixed')">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-title">
+      <span id="fixed-title">固定費を追加</span>
+      <button class="sheet-close" onclick="closeSheet('fixed')">×</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">名前</label>
+      <input type="text" class="form-input" id="fixed-name" placeholder="例：Netflix、電気代">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">金額</label>
+        <input type="number" class="form-input" id="fixed-amt" placeholder="0" inputmode="numeric">
+      </div>
+      <div class="form-group">
+        <label class="form-label">支払日</label>
+        <input type="number" class="form-input" id="fixed-day" placeholder="15" min="1" max="31" inputmode="numeric">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">カテゴリ</label>
+      <select class="form-input" id="fixed-cat">
+        <option value="sub">サブスクリプション</option>
+        <option value="utility">光熱費・通信費</option>
+        <option value="insurance">保険</option>
+        <option value="rent">家賃・住居費</option>
+        <option value="other">その他</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">支払方法</label>
+      <select class="form-input" id="fixed-pm" onchange="toggleFixedCard()">
+        <option value="credit">クレジットカード</option>
+        <option value="debit">デビットカード</option>
+        <option value="bank">口座引き落とし</option>
+        <option value="cash">現金</option>
+      </select>
+    </div>
+    <div class="form-group" id="fixed-card-g">
+      <label class="form-label">カード</label>
+      <select class="form-input" id="fixed-card"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" id="fixed-variable" style="width:16px;height:16px;">
+        変動費（月ごとに金額が変わる）
+      </label>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn btn-danger btn-sm" id="fixed-del" style="display:none;flex:0 0 auto;" onclick="deleteFixed()">削除</button>
+      <button class="btn btn-primary" onclick="saveFixed()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 収入シート -->
+<div class="overlay" id="ov-income" onclick="closeSheet('income')">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-title">
+      <span>収入を追加</span>
+      <button class="sheet-close" onclick="closeSheet('income')">×</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">名前</label>
+      <input type="text" class="form-input" id="inc-name" placeholder="例：給与、アルバイト代">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">金額</label>
+        <input type="number" class="form-input" id="inc-amt" placeholder="0" inputmode="numeric">
+      </div>
+      <div class="form-group">
+        <label class="form-label">支払日</label>
+        <input type="number" class="form-input" id="inc-day" placeholder="25" min="1" max="31" inputmode="numeric">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">頻度</label>
+      <div class="chip-group" id="inc-freq-chips"></div>
+    </div>
+    <div class="form-group" id="inc-freq-n-g" style="display:none;">
+      <label class="form-label">何ヶ月ごと</label>
+      <input type="number" class="form-input" id="inc-freq-n" placeholder="2" min="1" max="24" inputmode="numeric">
+    </div>
+    <div class="form-group" id="inc-once-date-g" style="display:none;">
+      <label class="form-label">受取日（臨時）</label>
+      <input type="date" class="form-input" id="inc-once-date">
+    </div>
+    <div class="form-group">
+      <label class="form-label">入金口座</label>
+      <select class="form-input" id="inc-account"></select>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn btn-danger btn-sm" id="inc-del" style="display:none;flex:0 0 auto;" onclick="deleteIncome()">削除</button>
+      <button class="btn btn-primary" onclick="saveIncome()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 分割払いシート -->
+<div class="overlay" id="ov-install" onclick="closeSheet('install')">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-title">
+      <span id="install-title">分割払いを追加</span>
+      <button class="sheet-close" onclick="closeSheet('install')">×</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">件名</label>
+      <input type="text" class="form-input" id="inst-name" placeholder="例：家電購入、Amazon Pay">
+    </div>
+    <div class="form-group">
+      <label class="form-label">カード</label>
+      <select class="form-input" id="inst-card"></select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">総額</label>
+        <input type="number" class="form-input" id="inst-total" placeholder="50000" inputmode="numeric" oninput="updateInstPreview()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">手数料・利子</label>
+        <input type="number" class="form-input" id="inst-fee" placeholder="0" inputmode="numeric" oninput="updateInstPreview()">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">回数</label>
+        <input type="number" class="form-input" id="inst-count" placeholder="6" min="1" max="120" inputmode="numeric" oninput="updateInstPreview()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">開始月</label>
+        <input type="month" class="form-input" id="inst-start">
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--text-2);background:var(--surface-2);border-radius:var(--radius-xs);padding:10px 12px;margin-bottom:12px;" id="inst-preview"></div>
+    <div class="form-group">
+      <label class="form-label">支払済み回数</label>
+      <input type="number" class="form-input" id="inst-paid-count" placeholder="0" min="0" inputmode="numeric">
+    </div>
+    <div class="sheet-actions">
+      <button class="btn btn-danger btn-sm" id="inst-del" style="display:none;flex:0 0 auto;" onclick="deleteInstall()">削除</button>
+      <button class="btn btn-primary" onclick="saveInstall()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 記録詳細シート -->
+<div class="overlay" id="ov-rec-detail" onclick="closeSheet('rec-detail')">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-title">
+      <span>記録の詳細</span>
+      <button class="sheet-close" onclick="closeSheet('rec-detail')">×</button>
+    </div>
+    <div id="rec-detail-body"></div>
+    <div class="sheet-actions" style="margin-top:14px;flex-direction:column;gap:8px;">
+      <div style="display:flex;gap:8px;">
+        <button class="btn" id="rec-paid-btn" style="flex:1;" onclick="toggleRecPaid()"></button>
+        <button class="btn" id="rec-excl-btn" style="flex:1;" onclick="toggleRecExcluded()"></button>
+      </div>
+      <button class="btn btn-danger" onclick="deleteRecord()">この記録を削除</button>
+    </div>
+  </div>
+</div>
+
+<!-- 確認ダイアログ（iOS Safari対応） -->
+<div class="overlay" id="ov-confirm" onclick="">
+  <div class="sheet" onclick="event.stopPropagation()" style="text-align:center;">
+    <div style="font-size:22px;margin-bottom:8px;" id="cfm-icon">❓</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:8px;" id="cfm-title"></div>
+    <div style="font-size:13px;color:var(--text-2);margin-bottom:20px;line-height:1.6;" id="cfm-msg"></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-secondary" style="flex:1;" id="cfm-cancel" onclick="cfmResolve(false)">キャンセル</button>
+      <button class="btn" style="flex:1;" id="cfm-ok" onclick="cfmResolve(true)">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- トースト -->
+<div class="toast" id="toast"></div>
+
+<!-- ════════════════════════════════════════════
+     SCRIPT
+════════════════════════════════════════════ -->
+<script>
+// ══════ CONSTANTS ══════
+const KEYS = {
+  records:'kb2_records', accounts:'kb2_accounts', cards:'kb2_cards',
+  fixed:'kb2_fixed', incomes:'kb2_incomes', budget:'kb2_budget',
+  settings:'kb2_settings', installs:'kb2_installs', fixedPay:'kb2_fixed_pay',
+};
+
+const CATS = [
+  {id:'food',     label:'食費',   emoji:'🍱', color:'#ff6b6b'},
+  {id:'daily',    label:'日用品', emoji:'🧴', color:'#ffa94d'},
+  {id:'dining',   label:'外食',   emoji:'🍜', color:'#ff922b'},
+  {id:'transport',label:'交通費', emoji:'🚃', color:'#339af0'},
+  {id:'medical',  label:'医療',   emoji:'💊', color:'#51cf66'},
+  {id:'fashion',  label:'衣類',   emoji:'👕', color:'#cc5de8'},
+  {id:'hobby',    label:'趣味',   emoji:'🎮', color:'#f06595'},
+  {id:'beauty',   label:'美容',   emoji:'💄', color:'#e64980'},
+  {id:'edu',      label:'教育',   emoji:'📚', color:'#74c0fc'},
+  {id:'other',    label:'その他', emoji:'📦', color:'#adb5bd'},
+];
+
+const PAYS = [
+  {id:'cash',   label:'現金',     emoji:'💴'},
+  {id:'debit',  label:'デビット', emoji:'💳'},
+  {id:'credit', label:'クレジット',emoji:'💳'},
+  {id:'dpay',   label:'d払い',    emoji:'📱'},
+];
+
+const DPAYS = [
+  {id:'carrier',  label:'電話料金合算'},
+  {id:'credit',   label:'クレジットカード'},
+  {id:'debit',    label:'デビットカード'},
+  {id:'dbalance', label:'d残高（プリペイド）'},
+];
+
+const ACC_COLORS = [
+  '#3b82f6','#8b5cf6','#ec4899','#10b981','#f59e0b',
+  '#ef4444','#06b6d4','#84cc16','#f97316','#64748b',
+];
+
+const THEMES_L = [
+  {id:'light',        bg:'#f2f2f0', ac:'#1d4ed8', label:'ライト'},
+  {id:'blue-light',   bg:'#eff6ff', ac:'#2563eb', label:'ブルー'},
+  {id:'cream',        bg:'#fefce8', ac:'#b45309', label:'クリーム'},
+  {id:'rose-light',   bg:'#fff1f2', ac:'#e11d48', label:'ローズ'},
+  {id:'purple-light', bg:'#f5f3ff', ac:'#7c3aed', label:'パープル'},
+  {id:'green-light',  bg:'#f0fdf4', ac:'#16a34a', label:'グリーン'},
+];
+const THEMES_D = [
+  {id:'dark',         bg:'#0a0a0a', ac:'#3b82f6', label:'ダーク'},
+  {id:'blue-dark',    bg:'#071520', ac:'#60a5fa', label:'ブルー'},
+  {id:'yellow-dark',  bg:'#0c0a00', ac:'#eab308', label:'イエロー'},
+  {id:'red-dark',     bg:'#0c0000', ac:'#f87171', label:'レッド'},
+  {id:'purple-dark',  bg:'#0a0014', ac:'#a78bfa', label:'パープル'},
+  {id:'green-dark',   bg:'#001208', ac:'#4ade80', label:'グリーン'},
+];
+
+// ══════ STORAGE ══════
+const LS = {
+  get:(k,d=null)=>{ try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):d;}catch{return d;} },
+  set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)),
+};
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+
+// ══════ STATE ══════
+let settings   = LS.get(KEYS.settings,  {theme:'light', taxMode:'inc', taxRate:10});
+let records    = LS.get(KEYS.records,   []);
+let accounts   = LS.get(KEYS.accounts,  []);
+let cards      = LS.get(KEYS.cards,     []);
+let fixedCosts = LS.get(KEYS.fixed,     []);
+let incomes    = LS.get(KEYS.incomes,   []);
+let budget     = LS.get(KEYS.budget,    {});
+let installs   = LS.get(KEYS.installs,  []);
+let fixedPay   = LS.get(KEYS.fixedPay,  {}); // key: "fixedId_YYYY-MM" → true/false
+
+function persist(key, val){ LS.set(key, val); }
+
+// ══════ CUSTOM CONFIRM（iOS Safari対応）══════
+let _cfmResolve=null;
+function cfmResolve(val){
+  document.getElementById('ov-confirm').classList.remove('open');
+  if(_cfmResolve){const r=_cfmResolve;_cfmResolve=null;r(val);}
+}
+function cfmDialog({icon='❓',title='',msg='',okLabel='OK',okStyle=''}){
+  return new Promise(resolve=>{
+    _cfmResolve=resolve;
+    document.getElementById('cfm-icon').textContent=icon;
+    document.getElementById('cfm-title').textContent=title;
+    document.getElementById('cfm-msg').textContent=msg;
+    document.getElementById('cfm-ok').textContent=okLabel;
+    document.getElementById('cfm-ok').style.cssText=
+      `flex:1;${okStyle||'background:var(--accent);color:#fff;'}`;
+    document.getElementById('ov-confirm').classList.add('open');
+  });
+}
+
+// UI state
+let curTab      = 'home';
+let curManage   = 'cards';
+let histYM      = {y:new Date().getFullYear(), m:new Date().getMonth()+1};
+let recCat      = 'food';
+let recPay      = 'cash';
+let recDpay     = 'carrier';
+let editAcc     = null;
+let editCard    = null;
+let editFixed   = null;
+let editIncome  = null;
+let editRec     = null;
+let editInstall = null;
+let selAccColor = ACC_COLORS[0];
+let assetChart  = null;
+let incFreq     = 'monthly';
+let riboInputType = 'principal';
+let fixedNavYM  = {y:new Date().getFullYear(), m:new Date().getMonth()+1};
+
+// ══════ CLOCK ══════
+function updateClock(){
+  const n=new Date(), D=['日','月','火','水','木','金','土'];
+  document.getElementById('hdr-date').textContent=`${n.getMonth()+1}/${n.getDate()}（${D[n.getDay()]}）`;
+  document.getElementById('hdr-time').textContent=`${pad(n.getHours())}:${pad(n.getMinutes())}`;
+}
+
+// ══════ TAB ══════
+function switchTab(tab){
+  curTab=tab;
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tabbar button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+tab).classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(tab==='home')     renderHome();
+  if(tab==='record')   renderRecord();
+  if(tab==='manage')   renderManage();
+  if(tab==='settings') renderSettings();
+}
+
+function switchManage(sub, btn){
+  curManage=sub;
+  document.querySelectorAll('#manage-subtabs .subtab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  ['cards','fixed','install','ribo'].forEach(s=>{
+    document.getElementById('mp-'+s).style.display = s===sub?'':'none';
+  });
+  if(sub==='cards')   renderCards();
+  if(sub==='fixed')   renderFixed();
+  if(sub==='install') renderInstallments();
+  if(sub==='ribo')    renderRibo();
+}
+
+// ══════ HOME ══════
+function renderHome(){
+  const total = accounts.reduce((s,a)=>s+a.balance,0);
+  document.getElementById('home-total').textContent = money(total);
+  document.getElementById('home-accsub').textContent =
+    accounts.length ? accounts.map(a=>a.name+':'+money(a.balance)).join('  ') : '口座を設定してください';
+
+  const now=new Date(), ym=ymStr(now);
+  const mRecs = records.filter(r=>r.date.startsWith(ym) && !r.excluded);
+  const mSpend = mRecs.reduce((s,r)=>s+r.amount,0);
+  document.getElementById('home-spend').textContent = money(mSpend);
+  const unpaidCount = mRecs.filter(r=>!r.paid).length;
+  document.getElementById('home-spend-sub').textContent =
+    `${mRecs.length}件${unpaidCount>0?`（未払い ${unpaidCount}件）`:''}`;
+
+  const mInc = incomes.filter(i=>i.frequency!=='once').reduce((s,i)=>s+i.amount,0);
+  document.getElementById('home-income').textContent = money(mInc);
+  document.getElementById('home-income-sub').textContent = `${incomes.length}件設定`;
+
+  renderBudgetBars();
+  renderUpcoming();
+  renderAssetChart();
+}
+
+function renderBudgetBars(){
+  const el=document.getElementById('home-budget');
+  const bCats = CATS.filter(c=>budget[c.id]>0);
+  if(!bCats.length){
+    el.innerHTML='<div class="empty" style="padding:8px 0;">設定タブで予算を設定してください</div>';
+    return;
+  }
+  const now=new Date(), ym=ymStr(now);
+  const mRecs=records.filter(r=>r.date.startsWith(ym) && !r.excluded);
+  el.innerHTML=bCats.map(cat=>{
+    const spent=mRecs.filter(r=>r.category===cat.id).reduce((s,r)=>s+r.amount,0);
+    const bud=budget[cat.id]||1;
+    const pct=Math.min(100,Math.round(spent/bud*100));
+    const col=pct>=100?'var(--danger)':pct>=80?'var(--warn)':cat.color;
+    return `<div class="budget-item">
+      <div class="budget-hd">
+        <div class="budget-name">${cat.emoji} ${cat.label}</div>
+        <div class="budget-amt" style="color:${pct>=100?'var(--danger)':pct>=80?'var(--warn)':'var(--text-2)'}">
+          ${money(spent)} / ${money(bud)}
+        </div>
+      </div>
+      <div class="budget-bar-bg"><div class="budget-bar-fill" style="width:${pct}%;background:${col};"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderUpcoming(){
+  const el=document.getElementById('home-upcoming');
+  const today=new Date(); today.setHours(0,0,0,0);
+  const events=[];
+
+  incomes.forEach(inc=>{
+    if(inc.frequency==='once'){
+      const d=inc.onceDate?new Date(inc.onceDate):null;
+      if(!d) return;
+      d.setHours(0,0,0,0);
+      const diff=dayDiff(today,d);
+      if(diff>=0&&diff<=30) events.push({date:d,diff,label:inc.name,amount:inc.amount,sign:'+',color:'var(--success)'});
+      return;
+    }
+    const d=nextOccurrence(today, inc.payDay||25);
+    const diff=dayDiff(today,d);
+    if(diff<=30) events.push({date:d,diff,label:inc.name,amount:inc.amount,sign:'+',color:'var(--success)'});
+  });
+
+  fixedCosts.forEach(f=>{
+    const d=nextOccurrence(today, f.payDay||1);
+    const diff=dayDiff(today,d);
+    if(diff<=30) events.push({date:d,diff,label:f.name,amount:f.amount,sign:'−',color:'var(--danger)'});
+  });
+
+  // 分割払いの今月支払い
+  installs.forEach(inst=>{
+    if(!inst.startYM) return;
+    const now2=new Date();
+    const startYM=inst.startYM; // YYYY-MM
+    const [sy,sm]=startYM.split('-').map(Number);
+    const monthsElapsed=(now2.getFullYear()-sy)*12+(now2.getMonth()+1-sm);
+    if(monthsElapsed<0||monthsElapsed>=(inst.numPayments||1)) return;
+    const card=cards.find(c=>c.id===inst.cardId);
+    const payDay=card?.paymentDay||27;
+    const d=nextOccurrence(today,payDay);
+    const diff=dayDiff(today,d);
+    const monthly=Math.ceil((inst.totalAmount+inst.fee)/inst.numPayments);
+    if(diff<=30) events.push({date:d,diff,
+      label:`${inst.name}（分割${monthsElapsed+1}/${inst.numPayments}回目）`,
+      amount:monthly,sign:'−',color:'var(--danger)'});
+  });
+
+  cards.filter(c=>c.type==='credit'&&c.paymentDay).forEach(c=>{
+    const d=nextOccurrence(today, c.paymentDay);
+    const diff=dayDiff(today,d);
+    const cardSpend=records.filter(r=>r.cardId===c.id).reduce((s,r)=>s+r.amount,0);
+    if(diff<=30&&cardSpend>0) events.push({
+      date:d,diff,label:`${c.icon||'💳'} ${c.name}引き落とし`,
+      amount:cardSpend,icon:c.icon||'💳',sign:'−',color:'var(--danger)'
+    });
+  });
+
+  events.sort((a,b)=>a.diff-b.diff);
+  if(!events.length){
+    el.innerHTML='<div class="empty" style="padding:8px 0;">30日以内の予定はありません</div>';
+    return;
+  }
+  el.innerHTML=events.slice(0,8).map(e=>{
+    const ds=`${e.date.getMonth()+1}/${e.date.getDate()}`;
+    const df=e.diff===0?'今日':e.diff===1?'明日':`${e.diff}日後`;
+    return `<div class="upcoming-item">
+      <div class="upcoming-date" style="color:${e.diff<=3?e.color:'var(--text-3)'};">${ds}<br><span style="font-size:10px;">${df}</span></div>
+      <div class="upcoming-info"><div class="upcoming-name">${esc(e.label)}</div></div>
+      <div class="upcoming-amt" style="color:${e.color};">${e.sign}${money(e.amount)}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderAssetChart(){
+  const ctx=document.getElementById('chart-asset');
+  if(!ctx) return;
+
+  const today=new Date(); today.setHours(0,0,0,0);
+  const currentTotal=accounts.reduce((s,a)=>s+a.balance,0);
+
+  // Past 30 days: reconstruct balance by adding back spending
+  // paid=true の記録だけ資産グラフに反映
+  const spendMap={};
+  records.filter(r=>r.paid&&!r.excluded).forEach(r=>{
+    spendMap[r.date]=(spendMap[r.date]||0)+r.amount;
+  });
+
+  const pastLabels=[], pastVals=[], futureVals=[];
+  let bal=currentTotal;
+
+  // Past: go backwards day by day
+  const pastBals={};
+  pastBals[dateStr(today)]=bal;
+  for(let i=1;i<=30;i++){
+    const d=new Date(today); d.setDate(d.getDate()-i);
+    const ds=dateStr(d);
+    bal+=(spendMap[ds]||0);
+    pastBals[ds]=bal;
+  }
+
+  // Build past series (chronological)
+  for(let i=30;i>=0;i--){
+    const d=new Date(today); d.setDate(d.getDate()-i);
+    const ds=dateStr(d);
+    pastLabels.push(`${d.getMonth()+1}/${d.getDate()}`);
+    pastVals.push(pastBals[ds]||currentTotal);
+    futureVals.push(i===0?currentTotal:null);
+  }
+
+  // Future 60 days
+  let futureBal=currentTotal;
+  for(let i=1;i<=60;i++){
+    const d=new Date(today); d.setDate(d.getDate()+i);
+    const dayN=d.getDate();
+    pastLabels.push(`${d.getMonth()+1}/${d.getDate()}`);
+    pastVals.push(null);
+    incomes.forEach(inc=>{
+      if(inc.frequency==='once') return; // 臨時は除外
+      if(inc.payDay===dayN) futureBal+=inc.amount;
+    });
+    fixedCosts.forEach(f=>{ if((f.payDay||1)===dayN) futureBal-=f.amount; });
+    // 分割払い
+    installs.forEach(inst=>{
+      if(!inst.startYM) return;
+      const card=cards.find(c=>c.id===inst.cardId);
+      if((card?.paymentDay||27)!==dayN) return;
+      const [sy,sm]=inst.startYM.split('-').map(Number);
+      const mo=(d.getFullYear()-sy)*12+(d.getMonth()+1-sm);
+      if(mo>=0&&mo<(inst.numPayments||1))
+        futureBal-=Math.ceil((inst.totalAmount+inst.fee)/inst.numPayments);
+    });
+    cards.filter(c=>c.type==='credit'&&c.riboEnabled&&c.paymentDay===dayN)
+      .forEach(c=>{ futureBal-=(c.riboMonthlyPayment||0); });
+    futureVals.push(Math.max(0,futureBal));
+  }
+
+  const ac=getAccent();
+  if(assetChart) assetChart.destroy();
+  assetChart=new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:pastLabels,
+      datasets:[
+        {label:'実績',data:pastVals,borderColor:ac,backgroundColor:'transparent',
+         borderWidth:2,pointRadius:0,tension:0.3,spanGaps:true},
+        {label:'予測',data:futureVals,borderColor:ac,backgroundColor:'transparent',
+         borderWidth:1.5,borderDash:[5,5],pointRadius:0,tension:0.3,spanGaps:true},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:true,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'¥'+(c.raw||0).toLocaleString()}}},
+      scales:{
+        x:{display:true,ticks:{maxTicksLimit:6,font:{size:9}},grid:{display:false}},
+        y:{display:true,ticks:{callback:v=>'¥'+(v/10000).toFixed(0)+'万',font:{size:9},maxTicksLimit:5},
+           grid:{color:'rgba(128,128,128,0.08)'}},
+      }
+    }
+  });
+}
+
+// ══════ RECORD TAB ══════
+function renderRecord(){
+  const now=new Date();
+  const di=document.getElementById('rec-date');
+  if(!di.value) di.value=dateStr(now);
+
+  document.getElementById('rec-cats').innerHTML=CATS.map(c=>
+    `<button class="chip${c.id===recCat?' active':''}" onclick="selCat('${c.id}',this)">${c.emoji} ${c.label}</button>`
+  ).join('');
+
+  document.getElementById('rec-pay').innerHTML=PAYS.map(p=>
+    `<button class="chip${p.id===recPay?' active':''}" onclick="selPay('${p.id}',this)">${p.emoji} ${p.label}</button>`
+  ).join('');
+
+  document.getElementById('rec-dpay').innerHTML=DPAYS.map(d=>
+    `<button class="chip${d.id===recDpay?' active':''}" onclick="selDpay('${d.id}',this)">${d.label}</button>`
+  ).join('');
+
+  const cs=document.getElementById('rec-card');
+  cs.innerHTML=cards.map(c=>`<option value="${c.id}">${c.icon||'💳'} ${c.name}</option>`).join('');
+
+  togglePayGroups();
+  updateTaxPreview();
+  renderHistList();
+}
+
+function setTaxMode(m){
+  settings.taxMode=m;
+  document.getElementById('tbtn-inc').classList.toggle('active',m==='inc');
+  document.getElementById('tbtn-exc').classList.toggle('active',m==='exc');
+  updateTaxPreview();
+}
+function setTaxRate(r){
+  settings.taxRate=r;
+  document.getElementById('tbtn-10').classList.toggle('active',r===10);
+  document.getElementById('tbtn-8').classList.toggle('active',r===8);
+  updateTaxPreview();
+}
+function updateTaxPreview(){
+  const raw=parseFloat(document.getElementById('rec-amount')?.value)||0;
+  const el=document.getElementById('tax-preview');
+  if(!el||!raw){if(el)el.textContent='';return;}
+  const rate=settings.taxRate;
+  if(settings.taxMode==='exc'){
+    const inc=Math.round(raw*(1+rate/100));
+    el.textContent=`税込: ¥${inc.toLocaleString()}（消費税 ¥${(inc-raw).toLocaleString()}）`;
+  } else {
+    const exc=Math.round(raw/(1+rate/100));
+    el.textContent=`税抜: ¥${exc.toLocaleString()}（消費税 ¥${(raw-exc).toLocaleString()}）`;
+  }
+}
+
+function selCat(id,btn){
+  recCat=id;
+  document.querySelectorAll('#rec-cats .chip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function selPay(id,btn){
+  recPay=id;
+  document.querySelectorAll('#rec-pay .chip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  togglePayGroups();
+}
+function selDpay(id,btn){
+  recDpay=id;
+  document.querySelectorAll('#rec-dpay .chip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function togglePayGroups(){
+  document.getElementById('g-card').style.display=(recPay==='credit'||recPay==='debit')?'':'none';
+  document.getElementById('g-dpay').style.display=recPay==='dpay'?'':'none';
+}
+
+function saveRecord(){
+  const date=document.getElementById('rec-date').value;
+  const name=(document.getElementById('rec-name').value.trim()||'支出');
+  const raw=parseFloat(document.getElementById('rec-amount').value)||0;
+  const memo=document.getElementById('rec-memo').value.trim();
+  if(!date||!raw){toast('日付と金額を入力してください');return;}
+
+  let amount=raw;
+  if(settings.taxMode==='exc') amount=Math.round(raw*(1+settings.taxRate/100));
+
+  const cardId=(recPay==='credit'||recPay==='debit')
+    ? (document.getElementById('rec-card').value||null) : null;
+
+  const rec={
+    id:uid(), date, name, amount,
+    rawAmt:raw, taxMode:settings.taxMode, taxRate:settings.taxRate,
+    category:recCat, payMethod:recPay,
+    cardId, dpayMethod:recPay==='dpay'?recDpay:null, memo,
+  };
+  records.push(rec);
+  persist(KEYS.records,records);
+
+  document.getElementById('rec-name').value='';
+  document.getElementById('rec-amount').value='';
+  document.getElementById('rec-memo').value='';
+  document.getElementById('tax-preview').textContent='';
+  toast('記録しました ✓');
+  renderHistList();
+}
+
+function histNav(dir){
+  histYM.m+=dir;
+  if(histYM.m>12){histYM.m=1;histYM.y++;}
+  if(histYM.m<1){histYM.m=12;histYM.y--;}
+  renderHistList();
+}
+function renderHistList(){
+  const lbl=document.getElementById('hist-label');
+  if(lbl) lbl.textContent=`${histYM.y}年${histYM.m}月`;
+  const ym=`${histYM.y}-${pad(histYM.m)}`;
+  const rs=records.filter(r=>r.date.startsWith(ym)).sort((a,b)=>b.date.localeCompare(a.date));
+  const total=rs.filter(r=>!r.excluded).reduce((s,r)=>s+r.amount,0);
+  const unpaid=rs.filter(r=>!r.paid&&!r.excluded).length;
+  const tl=document.getElementById('hist-total');
+  if(tl) tl.textContent=`合計 ${money(total)}（${rs.length}件${unpaid?`・未払い${unpaid}件`:''}）`;
+  const el=document.getElementById('hist-list');
+  if(!el) return;
+  if(!rs.length){el.innerHTML='<div class="empty">記録がありません</div>';return;}
+  el.innerHTML=rs.map(r=>{
+    const cat=CATS.find(c=>c.id===r.category)||CATS[CATS.length-1];
+    const pay=PAYS.find(p=>p.id===r.payMethod);
+    const paidBadge=r.excluded
+      ? `<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:var(--surface-2);color:var(--text-3);border:0.5px solid var(--border-med);">除外</span>`
+      : r.paid
+        ? `<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:var(--success-bg);color:var(--success);border:0.5px solid var(--success);" onclick="event.stopPropagation();quickTogglePaid('${r.id}')">✓ 支払済</span>`
+        : `<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:var(--warn-bg);color:var(--warn);border:0.5px solid var(--warn);" onclick="event.stopPropagation();quickTogglePaid('${r.id}')">未払い</span>`;
+    return `<div class="hist-item" onclick="openRecDetail('${r.id}')" style="${r.excluded?'opacity:0.45;':''}">
+      <div class="hist-cat" style="background:${cat.color}22;">${cat.emoji}</div>
+      <div class="hist-info">
+        <div class="hist-name">${esc(r.name)}</div>
+        <div class="hist-meta">${r.date.slice(5).replace('-','/')}　${pay?.label||r.payMethod}${r.memo?'　'+esc(r.memo):''}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+        <div class="hist-amount" style="${r.excluded?'text-decoration:line-through;color:var(--text-3);':''}">−${money(r.amount)}</div>
+        ${paidBadge}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openRecDetail(id){
+  editRec=records.find(r=>r.id===id);
+  if(!editRec) return;
+  const cat=CATS.find(c=>c.id===editRec.category)||CATS[CATS.length-1];
+  const pay=PAYS.find(p=>p.id===editRec.payMethod);
+  const card=cards.find(c=>c.id===editRec.cardId);
+  document.getElementById('rec-detail-body').innerHTML=`
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <div style="font-size:36px;">${cat.emoji}</div>
+      <div>
+        <div style="font-size:18px;font-weight:700;">${esc(editRec.name)}</div>
+        <div style="font-size:12px;color:var(--text-3);">${editRec.date}　${cat.label}　${pay?.label||''}</div>
+      </div>
+    </div>
+    <div style="font-size:30px;font-weight:700;color:var(--danger);margin-bottom:10px;">−${money(editRec.amount)}</div>
+    ${editRec.taxMode==='exc'?`<div style="font-size:12px;color:var(--text-3);">税抜 ¥${editRec.rawAmt?.toLocaleString()} + 消費税${editRec.taxRate||10}%</div>`:''}
+    ${card?`<div style="font-size:12px;color:var(--text-3);margin-top:4px;">カード: ${card.icon||'💳'} ${card.name}</div>`:''}
+    ${editRec.memo?`<div style="font-size:13px;margin-top:10px;padding:10px;background:var(--surface-2);border-radius:8px;">${esc(editRec.memo)}</div>`:''}
+  `;
+  updateRecDetailBtns();
+  openSheet('rec-detail');
+}
+function updateRecDetailBtns(){
+  if(!editRec) return;
+  const paidBtn=document.getElementById('rec-paid-btn');
+  const exclBtn=document.getElementById('rec-excl-btn');
+  if(editRec.paid){
+    paidBtn.textContent='✓ 支払済み（タップで未払いに）';
+    paidBtn.style.cssText='flex:1;background:var(--success-bg);color:var(--success);border:0.5px solid var(--success);';
+  } else {
+    paidBtn.textContent='未払い → タップで支払済みに';
+    paidBtn.style.cssText='flex:1;background:var(--warn-bg);color:var(--warn);border:0.5px solid var(--warn);';
+  }
+  if(editRec.excluded){
+    exclBtn.textContent='除外中 → タップで支出に戻す';
+    exclBtn.style.cssText='flex:1;background:var(--surface-2);color:var(--text-3);border:0.5px solid var(--border-med);';
+  } else {
+    exclBtn.textContent='支出から除外する';
+    exclBtn.style.cssText='flex:1;background:var(--surface);color:var(--text-2);border:0.5px solid var(--border-med);';
+  }
+}
+function toggleRecPaid(){
+  if(!editRec) return;
+  editRec.paid=!editRec.paid;
+  persist(KEYS.records,records);
+  updateRecDetailBtns();
+  renderHistList();
+  renderHome();
+  toast(editRec.paid?'支払済みにしました ✓':'未払いに戻しました');
+}
+function toggleRecExcluded(){
+  if(!editRec) return;
+  editRec.excluded=!editRec.excluded;
+  persist(KEYS.records,records);
+  updateRecDetailBtns();
+  renderHistList();
+  renderHome();
+  toast(editRec.excluded?'支出から除外しました':'支出に戻しました');
+}
+function quickTogglePaid(id){
+  const r=records.find(x=>x.id===id);
+  if(!r) return;
+  r.paid=!r.paid;
+  persist(KEYS.records,records);
+  renderHistList();
+  renderHome();
+  toast(r.paid?'支払済みにしました ✓':'未払いに戻しました');
+}
+function histSelectAll(paid){
+  const ym=`${histYM.y}-${pad(histYM.m)}`;
+  records.filter(r=>r.date.startsWith(ym)&&!r.excluded).forEach(r=>{ r.paid=paid; });
+  persist(KEYS.records,records);
+  renderHistList();
+  renderHome();
+  toast(paid?'この月を全部支払済みにしました':'この月を全部未払いに戻しました');
+}
+function deleteRecord(){
+  if(!editRec) return;
+  if(!confirm('この記録を削除しますか？')) return;
+  records=records.filter(r=>r.id!==editRec.id);
+  persist(KEYS.records,records);
+  closeSheet('rec-detail');
+  toast('削除しました');
+  renderHistList();
+}
+
+// ══════ MANAGE ══════
+function renderManage(){
+  if(curManage==='cards')   renderCards();
+  if(curManage==='fixed')   renderFixed();
+  if(curManage==='install') renderInstallments();
+  if(curManage==='ribo')    renderRibo();
+}
+
+function renderCards(){
+  const el=document.getElementById('cards-list');
+  if(!el) return;
+  if(!cards.length){el.innerHTML='<div class="empty">カードが登録されていません</div>';return;}
+  const now=new Date(), ym=ymStr(now);
+  el.innerHTML=cards.map(c=>{
+    const spend=records.filter(r=>r.cardId===c.id&&r.date.startsWith(ym)).reduce((s,r)=>s+r.amount,0);
+    const typeLabel=c.type==='credit'?'クレジット':'デビット';
+    const dates=c.type==='credit'?`締め:${c.closingDay||'—'}日　支払:${c.paymentDay||'—'}日`:'即時引き落とし';
+    return `<div class="manage-item" onclick="openCardSheet('${c.id}')">
+      <div class="manage-icon">${c.icon||'💳'}</div>
+      <div class="manage-info">
+        <div class="manage-name">${esc(c.name)}</div>
+        <div class="manage-sub">${typeLabel}　${dates}${c.riboEnabled?'　🔄リボ':''}</div>
+      </div>
+      <div class="manage-amount" style="color:${spend?'var(--danger)':'var(--text-3)'};">${money(spend)}</div>
+    </div>`;
+  }).join('');
+}
+
+function fixedNavMonth(dir){
+  fixedNavYM.m+=dir;
+  if(fixedNavYM.m>12){fixedNavYM.m=1;fixedNavYM.y++;}
+  if(fixedNavYM.m<1){fixedNavYM.m=12;fixedNavYM.y--;}
+  renderFixed();
+}
+function fixedSelectAll(paid){
+  const ym=`${fixedNavYM.y}-${pad(fixedNavYM.m)}`;
+  fixedCosts.forEach(f=>{ fixedPay[`${f.id}_${ym}`]=paid; });
+  persist(KEYS.fixedPay,fixedPay);
+  renderFixed();
+}
+function toggleFixedPaid(fid){
+  const ym=`${fixedNavYM.y}-${pad(fixedNavYM.m)}`;
+  const key=`${fid}_${ym}`;
+  fixedPay[key]=!fixedPay[key];
+  persist(KEYS.fixedPay,fixedPay);
+  renderFixed();
+}
+
+function renderFixed(){
+  const lbl=document.getElementById('fixed-nav-label');
+  if(lbl) lbl.textContent=`${fixedNavYM.y}年${fixedNavYM.m}月`;
+  const el=document.getElementById('fixed-list');
+  if(!el) return;
+  if(!fixedCosts.length){el.innerHTML='<div class="empty">固定費が登録されていません</div>';return;}
+  const ym=`${fixedNavYM.y}-${pad(fixedNavYM.m)}`;
+  const total=fixedCosts.reduce((s,f)=>s+f.amount,0);
+  const paidTotal=fixedCosts.filter(f=>fixedPay[`${f.id}_${ym}`]).reduce((s,f)=>s+f.amount,0);
+  const catEmoji={sub:'📺',utility:'💡',insurance:'🛡️',rent:'🏠',other:'📋'};
+  el.innerHTML=`<div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:12px;">
+    <span style="color:var(--text-2);">月合計: ${money(total)}</span>
+    <span style="color:var(--success);">支払済: ${money(paidTotal)}</span>
+  </div>`+
+    fixedCosts.map(f=>{
+      const paid=!!fixedPay[`${f.id}_${ym}`];
+      return `<div class="manage-item" style="${paid?'opacity:0.6;':''}">
+        <div onclick="event.stopPropagation();toggleFixedPaid('${f.id}')" style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+          ${paid?'background:var(--success-bg);border:1.5px solid var(--success);':'background:var(--warn-bg);border:1.5px solid var(--warn);'}">
+          ${paid?'<span style="font-size:18px;">✓</span>':'<span style="font-size:14px;color:var(--warn);">?</span>'}
+        </div>
+        <div class="manage-info" onclick="openFixedSheet('${f.id}')">
+          <div class="manage-name" style="${paid?'text-decoration:line-through;color:var(--text-3);':''}">${esc(f.name)}</div>
+          <div class="manage-sub">毎月${f.payDay||1}日${f.isVariable?' ※変動':''}　${f.payMethod==='credit'?'クレカ':'銀行引き落とし'}</div>
+        </div>
+        <div style="text-align:right;" onclick="openFixedSheet('${f.id}')">
+          <div class="manage-amount" style="color:${paid?'var(--text-3)':'var(--danger)'};">${money(f.amount)}</div>
+          <div style="font-size:10px;color:${paid?'var(--success)':'var(--warn)'};">${paid?'支払済':'未払い'}</div>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+// ── 分割払い ──
+function renderInstallments(){
+  const el=document.getElementById('install-list');
+  if(!el) return;
+  if(!installs.length){el.innerHTML='<div class="empty">分割払いが登録されていません</div>';return;}
+  const now=new Date();
+  el.innerHTML=installs.map(inst=>{
+    const card=cards.find(c=>c.id===inst.cardId);
+    const [sy,sm]=inst.startYM?inst.startYM.split('-').map(Number):[now.getFullYear(),now.getMonth()+1];
+    const elapsed=(now.getFullYear()-sy)*12+(now.getMonth()+1-sm);
+    const paid=Math.min(inst.paidCount||0, inst.numPayments||1);
+    const remaining=Math.max(0,(inst.numPayments||1)-paid);
+    const monthly=Math.ceil((inst.totalAmount+(inst.fee||0))/(inst.numPayments||1));
+    const done=remaining===0;
+    return `<div class="manage-item" onclick="openInstallSheet('${inst.id}')" style="${done?'opacity:0.5;':''}">
+      <div class="manage-icon">🗓</div>
+      <div class="manage-info">
+        <div class="manage-name">${esc(inst.name)}${done?' ✓完済':''}</div>
+        <div class="manage-sub">${card?card.name:'カード未設定'}　${paid}/${inst.numPayments}回済み　残${remaining}回</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="manage-amount" style="color:var(--danger);">${money(monthly)}/月</div>
+        <div style="font-size:11px;color:var(--text-3);">残 ${money(remaining*monthly)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateInstPreview(){
+  const total=parseFloat(document.getElementById('inst-total')?.value)||0;
+  const fee=parseFloat(document.getElementById('inst-fee')?.value)||0;
+  const count=parseInt(document.getElementById('inst-count')?.value)||1;
+  const el=document.getElementById('inst-preview');
+  if(!el) return;
+  if(!total){el.textContent='';return;}
+  const monthly=Math.ceil((total+fee)/count);
+  el.innerHTML=`月々 <strong>${money(monthly)}</strong>　×${count}回　総支払 ${money(total+fee)}${fee?`（手数料 ${money(fee)}）`:''}`;
+}
+
+function openInstallSheet(id){
+  editInstall=id?installs.find(i=>i.id===id):null;
+  document.getElementById('install-title').textContent=editInstall?'分割払いを編集':'分割払いを追加';
+  document.getElementById('inst-name').value=editInstall?.name||'';
+  document.getElementById('inst-total').value=editInstall?.totalAmount||'';
+  document.getElementById('inst-fee').value=editInstall?.fee||'';
+  document.getElementById('inst-count').value=editInstall?.numPayments||'';
+  document.getElementById('inst-start').value=editInstall?.startYM||ymStr(new Date());
+  document.getElementById('inst-paid-count').value=editInstall?.paidCount||0;
+  document.getElementById('inst-del').style.display=editInstall?'':'none';
+  const cs=document.getElementById('inst-card');
+  cs.innerHTML='<option value="">カードを選択</option>'+
+    cards.map(c=>`<option value="${c.id}"${editInstall?.cardId===c.id?' selected':''}>${c.icon||'💳'} ${c.name}</option>`).join('');
+  updateInstPreview();
+  openSheet('install');
+}
+function saveInstall(){
+  const name=document.getElementById('inst-name').value.trim();
+  if(!name){toast('件名を入力してください');return;}
+  const data={
+    name,
+    cardId:document.getElementById('inst-card').value||null,
+    totalAmount:parseFloat(document.getElementById('inst-total').value)||0,
+    fee:parseFloat(document.getElementById('inst-fee').value)||0,
+    numPayments:parseInt(document.getElementById('inst-count').value)||1,
+    startYM:document.getElementById('inst-start').value||ymStr(new Date()),
+    paidCount:parseInt(document.getElementById('inst-paid-count').value)||0,
+  };
+  if(editInstall) Object.assign(editInstall,data);
+  else installs.push({id:uid(),...data});
+  persist(KEYS.installs,installs);
+  closeSheet('install');
+  renderInstallments();
+  toast('保存しました ✓');
+}
+async function deleteInstall(){
+  const ok=await cfmDialog({icon:'🗓',title:'分割払いを削除',msg:'この分割払いを削除しますか？',
+    okLabel:'削除',okStyle:'background:var(--danger);color:#fff;flex:1;'});
+  if(!ok) return;
+  installs=installs.filter(i=>i.id!==editInstall.id);
+  persist(KEYS.installs,installs);
+  closeSheet('install');
+  renderInstallments();
+  toast('削除しました');
+}
+
+function renderRibo(){
+  const el=document.getElementById('ribo-list');
+  if(!el) return;
+  const riboCards=cards.filter(c=>c.riboEnabled);
+  if(!riboCards.length){
+    el.innerHTML=`<div class="empty" style="padding:32px 0;">
+      <div style="font-size:36px;margin-bottom:8px;">🔄</div>
+      リボ払いのカードがありません<br>
+      <small>カード設定でリボ払いを有効にしてください</small>
+    </div>`;
+    return;
+  }
+  el.innerHTML=riboCards.map(c=>buildRiboCard(c)).join('');
+}
+
+function buildRiboCard(c){
+  const rate=(c.riboRate||17.64)/100/12;
+  const monthly=c.riboMonthlyPayment||5000;
+  let bal=c.riboBalance||0;
+  const rows=[];
+  const startDate=new Date();
+
+  // 手入力モードの場合、入力タイプに応じてコメント表示
+  const inputNote=c.riboMode==='manual'
+    ? (c.riboInputType==='total'
+        ? `<div style="font-size:11px;color:var(--text-3);margin-bottom:8px;">手入力モード：合計金額 ${money(monthly)} から利息を差し引いて元金を計算</div>`
+        : `<div style="font-size:11px;color:var(--text-3);margin-bottom:8px;">手入力モード：元金 ${money(monthly)} に利息を加算して請求額を表示</div>`)
+    : '';
+
+  for(let i=0;i<36&&bal>0;i++){
+    const d=new Date(startDate);
+    d.setMonth(d.getMonth()+i+1);
+    const interest=Math.floor(bal*rate);
+    let principal, payment;
+    if(c.riboMode==='manual'&&c.riboInputType==='total'){
+      // 合計金額から利息を引いて元金を算出
+      payment=monthly;
+      principal=Math.min(monthly-interest, bal);
+    } else {
+      // 元金固定（または自動計算）
+      principal=Math.min(monthly-interest, bal);
+      payment=principal+interest;
+    }
+    if(principal<=0){rows.push({mo:`${d.getFullYear()}/${pad(d.getMonth()+1)}`,payment:interest,interest,principal:0,remaining:bal});break;}
+    bal=Math.max(0,bal-principal);
+    rows.push({mo:`${d.getFullYear()}/${pad(d.getMonth()+1)}`,payment,interest,principal,remaining:bal});
+  }
+
+  const endIdx=rows.findIndex(r=>r.remaining<=0);
+  const endLabel=endIdx>=0?rows[endIdx].mo:`36ヶ月以上`;
+  const totalInterest=rows.reduce((s,r)=>s+r.interest,0);
+
+  return `<div class="card">
+    <div class="card-title">${c.icon||'💳'} ${esc(c.name)} — リボ払い</div>
+    ${inputNote}
+    <div class="metrics" style="margin-bottom:12px;">
+      <div class="metric"><div class="metric-label">現在残高</div><div class="metric-value" style="font-size:18px;">${money(c.riboBalance||0)}</div></div>
+      <div class="metric"><div class="metric-label">完済予定</div><div class="metric-value" style="font-size:14px;color:var(--warn);">${endLabel}</div></div>
+    </div>
+    <div class="metrics" style="margin-bottom:12px;">
+      <div class="metric"><div class="metric-label">月々の支払</div><div class="metric-value" style="font-size:18px;">${money(monthly)}</div></div>
+      <div class="metric"><div class="metric-label">総利息（見込み）</div><div class="metric-value" style="font-size:14px;color:var(--danger);">${money(totalInterest)}</div></div>
+    </div>
+    <div style="overflow-x:auto;margin-top:4px;">
+    <table class="ribo-table">
+      <tr><th>月</th><th>請求額</th><th>元金</th><th>利息</th><th>残高</th></tr>
+      ${rows.slice(0,12).map(r=>`<tr>
+        <td>${r.mo}</td>
+        <td>${money(r.payment)}</td>
+        <td>${money(r.principal)}</td>
+        <td style="color:var(--danger);">${money(r.interest)}</td>
+        <td>${money(r.remaining)}</td>
+      </tr>`).join('')}
+    </table>
+    </div>
+    ${rows.length>12?`<div style="font-size:11px;color:var(--text-3);text-align:center;margin-top:6px;">以降 ${rows.length-12}ヶ月分は省略</div>`:''}
+    <button class="btn btn-secondary btn-sm" style="margin-top:12px;" onclick="quickRiboUpdate('${c.id}')">残高を手動更新</button>
+  </div>`;
+}
+
+function quickRiboUpdate(cardId){
+  const c=cards.find(c=>c.id===cardId);
+  if(!c) return;
+  const nb=prompt(`${c.name}のリボ残高（現在: ¥${(c.riboBalance||0).toLocaleString()}）`,c.riboBalance||'');
+  if(nb===null) return;
+  c.riboBalance=parseInt(String(nb).replace(/[,¥]/g,''))||0;
+  persist(KEYS.cards,cards);
+  renderRibo();
+  toast('残高を更新しました');
+}
+
+// ══════ SETTINGS ══════
+function renderSettings(){
+  renderAccList();
+  renderIncList();
+  renderBudgetForm();
+  renderThemes();
+}
+
+function renderAccList(){
+  const el=document.getElementById('set-accounts');
+  if(!el) return;
+  el.innerHTML=accounts.map(a=>`<div class="acc-item" onclick="openAccountSheet('${a.id}')">
+    <div class="acc-dot" style="background:${a.color||'#888'};"></div>
+    <div class="acc-info">
+      <div class="acc-name">${esc(a.name)}</div>
+      <div class="acc-type">${{bank:'銀行口座',cash:'現金',savings:'貯蓄・定期'}[a.type]||a.type}</div>
+    </div>
+    <div class="acc-balance">${money(a.balance)}</div>
+  </div>`).join('');
+}
+
+function renderIncList(){
+  const el=document.getElementById('set-incomes');
+  if(!el) return;
+  const freqLabel={monthly:'毎月',every_n:'N ヶ月ごと',once:'臨時'};
+  el.innerHTML=incomes.map(i=>{
+    const fl=i.frequency==='every_n'?`${i.freqN}ヶ月ごと ${i.payDay}日払い`
+      :i.frequency==='once'?`臨時 ${i.onceDate||'日付未設定'}`
+      :`毎月${i.payDay}日払い`;
+    return `<div class="acc-item" onclick="openIncomeSheet('${i.id}')">
+      <div style="font-size:22px;">💰</div>
+      <div class="acc-info">
+        <div class="acc-name">${esc(i.name)}</div>
+        <div class="acc-type">${fl}</div>
+      </div>
+      <div class="acc-balance" style="color:var(--success);">${money(i.amount)}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderBudgetForm(){
+  const el=document.getElementById('set-budget');
+  if(!el) return;
+  el.innerHTML=CATS.map(cat=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="width:28px;text-align:center;font-size:18px;">${cat.emoji}</div>
+      <div style="flex:1;font-size:13px;font-weight:600;">${cat.label}</div>
+      <div style="display:flex;align-items:center;gap:3px;">
+        <span style="font-size:12px;color:var(--text-3);">¥</span>
+        <input type="number" class="form-input" style="width:88px;padding:7px 8px;font-size:13px;"
+          value="${budget[cat.id]||''}" placeholder="未設定" inputmode="numeric"
+          onchange="setBudget('${cat.id}',this.value)">
+      </div>
+    </div>
+  `).join('');
+}
+function setBudget(catId,val){
+  budget[catId]=parseInt(val)||0;
+  persist(KEYS.budget,budget);
+}
+
+function renderThemes(){
+  const render=(themes,elId)=>{
+    document.getElementById(elId).innerHTML=themes.map(t=>`
+      <div class="theme-sw${settings.theme===t.id?' active':''}"
+        style="background:${t.bg};" title="${t.label}" onclick="setTheme('${t.id}')">
+        <div class="theme-sw-dot" style="background:${t.ac};"></div>
+      </div>`).join('');
+  };
+  render(THEMES_L,'tgrid-light');
+  render(THEMES_D,'tgrid-dark');
+}
+function setTheme(id){
+  settings.theme=id;
+  persist(KEYS.settings,settings);
+  document.documentElement.setAttribute('data-theme',id);
+  renderThemes();
+  setTimeout(renderAssetChart,100);
+}
+
+// ══════ SHEETS ══════
+function openSheet(name){ document.getElementById('ov-'+name).classList.add('open'); }
+function closeSheet(name){ document.getElementById('ov-'+name).classList.remove('open'); }
+
+// ── 口座 ──
+function openAccountSheet(id){
+  editAcc=id?accounts.find(a=>a.id===id):null;
+  document.getElementById('acc-title').textContent=editAcc?'口座を編集':'口座を追加';
+  document.getElementById('acc-name').value=editAcc?.name||'';
+  document.getElementById('acc-type').value=editAcc?.type||'bank';
+  document.getElementById('acc-bal').value=editAcc?.balance||'';
+  selAccColor=editAcc?.color||ACC_COLORS[0];
+  document.getElementById('acc-del').style.display=editAcc?'':'none';
+  document.getElementById('acc-colors').innerHTML=ACC_COLORS.map(c=>
+    `<button class="chip${c===selAccColor?' active':''}"
+      style="background:${c};border-color:${c};color:#fff;width:26px;height:26px;padding:0;border-radius:50%;"
+      onclick="selAccCol('${c}',this)"></button>`
+  ).join('');
+  openSheet('account');
+}
+function selAccCol(c,btn){
+  selAccColor=c;
+  document.querySelectorAll('#acc-colors .chip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function saveAccount(){
+  const name=document.getElementById('acc-name').value.trim();
+  const type=document.getElementById('acc-type').value;
+  const balance=parseFloat(document.getElementById('acc-bal').value)||0;
+  if(!name){toast('口座名を入力してください');return;}
+  if(editAcc) Object.assign(editAcc,{name,type,balance,color:selAccColor});
+  else accounts.push({id:uid(),name,type,balance,color:selAccColor});
+  persist(KEYS.accounts,accounts);
+  closeSheet('account');
+  renderAccList();
+  toast('保存しました ✓');
+}
+function deleteAccount(){
+  if(!editAcc||!confirm('この口座を削除しますか？')) return;
+  accounts=accounts.filter(a=>a.id!==editAcc.id);
+  persist(KEYS.accounts,accounts);
+  closeSheet('account');
+  renderAccList();
+  toast('削除しました');
+}
+
+// ── カード ──
+function selRiboInputType(type,btn){
+  riboInputType=type;
+  document.querySelectorAll('#ribo-input-principal,#ribo-input-total').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function toggleCardDates(){
+  const isCredit=document.getElementById('card-type').value==='credit';
+  document.getElementById('card-dates').style.display=isCredit?'':'none';
+}
+function toggleRiboFields(){
+  document.getElementById('ribo-fields').style.display=
+    document.getElementById('card-ribo').checked?'':'none';
+}
+function openCardSheet(id){
+  editCard=id?cards.find(c=>c.id===id):null;
+  document.getElementById('card-title').textContent=editCard?'カードを編集':'カードを追加';
+  document.getElementById('card-name').value=editCard?.name||'';
+  document.getElementById('card-type').value=editCard?.type||'credit';
+  document.getElementById('card-icon').value=editCard?.icon||'💳';
+  document.getElementById('card-close').value=editCard?.closingDay||'';
+  document.getElementById('card-pay').value=editCard?.paymentDay||'';
+  document.getElementById('card-ribo').checked=editCard?.riboEnabled||false;
+  document.getElementById('card-ribo-bal').value=editCard?.riboBalance||'';
+  document.getElementById('card-ribo-pay').value=editCard?.riboMonthlyPayment||5000;
+  document.getElementById('card-ribo-rate').value=editCard?.riboRate||17.64;
+  document.getElementById('card-ribo-mode').value=editCard?.riboMode||'auto';
+  riboInputType=editCard?.riboInputType||'principal';
+  document.getElementById('ribo-input-principal').classList.toggle('active',riboInputType==='principal');
+  document.getElementById('ribo-input-total').classList.toggle('active',riboInputType==='total');
+  document.getElementById('card-del').style.display=editCard?'':'none';
+  toggleCardDates();
+  toggleRiboFields();
+  const acSel=document.getElementById('card-account');
+  acSel.innerHTML='<option value="">未設定</option>'+
+    accounts.map(a=>`<option value="${a.id}"${editCard?.linkedAccountId===a.id?' selected':''}>${a.name}</option>`).join('');
+  openSheet('card');
+}
+function saveCard(){
+  const name=document.getElementById('card-name').value.trim();
+  if(!name){toast('カード名を入力してください');return;}
+  const data={
+    name, type:document.getElementById('card-type').value,
+    icon:document.getElementById('card-icon').value||'💳',
+    closingDay:parseInt(document.getElementById('card-close').value)||null,
+    paymentDay:parseInt(document.getElementById('card-pay').value)||null,
+    linkedAccountId:document.getElementById('card-account').value||null,
+    riboEnabled:document.getElementById('card-ribo').checked,
+    riboBalance:parseFloat(document.getElementById('card-ribo-bal').value)||0,
+    riboMonthlyPayment:parseFloat(document.getElementById('card-ribo-pay').value)||5000,
+    riboRate:parseFloat(document.getElementById('card-ribo-rate').value)||17.64,
+    riboMode:document.getElementById('card-ribo-mode').value,
+    riboInputType,
+  };
+  if(editCard) Object.assign(editCard,data);
+  else cards.push({id:uid(),...data});
+  persist(KEYS.cards,cards);
+  closeSheet('card');
+  renderCards();
+  toast('保存しました ✓');
+}
+function deleteCard(){
+  if(!editCard||!confirm('このカードを削除しますか？')) return;
+  cards=cards.filter(c=>c.id!==editCard.id);
+  persist(KEYS.cards,cards);
+  closeSheet('card');
+  renderCards();
+  toast('削除しました');
+}
+
+// ── 固定費 ──
+function toggleFixedCard(){
+  const pm=document.getElementById('fixed-pm').value;
+  document.getElementById('fixed-card-g').style.display=(pm==='credit'||pm==='debit')?'':'none';
+}
+function openFixedSheet(id){
+  editFixed=id?fixedCosts.find(f=>f.id===id):null;
+  document.getElementById('fixed-title').textContent=editFixed?'固定費を編集':'固定費を追加';
+  document.getElementById('fixed-name').value=editFixed?.name||'';
+  document.getElementById('fixed-amt').value=editFixed?.amount||'';
+  document.getElementById('fixed-day').value=editFixed?.payDay||'';
+  document.getElementById('fixed-cat').value=editFixed?.category||'sub';
+  document.getElementById('fixed-pm').value=editFixed?.payMethod||'credit';
+  document.getElementById('fixed-variable').checked=editFixed?.isVariable||false;
+  document.getElementById('fixed-del').style.display=editFixed?'':'none';
+  const cs=document.getElementById('fixed-card');
+  cs.innerHTML='<option value="">未設定</option>'+
+    cards.map(c=>`<option value="${c.id}"${editFixed?.cardId===c.id?' selected':''}>${c.icon||'💳'} ${c.name}</option>`).join('');
+  toggleFixedCard();
+  openSheet('fixed');
+}
+function saveFixed(){
+  const name=document.getElementById('fixed-name').value.trim();
+  if(!name){toast('名前を入力してください');return;}
+  const data={
+    name, amount:parseInt(document.getElementById('fixed-amt').value)||0,
+    payDay:parseInt(document.getElementById('fixed-day').value)||1,
+    category:document.getElementById('fixed-cat').value,
+    payMethod:document.getElementById('fixed-pm').value,
+    cardId:document.getElementById('fixed-card').value||null,
+    isVariable:document.getElementById('fixed-variable').checked,
+  };
+  if(editFixed) Object.assign(editFixed,data);
+  else fixedCosts.push({id:uid(),...data});
+  persist(KEYS.fixed,fixedCosts);
+  closeSheet('fixed');
+  renderFixed();
+  toast('保存しました ✓');
+}
+function deleteFixed(){
+  if(!editFixed||!confirm('この固定費を削除しますか？')) return;
+  fixedCosts=fixedCosts.filter(f=>f.id!==editFixed.id);
+  persist(KEYS.fixed,fixedCosts);
+  closeSheet('fixed');
+  renderFixed();
+  toast('削除しました');
+}
+
+// ── 収入 ──
+function openIncomeSheet(id){
+  editIncome=id?incomes.find(i=>i.id===id):null;
+  document.getElementById('inc-name').value=editIncome?.name||'';
+  document.getElementById('inc-amt').value=editIncome?.amount||'';
+  document.getElementById('inc-day').value=editIncome?.payDay||'';
+  document.getElementById('inc-del').style.display=editIncome?'':'none';
+  // 頻度チップ
+  incFreq=editIncome?.frequency||'monthly';
+  const freqOpts=[{id:'monthly',label:'毎月'},{id:'every_n',label:'N ヶ月ごと'},{id:'once',label:'臨時（一度きり）'}];
+  document.getElementById('inc-freq-chips').innerHTML=freqOpts.map(f=>
+    `<button class="chip${f.id===incFreq?' active':''}" onclick="selIncFreq('${f.id}',this)">${f.label}</button>`
+  ).join('');
+  document.getElementById('inc-freq-n').value=editIncome?.freqN||2;
+  document.getElementById('inc-once-date').value=editIncome?.onceDate||dateStr(new Date());
+  toggleIncFreqFields();
+  const acSel=document.getElementById('inc-account');
+  acSel.innerHTML='<option value="">未設定</option>'+
+    accounts.map(a=>`<option value="${a.id}"${editIncome?.accountId===a.id?' selected':''}>${a.name}</option>`).join('');
+  openSheet('income');
+}
+function selIncFreq(f,btn){
+  incFreq=f;
+  document.querySelectorAll('#inc-freq-chips .chip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  toggleIncFreqFields();
+}
+function toggleIncFreqFields(){
+  document.getElementById('inc-freq-n-g').style.display=incFreq==='every_n'?'':'none';
+  document.getElementById('inc-once-date-g').style.display=incFreq==='once'?'':'none';
+}
+function saveIncome(){
+  const name=document.getElementById('inc-name').value.trim();
+  if(!name){toast('名前を入力してください');return;}
+  const data={
+    name, amount:parseInt(document.getElementById('inc-amt').value)||0,
+    payDay:parseInt(document.getElementById('inc-day').value)||25,
+    accountId:document.getElementById('inc-account').value||null,
+    frequency:incFreq,
+    freqN:incFreq==='every_n'?(parseInt(document.getElementById('inc-freq-n').value)||2):null,
+    onceDate:incFreq==='once'?(document.getElementById('inc-once-date').value||null):null,
+  };
+  if(editIncome) Object.assign(editIncome,data);
+  else incomes.push({id:uid(),...data});
+  persist(KEYS.incomes,incomes);
+  closeSheet('income');
+  renderIncList();
+  toast('保存しました ✓');
+}
+function deleteIncome(){
+  if(!editIncome) return;
+  incomes=incomes.filter(i=>i.id!==editIncome.id);
+  persist(KEYS.incomes,incomes);
+  closeSheet('income');
+  renderIncList();
+  toast('削除しました');
+}
+
+// ══════ DATA I/O ══════
+function exportData(){
+  const data={version:2,exported:new Date().toISOString(),records,accounts,cards,fixedCosts,incomes,budget,installs,fixedPay,settings};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`kakeibo_${dateStr(new Date())}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('エクスポートしました');
+}
+
+async function importData(ev){
+  const file=ev.target.files[0]; if(!file) return;
+  // FileReaderをPromise化してasync/awaitで扱えるようにする
+  const text=await new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=e=>resolve(e.target.result);
+    reader.onerror=()=>reject(new Error('ファイル読み込み失敗'));
+    reader.readAsText(file);
+  });
+  ev.target.value='';
+  try{
+    if(file.name.endsWith('.json')){
+      const data=JSON.parse(text);
+      if(data.version===2){
+        const ok=await cfmDialog({
+          icon:'📥',title:'JSONをインポート',
+          msg:'現在のデータを上書きします。よろしいですか？',
+          okLabel:'インポートする',okStyle:'background:var(--accent);color:#fff;flex:1;'
+        });
+        if(!ok) return;
+        records=data.records||[];accounts=data.accounts||[];cards=data.cards||[];
+        fixedCosts=data.fixedCosts||[];incomes=data.incomes||[];budget=data.budget||{};installs=data.installs||[];fixedPay=data.fixedPay||{};
+        persist(KEYS.records,records);persist(KEYS.accounts,accounts);persist(KEYS.cards,cards);
+        persist(KEYS.fixed,fixedCosts);persist(KEYS.incomes,incomes);persist(KEYS.budget,budget);persist(KEYS.installs,installs);persist(KEYS.fixedPay,fixedPay);
+        toast('インポートしました ✓');
+        renderSettings(); renderHome();
+      } else {
+        await importOldCSV_json(data);
+      }
+    } else if(file.name.endsWith('.csv')){
+      importOldCSV(text);
+    }
+  }catch(err){ toast('インポートエラー: '+err.message); }
+}
+
+// 旧CSV（#SECTIONマーカー形式）を完全変換
+// 列定義: 日付[0],商品名[1],カテゴリ[2],個数[3],単価税抜[4],割引率[5],割引額[6],ポイント[7],税抜小計[8],税込小計[9],支払方法[10]
+function importOldCSV(text){
+  // BOM除去
+  const raw=text.replace(/^\uFEFF/,'');
+  const lines=raw.split(/\r?\n/);
+
+  let section=null;
+  const newRecs=[], newAccs=[], newIncomes=[], newBudget={}, newFixed=[], newInstalls=[];
+
+  lines.forEach(line=>{
+    const trimmed=line.trim();
+    if(!trimmed) return;
+    if(trimmed.startsWith('#SECTION,')){
+      section=trimmed.replace('#SECTION,','').trim();
+      return;
+    }
+    const cols=parseCSV(trimmed);
+
+    if(section==='家計簿'){
+      // ヘッダー行スキップ
+      if(cols[0]==='日付') return;
+      const date=(cols[0]||'').trim();
+      const name=(cols[1]||'支出').trim();
+      const category=mapCat((cols[2]||'').trim());
+      const taxIncAmt=parseInt((cols[9]||'0').replace(/[,¥\s]/g,''))||0;
+      const taxExcAmt=parseInt((cols[8]||'0').replace(/[,¥\s]/g,''))||0;
+      const payMethod=mapPay((cols[10]||'').trim());
+      if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
+      // 金額0・ポイント系（負値）はスキップしない（そのまま入れる）
+      newRecs.push({
+        id:uid(), date, name, amount:taxIncAmt, rawAmt:taxExcAmt,
+        taxMode:'inc', taxRate:10, category, payMethod,
+        cardId:null, dpayMethod:payMethod==='dpay'?'carrier':null, memo:'',
+      });
+    }
+
+    else if(section==='予算'){
+      if(cols[0]==='カテゴリ'||cols[0]==='合計月間予算') return;
+      const catId=mapCat((cols[0]||'').trim());
+      const amt=parseInt((cols[1]||'0').replace(/[,¥\s]/g,''))||0;
+      if(catId&&amt) newBudget[catId]=amt;
+    }
+
+    else if(section==='資産'){
+      if(cols[0]==='項目名') return;
+      const name=(cols[0]||'').trim();
+      const type=(cols[1]||'').trim();
+      const amount=parseInt((cols[2]||'0').replace(/[,¥\s]/g,''))||0;
+      if(!name) return;
+      if(type==='bank'||type==='cash'||type==='savings'){
+        // 口座として追加（重複チェック）
+        if(!accounts.find(a=>a.name===name)){
+          newAccs.push({id:uid(), name, type, balance:amount,
+            color:ACC_COLORS[newAccs.length%ACC_COLORS.length]});
+        } else {
+          // 既存口座の残高を更新
+          const ex=accounts.find(a=>a.name===name);
+          if(ex) ex.balance=amount;
+        }
+      } else if(type==='income'){
+        // 収入スケジュールとして追加
+        if(!incomes.find(i=>i.name===name)){
+          newIncomes.push({id:uid(), name, amount, payDay:15, accountId:null});
+        }
+      }
+    }
+
+    else if(section==='固定費'){
+      if(cols[0]==='項目名') return;
+      const name=(cols[0]||'').trim();
+      const category=cols[1]||'other';
+      const payMethodRaw=(cols[2]||'').trim();
+      const amount=parseInt((cols[3]||'0').replace(/[,¥\s]/g,''))||0;
+      const payDay=parseInt(cols[4])||1;
+      const active=(cols[6]||'1').trim();
+      if(!name||active==='0') return;
+      const catMap={'サブスク':'sub','光熱費':'utility','通信費':'utility','保険':'insurance','家賃':'rent'};
+      const catId=Object.entries(catMap).find(([k])=>category.includes(k))?.[1]||'other';
+      const pm=payMethodRaw.includes('クレ')?'credit':payMethodRaw.includes('銀行')?'bank':'cash';
+      if(!fixedCosts.find(f=>f.name===name)){
+        newFixed.push({id:uid(), name, amount, payDay, category:catId, payMethod:pm,
+          cardId:null, isVariable:false});
+      }
+    }
+
+    // 旧アプリの#SECTION,カード管理 → 分割払いとして変換
+    // 列: 件名[0],カード名[1],種別[2],総額[3],手数料[4],開始月[5],回数[6],月額[7],支払済回数[8],完済[9]
+    else if(section==='カード管理'){
+      if(cols[0]==='件名') return;
+      const name=(cols[0]||'').trim();
+      const totalAmount=parseInt((cols[3]||'0').replace(/[,¥\s]/g,''))||0;
+      const fee=parseInt((cols[4]||'0').replace(/[,¥\s]/g,''))||0;
+      const startYM=(cols[5]||ymStr(new Date())).trim();
+      const numPayments=parseInt(cols[6])||1;
+      const paidCount=parseInt(cols[8])||0;
+      const done=parseInt(cols[9])||0;
+      if(!name||!totalAmount||done) return; // 完済済みはスキップ
+      if(!installs.find(i=>i.name===name&&i.startYM===startYM)){
+        newInstalls.push({id:uid(), name, cardId:null, totalAmount, fee,
+          numPayments, startYM, paidCount});
+      }
+    }
+  });
+
+  if(!newRecs.length&&!newAccs.length&&!newBudget&&!newIncomes.length){
+    toast('インポートできるデータがありませんでした'); return;
+  }
+
+  const summary=[];
+  if(newRecs.length){
+    records=[...records,...newRecs];
+    persist(KEYS.records,records);
+    summary.push(`記録${newRecs.length}件`);
+  }
+  if(newAccs.length){
+    accounts=[...accounts,...newAccs];
+    persist(KEYS.accounts,accounts);
+    summary.push(`口座${newAccs.length}件`);
+  }
+  if(newIncomes.length){
+    incomes=[...incomes,...newIncomes];
+    persist(KEYS.incomes,incomes);
+    summary.push(`収入${newIncomes.length}件`);
+  }
+  if(Object.keys(newBudget).length){
+    Object.assign(budget,newBudget);
+    persist(KEYS.budget,budget);
+    summary.push(`予算${Object.keys(newBudget).length}カテゴリ`);
+  }
+  if(newFixed.length){
+    fixedCosts=[...fixedCosts,...newFixed];
+    persist(KEYS.fixed,fixedCosts);
+    summary.push(`固定費${newFixed.length}件`);
+  }
+  if(newInstalls.length){
+    installs=[...installs,...newInstalls];
+    persist(KEYS.installs,installs);
+    summary.push(`分割払い${newInstalls.length}件`);
+  }
+
+  toast('インポート完了: '+summary.join('、'));
+  renderHistList();
+  renderSettings();
+  renderHome();
+}
+
+async function importOldCSV_json(data){
+  const entries=data.entries||(data.weeks||[]).flatMap(w=>w.items||w.entries||[]);
+  if(!entries.length){toast('対応していない形式です');return;}
+  const ok=await cfmDialog({
+    icon:'📥',title:'旧データを変換',
+    msg:`旧データ ${entries.length}件を変換してインポートしますか？`,
+    okLabel:'インポートする',okStyle:'background:var(--accent);color:#fff;flex:1;'
+  });
+  if(!ok) return;
+  const newRecs=entries.map(e=>({
+    id:uid(), date:e.date||'2025-01-01', name:e.name||e.item||'支出',
+    amount:e.total||e.amount||0, rawAmt:e.total||e.amount||0,
+    taxMode:'inc', taxRate:10, category:mapCat(e.category||e.cat||''),
+    payMethod:mapPay(e.pay||e.method||''), cardId:null, dpayMethod:null, memo:e.memo||'',
+  }));
+  records=[...records,...newRecs];
+  persist(KEYS.records,records);
+  toast(`${newRecs.length}件をインポートしました`);
+  renderHistList();
+}
+
+function mapCat(s){
+  return {
+    食費:'food',日用品:'daily',外食:'dining',交通費:'transport',
+    医療:'medical',衣類:'fashion',趣味:'hobby',娯楽:'hobby',
+    美容:'beauty',教育:'edu',その他:'other',
+  }[s]||'other';
+}
+function mapPay(s){
+  return {
+    現金:'cash',クレジット:'credit',クレジットカード:'credit',
+    デビット:'debit','d払い':'dpay',Paidy:'credit',
+    口座引き落とし:'cash',口座:'cash',
+  }[s]||'cash';
+}
+function parseCSV(line){
+  const r=[];let c='';let q=false;
+  for(const ch of line){if(ch==='"'){q=!q;}else if(ch===','&&!q){r.push(c);c='';}else c+=ch;}
+  r.push(c); return r;
+}
+
+// ── 全データ削除 ──
+async function deleteAllData(){
+  const ok=await cfmDialog({
+    icon:'🗑',title:'全データを削除',
+    msg:'記録・口座・カード・固定費・予算など全てのデータを削除します。この操作は取り消せません。',
+    okLabel:'削除する',okStyle:'background:var(--danger);color:#fff;flex:1;'
+  });
+  if(!ok) return;
+  const ok2=await cfmDialog({
+    icon:'⚠️',title:'最終確認',
+    msg:'本当に全データを削除しますか？',
+    okLabel:'はい、削除する',okStyle:'background:var(--danger);color:#fff;flex:1;'
+  });
+  if(!ok2) return;
+  records=[];accounts=[];cards=[];fixedCosts=[];incomes=[];budget={};installs=[];fixedPay={};
+  Object.values(KEYS).forEach(k=>localStorage.removeItem(k));
+  // settingsだけ残す（テーマ等）
+  persist(KEYS.settings,settings);
+  toast('全データを削除しました');
+  renderHome(); renderSettings();
+  if(assetChart){assetChart.destroy();assetChart=null;}
+}
+
+// ══════ GOOGLE DRIVE SYNC ══════
+const GD_CLIENT_ID='1020015092975-eheh7mf0vjv55a7lufvbc1mi50ele8bv.apps.googleusercontent.com';
+const GD_SCOPE='https://www.googleapis.com/auth/drive.appdata';
+const GD_FILE='kakeibo2_data.json';
+let gdToken=null, gdTokenClient=null;
+let _gdPendingAction=null; // ログイン後に実行するアクション
+
+// 最終同期時刻はlocalStorageに永続化
+let _lastSyncTime=localStorage.getItem('kb2_last_sync')
+  ? new Date(localStorage.getItem('kb2_last_sync')) : null;
+
+function gdUpdateTimeLabel(){
+  const el=document.getElementById('hdr-sync-time');
+  if(!el) return;
+  if(!_lastSyncTime){el.textContent='';return;}
+  const now=new Date();
+  const diff=Math.floor((now-_lastSyncTime)/60000);
+  let label;
+  if(diff<1) label='たった今';
+  else if(diff<60) label=`${diff}分前`;
+  else if(diff<1440) label=`${Math.floor(diff/60)}時間前`;
+  else label=_lastSyncTime.toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'});
+  el.textContent=`☁ ${label}同期`;
+}
+
+function gdReady(){
+  if(typeof google==='undefined'||!google.accounts) return false;
+  if(!gdTokenClient){
+    gdTokenClient=google.accounts.oauth2.initTokenClient({
+      client_id:GD_CLIENT_ID, scope:GD_SCOPE,
+      callback:(resp)=>{
+        if(resp.error){
+          gdStatus('ログイン失敗: '+resp.error);
+          _gdPendingAction=null;
+          return;
+        }
+        gdToken=resp.access_token;
+        gdShowBtns(true);
+        // ログイン後に待機中のアクションを実行
+        if(_gdPendingAction==='save'){_gdPendingAction=null;gdSave();}
+        else if(_gdPendingAction==='load'){_gdPendingAction=null;gdLoad();}
+        else{gdStatus('ログイン済み ✓');}
+      }
+    });
+  }
+  return true;
+}
+
+// トークンが切れていたら再取得（モバイル対応: prompt:'' で既存認証を再利用）
+function gdEnsureToken(action){
+  if(gdToken){return true;} // 有効なトークンあり→そのまま実行
+  if(!gdReady()){gdStatus('Google ライブラリ読み込み中…再度お試しください');return false;}
+  _gdPendingAction=action;
+  // prompt:'' = すでに同意済みならポップアップなしで即トークン取得（モバイルに優しい）
+  gdTokenClient.requestAccessToken({prompt:''});
+  return false;
+}
+
+function gSignIn(){
+  if(!gdReady()){gdStatus('Google ライブラリ読み込み中…再度お試しください');return;}
+  _gdPendingAction=null;
+  // 初回ログイン時のみ prompt:'select_account' でアカウント選択画面を出す
+  gdTokenClient.requestAccessToken({prompt:'select_account'});
+}
+function gSignOut(){
+  if(gdToken) google.accounts.oauth2.revoke(gdToken,()=>{});
+  gdToken=null; gdShowBtns(false);
+  gdStatus('ログアウトしました');
+}
+function gdShowBtns(loggedIn){
+  const show=(id,v)=>{const e=document.getElementById(id);if(e)e.style.display=v?'':'none';};
+  show('hdr-sync-login',!loggedIn);
+  show('hdr-sync-up',loggedIn);
+  show('hdr-sync-dn',loggedIn);
+}
+function gdStatus(msg){toast('☁ '+msg);}
+
+async function gdFindFile(){
+  const res=await fetch(
+    'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name%3D%22'+GD_FILE+'%22&fields=files(id,modifiedTime)',
+    {headers:{Authorization:'Bearer '+gdToken}});
+  const d=await res.json();
+  // トークン期限切れ検出
+  if(d.error&&d.error.code===401){gdToken=null;throw new Error('トークン期限切れ。再度ログインしてください。');}
+  return (d.files&&d.files.length)?d.files[0]:null;
+}
+
+async function gdSave(){
+  if(!gdEnsureToken('save')) return; // トークンなし→ログイン後に自動実行
+  gdStatus('保存中…');
+  try{
+    const payload=JSON.stringify({
+      version:2, saved:new Date().toISOString(),
+      records, accounts, cards, fixedCosts, incomes, budget, installs, fixedPay, settings
+    },null,2);
+    const file=await gdFindFile();
+    const fid=file?.id;
+    let resp;
+    if(fid){
+      resp=await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fid}?uploadType=media`,
+        {method:'PATCH',headers:{Authorization:'Bearer '+gdToken,'Content-Type':'application/json'},body:payload});
+    } else {
+      const meta=JSON.stringify({name:GD_FILE,parents:['appDataFolder']});
+      const bd='kb2boundary';const NL='\r\n';
+      const parts=['--'+bd,'Content-Type: application/json; charset=UTF-8','',meta,
+        '--'+bd,'Content-Type: application/json','',payload,'--'+bd+'--'];
+      resp=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
+        {method:'POST',headers:{Authorization:'Bearer '+gdToken,'Content-Type':'multipart/related; boundary='+bd},
+         body:parts.join(NL)});
+    }
+    if(resp.ok){
+      _lastSyncTime=new Date();
+      localStorage.setItem('kb2_last_sync',_lastSyncTime.toISOString());
+      gdUpdateTimeLabel();
+      gdStatus(`Drive に保存しました ✓（${_lastSyncTime.toLocaleTimeString('ja-JP')}）`);
+    } else {
+      const e2=await resp.json();
+      // 401の場合はトークンをリセットして再試行誘導
+      if(e2.error&&e2.error.code===401){gdToken=null;gdStatus('セッション切れ。↑保存 を再度タップしてください。');return;}
+      gdStatus('保存失敗: '+((e2.error&&e2.error.message)||resp.status));
+    }
+  }catch(e){gdToken=null;gdStatus('エラー: '+e.message);}
+}
+
+async function gdLoad(){
+  if(!gdEnsureToken('load')) return; // トークンなし→ログイン後に自動実行
+  gdStatus('読み込み中…');
+  try{
+    const file=await gdFindFile();
+    if(!file){gdStatus('Drive にデータが見つかりません');return;}
+    const res=await fetch(`https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`,
+      {headers:{Authorization:'Bearer '+gdToken}});
+    const d=await res.json();
+    if(d.error&&d.error.code===401){gdToken=null;gdStatus('セッション切れ。↓読込 を再度タップしてください。');return;}
+    if(d.version!==2){gdStatus('対応していない形式です');return;}
+    const ok=await cfmDialog({
+      icon:'☁️',title:'Drive から読み込む',
+      msg:`保存日時: ${new Date(d.saved).toLocaleString('ja-JP')}\n\n現在のデータを上書きします。よろしいですか？`,
+      okLabel:'読み込む',okStyle:'background:var(--accent);color:#fff;flex:1;'
+    });
+    if(!ok) return;
+    records=d.records||[];accounts=d.accounts||[];cards=d.cards||[];
+    fixedCosts=d.fixedCosts||[];incomes=d.incomes||[];budget=d.budget||{};installs=d.installs||[];fixedPay=d.fixedPay||{};
+    if(d.settings) Object.assign(settings,d.settings);
+    persist(KEYS.records,records);persist(KEYS.accounts,accounts);persist(KEYS.cards,cards);
+    persist(KEYS.fixed,fixedCosts);persist(KEYS.incomes,incomes);persist(KEYS.budget,budget);
+    persist(KEYS.installs,installs);persist(KEYS.fixedPay,fixedPay);persist(KEYS.settings,settings);
+    _lastSyncTime=new Date();
+    localStorage.setItem('kb2_last_sync',_lastSyncTime.toISOString());
+    gdUpdateTimeLabel();
+    gdStatus(`Drive から読み込みました ✓（${_lastSyncTime.toLocaleTimeString('ja-JP')}）`);
+    renderHome(); renderSettings(); renderHistList();
+    if(settings.theme) document.documentElement.setAttribute('data-theme',settings.theme);
+  }catch(e){gdToken=null;gdStatus('エラー: '+e.message);}
+}
+
+// ══════ UTILITIES ══════
+function money(n){return '¥'+(Math.round(n)||0).toLocaleString();}
+function pad(n){return String(n).padStart(2,'0');}
+function dateStr(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;}
+function ymStr(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}`;}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function dayDiff(a,b){return Math.ceil((b-a)/86400000);}
+function nextOccurrence(today,day){
+  let d=new Date(today.getFullYear(),today.getMonth(),day);
+  if(d<today) d=new Date(today.getFullYear(),today.getMonth()+1,day);
+  return d;
+}
+function getAccent(){
+  return getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#1d4ed8';
+}
+
+let _toastTimer;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>el.classList.remove('show'),2300);
+}
+
+// ══════ INIT ══════
+function init(){
+  if(settings.theme) document.documentElement.setAttribute('data-theme',settings.theme);
+
+  // Tax buttons
+  document.getElementById('tbtn-inc').classList.toggle('active',settings.taxMode!=='exc');
+  document.getElementById('tbtn-exc').classList.toggle('active',settings.taxMode==='exc');
+  document.getElementById('tbtn-10').classList.toggle('active',settings.taxRate!==8);
+  document.getElementById('tbtn-8').classList.toggle('active',settings.taxRate===8);
+
+  updateClock();
+  setInterval(updateClock,15000);
+  // 同期時刻ラベルを1分ごとに更新
+  gdUpdateTimeLabel();
+  setInterval(gdUpdateTimeLabel,60000);
+  renderHome();
+}
+
+init();
+</script>
+</body>
+</html>
