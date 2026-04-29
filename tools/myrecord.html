@@ -895,19 +895,87 @@ function mkSel(opts,cur,cb){return`<select class="le-sel" onchange="${cb}">${opt
 function addMeal(){tM.push({id:genId(),time:'',type:'朝食',kcal:''});renderMeals();}
 function rmMeal(id){tM=tM.filter(e=>e.id!==id);renderMeals();}
 function upM(id,f,v){const e=tM.find(e=>e.id===id);if(e)e[f]=v;}
-function renderMeals(){document.getElementById('meal-entries').innerHTML=tM.map(e=>`<div class="log-entry"><div class="le-hd">${mkSel(MEAL_T,e.type,`upM('${e.id}','type',this.value)`)}<button class="le-rm" onclick="rmMeal('${e.id}')">×</button></div><div class="le-row"><div class="field"><label>時刻</label><input type="time" class="le-in-t" value="${e.time}" onchange="upM('${e.id}','time',this.value)"></div><div class="field"><label>摂取 kcal</label><input type="number" class="le-in" value="${e.kcal}" placeholder="0" oninput="upM('${e.id}','kcal',this.value)"></div></div></div>`).join('');}
+function renderMeals(){
+  document.getElementById('meal-entries').innerHTML=tM.map(e=>`
+    <div class="log-entry">
+      <div class="le-hd">
+        ${mkSel(MEAL_T,e.type,`upM('${e.id}','type',this.value)`)}
+        <button class="le-rm" onclick="rmMeal('${e.id}')">×</button>
+      </div>
+      <div class="le-row">
+        <div class="field"><label>時刻</label>
+          <input type="time" class="le-in-t" value="${e.time}" onchange="upM('${e.id}','time',this.value)">
+        </div>
+        <div class="field"><label>摂取 kcal</label>
+          <input type="number" class="le-in" value="${e.kcal}" placeholder="0" oninput="upM('${e.id}','kcal',this.value)">
+        </div>
+      </div>
+    </div>`).join('');
+}
 function addEx(){tE.push({id:genId(),time:'',type:'歩行',minutes:'',kcal:''});renderEx();}
 function rmEx(id){tE=tE.filter(e=>e.id!==id);renderEx();}
 function upE(id,f,v){const e=tE.find(e=>e.id===id);if(e)e[f]=v;}
-function renderEx(){document.getElementById('ex-entries').innerHTML=tE.map(e=>`<div class="log-entry"><div class="le-hd">${mkSel(EX_T,e.type,`upE('${e.id}','type',this.value)`)}<button class="le-rm" onclick="rmEx('${e.id}')">×</button></div><div class="le-row"><div class="field"><label>時刻</label><input type="time" class="le-in-t" value="${e.time}" onchange="upE('${e.id}','time',this.value)"></div><div class="field"><label>時間 (分)</label><input type="number" class="le-in" value="${e.minutes}" placeholder="0" oninput="upE('${e.id}','minutes',this.value)"></div><div class="field"><label>消費 kcal</label><input type="number" class="le-in" value="${e.kcal}" placeholder="0" oninput="upE('${e.id}','kcal',this.value)"></div></div></div>`).join('');}
+function renderEx(){
+  document.getElementById('ex-entries').innerHTML=tE.map(e=>`
+    <div class="log-entry">
+      <div class="le-hd">
+        ${mkSel(EX_T,e.type,`upE('${e.id}','type',this.value)`)}
+        <button class="le-rm" onclick="rmEx('${e.id}')">×</button>
+      </div>
+      <div class="le-row">
+        <div class="field"><label>時刻</label>
+          <input type="time" class="le-in-t" value="${e.time}" onchange="upE('${e.id}','time',this.value)">
+        </div>
+        <div class="field"><label>時間 (分)</label>
+          <input type="number" class="le-in" value="${e.minutes}" placeholder="0" oninput="upE('${e.id}','minutes',this.value)">
+        </div>
+        <div class="field"><label>消費 kcal</label>
+          <input type="number" class="le-in" value="${e.kcal}" placeholder="0" oninput="upE('${e.id}','kcal',this.value)">
+        </div>
+      </div>
+    </div>`).join('');
+}
 function addGlc(){tG.push({id:genId(),time:'',type:'随時',value:''});renderGlc();}
 function rmGlc(id){tG=tG.filter(e=>e.id!==id);renderGlc();}
 function upG(id,f,v){const e=tG.find(e=>e.id===id);if(e)e[f]=v;}
-function renderGlc(){document.getElementById('glc-entries').innerHTML=tG.map(e=>`<div class="log-entry"><div class="le-hd">${mkSel(GLC_T,e.type,`upG('${e.id}','type',this.value)`)}<button class="le-rm" onclick="rmGlc('${e.id}')">×</button></div><div class="le-row"><div class="field"><label>時刻</label><input type="time" class="le-in-t" value="${e.time}" onchange="upG('${e.id}','time',this.value)"></div><div class="field"><label>血糖値 (mg/dL)</label><input type="number" class="le-in" value="${e.value}" placeholder="0" oninput="upG('${e.id}','value',this.value)"></div></div></div>`).join('');}
+function renderGlc(){
+  document.getElementById('glc-entries').innerHTML=tG.map(e=>`
+    <div class="log-entry">
+      <div class="le-hd">
+        ${mkSel(GLC_T,e.type,`upG('${e.id}','type',this.value)`)}
+        <button class="le-rm" onclick="rmGlc('${e.id}')">×</button>
+      </div>
+      <div class="le-row">
+        <div class="field"><label>時刻</label>
+          <input type="time" class="le-in-t" value="${e.time}" onchange="upG('${e.id}','time',this.value)">
+        </div>
+        <div class="field"><label>血糖値 (mg/dL)</label>
+          <input type="number" class="le-in" value="${e.value}" placeholder="0" oninput="upG('${e.id}','value',this.value)">
+        </div>
+      </div>
+    </div>`).join('');
+}
 function addEv(){tEv.push({id:genId(),title:'',note:''});renderEv();}
 function rmEv(id){tEv=tEv.filter(e=>e.id!==id);renderEv();}
 function upEv(id,f,v){const e=tEv.find(e=>e.id===id);if(e)e[f]=v;}
-function renderEv(){document.getElementById('ev-entries').innerHTML=tEv.map(e=>`<div class="log-entry"><div class="le-hd"><span class="le-type">イベント</span><button class="le-rm" onclick="rmEv('${e.id}')">×</button></div><div class="field"><label>タイトル</label><input type="text" class="le-in" value="${e.title}" placeholder="例：通院、薬の変更..." oninput="upEv('${e.id}','title',this.value)"></div><div class="field"><label>メモ（任意）</label><textarea class="field-ta" style="min-height:48px" oninput="upEv('${e.id}','note',this.value)" placeholder="詳細メモ">${e.note}</textarea></div></div>`).join('');}
+function renderEv(){
+  document.getElementById('ev-entries').innerHTML=tEv.map(e=>`
+    <div class="log-entry">
+      <div class="le-hd">
+        <span class="le-type">イベント</span>
+        <button class="le-rm" onclick="rmEv('${e.id}')">×</button>
+      </div>
+      <div class="field"><label>タイトル</label>
+        <input type="text" class="le-in" value="${e.title}" placeholder="例：通院、薬の変更..."
+          oninput="upEv('${e.id}','title',this.value)">
+      </div>
+      <div class="field"><label>メモ（任意）</label>
+        <textarea class="field-ta" style="min-height:48px"
+          oninput="upEv('${e.id}','note',this.value)"
+          placeholder="詳細メモ">${e.note}</textarea>
+      </div>
+    </div>`).join('');
+}
 function loadForm(date){
   const r=records.find(r=>r.date===date);const nv=v=>(v!=null&&v!=='')?v:'';
   mMan=false;meMan=false;bmiMan=false;
@@ -927,7 +995,10 @@ function loadForm(date){
   selPainLocs=new Set(r?.painLocs||[]);
   selSymptoms=new Set(r?.symptoms||[]);
   buildPeriodCtrls();
-  tM=mealLogs.filter(m=>m.date===date).map(m=>({...m}));tE=exerciseLogs.filter(e=>e.date===date).map(e=>({...e}));tG=glucoseLogs.filter(g=>g.date===date).map(g=>({...g}));tEv=events.filter(ev=>ev.date===date).map(ev=>({...ev}));
+  tM=mealLogs.filter(m=>m.date===date).map(m=>({...m}));
+  tE=exerciseLogs.filter(e=>e.date===date).map(e=>({...e}));
+  tG=glucoseLogs.filter(g=>g.date===date).map(g=>({...g}));
+  tEv=events.filter(ev=>ev.date===date).map(ev=>({...ev}));
   renderMeals();renderEx();renderGlc();renderEv();onBI();
 }
 function saveRec(){
@@ -935,7 +1006,20 @@ function saveRec(){
   const mIn=getNum('f-muscle'),mM=mIn!==null,muscle=mM?mIn:calcMuscle(w,bf);
   const metIn=getNum('f-metabolism'),meA=metIn===null,meta=meA?calcMeta(w,profile.height,calcAge(),profile.sex):metIn;
   const bIn=getNum('f-bmi'),bM=bIn!==null,bmi=bM?bIn:calcBMI(w,profile.height);
-  const rec={date:curDate,weight:w,bodyFat:bf,muscle,muscleManual:mM,visceralFat:getNum('f-visceral'),metabolism:meta,meAuto:meA,bmi,bmiManual:bM,bust:getNum('f-bust'),waist:getNum('f-waist'),hip:getNum('f-hip'),steps:getNum('f-steps'),hba1c:getNum('f-hba1c'),bpHigh:getNum('f-bph'),bpLow:getNum('f-bpl'),mood:selMood,weather:selWth,period:periodOn,bloodVol:selBloodVol,painLevel:selPainLevel,painLocs:[...selPainLocs],symptoms:[...selSymptoms],periodNote:document.getElementById('f-pnote').value,note:document.getElementById('f-note').value};
+  const rec={
+    date:curDate,
+    weight:w,bodyFat:bf,muscle,muscleManual:mM,
+    visceralFat:getNum('f-visceral'),metabolism:meta,meAuto:meA,
+    bmi,bmiManual:bM,
+    bust:getNum('f-bust'),waist:getNum('f-waist'),hip:getNum('f-hip'),
+    steps:getNum('f-steps'),hba1c:getNum('f-hba1c'),
+    bpHigh:getNum('f-bph'),bpLow:getNum('f-bpl'),
+    mood:selMood,weather:selWth,
+    period:periodOn,bloodVol:selBloodVol,
+    painLevel:selPainLevel,painLocs:[...selPainLocs],symptoms:[...selSymptoms],
+    periodNote:document.getElementById('f-pnote').value,
+    note:document.getElementById('f-note').value,
+  };
   const idx=records.findIndex(r=>r.date===curDate);if(idx>=0)records[idx]=rec;else records.push(rec);
   records.sort((a,b)=>a.date.localeCompare(b.date));
   mealLogs=mealLogs.filter(m=>m.date!==curDate);tM.filter(m=>m.kcal).forEach(m=>mealLogs.push({...m,date:curDate}));
@@ -944,7 +1028,19 @@ function saveRec(){
   events=events.filter(ev=>ev.date!==curDate);tEv.filter(ev=>ev.title).forEach(ev=>events.push({...ev,date:curDate}));
   saveData();updSidebar();showToast('保存しました ✓');
 }
-function delRec(){if(!records.find(r=>r.date===curDate)){showToast('この日の記録はありません');return;}if(!confirm(`${curDate} の記録を削除しますか？`))return;records=records.filter(r=>r.date!==curDate);mealLogs=mealLogs.filter(x=>x.date!==curDate);exerciseLogs=exerciseLogs.filter(x=>x.date!==curDate);glucoseLogs=glucoseLogs.filter(x=>x.date!==curDate);events=events.filter(x=>x.date!==curDate);tM=[];tE=[];tG=[];tEv=[];renderMeals();renderEx();renderGlc();renderEv();saveData();loadForm(curDate);updSidebar();showToast('削除しました');}
+function delRec(){
+  if(!records.find(r=>r.date===curDate)){showToast('この日の記録はありません');return;}
+  if(!confirm(`${curDate} の記録を削除しますか？`))return;
+  records=records.filter(r=>r.date!==curDate);
+  mealLogs=mealLogs.filter(x=>x.date!==curDate);
+  exerciseLogs=exerciseLogs.filter(x=>x.date!==curDate);
+  glucoseLogs=glucoseLogs.filter(x=>x.date!==curDate);
+  events=events.filter(x=>x.date!==curDate);
+  tM=[];tE=[];tG=[];tEv=[];
+  renderMeals();renderEx();renderGlc();renderEv();
+  saveData();loadForm(curDate);updSidebar();
+  showToast('削除しました');
+}
 function setHistView(v){
   histView=v;
   document.getElementById('ht-cal').classList.toggle('active',v==='cal');
@@ -1139,9 +1235,59 @@ function saveProfile(){profile.height=parseFloat(document.getElementById('s-heig
 function setSex(sex){profile.sex=sex;saveProfile();['unknown','male','female'].forEach(k=>document.getElementById('sex-'+k)?.classList.toggle('active',k===sex));updSexHint();updBustLbl();updPeriodSec();}
 function updSexHint(){const h=document.getElementById('sex-hint');if(!h)return;h.textContent=profile.sex==='female'?'✦ 女性向け機能（生理記録）が有効になります':profile.sex==='male'?'✦ バスト欄が「胸囲」として表示されます':'';}
 function updBustLbl(){const l=document.getElementById('bust-lbl');if(l)l.textContent=profile.sex==='male'?'胸囲 (cm)':'バスト (cm)';}
-function exportD(){const blob=new Blob([JSON.stringify({records,mealLogs,exerciseLogs,glucoseLogs,events,goal,profile,layout:appL,theme:appT,display:appD,sbRight:appSbRight,sbStats:showSbStats},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='myrecord-'+todayStr()+'.json';a.click();URL.revokeObjectURL(url);showToast('エクスポートしました ✓');}
-function importD(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{const d=JSON.parse(ev.target.result);const map={};records.forEach(r=>map[r.date]=r);(d.records||[]).forEach(r=>{map[r.date]={bust:null,waist:null,hip:null,hba1c:null,bpHigh:null,bpLow:null,mood:null,weather:null,period:false,periodNote:'',muscleManual:false,bmiManual:false,...r};});records=Object.values(map).sort((a,b)=>a.date.localeCompare(b.date));if(d.mealLogs)mealLogs=[...mealLogs,...d.mealLogs.filter(x=>!mealLogs.find(y=>y.id===x.id))];if(d.exerciseLogs)exerciseLogs=[...exerciseLogs,...d.exerciseLogs.filter(x=>!exerciseLogs.find(y=>y.id===x.id))];if(d.glucoseLogs)glucoseLogs=[...glucoseLogs,...d.glucoseLogs.filter(x=>!glucoseLogs.find(y=>y.id===x.id))];if(d.events)events=[...events,...d.events.filter(x=>!events.find(y=>y.id===x.id))];if(d.goal!=null)goal=d.goal;if(d.profile)profile={...profile,...d.profile};saveData();loadForm(curDate);updSidebar();showToast(Object.keys(map).length+'件を読み込みました ✓');}catch(err){showToast('読み込みに失敗しました');}e.target.value='';};reader.readAsText(file);}
-function resetD(){if(!confirm('全ての記録を削除しますか？\nプロフィールも含め、すべてのデータが消えます。\nこの操作は取り消せません。'))return;records=[];mealLogs=[];exerciseLogs=[];glucoseLogs=[];events=[];goal=null;profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown'};tM=[];tE=[];tG=[];tEv=[];saveData();loadForm(curDate);renderMeals();renderEx();renderGlc();renderEv();updSidebar();updBustLbl();updPeriodSec();showToast('データを削除しました');}
+function exportD(){
+  const data={records,mealLogs,exerciseLogs,glucoseLogs,events,goal,profile,
+    layout:appL,theme:appT,display:appD,sbRight:appSbRight,sbStats:showSbStats};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='myrecord-'+todayStr()+'.json';a.click();
+  URL.revokeObjectURL(url);
+  showToast('エクスポートしました ✓');
+}
+function importD(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      // 既存レコードとマージ（日付をキーに上書き）
+      const map={};
+      records.forEach(r=>map[r.date]=r);
+      (d.records||[]).forEach(r=>{
+        map[r.date]={
+          bust:null,waist:null,hip:null,hba1c:null,bpHigh:null,bpLow:null,
+          mood:null,weather:null,period:false,periodNote:'',
+          muscleManual:false,bmiManual:false,
+          ...r
+        };
+      });
+      records=Object.values(map).sort((a,b)=>a.date.localeCompare(b.date));
+      // サブログはIDで重複除去してマージ
+      if(d.mealLogs)    mealLogs=    [...mealLogs,    ...d.mealLogs.filter(x=>    !mealLogs.find(y=>y.id===x.id))];
+      if(d.exerciseLogs)exerciseLogs=[...exerciseLogs,...d.exerciseLogs.filter(x=>!exerciseLogs.find(y=>y.id===x.id))];
+      if(d.glucoseLogs) glucoseLogs= [...glucoseLogs, ...d.glucoseLogs.filter(x=>!glucoseLogs.find(y=>y.id===x.id))];
+      if(d.events)      events=      [...events,      ...d.events.filter(x=>      !events.find(y=>y.id===x.id))];
+      if(d.goal!=null)goal=d.goal;
+      if(d.profile)profile={...profile,...d.profile};
+      saveData();loadForm(curDate);updSidebar();
+      showToast(Object.keys(map).length+'件を読み込みました ✓');
+    }catch(err){showToast('読み込みに失敗しました');}
+    e.target.value='';
+  };
+  reader.readAsText(file);
+}
+function resetD(){
+  if(!confirm('全ての記録を削除しますか？\nプロフィールも含め、すべてのデータが消えます。\nこの操作は取り消せません。'))return;
+  records=[];mealLogs=[];exerciseLogs=[];glucoseLogs=[];events=[];
+  goal=null;
+  profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown'};
+  tM=[];tE=[];tG=[];tEv=[];
+  saveData();loadForm(curDate);
+  renderMeals();renderEx();renderGlc();renderEv();
+  updSidebar();updBustLbl();updPeriodSec();
+  showToast('データを削除しました');
+}
 function initApp(){buildEmoji();buildPeriodCtrls();updDD();loadForm(curDate);updPeriodSec();updBustLbl();Object.keys(og).forEach(k=>{document.querySelector(`#grp-${k} .group-hd`)?.classList.toggle('open',og[k]);document.getElementById(`grpb-${k}`)?.classList.toggle('open',og[k]);});onBI();updSidebar();}
 loadData();
 applyLayout();
@@ -1271,6 +1417,10 @@ const METRIC_GROUPS={
 let chartPeriod='1m',chartFrom='',chartTo='',chartType='body';
 let chartBodyMode='group',chartBodyGroup='body',chartBodyMetrics=['weight','bodyFat'];
 let chartInst=null,hiEvDate=null,energyMode='bar';
+// チャートタイプごとのパン・ズーム位置保存
+let chartBodyPan={min:null,max:null};
+let chartEnergyPan={min:null,max:null};
+let chartGlcPan={min:null,max:null};
 
 function cssV(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
 function getChartRange(){
@@ -1288,6 +1438,10 @@ function getFilteredEvents(){const{from,to}=getChartRange();return events.filter
 
 function setPeriod(p){
   chartPeriod=p;
+  // 期間変更時はパン位置をリセット
+  chartBodyPan={min:null,max:null};
+  chartEnergyPan={min:null,max:null};
+  chartGlcPan={min:null,max:null};
   ['1m','3m','6m','all','custom'].forEach(k=>document.getElementById('period-'+k)?.classList.toggle('active',k===p));
   document.getElementById('custom-range').style.display=p==='custom'?'flex':'none';
   if(p!=='custom')renderCharts();
@@ -1463,7 +1617,13 @@ function renderBodyChart(recs,evs){
       scales:sc,
     }
   });
-  attachChartTouch(chartInst,()=>fullLabels,()=>{});
+  // 保存済みパン位置を復元
+  if(chartBodyPan.min!==null){
+    chartInst.options.scales.x.min=chartBodyPan.min;
+    chartInst.options.scales.x.max=chartBodyPan.max;
+    chartInst.update('none');
+  }
+  attachChartTouch(chartInst,()=>fullLabels,(mn,mx)=>{chartBodyPan.min=mn;chartBodyPan.max=mx;});
 }
 
 // ── ② エネルギー収支グラフ（摂取↑・消費↓・血糖値右軸線） ──
@@ -1519,7 +1679,13 @@ function renderEnergyChart(recs,evs){
       scales:sc,
     }
   });
-  attachChartTouch(chartInst,()=>fullLabels,()=>{});
+  // 保存済みパン位置を復元
+  if(chartEnergyPan.min!==null){
+    chartInst.options.scales.x.min=chartEnergyPan.min;
+    chartInst.options.scales.x.max=chartEnergyPan.max;
+    chartInst.update('none');
+  }
+  attachChartTouch(chartInst,()=>fullLabels,(mn,mx)=>{chartEnergyPan.min=mn;chartEnergyPan.max=mx;});
 }
 
 // ── ③ 血糖値専用グラフ（日時軸・タイプ別色分け線グラフ） ──
@@ -1567,7 +1733,13 @@ function renderGlucoseChart(from,to,evs){
       }
     }
   });
-  attachChartTouch(chartInst,()=>allLabels,()=>{});
+  // 保存済みパン位置を復元
+  if(chartGlcPan.min!==null){
+    chartInst.options.scales.x.min=chartGlcPan.min;
+    chartInst.options.scales.x.max=chartGlcPan.max;
+    chartInst.update('none');
+  }
+  attachChartTouch(chartInst,()=>allLabels,(mn,mx)=>{chartGlcPan.min=mn;chartGlcPan.max=mx;});
 }
 
 // ══ GOOGLE DRIVE SYNC ══

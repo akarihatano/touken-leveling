@@ -565,9 +565,9 @@ function setLayout(l){curLayout=l;applyVars();save();}
 function setXFmt(n){curXFmt=n;save();updUI();renderXAxisCust();}
 function cycleXFmt(){setXFmt((curXFmt+1)%3);}
 function evKey(ev){return ev.name+'||'+ev.start;}
-function toggleHlEv(name){hlEvs.has(name)?hlEvs.delete(name):hlEvs.add(name);save();if(curPeriodStyle==='band'){if(chart)chart.update('none');}else{renderPeriodBar();drawHlOverlay();}renderEvLeg();}
-function selectAllEvs(){EVS.forEach(function(ev){hlEvs.add(evKey(ev));});save();if(curPeriodStyle==='band'){if(chart)chart.update('none');}else{renderPeriodBar();drawHlOverlay();}renderEvLeg();}
-function clearAllEvs(){hlEvs.clear();save();if(curPeriodStyle==='band'){if(chart)chart.update('none');}else{renderPeriodBar();drawHlOverlay();}renderEvLeg();}
+function toggleHlEv(name){hlEvs.has(name)?hlEvs.delete(name):hlEvs.add(name);save();drawHlOverlay();renderPeriodBar();renderEvLeg();}
+function selectAllEvs(){EVS.forEach(function(ev){hlEvs.add(evKey(ev));});save();drawHlOverlay();renderPeriodBar();renderEvLeg();}
+function clearAllEvs(){hlEvs.clear();save();drawHlOverlay();renderPeriodBar();renderEvLeg();}
 function fmtXLabel(date,prev){
   if(!date)return'';
   var parts=date.split('-'),y=parts[0],m=parts[1],d=parts[2];
@@ -608,18 +608,10 @@ function drawHlOverlay(){
   if(!hlEvs.size)return;
   var ca=chart.chartArea,cw=chart.width,ch=chart.height;if(!ca)return;
   var fd=getFD(),labs=fd.map(function(r){return r.date;});
-  function gXpx(d){
-    var sc=chart.scales;
-    var i=labs.indexOf(d);
-    if(i>=0)return sc.x.getPixelForValue(i);
-    var bi=-1,bd=1e15;labs.forEach(function(l,j){var df=Math.abs(+new Date(l)-+new Date(d));if(df<bd){bd=df;bi=j;}});
-    if(bi<0)return null;
-    var step2=labs.length>1?sc.x.getPixelForValue(1)-sc.x.getPixelForValue(0):0;
-    return sc.x.getPixelForValue(bi)+(+new Date(d)-+new Date(labs[bi]))/86400000*step2;
-  }
+  var sc=chart.scales;
   hlEvs.forEach(function(key){
     var ev=EVS.find(function(e){return evKey(e)===key;});if(!ev)return;
-    var x1=gXpx(ev.start),x2=gXpx(ev.end);if(x1==null||x2==null)return;
+    var x1=dateToPixel(ev.start,labs,sc),x2=dateToPixel(ev.end,labs,sc);if(x1==null||x2==null)return;
     var cx1=Math.max(ca.left,Math.min(x1,ca.right));
     var cx2=Math.max(ca.left,Math.min(x2,ca.right));
     var el2=document.createElement('div');
@@ -638,34 +630,24 @@ function renderPeriodBar(){
   var fd=getFD(),labs=fd.map(function(r){return r.date;});
   var sc=chart.scales,ca=chart.chartArea;
   if(!ca||!sc.x)return;
-  function dPct(d){
-    var i=labs.indexOf(d);
-    var px;
-    if(i>=0){px=sc.x.getPixelForValue(i);}
-    else{
-      var bi=-1,bd=1e15;labs.forEach(function(l,j){var df=Math.abs(+new Date(l)-+new Date(d));if(df<bd){bd=df;bi=j;}});
-      if(bi<0)return null;
-      var step=labs.length>1?sc.x.getPixelForValue(1)-sc.x.getPixelForValue(0):0;
-      px=sc.x.getPixelForValue(bi)+(+new Date(d)-+new Date(labs[bi]))/86400000*step;
-    }
-    return px/chart.width*100;
-  }
+  function dPct(d){var px=dateToPixel(d,labs,sc);return px==null?null:px/chart.width*100;}
   var caLeftPct=(ca.left/chart.width*100).toFixed(2)+'%';
   var caRightPct=((chart.width-ca.right)/chart.width*100).toFixed(2)+'%';
   function assignLanes(arr){
-    var lanes=[];
+    var lanes=[],laneMap=new Map();
     arr.forEach(function(ev){
       var placed=false;
       for(var li=0;li<lanes.length;li++){
-        if(lanes[li].every(function(q){return q.end<ev.start||q.start>ev.end;})){lanes[li].push(ev);ev._lane=li;placed=true;break;}
+        if(lanes[li].every(function(q){return q.end<ev.start||q.start>ev.end;})){lanes[li].push(ev);laneMap.set(evKey(ev),li);placed=true;break;}
       }
-      if(!placed){ev._lane=lanes.length;lanes.push([ev]);}
+      if(!placed){laneMap.set(evKey(ev),lanes.length);lanes.push([ev]);}
     });
+    return laneMap;
   }
   pb.style.display='block';
   pb.innerHTML='';
-  assignLanes(EVS);
-  var numL=EVS.length?Math.max.apply(null,EVS.map(function(ev){return ev._lane;}))+1:0;
+  var laneMap=assignLanes(EVS);
+  var numL=laneMap.size?Math.max.apply(null,Array.from(laneMap.values()))+1:0;
 
   if(curPeriodStyle==='gantt'){
     pb.style.cssText='display:block;margin-top:4px;';
@@ -674,7 +656,7 @@ function renderPeriodBar(){
         var row=document.createElement('div');
         row.style.cssText='position:relative;height:20px;margin-bottom:3px;background:var(--bg2);border-radius:3px;overflow:hidden;'
           +'margin-left:'+caLeftPct+';margin-right:'+caRightPct+';';
-        EVS.filter(function(ev){return ev._lane===laneIdx;}).forEach(function(ev){
+        EVS.filter(function(ev){return laneMap.get(evKey(ev))===laneIdx;}).forEach(function(ev){
           var p1=dPct(ev.start),p2=dPct(ev.end);
           if(p1==null||p2==null)return;
           var caW=ca.right-ca.left;
@@ -714,7 +696,7 @@ function renderPeriodBar(){
       el.style.cssText='position:absolute;height:7px;border-radius:2px;cursor:pointer;transition:opacity .15s;'
         +'left:'+bL.toFixed(2)+'%;'
         +'width:'+Math.max(bR-bL,0.3).toFixed(2)+'%;'
-        +'top:'+(ev._lane*10)+'px;'
+        +'top:'+(laneMap.get(evKey(ev))*10)+'px;'
         +'background:'+ev.color+(hl?'cc':'66')+';'
         +(hl?'box-shadow:0 0 0 1.5px '+ev.color+';':'');
       el.addEventListener('click',function(){toggleHlEv(evKey(ev));});
@@ -900,56 +882,25 @@ function loadSaved(){
 var DOW=['日','月','火','水','木','金','土'];
 function tickClock(){var n=new Date();var el=document.getElementById('clock');if(el)el.textContent=n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日（'+DOW[n.getDay()]+'）'+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');}
 
+/* ─── 共通：日付→X座標変換 ─── */
+function dateToPixel(d,labs,sc){
+  var i=labs.indexOf(d);
+  if(i>=0)return sc.x.getPixelForValue(i);
+  var bi=-1,bd=1e15;
+  labs.forEach(function(l,j){var df=Math.abs(+new Date(l)-+new Date(d));if(df<bd){bd=df;bi=j;}});
+  if(bi<0)return null;
+  var step=labs.length>1?sc.x.getPixelForValue(1)-sc.x.getPixelForValue(0):0;
+  return sc.x.getPixelForValue(bi)+(+new Date(d)-+new Date(labs[bi]))/86400000*step;
+}
+
 /* ─── Annotation Plugin ─── */
 var annP={id:'ann',beforeDraw:function(ch){
   var ctx=ch.ctx,ca=ch.chartArea,sc=ch.scales;if(!ca||!sc.x)return;
   var fd=getFD(),labs=fd.map(function(r){return r.date;}),today=new Date().toISOString().split('T')[0];
-  function gX(d){var i=labs.indexOf(d);if(i>=0)return sc.x.getPixelForValue(i);var bi=-1,bd=1e15;labs.forEach(function(l,j){var df=Math.abs(+new Date(l)-+new Date(d));if(df<bd){bd=df;bi=j;}});if(bi<0)return null;var step=labs.length>1?sc.x.getPixelForValue(1)-sc.x.getPixelForValue(0):0;return sc.x.getPixelForValue(bi)+(+new Date(d)-+new Date(labs[bi]))/86400000*step;}
   ctx.save();
   /* ── 帯（通常） ── */
-  EVS.forEach(function(ev){var x1=gX(ev.start),x2=gX(ev.end);if(x1==null||x2==null)return;var cx1=Math.max(ca.left,Math.min(x1,ca.right)),cx2=Math.max(ca.left,Math.min(x2,ca.right));if(curPeriodStyle==='band'){ctx.fillStyle=ev.color+'22';ctx.fillRect(cx1,ca.top,cx2-cx1,ca.bottom-ca.top);ctx.strokeStyle=ev.color+'88';ctx.lineWidth=1.5;ctx.setLineDash([]);if(x1>=ca.left&&x1<=ca.right){ctx.beginPath();ctx.moveTo(cx1,ca.top);ctx.lineTo(cx1,ca.bottom);ctx.stroke();}if(x2>=ca.left&&x2<=ca.right){ctx.beginPath();ctx.moveTo(cx2,ca.top);ctx.lineTo(cx2,ca.bottom);ctx.stroke();}}});
-  /* ── 帯（強調＋ラベル） ── */
-  if(curPeriodStyle==='band'&&hlEvs.size){
-    var LANE_H=16,hlList=EVS.filter(function(ev){return hlEvs.has(evKey(ev));});
-    var lanes=[];
-    hlList.forEach(function(ev){
-      var x1=gX(ev.start),x2=gX(ev.end);if(x1==null||x2==null)return;
-      var cx1=Math.max(ca.left,Math.min(x1,ca.right)),cx2=Math.max(ca.left,Math.min(x2,ca.right));
-      /* 強調帯 */
-      ctx.fillStyle=ev.color+'40';ctx.fillRect(cx1,ca.top,cx2-cx1,ca.bottom-ca.top);
-      ctx.strokeStyle=ev.color+'cc';ctx.lineWidth=2;ctx.setLineDash([]);
-      if(x1>=ca.left&&x1<=ca.right){ctx.beginPath();ctx.moveTo(cx1,ca.top);ctx.lineTo(cx1,ca.bottom);ctx.stroke();}
-      if(x2>=ca.left&&x2<=ca.right){ctx.beginPath();ctx.moveTo(cx2,ca.top);ctx.lineTo(cx2,ca.bottom);ctx.stroke();}
-      /* laneを決める */
-      var lane=0;
-      for(var li=0;li<lanes.length;li++){
-        var ok=lanes[li].every(function(q){return q.cx2<cx1-4||q.cx1>cx2+4;});
-        if(ok){lane=li;break;}
-        lane=li+1;
-      }
-      if(!lanes[lane])lanes[lane]=[];
-      lanes[lane].push({cx1:cx1,cx2:cx2});
-      /* ラベル */
-      var lx=Math.max(cx1+4,ca.left+2);
-      var ly=ca.top+12+lane*LANE_H;
-      ctx.font='bold 11px sans-serif';ctx.textAlign='left';
-      var tw=ctx.measureText(ev.name).width;
-      var bgCol=getComputedStyle(document.documentElement).getPropertyValue('--bg0').trim()||'#0f0f13';
-      var rectW=Math.min(tw+6,cx2-lx+2);
-      /* 背景矩形（テーマ色） */
-      ctx.fillStyle=bgCol;
-      ctx.fillRect(lx-2,ly-12,rectW,15);
-      /* 枠線（ev.color） */
-      ctx.strokeStyle=ev.color+'88';ctx.lineWidth=1;ctx.setLineDash([]);
-      ctx.strokeRect(lx-2,ly-12,rectW,15);
-      /* テキスト */
-      ctx.fillStyle=ev.color;
-      ctx.save();ctx.rect(ca.left,ca.top,ca.right-ca.left,ca.bottom-ca.top);ctx.clip();
-      ctx.fillText(ev.name,lx,ly);
-      ctx.restore();
-    });
-  }
-  NTS.forEach(function(n){var x=gX(n.date);if(x==null||x<ca.left||x>ca.right)return;var hl=hlNote===n.date;ctx.strokeStyle=hl?'rgba(200,200,255,.95)':'rgba(140,135,160,.6)';ctx.lineWidth=hl?2.5:1;ctx.setLineDash(hl?[]:[3,3]);ctx.beginPath();ctx.moveTo(x,ca.top);ctx.lineTo(x,ca.bottom);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=hl?'rgba(200,200,255,.95)':'rgba(140,135,160,.8)';ctx.beginPath();ctx.moveTo(x-6,ca.top);ctx.lineTo(x+6,ca.top);ctx.lineTo(x,ca.top+9);ctx.closePath();ctx.fill();});
+  EVS.forEach(function(ev){var x1=dateToPixel(ev.start,labs,sc),x2=dateToPixel(ev.end,labs,sc);if(x1==null||x2==null)return;var cx1=Math.max(ca.left,Math.min(x1,ca.right)),cx2=Math.max(ca.left,Math.min(x2,ca.right));if(curPeriodStyle==='band'){ctx.fillStyle=ev.color+'22';ctx.fillRect(cx1,ca.top,cx2-cx1,ca.bottom-ca.top);ctx.strokeStyle=ev.color+'88';ctx.lineWidth=1.5;ctx.setLineDash([]);if(x1>=ca.left&&x1<=ca.right){ctx.beginPath();ctx.moveTo(cx1,ca.top);ctx.lineTo(cx1,ca.bottom);ctx.stroke();}if(x2>=ca.left&&x2<=ca.right){ctx.beginPath();ctx.moveTo(cx2,ca.top);ctx.lineTo(cx2,ca.bottom);ctx.stroke();}}});
+  NTS.forEach(function(n){var x=dateToPixel(n.date,labs,sc);if(x==null||x<ca.left||x>ca.right)return;var hl=hlNote===n.date;ctx.strokeStyle=hl?'rgba(200,200,255,.95)':'rgba(140,135,160,.6)';ctx.lineWidth=hl?2.5:1;ctx.setLineDash(hl?[]:[3,3]);ctx.beginPath();ctx.moveTo(x,ca.top);ctx.lineTo(x,ca.bottom);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=hl?'rgba(200,200,255,.95)':'rgba(140,135,160,.8)';ctx.beginPath();ctx.moveTo(x-6,ca.top);ctx.lineTo(x+6,ca.top);ctx.lineTo(x,ca.top+9);ctx.closePath();ctx.fill();});
   if(limOn&&!diffOn){var y=sc.y,y2=sc['y2'];ctx.textAlign='right';if(y){var py=y.getPixelForValue(9999999);if(py>=ca.top&&py<=ca.bottom){ctx.strokeStyle='rgba(220,100,100,.4)';ctx.lineWidth=1;ctx.setLineDash([8,4]);ctx.beginPath();ctx.moveTo(ca.left,py);ctx.lineTo(ca.right,py);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='rgba(220,100,100,.6)';ctx.font='10px sans-serif';ctx.fillText('資源上限 9,999,999',ca.right-4,py-3);}}if(y2&&y2.axis==='y'){var py2=y2.getPixelForValue(99999);if(py2>=ca.top&&py2<=ca.bottom){ctx.strokeStyle='rgba(200,175,60,.4)';ctx.lineWidth=1;ctx.setLineDash([8,4]);ctx.beginPath();ctx.moveTo(ca.left,py2);ctx.lineTo(ca.right,py2);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='rgba(200,175,60,.6)';ctx.font='10px sans-serif';ctx.fillText('道具資源上限 99,999',ca.right-4,py2-3);}}ctx.textAlign='left';}
   ctx.restore();
 }};
@@ -986,8 +937,8 @@ function RC(){
   var fY2=function(v){return v>=1000?(v/1000).toFixed(0)+'K':Math.round(v).toLocaleString();};
   var scOpt={x:{display:false},y:{position:'left',ticks:{color:t4,font:{size:11},callback:fY},grid:{color:bd1+'88'},title:{display:true,text:diffOn?'資源 増減':'資源',color:t4,font:{size:11}}},y2:{position:'right',display:y2v,ticks:{color:t4,font:{size:11},callback:fY2},grid:{drawOnChartArea:false},title:{display:true,text:diffOn?'道具資源 増減':'道具資源',color:t4,font:{size:11}}}};
   var ttip={backgroundColor:bg1+'f0',borderColor:bd1,borderWidth:1,titleColor:t2,bodyColor:t3,titleFont:{size:12},bodyFont:{size:12},padding:8,callbacks:{label:function(c){var v=c.parsed.y;if(v==null)return c.dataset.label+': —';return c.dataset.label+': '+(v<0?'-':'')+Math.abs(v).toLocaleString();}}};
-  var hAE=curPeriodStyle==='band'&&hlEvs.size>0;
-  var topPad=hAE?22:6;
+  var hAE=false;
+  var topPad=6;
   if(chart){chart.data.labels=labs;chart.data.datasets=ds;chart.options.scales=scOpt;chart.options.plugins.tooltip=ttip;chart.options.layout.padding={top:topPad};chart.update();renderPeriodBar();renderXAxisCust();drawHlOverlay();return;}
   chart=new Chart(document.getElementById('mc'),{type:'line',data:{labels:labs,datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},layout:{padding:{top:topPad}},plugins:{legend:{display:false},tooltip:ttip},scales:scOpt}});
   renderPeriodBar();renderXAxisCust();drawHlOverlay();
@@ -996,8 +947,7 @@ function RC(){
     if(!chart)return;var ca=chart.chartArea,sc=chart.scales;if(!ca||!sc.x)return;
     var rect=this.getBoundingClientRect(),cx=(e.clientX-rect.left)*(this.width/rect.width);
     var fd2=getFD(),labs2=fd2.map(function(r){return r.date;});
-    function gX2(d){var i=labs2.indexOf(d);if(i>=0)return sc.x.getPixelForValue(i);var bi=-1,bd=1e15;labs2.forEach(function(l,j){var df=Math.abs(+new Date(l)-+new Date(d));if(df<bd){bd=df;bi=j;}});if(bi<0)return null;var s=labs2.length>1?sc.x.getPixelForValue(1)-sc.x.getPixelForValue(0):0;return sc.x.getPixelForValue(bi)+(+new Date(d)-+new Date(labs2[bi]))/86400000*s;}
-    var closest=null,minD=18;NTS.forEach(function(n){var x=gX2(n.date);if(x!=null){var d=Math.abs(cx-x);if(d<minD){minD=d;closest=n.date;}}});
+    var closest=null,minD=18;NTS.forEach(function(n){var x=dateToPixel(n.date,labs2,sc);if(x!=null){var d=Math.abs(cx-x);if(d<minD){minD=d;closest=n.date;}}});
     setHlNote(closest);
   });
 }
@@ -1006,7 +956,6 @@ function TV(k){VIS[k]=VIS[k]?0:1;renderLeg();if(!chart)return;chart.setDatasetVi
 function renderEvLeg(){
   var wrap=document.getElementById('evleg-wrap');if(!wrap)return;
   if(!EVS.length){wrap.innerHTML='';return;}
-  var hdrHl=EVS.some(function(ev){return hlEvs.has(ev.name);});
   var html='<div class="evleg-hdr"><span class="evleg-title">期間メモ</span><div class="evleg-acts">'
     +'<button onclick="selectAllEvs()">全選択</button>'
     +'<button onclick="clearAllEvs()">全解除</button>'

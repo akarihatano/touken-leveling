@@ -512,9 +512,6 @@ function lvToExp(type,lv,isKi,is2slot){
 // 旧コードとの互換alias
 function expToKiLv(type,exp){return kiTotalExpToLv(type,exp,false);}
 function getExpKey(type){return type;}
-// 旧コードとの互換
-function expToKiLv(type,exp){return kiTotalExpToLv(type,exp,false);}
-function getExpKey(type){return type;}
 
 
 // ── MASTER DATA ────────────────────────────────────────
@@ -715,12 +712,14 @@ function instF(inst){
   return'通常';
 }
 function newI(bno){
-  const b=MR.find(x=>x[0]===bno);
-  const type=b?b[3]:'打刀';
+  const mr=MR.find(x=>x[0]===bno); // mr[3]=刀種
+  const type=mr?mr[3]:'打刀';
   const is2slot=type==='打刀'&&isRare4Uchi(bno);
   return{id:Date.now()+Math.random().toString(36).slice(2),masterBaseNo:bno,isKiwame:false,kiUchi2Slot:is2slot,level:1,cumExp:null,history:[],nickname:'',color:'',emoji:'',tags:[],notes:'',instNotes:[]};
 }
-function getType(bno){const b=BM[bno];return b?b[2]:null;}
+// BM[bno] の構造: [no, name, yomi, type, ha, kno, tnos]
+// b[0]=No, b[1]=名前, b[2]=読み仮名, b[3]=刀種, b[4]=刀派, b[5]=極No
+function getType(bno){const b=BM[bno];return b?b[3]:null;} // b[3]=刀種（b[2]は読み仮名なので注意）
 
 // ── THEME / MODE ───────────────────────────────────────
 // テーマシステム: palette × mode
@@ -811,6 +810,10 @@ function initScrollTop(){
 function scrollToTop(){mainEl().scrollTo({top:0,behavior:'smooth'});}
 
 // ── SIDEBAR ────────────────────────────────────────────
+// 注: 以下の短縮関数はHTMLのonclick属性から直接呼ばれるため短縮名を維持しています
+// sbH=sideBarHtml / rSB=renderSideBar / rFB=renderFilterBadges
+// sv=setView / ss=setSort / sh=setFilterHa / so=setFilterOwned
+// tt=toggleType / op=setOption / cf=clearFilter
 function sbH(){
   return`<div class="sb-sec"><div class="sb-title">表示</div><div class="sb-tog"><button class="btn ${ST.view==='grid'?'on':''}" onclick="sv('grid')">⊞ グリッド</button><button class="btn ${ST.view==='list'?'on':''}" onclick="sv('list')">≡ リスト</button></div></div>
 <div class="sb-sec"><div class="sb-title">ソート</div><div class="sb-tog"><button class="btn ${ST.sort==='no'?'on':''}" onclick="ss('no')">No順</button><button class="btn ${ST.sort==='type'?'on':''}" onclick="ss('type')">種類</button><button class="btn ${ST.sort==='ha'?'on':''}" onclick="ss('ha')">刀派</button></div></div>
@@ -849,6 +852,7 @@ function getVis(){
 }
 
 // ── RENDER ─────────────────────────────────────────────
+// ra=renderAll（サイドバー・フィルター・カード全再描画）/ rc=renderCards
 function tc(type){const dark=resolveThemeAttr().endsWith('-dark');return(dark?TCD:TC)[type]||['#eee','#444'];}
 function ra(){rSB();rFB();rc();}
 function rc(){
@@ -1136,8 +1140,8 @@ function calcReturnLv(type,cumExp,is2slot){
 
 
 
-function pC(c,el){_ec=c;document.querySelectorAll('.cdot').forEach(d=>d.classList.remove('on'));el.classList.add('on');}
-function pE(em,el){_ee=em;document.querySelectorAll('.eopt').forEach(d=>d.classList.remove('on'));el.classList.add('on');}
+function pC(c,el){_ec=c;document.querySelectorAll('.cdot').forEach(d=>d.classList.remove('on'));el.classList.add('on');} // pickColor: カラードット選択
+function pE(em,el){_ee=em;document.querySelectorAll('.eopt').forEach(d=>d.classList.remove('on'));el.classList.add('on');} // pickEmoji: 絵文字選択
 
 function stepLv(id,type,kiMinLv,delta){
   const el=document.getElementById('ie-lv');if(!el)return;
@@ -2343,7 +2347,7 @@ function onGExpInput(val){
   const exp=parseInt(val)||0;if(!exp)return;
   const instId=document.getElementById('h-inst').value;
   const inst=UD.instances.find(i=>i.id===instId);if(!inst)return;
-  const b=BM[inst.masterBaseNo];const type=b?b[3]:'打刀';
+  const type=getInstType(inst)||'打刀';
   const lv=inst.isKiwame?kiTotalExpToLv(type,exp,inst.kiUchi2Slot||false):shoExpToLv(type,exp);
   document.getElementById('h-lv').value=lv;
   const hint=document.getElementById('g-exp-hint');
@@ -2738,13 +2742,6 @@ document.addEventListener('click',e=>{
     if(btn)btn.textContent='⋯';
   }
 });
-function updateMobileHdr2Sync(){
-  const btn=document.getElementById('mobileHdr2Sync');
-  if(!btn)return;
-  if(!_gdToken){btn.textContent='☁ 未接続';btn.style.color='';return;}
-  btn.textContent='☁ 同期済';
-  btn.style.color='var(--kiwame)';
-}
 function setMobileHeaderStyle(s){ST.mobileHeaderStyle=s;applyMode();saveST();showSettings();}
 
 function toggleCloudPopup(e){
