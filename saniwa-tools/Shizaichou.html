@@ -1004,7 +1004,7 @@ function shiftDate(d){
   cur.setDate(cur.getDate()+d);
   el.value=localDateStr(cur);
 }
-function addRes(){var d=document.getElementById('i-date').value;if(!d){SM('日付を入力してください');return;}var row={date:d};var ids=['i-c','i-s','i-l','i-w','i-ko','i-r','i-h'];KS.forEach(function(k,i){var el=document.getElementById(ids[i]);var v=el?el.value.replace(/[^\d]/g,''):'';row[k]=v===''?null:parseInt(v);});var ei=RES.findIndex(function(r){return r.date===d;});if(ei>=0)RES[ei]=row;else RES.push(row);RES.sort(function(a,b){return a.date.localeCompare(b.date);});clearInputs();save();SM('追加しました ✓');setTimeout(function(){SM('');},2000);if(chart)RC();}
+function addRes(){var d=document.getElementById('i-date').value;if(!d){SM('日付を入力してください');return;}var row={date:d,_ts:Date.now()};var ids=['i-c','i-s','i-l','i-w','i-ko','i-r','i-h'];KS.forEach(function(k,i){var el=document.getElementById(ids[i]);var v=el?el.value.replace(/[^\d]/g,''):'';row[k]=v===''?null:parseInt(v);});var ei=RES.findIndex(function(r){return r.date===d;});if(ei>=0)RES[ei]=row;else RES.push(row);RES.sort(function(a,b){return a.date.localeCompare(b.date);});clearInputs();save();SM('追加しました ✓');setTimeout(function(){SM('');},2000);if(chart)RC();}
 function SM(m){document.getElementById('rmsg').textContent=m;}
 
 /* ─── Event/Note ─── */
@@ -1060,7 +1060,7 @@ function adjAdd(v){
   el.value=(parseInt(el.value)||0)+v;
 }
 function saveModal(){
-  if(_mType==='res'){var nd=document.getElementById('m-date').value;if(!nd){alert('日付を入力してください');return;}var mids=['m-c','m-s','m-l','m-w','m-ko','m-r','m-h'];var nr={date:nd};KS.forEach(function(k,i){nr[k]=getN(mids[i]);});var oi=RES.findIndex(function(r){return r.date===_mDate;});if(oi>=0)RES.splice(oi,1);var ei=RES.findIndex(function(r){return r.date===nd;});if(ei>=0)RES[ei]=nr;else RES.push(nr);RES.sort(function(a,b){return a.date.localeCompare(b.date);});save();renderDT();if(chart)RC();}
+  if(_mType==='res'){var nd=document.getElementById('m-date').value;if(!nd){alert('日付を入力してください');return;}var mids=['m-c','m-s','m-l','m-w','m-ko','m-r','m-h'];var nr={date:nd,_ts:Date.now()};KS.forEach(function(k,i){nr[k]=getN(mids[i]);});var oi=RES.findIndex(function(r){return r.date===_mDate;});if(oi>=0)RES.splice(oi,1);var ei=RES.findIndex(function(r){return r.date===nd;});if(ei>=0)RES[ei]=nr;else RES.push(nr);RES.sort(function(a,b){return a.date.localeCompare(b.date);});save();renderDT();if(chart)RC();}
   else if(_mType==='ev'){var nm=document.getElementById('m-ename').value.trim(),s=document.getElementById('m-es').value,e=document.getElementById('m-ee').value;if(!nm||!s||!e){alert('全て入力してください');return;}if(s>e){alert('開始日が終了日より後です');return;}EVS[_mIdx]={name:nm,start:s,end:e,color:document.getElementById('m-ecol').value};save();renderEvList();RC();}
   else if(_mType==='note'){var d=document.getElementById('m-nd').value,t=document.getElementById('m-nt').value.trim();if(!d||!t){alert('日付と内容を入力してください');return;}NTS[_mIdx]={date:d,text:t};NTS.sort(function(a,b){return a.date.localeCompare(b.date);});save();renderNList();RC();}
   else if(_mType==='room'){
@@ -1434,15 +1434,44 @@ async function gdLoad(){
       'https://www.googleapis.com/drive/v3/files/'+fid+'?alt=media',
       {headers:{Authorization:'Bearer '+gdToken}});
     var d=await res.json();
-    if(d.resources)RES=d.resources;
-    if(d.events)EVS=d.events;
-    if(d.notes)NTS=d.notes;
-    if(d.rooms)ROOMS=d.rooms;
+    /* ── RES マージ（日付キー・タイムスタンプ優先） ── */
+    if(d.resources){
+      var cloudMap={};
+      d.resources.forEach(function(r){cloudMap[r.date]=r;});
+      var localMap={};
+      RES.forEach(function(r){localMap[r.date]=r;});
+      var allDates=new Set(Object.keys(cloudMap).concat(Object.keys(localMap)));
+      var merged=[];
+      allDates.forEach(function(dt){
+        var c=cloudMap[dt],l=localMap[dt];
+        if(!c)merged.push(l);
+        else if(!l)merged.push(c);
+        else merged.push((c._ts||0)>(l._ts||0)?c:l);
+      });
+      merged.sort(function(a,b){return a.date.localeCompare(b.date);});
+      RES=merged;
+    }
+    /* ── EVS マージ（evKeyユニオン・ローカル優先） ── */
+    if(d.events){
+      var localEvKeys=new Set(EVS.map(evKey));
+      d.events.forEach(function(ev){if(!localEvKeys.has(evKey(ev)))EVS.push(ev);});
+    }
+    /* ── NTS マージ（date+textユニオン・ローカル優先） ── */
+    if(d.notes){
+      var localNKeys=new Set(NTS.map(function(n){return n.date+'||'+n.text;}));
+      d.notes.forEach(function(n){if(!localNKeys.has(n.date+'||'+n.text))NTS.push(n);});
+      NTS.sort(function(a,b){return a.date.localeCompare(b.date);});
+    }
+    /* ── ROOMS ── ローカルが空の場合のみ上書き ── */
+    if(d.rooms){
+      var roomsEmpty=!ROOMS.exped.length&&!ROOMS.repair.length&&!ROOMS.forge.length;
+      if(roomsEmpty)ROOMS=d.rooms;
+    }
     if(d.settings){if(d.settings.theme)curTheme=d.settings.theme;if(d.settings.mode)curMode=d.settings.mode;if(d.settings.layout)curLayout=d.settings.layout;applyVars();}
     _lastSyncTime=new Date();updHdrSync();
     save();renderEvList();renderNList();renderDT();['exped','repair','forge'].forEach(renderRoomFull);if(chart)RC();
-    gdSetSub('Drive から読み込みました ✓ ('+new Date().toLocaleTimeString('ja-JP')+')');
-    showToast('同期完了','Drive からデータを読み込みました',false);
+    gdSetSub('マージ完了 ✓ ('+new Date().toLocaleTimeString('ja-JP')+')');
+    showToast('同期完了','Drive とデータをマージしました',false);
   }catch(e){gdSetSub('エラー: '+e.message);}
 }
 
@@ -1466,9 +1495,17 @@ updHdrSync();
 </script>
 <footer style="margin-top:32px;padding:18px 16px 24px;border-top:1px solid var(--bd1);text-align:center">
   <p style="font-size:11px;color:var(--t4);margin-bottom:12px">関連ツール</p>
-  <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
+  <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:16px">
     <a href="saniwa_top.html" style="display:inline-block;padding:7px 18px;font-size:12px;color:var(--t3);border:1px solid var(--bd1);border-radius:6px;text-decoration:none;background:var(--bg1);transition:all .15s" onmouseover="this.style.color='var(--t1)';this.style.borderColor='var(--bd2)'" onmouseout="this.style.color='var(--t3)';this.style.borderColor='var(--bd1)'">審神者の道具箱</a>
     <a href="keikoroku.html" style="display:inline-block;padding:7px 18px;font-size:12px;color:var(--t3);border:1px solid var(--bd1);border-radius:6px;text-decoration:none;background:var(--bg1);transition:all .15s" onmouseover="this.style.color='var(--t1)';this.style.borderColor='var(--bd2)'" onmouseout="this.style.color='var(--t3)';this.style.borderColor='var(--bd1)'">稽古禄</a>
+  </div>
+  <p style="font-size:11px;color:var(--t4);margin-bottom:8px">データ入出力</p>
+  <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
+    <button onclick="expJSON()" style="padding:5px 12px;font-size:11px;color:var(--t3);border:1px solid var(--bd1);border-radius:5px;background:var(--bg1);cursor:pointer">↑ JSON</button>
+    <button onclick="expCSV()" style="padding:5px 12px;font-size:11px;color:var(--t3);border:1px solid var(--bd1);border-radius:5px;background:var(--bg1);cursor:pointer">↑ CSV</button>
+    <button onclick="document.getElementById('fi-json').click()" style="padding:5px 12px;font-size:11px;color:var(--t3);border:1px solid var(--bd1);border-radius:5px;background:var(--bg1);cursor:pointer">↓ JSON</button>
+    <button onclick="document.getElementById('fi-csv').click()" style="padding:5px 12px;font-size:11px;color:var(--t3);border:1px solid var(--bd1);border-radius:5px;background:var(--bg1);cursor:pointer">↓ CSV</button>
+    <button onclick="document.getElementById('fi-xlsx').click()" style="padding:5px 12px;font-size:11px;color:var(--t3);border:1px solid var(--bd1);border-radius:5px;background:var(--bg1);cursor:pointer">↓ Excel</button>
   </div>
 </footer>
 </body>

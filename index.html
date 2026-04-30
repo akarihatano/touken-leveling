@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emi Kutsuzawa</title>
+
+<!-- =====================================================
+  Google Analytics 4
+  ★ G-XXXXXXXXXX を実際の測定IDに置き換えてください
+===================================================== -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&family=Noto+Serif+JP:wght@300;400&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ink:       #2a2318;
+  --ink-light: #5a4f40;
+  --ink-faint: #b0a090;
+  --bg:        #fdfaf6;
+  --line:      #3a3028;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Noto Serif JP', serif;
+  font-weight: 300;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── HEADER ─────────────────────────────────────── */
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 28px 48px 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  background: var(--bg);
+}
+
+.site-name {
+  font-family: 'Caveat', cursive;
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  text-decoration: none;
+  line-height: 1;
+}
+
+.header-right {
+  display: flex;
+  align-items: flex-start;
+  gap: 48px;
+}
+
+nav {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  padding-top: 4px;
+}
+
+nav a {
+  font-family: 'Caveat', cursive;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  text-decoration: none;
+  position: relative;
+  transition: color 0.2s;
+}
+
+nav a::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -2px;
+  width: 0; height: 1px;
+  background: var(--ink);
+  transition: width 0.25s ease;
+}
+
+nav a:hover { color: var(--ink-light); }
+nav a:hover::after { width: 100%; }
+
+/* 猫の画像 */
+.header-cat {
+  width: 72px;
+  height: auto;
+  margin-top: -6px;
+  /* ★ 画像のパスを調整してください */
+}
+
+/* ─── ヘッダー下の手書き線 ─────────────────────── */
+.header-line {
+  position: fixed;
+  top: 68px; left: 0; right: 0;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.header-line svg {
+  width: 100%;
+  height: 14px;
+  overflow: visible;
+}
+
+/* ─── MAIN ───────────────────────────────────────── */
+main {
+  padding-top: 110px;
+}
+
+/* ─── HERO ───────────────────────────────────────── */
+#hero {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 48px 60px;
+}
+
+.hero-eyebrow {
+  font-family: 'Caveat', cursive;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  color: var(--ink-faint);
+  margin-bottom: 20px;
+}
+
+.hero-title {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(52px, 8vw, 96px);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.hero-sub {
+  margin-top: 28px;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  color: var(--ink-light);
+  line-height: 2.2;
+  max-width: 360px;
+}
+
+/* ─── SECTION 共通 ────────────────────────────────── */
+section {
+  padding: 80px 48px;
+  max-width: 900px;
+}
+
+section + section {
+  border-top: none;
+}
+
+.section-label {
+  font-family: 'Caveat', cursive;
+  font-size: 13px;
+  letter-spacing: 0.24em;
+  color: var(--ink-faint);
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.section-label::after {
+  content: '';
+  flex: 1;
+  max-width: 60px;
+  height: 1px;
+  background: var(--ink-faint);
+}
+
+.section-title {
+  font-family: 'Caveat', cursive;
+  font-size: 38px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 32px;
+  letter-spacing: 0.03em;
+}
+
+/* ─── PROFILE ────────────────────────────────────── */
+#profile .profile-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.profile-text {
+  font-size: 13px;
+  line-height: 2.4;
+  color: var(--ink-light);
+  letter-spacing: 0.08em;
+}
+
+.profile-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.meta-row {
+  display: flex;
+  gap: 20px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--ink-light);
+  border-bottom: 1px solid rgba(90,79,64,0.1);
+  padding-bottom: 12px;
+}
+
+.meta-label {
+  font-family: 'Caveat', cursive;
+  font-size: 13px;
+  color: var(--ink-faint);
+  min-width: 80px;
+}
+
+/* ─── WORKS ──────────────────────────────────────── */
+#works .works-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+}
+
+.work-item {
+  aspect-ratio: 4/3;
+  background: rgba(90,79,64,0.04);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.work-item:hover {
+  background: rgba(90,79,64,0.09);
+}
+
+.work-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.work-num {
+  font-family: 'Caveat', cursive;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+}
+
+.work-label {
+  font-family: 'Caveat', cursive;
+  font-size: 15px;
+  color: var(--ink-light);
+  letter-spacing: 0.06em;
+}
+
+/* ─── APPS ───────────────────────────────────────── */
+#apps .apps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.app-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(90,79,64,0.1);
+  text-decoration: none;
+  color: inherit;
+  transition: padding-left 0.2s;
+}
+
+.app-item:hover {
+  padding-left: 8px;
+}
+
+.app-name {
+  font-family: 'Caveat', cursive;
+  font-size: 22px;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+}
+
+.app-desc {
+  font-size: 11px;
+  color: var(--ink-faint);
+  letter-spacing: 0.1em;
+  margin-top: 4px;
+}
+
+.app-arrow {
+  font-family: 'Caveat', cursive;
+  font-size: 13px;
+  color: var(--ink-faint);
+  letter-spacing: 0.1em;
+  transition: color 0.2s;
+}
+
+.app-item:hover .app-arrow {
+  color: var(--ink);
+}
+
+/* ─── CONTACT ────────────────────────────────────── */
+#contact .contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-link {
+  font-family: 'Caveat', cursive;
+  font-size: 20px;
+  color: var(--ink-light);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  transition: color 0.2s;
+}
+
+.contact-link::before {
+  content: '—';
+  font-size: 13px;
+  color: var(--ink-faint);
+}
+
+.contact-link:hover {
+  color: var(--ink);
+}
+
+/* ─── FOOTER ─────────────────────────────────────── */
+footer {
+  padding: 40px 48px 60px;
+  border-top: 1px solid rgba(90,79,64,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-name {
+  font-family: 'Caveat', cursive;
+  font-size: 15px;
+  color: var(--ink-faint);
+  letter-spacing: 0.06em;
+}
+
+.footer-copy {
+  font-size: 10px;
+  color: var(--ink-faint);
+  letter-spacing: 0.14em;
+}
+
+/* ─── スマホ ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  header {
+    padding: 22px 24px 0;
+  }
+
+  .site-name { font-size: 22px; }
+
+  nav { gap: 20px; }
+  nav a { font-size: 15px; }
+
+  .header-cat { width: 52px; }
+
+  .header-line { top: 58px; }
+
+  main { padding-top: 96px; }
+
+  #hero { padding: 48px 24px 40px; }
+
+  section { padding: 56px 24px; }
+
+  #profile .profile-body {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  #works .works-grid {
+    grid-template-columns: 1fr;
+  }
+
+  footer {
+    padding: 32px 24px 48px;
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ─────────────────────────────────── -->
+<header>
+  <a class="site-name" href="#hero">Emi Kutsuzawa</a>
+  <div class="header-right">
+    <nav>
+      <a href="#profile">Profile</a>
+      <a href="#works">Works</a>
+      <a href="#apps">Apps</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <!-- ★ 猫の画像パスを調整してください -->
+    <img class="header-cat" src="./images/cat.png" alt="">
+  </div>
+</header>
+
+<!-- ─── 手書き線 ───────────────────────────────── -->
+<div class="header-line" aria-hidden="true">
+  <svg viewBox="0 0 1440 14" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M0,7 C60,5.5 140,9 240,7.5 C340,6 480,8.5 580,7 C680,5.5 760,9 900,7.5 C1040,6 1180,8.5 1320,7 C1380,6.5 1420,7.5 1440,7"
+      stroke="#3a3028" stroke-width="1.2" fill="none" stroke-linecap="round"
+    />
+  </svg>
+</div>
+
+<!-- ─── MAIN ────────────────────────────────────── -->
+<main>
+
+  <!-- HERO -->
+  <section id="hero">
+    <p class="hero-eyebrow">designer &amp; developer</p>
+    <h1 class="hero-title">Emi<br>Kutsuzawa</h1>
+    <!-- ★ 自己紹介の一行文を入れてください -->
+    <p class="hero-sub">
+      ここに一行のキャッチフレーズ、<br>
+      あるいは短い自己紹介文。
+    </p>
+  </section>
+
+  <!-- PROFILE -->
+  <section id="profile">
+    <p class="section-label">Profile</p>
+    <div class="profile-body">
+      <p class="profile-text">
+        <!-- ★ プロフィール文 -->
+        ここに自己紹介テキストが入ります。<br>
+        得意なことや好きなこと、<br>
+        大切にしていることなどを。
+      </p>
+      <div class="profile-meta">
+        <!-- ★ 各行を必要に応じて追加・削除してください -->
+        <div class="meta-row">
+          <span class="meta-label">Base</span>
+          <span>—</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Skills</span>
+          <span>—</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Tools</span>
+          <span>—</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKS -->
+  <section id="works">
+    <p class="section-label">Works</p>
+    <div class="works-grid">
+      <!-- ★ 制作物ごとにwork-itemを追加してください -->
+      <div class="work-item">
+        <div class="work-placeholder">
+          <span class="work-num">01</span>
+          <span class="work-label">作品タイトル</span>
+        </div>
+      </div>
+      <div class="work-item">
+        <div class="work-placeholder">
+          <span class="work-num">02</span>
+          <span class="work-label">作品タイトル</span>
+        </div>
+      </div>
+      <div class="work-item">
+        <div class="work-placeholder">
+          <span class="work-num">03</span>
+          <span class="work-label">作品タイトル</span>
+        </div>
+      </div>
+      <div class="work-item">
+        <div class="work-placeholder">
+          <span class="work-num">04</span>
+          <span class="work-label">作品タイトル</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPS -->
+  <section id="apps">
+    <p class="section-label">Apps</p>
+    <div class="apps-list">
+      <!-- Pawtal へのリンク -->
+      <a class="app-item" href="./pawtal.html">
+        <div>
+          <div class="app-name">Pawtal — Catbinet</div>
+          <div class="app-desc">個人ツール群のランチャー</div>
+        </div>
+        <span class="app-arrow">→</span>
+      </a>
+      <!-- ★ アプリが増えたらここに追加 -->
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <p class="section-label">Contact</p>
+    <!-- ★ 各リンクのhref・テキストを実際のものに変えてください -->
+    <div class="contact-links">
+      <a class="contact-link" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+      <a class="contact-link" href="https://twitter.com/" target="_blank" rel="noopener">X / Twitter</a>
+      <a class="contact-link" href="mailto:your@email.com">Email</a>
+    </div>
+  </section>
+
+</main>
+
+<!-- ─── FOOTER ────────────────────────────────── -->
+<footer>
+  <span class="footer-name">Emi Kutsuzawa</span>
+  <span class="footer-copy">© 2025 Emi Kutsuzawa</span>
+</footer>
+
+</body>
+</html>
