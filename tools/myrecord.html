@@ -302,16 +302,27 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 /* ═══════════════════════════════
    GDRIVE SYNC UI
 ═══════════════════════════════ */
-.sync-group{display:flex;flex-direction:column;align-items:center;gap:3px}
-.sync-time-lbl{font-size:9px;color:var(--muted);white-space:nowrap;min-height:12px;text-align:center}
-.sync-btns-row{display:flex;gap:4px}
-.sync-io-btn{display:flex;align-items:center;gap:3px;padding:5px 9px;border:1px solid var(--border2);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:11px;transition:all .15s;white-space:nowrap}
-.sync-io-btn:hover:not(:disabled){background:var(--bg2);color:var(--text);border-color:var(--accent)}
-.sync-io-btn:disabled{opacity:.35;cursor:default}
-.sync-login-btn{padding:3px 9px;border:1px solid var(--accent);border-radius:5px;background:transparent;color:var(--accent);cursor:pointer;font-family:inherit;font-size:10px;white-space:nowrap;transition:all .15s}
-.sync-login-btn:hover{background:color-mix(in srgb,var(--accent) 15%,transparent)}
-.sync-logout-btn{padding:3px 9px;border:1px solid transparent;border-radius:5px;background:transparent;color:var(--danger);cursor:pointer;font-family:inherit;font-size:10px;white-space:nowrap;transition:all .15s}
-.sync-logout-btn:hover{background:color-mix(in srgb,var(--danger) 10%,transparent);border-color:var(--danger)}
+/* ヘッダー用コンパクトコントロール */
+.hdr-sync{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.hdr-sync-row1{display:flex;align-items:center;gap:4px}
+.hdr-sync-row2{display:flex;align-items:center;gap:6px}
+.sync-status-pill{display:flex;align-items:center;gap:4px;border:1px solid var(--border2);border-radius:20px;padding:2px 7px;transition:border-color .2s}
+.sync-status-pill.connected{border-color:var(--accent)}
+.sync-dot{width:5px;height:5px;border-radius:50%;background:var(--muted2);flex-shrink:0;transition:background .2s}
+.sync-dot.on{background:#22c55e}
+.sync-pill-lbl{font-size:8px;color:var(--muted);font-weight:700;white-space:nowrap;transition:color .2s}
+.sync-status-pill.connected .sync-pill-lbl{color:var(--accent)}
+.hdr-sync-btn{display:flex;align-items:center;gap:2px;border:1px solid var(--border2);border-radius:5px;background:transparent;color:var(--muted);font-family:inherit;font-size:11px;font-weight:700;padding:3px 7px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.hdr-sync-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.hdr-sync-btn.save-btn{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.hdr-sync-btn.save-btn:hover:not(:disabled){opacity:.82}
+.hdr-sync-btn:disabled{opacity:.3;cursor:default}
+.hdr-login-link{font-size:8px;color:var(--accent);background:none;border:1px solid var(--accent);border-radius:5px;padding:2px 7px;cursor:pointer;font-family:inherit;font-weight:700;transition:all .15s;white-space:nowrap}
+.hdr-login-link:hover{background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.hdr-logout-link{font-size:8px;color:var(--muted);background:none;border:none;padding:2px 4px;cursor:pointer;font-family:inherit;transition:color .15s}
+.hdr-logout-link:hover{color:var(--danger)}
+.sync-time-mini{font-size:7px;color:var(--muted);white-space:nowrap}
+/* 上書き警告バナー */
 .sync-warn{display:none;background:var(--bg2);border:1px solid #d4a020;border-radius:10px;padding:13px 14px;margin-bottom:12px}
 .sync-warn.show{display:flex;gap:10px;align-items:flex-start}
 .sync-warn-icon{font-size:16px;flex-shrink:0;color:#d4a020}
@@ -324,6 +335,16 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 .sync-warn-cancel{padding:5px 13px;font-size:11px;border:1px solid var(--border2);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s}
 .sync-warn-cancel:hover{background:var(--bg3)}
 .sync-warn-cb{display:flex;align-items:center;gap:6px;margin-top:7px;font-size:11px;color:var(--muted)}
+/* サイドバー用 */
+.sb-sync-compact{padding:8px 14px;border-bottom:1px solid var(--border2)}
+.sb-sync-label{font-size:8px;color:var(--accent);letter-spacing:2px;margin-bottom:6px}
+.sb-sync-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px}
+.sb-sync-btn{display:flex;align-items:center;gap:2px;border:1px solid var(--border2);border-radius:5px;background:transparent;color:var(--muted);font-family:inherit;font-size:11px;font-weight:700;padding:4px 9px;cursor:pointer;transition:all .15s}
+.sb-sync-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.sb-sync-btn.save-btn{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.sb-sync-btn.save-btn:hover:not(:disabled){opacity:.82}
+.sb-sync-btn:disabled{opacity:.3;cursor:default}
+.sb-sync-time{font-size:8px;color:var(--muted);margin-top:2px}
 
 
 </style>
@@ -344,14 +365,21 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
         <div class="th-row">
           <div class="th-left"><div class="th-sub">MY RECORD</div><div class="th-title">わたしの記録</div></div>
           <div class="th-right">
-            <div class="sync-group" id="hdr-sync-group">
-              <div class="sync-time-lbl" id="hdr-sync-time"></div>
-              <div class="sync-btns-row" id="hdr-sync-btns">
-                <button class="sync-io-btn" id="hdr-up-btn" onclick="gdSaveWithCheck()" disabled title="クラウドへ保存">↑ 保存</button>
-                <button class="sync-io-btn" id="hdr-dn-btn" onclick="gdLoad()" disabled title="クラウドから読み込み">↓ 読込</button>
+            <div class="hdr-sync" id="hdr-sync">
+              <!-- ログイン済み -->
+              <div class="hdr-sync-row1" id="hdr-sync-loggedin" style="display:none">
+                <div class="sync-status-pill connected" id="hdr-sync-pill">
+                  <div class="sync-dot on" id="hdr-sync-dot"></div>
+                  <span class="sync-pill-lbl" id="hdr-sync-lbl">☁ 接続中</span>
+                </div>
+                <button class="hdr-sync-btn save-btn" id="hdr-up-btn" onclick="gdSaveWithCheck()" title="クラウドへ保存">☁↑</button>
+                <button class="hdr-sync-btn" id="hdr-dn-btn" onclick="gdLoad()" title="クラウドから読み込み">☁↓</button>
               </div>
-              <button class="sync-login-btn" id="hdr-login-btn" onclick="gSignIn()">同期ログイン</button>
-              <button class="sync-logout-btn" id="hdr-logout-btn" onclick="gSignOut()" style="display:none">ログアウト</button>
+              <div class="hdr-sync-row2" id="hdr-sync-row2">
+                <span class="sync-time-mini" id="hdr-sync-time"></span>
+                <button class="hdr-login-link" id="hdr-login-btn" onclick="gSignIn()">☁ ログイン</button>
+                <button class="hdr-logout-link" id="hdr-logout-btn" onclick="gSignOut()" style="display:none" title="ログアウト">✕</button>
+              </div>
             </div>
             <div class="th-clock"><div class="tc-date" id="hdr-date"></div><div class="tc-time" id="hdr-time"></div></div>
             <button class="hdr-tog-btn" id="hdr-tog" onclick="quickToggleLayout()" title="レイアウト切り替え">🖥️</button>
@@ -669,17 +697,21 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
       <button class="sb-tog-btn" onclick="quickToggleLayout()" title="スマホ表示に切り替え">📱</button>
     </div>
     <div id="sidebar-clock"><div class="sc-date" id="sb-date"></div><div class="sc-time" id="sb-time"></div></div>
-    <div style="padding:8px 14px;border-bottom:1px solid var(--border2)">
-      <div style="font-size:8px;color:var(--accent);letter-spacing:2px;margin-bottom:6px">CLOUD SYNC</div>
-      <div id="sb-sync-btns" style="display:flex;gap:5px;flex-wrap:wrap">
-        <button class="sync-io-btn" id="sb-up-btn" onclick="gdSaveWithCheck()" disabled>↑ 保存</button>
-        <button class="sync-io-btn" id="sb-dn-btn" onclick="gdLoad()" disabled>↓ 読込</button>
+    <div class="sb-sync-compact">
+      <div class="sb-sync-label">CLOUD SYNC</div>
+      <div class="sb-sync-row" id="sb-sync-loggedin" style="display:none">
+        <div class="sync-status-pill connected">
+          <div class="sync-dot on"></div>
+          <span class="sync-pill-lbl">☁ 接続中</span>
+        </div>
+        <button class="sb-sync-btn save-btn" id="sb-up-btn" onclick="gdSaveWithCheck()">☁↑ 保存</button>
+        <button class="sb-sync-btn" id="sb-dn-btn" onclick="gdLoad()">☁↓ 読込</button>
       </div>
-      <div style="margin-top:5px;display:flex;gap:5px">
-        <button class="sync-login-btn" id="sb-login-btn" onclick="gSignIn()">Googleでログイン</button>
-        <button class="sync-logout-btn" id="sb-logout-btn" onclick="gSignOut()" style="display:none">ログアウト</button>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="hdr-login-link" id="sb-login-btn" onclick="gSignIn()">☁ Googleでログイン</button>
+        <button class="hdr-logout-link" id="sb-logout-btn" onclick="gSignOut()" style="display:none" title="ログアウト">✕ ログアウト</button>
       </div>
-      <div class="sync-time-lbl" id="sb-sync-time" style="margin-top:4px;text-align:left"></div>
+      <div class="sb-sync-time" id="sb-sync-time"></div>
     </div>
     <div id="sb-info">
       <div class="si-grid">
@@ -1008,6 +1040,7 @@ function saveRec(){
   const bIn=getNum('f-bmi'),bM=bIn!==null,bmi=bM?bIn:calcBMI(w,profile.height);
   const rec={
     date:curDate,
+    updatedAt:new Date().toISOString(),
     weight:w,bodyFat:bf,muscle,muscleManual:mM,
     visceralFat:getNum('f-visceral'),metabolism:meta,meAuto:meA,
     bmi,bmiManual:bM,
@@ -1746,7 +1779,8 @@ function renderGlucoseChart(from,to,evs){
 const GD_CLIENT_ID='1020015092975-eheh7mf0vjv55a7lufvbc1mi50ele8bv.apps.googleusercontent.com';
 const GD_SCOPE='https://www.googleapis.com/auth/drive.appdata';
 const GD_FILE='myrecord_data.json';
-let gdToken=null,gdTokenClient=null,_gdFileId=null,_lastSyncTime=null,syncWarnDisabled=false;
+let gdToken=null,gdTokenClient=null,_gdFileId=null,syncWarnDisabled=false;
+let _lastSyncTime=localStorage.getItem('gd-last-sync')?new Date(localStorage.getItem('gd-last-sync')):null;
 
 function gdReady(){
   if(typeof google==='undefined'||!google.accounts)return false;
@@ -1763,20 +1797,43 @@ function gdReady(){
   }
   return true;
 }
-function gSignIn(){if(!gdReady()){gdSetSub('Googleライブラリ読み込み中…再度お試しください');return;}gdTokenClient.requestAccessToken({prompt:'consent'});}
+function gSignIn(){if(!gdReady()){gdSetSub('Googleライブラリ読み込み中…再度お試しください');return;}gdTokenClient.requestAccessToken({prompt:'select_account'});}
 function gSignOut(){if(gdToken)google.accounts.oauth2.revoke(gdToken,function(){});gdToken=null;_gdFileId=null;updGDSync();gdSetSub('ログアウトしました');}
 function gdSetSub(msg){const e=document.getElementById('sync-sub');if(e)e.textContent=msg;}
 function toggleSyncWarnSetting(v){syncWarnDisabled=!v;}
 function updGDSync(){
   const on=!!gdToken;
-  const ids=['hdr-up-btn','hdr-dn-btn','sb-up-btn','sb-dn-btn','sync-save-btn','sync-load-btn'];
-  ids.forEach(id=>{const e=document.getElementById(id);if(e)e.disabled=!on;});
-  ['hdr-login-btn','sb-login-btn','sync-login-btn'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display=on?'none':'';});
-  ['hdr-logout-btn','sb-logout-btn','sync-logout-btn'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display=on?'':'none';});
+  // ヘッダー
+  const hdrLI=document.getElementById('hdr-sync-loggedin');
+  if(hdrLI)hdrLI.style.display=on?'flex':'none';
+  document.getElementById('hdr-login-btn').style.display=on?'none':'';
+  document.getElementById('hdr-logout-btn').style.display=on?'':'none';
+  // サイドバー
+  const sbLI=document.getElementById('sb-sync-loggedin');
+  if(sbLI)sbLI.style.display=on?'flex':'none';
+  document.getElementById('sb-login-btn').style.display=on?'none':'';
+  document.getElementById('sb-logout-btn').style.display=on?'':'none';
+  // 設定タブ内ボタン
+  const stLogin=document.getElementById('sync-login-btn');
+  const stLogout=document.getElementById('sync-logout-btn');
+  const stSave=document.getElementById('sync-save-btn');
+  const stLoad=document.getElementById('sync-load-btn');
+  if(stLogin)stLogin.style.display=on?'none':'';
+  if(stLogout)stLogout.style.display=on?'':'none';
+  if(stSave)stSave.disabled=!on;
+  if(stLoad)stLoad.disabled=!on;
+  // 最終同期時刻
   const tl=_lastSyncTime?('最終同期 '+fmtSyncTime(_lastSyncTime)):'';
   ['hdr-sync-time','sb-sync-time'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=tl;});
 }
-function fmtSyncTime(d){const now=new Date();const diff=Math.round((now-d)/60000);if(diff<1)return 'たった今';if(diff<60)return diff+'分前';const h=Math.floor(diff/60);if(h<24)return h+'時間前';return d.toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'});}
+function fmtSyncTime(d){
+  const now=new Date();const diff=Math.round((now-d)/60000);
+  if(diff<1)return 'たった今';
+  if(diff<60)return diff+'分前';
+  const h=Math.floor(diff/60);
+  if(h<24)return h+'時間前';
+  return d.toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'});
+}
 function showSyncWarn(cloudTime,localTime){
   const el=document.getElementById('sync-warn');const txt=document.getElementById('sync-warn-text');
   if(!el)return;
@@ -1817,7 +1874,15 @@ async function gdSave(){
   if(!gdToken){gdSetSub('先にログインしてください');return;}
   gdSetSub('保存中…');showToast('Driveに保存中…');
   try{
-    const payload=JSON.stringify({version:'myrecord-v1',records,mealLogs,exerciseLogs,glucoseLogs,events,goal,profile,layout:appL,theme:appT,display:appD,sbRight:appSbRight,sbStats:showSbStats},null,2);
+    const now=new Date().toISOString();
+    // updatedAtが未設定のレコードに付与
+    const recs=records.map(r=>r.updatedAt?r:{...r,updatedAt:now});
+    const payload=JSON.stringify({
+      version:'myrecord-v1',
+      records:recs,mealLogs,exerciseLogs,glucoseLogs,events,
+      goal,profile,layout:appL,theme:appT,display:appD,
+      sbRight:appSbRight,sbStats:showSbStats,savedAt:now
+    },null,2);
     let fid=_gdFileId||(await gdFindFile());
     let resp;
     if(fid){
@@ -1828,8 +1893,17 @@ async function gdSave(){
       const parts=['--'+bd,'Content-Type: application/json; charset=UTF-8','',meta,'--'+bd,'Content-Type: application/json','',payload,'--'+bd+'--'];
       resp=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+gdToken,'Content-Type':'multipart/related; boundary='+bd},body:parts.join(NL)});
     }
-    if(resp.ok){_lastSyncTime=new Date();updGDSync();gdSetSub('Driveに保存しました ✓ ('+_lastSyncTime.toLocaleTimeString('ja-JP')+')');showToast('Driveに保存しました ✓');}
-    else{const e2=await resp.json();gdSetSub('保存に失敗: '+((e2.error&&e2.error.message)||resp.status));showToast('保存に失敗しました');}
+    if(resp.ok){
+      _lastSyncTime=new Date();
+      localStorage.setItem('gd-last-sync',_lastSyncTime.toISOString());
+      updGDSync();
+      gdSetSub('Driveに保存しました ✓ ('+_lastSyncTime.toLocaleTimeString('ja-JP')+')');
+      showToast('Driveに保存しました ✓');
+    }else{
+      const e2=await resp.json();
+      gdSetSub('保存に失敗: '+((e2.error&&e2.error.message)||resp.status));
+      showToast('保存に失敗しました');
+    }
   }catch(e){gdSetSub('エラー: '+e.message);showToast('エラーが発生しました');}
 }
 async function gdLoad(){
@@ -1840,11 +1914,41 @@ async function gdLoad(){
     if(!fid){gdSetSub('Driveにデータが見つかりません');showToast('Driveにデータがありません');return;}
     const res=await fetch('https://www.googleapis.com/drive/v3/files/'+fid+'?alt=media',{headers:{Authorization:'Bearer '+gdToken}});
     const d=await res.json();
-    if(d.records)records=d.records;
-    if(d.mealLogs)mealLogs=d.mealLogs;
-    if(d.exerciseLogs)exerciseLogs=d.exerciseLogs;
-    if(d.glucoseLogs)glucoseLogs=d.glucoseLogs;
-    if(d.events)events=d.events;
+    // ── マージ：上書きではなく日付ごとにupdatedAtが新しい方を優先 ──
+    if(d.records){
+      const localMap={};
+      records.forEach(r=>localMap[r.date]=r);
+      (d.records||[]).forEach(cr=>{
+        const lr=localMap[cr.date];
+        if(!lr){
+          localMap[cr.date]=cr; // ローカルにない日付はクラウドから追加
+        }else{
+          const lt=lr.updatedAt?new Date(lr.updatedAt):new Date(0);
+          const ct=cr.updatedAt?new Date(cr.updatedAt):new Date(0);
+          if(ct>lt)localMap[cr.date]=cr; // クラウドの方が新しければ上書き
+        }
+      });
+      records=Object.values(localMap).sort((a,b)=>a.date.localeCompare(b.date));
+    }
+    // サブログもIDごとにマージ
+    function mergeSubLog(local,cloud){
+      const m={};
+      local.forEach(x=>m[x.id]=x);
+      (cloud||[]).forEach(cx=>{
+        const lx=m[cx.id];
+        if(!lx){m[cx.id]=cx;}
+        else{
+          const lt=lx.updatedAt?new Date(lx.updatedAt):new Date(0);
+          const ct=cx.updatedAt?new Date(cx.updatedAt):new Date(0);
+          if(ct>lt)m[cx.id]=cx;
+        }
+      });
+      return Object.values(m);
+    }
+    if(d.mealLogs)    mealLogs=    mergeSubLog(mealLogs,    d.mealLogs);
+    if(d.exerciseLogs)exerciseLogs=mergeSubLog(exerciseLogs,d.exerciseLogs);
+    if(d.glucoseLogs) glucoseLogs= mergeSubLog(glucoseLogs, d.glucoseLogs);
+    if(d.events)      events=      mergeSubLog(events,       d.events);
     if(d.goal!=null)goal=d.goal;
     if(d.profile)profile={...profile,...d.profile};
     if(d.layout)appL=d.layout;
@@ -1853,10 +1957,12 @@ async function gdLoad(){
     if(d.sbRight!=null)appSbRight=d.sbRight;
     if(d.sbStats!=null)showSbStats=d.sbStats;
     _lastSyncTime=new Date();
+    localStorage.setItem('gd-last-sync',_lastSyncTime.toISOString());
     saveData();applyLayout();applyT(appT);applyD(appD);
     loadForm(curDate);updSidebar();
-    updGDSync();gdSetSub('Driveから読み込みました ✓ ('+new Date().toLocaleTimeString('ja-JP')+')');
-    showToast('同期完了 ✓');
+    updGDSync();
+    gdSetSub('マージ完了 ✓ ('+new Date().toLocaleTimeString('ja-JP')+')');
+    showToast('マージ完了 ✓');
   }catch(e){gdSetSub('エラー: '+e.message);showToast('読み込みに失敗しました');}
 }
 
