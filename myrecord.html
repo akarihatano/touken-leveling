@@ -1,0 +1,1980 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>わたしの記録 - MyRecord</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root,[data-theme="moon"]{--bg:#0d0d1a;--bg2:#1a1a2e;--bg3:#111120;--border:#2a2a3a;--border2:#333;--text:#f0f0f0;--muted:#777;--muted2:#555;--accent:#c8a8e9;--accent2:#6bffb8;--danger:#ff6b6b;--hg:linear-gradient(135deg,#1a1a2e,#12122a);--sr1:#1c1c2e;--sr2:#2a2a3e;--obg:#06060f;}
+[data-theme="sun"]{--bg:#fff8f0;--bg2:#fff3e4;--bg3:#ffefd6;--border:#f0dfc0;--border2:#e8d0a8;--text:#3a2800;--muted:#a07840;--muted2:#c09860;--accent:#e07800;--accent2:#28a060;--danger:#d03020;--hg:linear-gradient(135deg,#fff0d0,#ffd88a);--sr1:#f8d080;--sr2:#e8b840;--obg:#f0e0b0;}
+[data-theme="sky"]{--bg:#f0f8ff;--bg2:#e4f1fc;--bg3:#d8eafa;--border:#b8d8f0;--border2:#a0c8e8;--text:#0a2840;--muted:#4880b0;--muted2:#80b0d0;--accent:#1a80d0;--accent2:#20c080;--danger:#e04040;--hg:linear-gradient(135deg,#d0eaff,#a0d0f8);--sr1:#80c0f0;--sr2:#50a0e0;--obg:#c0ddf5;}
+[data-theme="ocean"]{--bg:#020d1a;--bg2:#051828;--bg3:#031020;--border:#0a2840;--border2:#0d3050;--text:#c0e8ff;--muted:#3878a8;--muted2:#204860;--accent:#00c8f0;--accent2:#00f0a0;--danger:#ff5060;--hg:linear-gradient(135deg,#051828,#030e20);--sr1:#0a2840;--sr2:#104060;--obg:#010810;}
+[data-theme="sunset"]{--bg:#1a0808;--bg2:#2a1010;--bg3:#200c0c;--border:#401818;--border2:#501e1e;--text:#ffe8d0;--muted:#c07060;--muted2:#804040;--accent:#ff7830;--accent2:#ffb830;--danger:#ff3060;--hg:linear-gradient(135deg,#2a1010,#3a1800);--sr1:#502010;--sr2:#703018;--obg:#100404;}
+[data-force="dark"]{--bg:#0d0d1a!important;--bg2:#1a1a2e!important;--bg3:#111120!important;--border:#2a2a3a!important;--border2:#333!important;--text:#f0f0f0!important;--muted:#777!important;--muted2:#555!important;--obg:#06060f!important;}
+[data-force="light"]{--bg:#f8f8f8!important;--bg2:#ffffff!important;--bg3:#efefef!important;--border:#ddd!important;--border2:#ccc!important;--text:#1a1a1a!important;--muted:#888!important;--muted2:#aaa!important;--obg:#e0e0e0!important;}
+html,body{height:100%;font-family:'DM Mono','Courier New',monospace;}
+body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+::-webkit-scrollbar{width:3px;height:3px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* ═══════════════════════════════
+   LAYOUT MOBILE
+═══════════════════════════════ */
+#page-wrap{min-height:100vh;min-height:100dvh}
+
+/* mobile: centered phone shell */
+#page-wrap.layout-mobile{display:flex;justify-content:center;align-items:center;height:100dvh;padding:20px 12px;overflow:hidden;background:var(--obg);transition:background .3s;}
+#page-wrap.layout-mobile #shell-wrap{display:flex;flex-direction:column;width:390px;max-width:100%;height:calc(100dvh - 40px);max-height:860px;background:var(--bg);border-radius:40px;box-shadow:0 0 0 8px var(--sr1),0 0 0 11px var(--sr2),0 30px 80px rgba(0,0,0,.6);overflow:hidden;flex-shrink:0;transition:box-shadow .3s;}
+#page-wrap.layout-mobile #shell-wrap::before{content:'';display:block;width:100px;height:26px;background:var(--sr1);border-radius:0 0 16px 16px;margin:0 auto;flex-shrink:0;}
+#page-wrap.layout-mobile #app{flex:1;overflow:hidden;min-height:0;display:flex;flex-direction:column;}
+#page-wrap.layout-mobile #main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+#page-wrap.layout-mobile #tab-bar{display:flex;flex-shrink:0}
+#page-wrap.layout-mobile #sidebar{display:none}
+#page-wrap.layout-mobile #top-header{display:block}
+#page-wrap.layout-mobile .content{padding:14px}
+
+/* ═══════════════════════════════
+   LAYOUT DESKTOP
+═══════════════════════════════ */
+#page-wrap.layout-desktop{display:flex;flex-direction:row;min-height:100vh;background:var(--bg);justify-content:center;}
+#page-wrap.layout-desktop #shell-wrap{display:contents}
+#page-wrap.layout-desktop #app{display:flex;flex-direction:column;flex:1;min-height:100vh;min-width:0;max-width:780px;}
+#page-wrap.layout-desktop #sidebar{display:flex;flex-direction:column;width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border2);position:sticky;top:0;height:100vh;overflow-y:auto;order:-1;}
+#page-wrap.layout-desktop #main{flex:1;overflow-y:auto;padding-bottom:40px}
+#page-wrap.layout-desktop #tab-bar{display:none}
+#page-wrap.layout-desktop #top-header{display:none}
+#page-wrap.layout-desktop .content{padding:24px 28px}
+
+/* sidebar right: flip order and border */
+#page-wrap.layout-desktop.sb-right #sidebar{order:1;border-right:none;border-left:1px solid var(--border2);}
+
+/* ═══════════════════════════════
+   SIDEBAR
+═══════════════════════════════ */
+#sidebar-logo{padding:18px 18px 12px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between}
+#sidebar-logo .logo-txt .sub{font-size:9px;color:var(--accent);letter-spacing:3px;margin-bottom:3px}
+#sidebar-logo .logo-txt .title{font-size:15px;font-weight:700}
+.sb-tog-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:13px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0;}
+.sb-tog-btn:hover{border-color:var(--accent);color:var(--accent)}
+#sidebar-clock{padding:12px 18px;border-bottom:1px solid var(--border2)}
+#sidebar-clock .sc-date{font-size:10px;color:var(--muted);margin-bottom:2px}
+#sidebar-clock .sc-time{font-size:21px;font-weight:700;color:var(--accent);letter-spacing:2px}
+#sb-info{padding:12px 14px;border-bottom:1px solid var(--border2)}
+.si-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.si-item{background:var(--bg3);border-radius:8px;padding:7px 9px}
+.si-lbl{font-size:8px;color:var(--muted);letter-spacing:1px;margin-bottom:2px}
+.si-val{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sidebar-nav{padding:10px;flex:1}
+.snav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border:none;border-radius:8px;background:none;color:var(--muted);font-family:inherit;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;margin-bottom:3px;transition:all .15s;text-align:left;}
+.snav-btn:hover{background:rgba(128,128,128,.1);color:var(--text)}.snav-btn.active{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)}
+.snav-icon{font-size:14px}
+#sb-stats{padding:10px 14px;border-top:1px solid var(--border2)}
+.ss-title{font-size:8px;color:var(--muted);letter-spacing:2px;margin-bottom:6px}
+.ss-item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)}
+.ss-item:last-child{border-bottom:none}
+.ss-lbl{font-size:9px;color:var(--muted)}
+.ss-val{font-size:11px;font-weight:700}
+.ss-val.diff-up{color:var(--danger)}.ss-val.diff-dn{color:var(--accent2)}.ss-val.diff-eq{color:var(--muted)}
+
+/* ═══════════════════════════════
+   TOP HEADER (mobile)
+═══════════════════════════════ */
+#top-header{background:var(--hg);border-bottom:2px solid var(--accent);padding:12px 14px 10px;position:sticky;top:0;z-index:40;flex-shrink:0;}
+.th-row{display:flex;align-items:flex-start;justify-content:space-between}
+.th-left .th-sub{font-size:8px;color:var(--accent);letter-spacing:3px;margin-bottom:1px}
+.th-left .th-title{font-size:17px;font-weight:700}
+.th-right{display:flex;align-items:flex-start;gap:7px}
+.th-clock{text-align:right}.th-clock .tc-date{font-size:9px;color:var(--muted);margin-bottom:1px}
+.th-clock .tc-time{font-size:17px;font-weight:700;color:var(--accent);letter-spacing:1px}
+.hdr-tog-btn{background:none;border:1px solid rgba(255,255,255,.15);border-radius:6px;color:var(--muted);font-size:14px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0;margin-top:2px;}
+.hdr-tog-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ═══════════════════════════════
+   TAB BAR (mobile)
+═══════════════════════════════ */
+#tab-bar{background:var(--bg2);border-top:1px solid var(--border2)}
+.tab-btn{flex:1;padding:8px 0 10px;background:none;border:none;border-top:2px solid transparent;color:var(--muted2);font-family:inherit;font-size:10px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.tab-btn .ticon{font-size:15px}.tab-btn.active{border-top-color:var(--accent);color:var(--accent)}
+
+/* ═══════════════════════════════
+   COMMON COMPONENTS
+═══════════════════════════════ */
+.panel{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px;margin-bottom:14px}
+.panel-title{font-size:9px;color:var(--accent);letter-spacing:2px;margin-bottom:12px}
+.date-nav{display:flex;align-items:center;gap:6px;margin-bottom:12px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:9px 12px;}
+.dnav-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:18px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0;font-family:inherit;}
+.dnav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.date-disp-btn{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:inherit;font-size:13px;font-weight:700;padding:6px 10px;cursor:pointer;text-align:center;transition:all .15s;}
+.date-disp-btn:hover{border-color:var(--accent)}
+.today-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-family:inherit;font-size:9px;font-weight:700;letter-spacing:1px;padding:6px 8px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.today-btn:hover,.today-btn.active{border-color:var(--accent2);color:var(--accent2)}
+.group{margin-bottom:8px}
+.group-hd{display:flex;align-items:center;gap:8px;width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:inherit;font-size:11px;font-weight:700;letter-spacing:1px;padding:11px 14px;cursor:pointer;transition:all .15s;text-align:left;}
+.group-hd:hover{border-color:var(--accent)}.group-hd.open{border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom-color:transparent}
+.group-icon{font-size:14px}.group-title{flex:1}.group-arrow{color:var(--muted);font-size:12px;transition:transform .2s}
+.group-hd.open .group-arrow{transform:rotate(180deg)}
+.group-bd{background:var(--bg2);border:1px solid var(--border2);border-top:none;border-bottom-left-radius:10px;border-bottom-right-radius:10px;padding:14px;display:none;}
+.group-bd.open{display:block}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.form-grid .full{grid-column:1/-1}
+#page-wrap.layout-mobile .form-grid{grid-template-columns:1fr}
+.field{margin-bottom:10px}.field label{display:block;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:4px}
+.field input[type=number],.field input[type=text],.field input[type=time],.field select,.field-ta{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--text);padding:8px 11px;font-size:14px;font-family:inherit;outline:none;color-scheme:dark;transition:border-color .15s;}
+.field input:focus,.field select:focus,.field-ta:focus{border-color:var(--accent)}
+.field select{cursor:pointer}.field-ta{resize:vertical;min-height:66px}
+.input-pair{display:flex;gap:8px;align-items:center}.input-pair input{flex:1}
+.auto-row{display:flex;align-items:center;gap:5px;margin-top:3px}
+.auto-lbl{font-size:9px;color:var(--muted);letter-spacing:1px}.auto-val{font-size:13px;font-weight:700;color:var(--accent)}
+.hint-t{font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:8px}
+.emoji-grid{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.emoji-opt{width:36px;height:36px;font-size:19px;border:1.5px solid var(--border2);border-radius:8px;background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.emoji-opt:hover{border-color:var(--accent);transform:scale(1.1)}.emoji-opt.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 20%,transparent)}
+.log-entries{display:flex;flex-direction:column;gap:7px;margin-top:6px}
+.log-entry{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px}
+.le-hd{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.le-type{flex:1;font-size:11px;font-weight:700;color:var(--accent)}
+.le-rm{background:none;border:none;color:var(--muted2);font-size:15px;cursor:pointer;padding:0;line-height:1;transition:color .15s;}
+.le-rm:hover{color:var(--danger)}.le-row{display:flex;gap:7px;align-items:flex-end}
+.le-row .field{flex:1;margin-bottom:0}
+.le-sel{background:var(--bg3);border:1px solid var(--border2);border-radius:5px;color:var(--accent);font-family:inherit;font-size:11px;font-weight:700;padding:3px 6px;cursor:pointer}
+.le-in{background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--text);padding:8px 11px;font-size:14px;font-family:inherit;outline:none;width:100%}
+.le-in-t{background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--text);padding:7px 10px;font-size:13px;font-family:inherit;outline:none;color-scheme:dark;width:100%}
+.add-btn{display:flex;align-items:center;gap:6px;width:100%;background:none;border:1px dashed var(--border2);border-radius:8px;color:var(--muted);font-family:inherit;font-size:11px;font-weight:700;letter-spacing:1px;padding:10px;cursor:pointer;transition:all .15s;justify-content:center;margin-top:7px;}
+.add-btn:hover{border-color:var(--accent);color:var(--accent)}
+.period-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0}
+.ptoggle{position:relative;width:44px;height:24px;background:var(--bg3);border:1px solid var(--border2);border-radius:12px;cursor:pointer;transition:all .2s;}
+.ptoggle.on{background:color-mix(in srgb,#ff7eb3 40%,transparent);border-color:#ff7eb3}
+.ptoggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--muted);transition:all .2s;}
+.ptoggle.on::after{left:22px;background:#ff7eb3}
+.btn-p{background:var(--accent);border:none;border-radius:8px;color:var(--bg);font-weight:700;padding:11px 16px;font-size:12px;cursor:pointer;font-family:inherit;letter-spacing:1px;transition:opacity .15s;}
+.btn-p:hover{opacity:.82}
+.btn-g{background:none;border:1px solid var(--border2);border-radius:8px;color:var(--muted);padding:9px 13px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s;}
+.btn-g:hover{border-color:var(--accent);color:var(--accent)}
+.btn-d{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted2);padding:4px 9px;font-size:10px;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;}
+.btn-d:hover{border-color:var(--danger);color:var(--danger)}
+.btn-e{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);padding:4px 9px;font-size:10px;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;}
+.btn-e:hover{border-color:var(--accent);color:var(--accent)}
+.btn-row{display:flex;gap:8px;margin-top:14px}.btn-row .btn-p{flex:1}
+.cp-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-family:inherit;font-size:9px;font-weight:700;letter-spacing:1px;padding:5px 9px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.cp-btn:hover{border-color:var(--accent2);color:var(--accent2)}
+.month-group{margin-bottom:10px}
+.month-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;cursor:pointer;transition:all .15s;}
+.month-hd:hover{border-color:var(--accent)}.month-hd.open{border-bottom-left-radius:0;border-bottom-right-radius:0}
+.month-title{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:1px}
+.month-count{font-size:10px;color:var(--muted)}
+.month-arrow{color:var(--muted);font-size:12px;transition:transform .2s}.month-hd.open .month-arrow{transform:rotate(180deg)}
+.month-bd{background:var(--bg2);border:1px solid var(--border2);border-top:none;border-bottom-left-radius:10px;border-bottom-right-radius:10px;display:none;overflow:hidden;}
+.month-bd.open{display:block}
+.hcard{border-bottom:1px solid var(--border);padding:11px 13px}.hcard:last-child{border-bottom:none}
+.htop{display:flex;align-items:flex-start;justify-content:space-between}
+.hdate{font-size:10px;color:var(--muted);margin-bottom:2px}
+.hw{font-size:19px;font-weight:700}.hw span{font-size:11px;color:var(--muted2);margin-left:2px}
+.hdiff{font-size:10px;margin-top:1px}.hdiff.up{color:var(--danger)}.hdiff.dn{color:var(--accent2)}.hdiff.eq{color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+.chip{background:rgba(128,128,128,.06);border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-size:10px}
+.chip .cl{color:var(--muted)}.chip .cv{color:var(--text);font-weight:700}
+.hnote{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.5}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}.setting-label{font-size:12px}
+.setting-sub{font-size:9px;color:var(--muted);margin-top:2px}
+.tg-group{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.tg-opt{padding:5px 11px;border-radius:20px;font-size:10px;font-weight:700;font-family:inherit;cursor:pointer;border:1px solid var(--border2);background:none;color:var(--muted);transition:all .15s;white-space:nowrap;}
+.tg-opt.active{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.ts{border-radius:8px;padding:8px 6px;text-align:center;cursor:pointer;border:2px solid transparent;transition:all .15s;font-size:10px;font-weight:700;}
+.ts.active{border-color:var(--accent)}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--accent);color:var(--bg);font-weight:700;border-radius:20px;padding:9px 20px;font-size:12px;box-shadow:0 4px 20px rgba(0,0,0,.4);z-index:300;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s,transform .2s;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.empty{text-align:center;color:var(--muted2);padding:50px 0}.empty .ei{font-size:28px;margin-bottom:8px}
+
+/* ═══════════════════════════════
+   CALENDAR
+═══════════════════════════════ */
+.hist-toggle{display:flex;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.ht-btn{flex:1;padding:8px 4px;background:none;border:none;border-right:1px solid var(--border2);color:var(--muted);font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .15s}
+.ht-btn:last-child{border-right:none}
+.ht-btn.active{background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
+.cal-ctrl{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.cal-month-lbl{font-size:13px;font-weight:700;color:var(--text);letter-spacing:1px}
+.cal-nav-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:16px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-family:inherit}
+.cal-nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.period-vis-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted2);font-size:13px;padding:3px 8px;cursor:pointer;transition:all .15s;font-family:inherit;letter-spacing:.5px;font-size:11px}
+.period-vis-btn.on{border-color:#ff7eb3;color:#ff7eb3;background:color-mix(in srgb,#ff7eb3 12%,transparent)}
+.cal-wdays{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:3px}
+.cal-wd{text-align:center;font-size:8px;font-weight:700;color:var(--muted);padding:3px 0}
+.cal-wd.sun{color:var(--danger)}.cal-wd.sat{color:var(--accent)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:10px}
+.cal-cell{background:var(--bg2);border:1px solid var(--border);border-radius:7px;min-height:50px;padding:4px 3px 3px;cursor:pointer;transition:all .15s;position:relative;display:flex;flex-direction:column}
+.cal-cell:hover{border-color:var(--accent);background:var(--bg3)}
+.cal-cell.today{border-color:var(--accent);border-width:1.5px}
+.cal-cell.empty{background:transparent;border-color:transparent;cursor:default;pointer-events:none}
+.cal-cell.no-rec{opacity:.55}
+.cal-dn{font-size:9px;font-weight:700;color:var(--muted);line-height:1;margin-bottom:2px}
+.cal-cell.today .cal-dn{color:var(--accent)}
+.cal-cell.sun .cal-dn{color:var(--danger)}
+.cal-emoji{font-size:11px;line-height:1;min-height:13px;margin-bottom:2px}
+.cal-dots{display:flex;flex-wrap:wrap;gap:2px;margin-top:auto}
+.cal-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.cal-legend{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px}
+.cal-leg{display:flex;align-items:center;gap:4px;font-size:8px;color:var(--muted);letter-spacing:.5px}
+.cal-leg-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* ═══════════════════════════════
+   DAY DETAIL OVERLAY
+═══════════════════════════════ */
+.day-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:center;justify-content:center;padding:16px}
+.day-overlay.show{display:flex}
+.day-panel{background:var(--bg);border:1px solid var(--border2);border-radius:14px;width:100%;max-width:480px;max-height:86vh;overflow-y:auto;padding:0 0 20px}
+#page-wrap.layout-desktop .day-panel{max-height:80vh}
+.dp-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--border2);z-index:1}
+.dp-nav{display:flex;align-items:center;gap:8px}
+.dp-nav-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:18px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-family:inherit}
+.dp-nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.dp-date{font-size:13px;font-weight:700;color:var(--text);letter-spacing:1px;min-width:120px;text-align:center}
+.dp-close{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:16px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
+.dp-close:hover{border-color:var(--danger);color:var(--danger)}
+.dp-body{padding:14px 16px}
+.dp-section{margin-bottom:12px}
+.dp-sec-title{font-size:8px;color:var(--accent);letter-spacing:2px;margin-bottom:6px}
+.dp-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)}
+.dp-row:last-child{border-bottom:none}
+.dp-lbl{font-size:10px;color:var(--muted)}
+.dp-val{font-size:12px;font-weight:700}
+.dp-chip{display:inline-flex;background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:5px;padding:2px 8px;font-size:10px;color:var(--accent);margin:2px 3px 2px 0}
+.dp-period-chip{background:color-mix(in srgb,#ff7eb3 12%,transparent);border-color:color-mix(in srgb,#ff7eb3 30%,transparent);color:#ff7eb3}
+.dp-empty{font-size:11px;color:var(--muted2);text-align:center;padding:20px 0}
+.dp-edit-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;background:var(--accent);border:none;border-radius:8px;color:var(--bg);font-weight:700;padding:11px;font-size:12px;cursor:pointer;font-family:inherit;letter-spacing:1px;margin-top:14px;transition:opacity .15s}
+.dp-edit-btn:hover{opacity:.82}
+.chart-ctrl{margin-bottom:12px}
+.period-btns{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.period-btn{background:none;border:1px solid var(--border2);border-radius:20px;color:var(--muted);font-family:inherit;font-size:10px;font-weight:700;letter-spacing:.5px;padding:5px 12px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.period-btn.active{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.custom-range{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;margin-bottom:8px}
+.custom-range input[type=date]{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:inherit;font-size:12px;padding:5px 8px;outline:none;color-scheme:dark;}
+.custom-range input[type=date]:focus{border-color:var(--accent)}
+.cr-sep{color:var(--muted);font-size:11px}
+.chart-type-tabs{display:flex;border:1px solid var(--border2);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.ct-tab{flex:1;padding:9px 4px;background:none;border:none;border-right:1px solid var(--border2);color:var(--muted);font-family:inherit;font-size:10px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .15s;text-align:center;}
+.ct-tab:last-child{border-right:none}
+.ct-tab:hover{color:var(--text);background:rgba(128,128,128,.05)}
+.ct-tab.active{background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
+.chart-wrap{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px;margin-bottom:12px}
+.chart-canvas-con{position:relative;height:240px}
+.chart-metric-ctrl{margin-top:10px}
+.metric-mode-row{display:flex;gap:6px;margin-bottom:8px}
+.metric-picks{display:flex;flex-wrap:wrap;gap:6px}
+.mpick{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--border2);cursor:pointer;transition:all .15s;font-size:10px;font-weight:700;background:none;color:var(--muted);font-family:inherit;}
+.mpick.sel{color:var(--bg)}
+.mpick .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.chart-no-data{text-align:center;padding:60px 0;color:var(--muted2)}
+.chart-no-data .ni{font-size:26px;margin-bottom:8px}
+.ev-list{margin-top:6px}
+.ev-item{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;background:var(--bg2);border:1px solid var(--border2);border-left:3px solid #ffb830;border-radius:6px;margin-bottom:5px;font-size:10px;cursor:pointer;transition:all .15s;}
+.ev-item:hover{border-color:var(--accent)}
+.ev-item.hi{background:color-mix(in srgb,#ffb830 12%,transparent)}
+.ev-date{color:var(--muted);flex-shrink:0;margin-top:1px}
+.ev-title{font-weight:700}
+
+#dp-popup input[type=date]{color-scheme:dark}
+#dp-popup input[type=date]:focus{border-color:var(--accent)}
+
+/* ═══════════════════════════════
+   PERIOD DETAIL CONTROLS
+═══════════════════════════════ */
+.blood-grid{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.bv-btn{padding:5px 13px;border-radius:20px;border:1.5px solid var(--border2);background:none;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;}
+.bv-btn:hover{border-color:#ff7eb3;color:#ff7eb3}
+.bv-btn.sel{background:color-mix(in srgb,#ff7eb3 25%,transparent);border-color:#ff7eb3;color:var(--text)}
+.pain-scale{display:flex;gap:4px;margin-top:4px}
+.ps-btn{flex:1;padding:6px 2px;border-radius:7px;font-size:9px;font-weight:700;border:1.5px solid var(--border2);background:none;color:var(--muted);cursor:pointer;transition:all .15s;text-align:center;font-family:inherit;line-height:1.4;}
+.ps-btn:hover{opacity:.8}
+.ploc-grid{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.ploc-btn{padding:5px 11px;border-radius:7px;border:1.5px solid var(--border2);background:none;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;}
+.ploc-btn:hover{border-color:#f472b6;color:#f472b6}
+.ploc-btn.sel{background:color-mix(in srgb,#f472b6 20%,transparent);border-color:#f472b6;color:var(--text)}
+.sym-grid{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.sym-btn{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border2);background:none;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;}
+.sym-btn:hover{border-color:#c084fc;color:#c084fc}
+.sym-btn.sel{background:color-mix(in srgb,#c084fc 20%,transparent);border-color:#c084fc;color:var(--text)}
+.period-detail{margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+/* ═══════════════════════════════
+   GDRIVE SYNC UI
+═══════════════════════════════ */
+/* ヘッダー用コンパクトコントロール */
+.hdr-sync{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.hdr-sync-row1{display:flex;align-items:center;gap:4px}
+.hdr-sync-row2{display:flex;align-items:center;gap:6px}
+.sync-status-pill{display:flex;align-items:center;gap:4px;border:1px solid var(--border2);border-radius:20px;padding:2px 7px;transition:border-color .2s}
+.sync-status-pill.connected{border-color:var(--accent)}
+.sync-dot{width:5px;height:5px;border-radius:50%;background:var(--muted2);flex-shrink:0;transition:background .2s}
+.sync-dot.on{background:#22c55e}
+.sync-pill-lbl{font-size:8px;color:var(--muted);font-weight:700;white-space:nowrap;transition:color .2s}
+.sync-status-pill.connected .sync-pill-lbl{color:var(--accent)}
+.hdr-sync-btn{display:flex;align-items:center;gap:2px;border:1px solid var(--border2);border-radius:5px;background:transparent;color:var(--muted);font-family:inherit;font-size:11px;font-weight:700;padding:3px 7px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.hdr-sync-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.hdr-sync-btn.save-btn{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.hdr-sync-btn.save-btn:hover:not(:disabled){opacity:.82}
+.hdr-sync-btn:disabled{opacity:.3;cursor:default}
+.hdr-login-link{font-size:8px;color:var(--accent);background:none;border:1px solid var(--accent);border-radius:5px;padding:2px 7px;cursor:pointer;font-family:inherit;font-weight:700;transition:all .15s;white-space:nowrap}
+.hdr-login-link:hover{background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.hdr-logout-link{font-size:8px;color:var(--muted);background:none;border:none;padding:2px 4px;cursor:pointer;font-family:inherit;transition:color .15s}
+.hdr-logout-link:hover{color:var(--danger)}
+.sync-time-mini{font-size:7px;color:var(--muted);white-space:nowrap}
+/* 上書き警告バナー */
+.sync-warn{display:none;background:var(--bg2);border:1px solid #d4a020;border-radius:10px;padding:13px 14px;margin-bottom:12px}
+.sync-warn.show{display:flex;gap:10px;align-items:flex-start}
+.sync-warn-icon{font-size:16px;flex-shrink:0;color:#d4a020}
+.sync-warn-body{flex:1;min-width:0}
+.sync-warn-title{font-size:12px;font-weight:700;color:#c8980a;margin-bottom:4px}
+.sync-warn-text{font-size:11px;color:var(--muted);line-height:1.6}
+.sync-warn-btns{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+.sync-warn-ok{padding:5px 13px;font-size:11px;border:1px solid #c8980a;border-radius:6px;background:transparent;color:#c8980a;cursor:pointer;font-family:inherit;transition:all .15s}
+.sync-warn-ok:hover{background:rgba(200,152,10,.15)}
+.sync-warn-cancel{padding:5px 13px;font-size:11px;border:1px solid var(--border2);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s}
+.sync-warn-cancel:hover{background:var(--bg3)}
+.sync-warn-cb{display:flex;align-items:center;gap:6px;margin-top:7px;font-size:11px;color:var(--muted)}
+/* サイドバー用 */
+.sb-sync-compact{padding:8px 14px;border-bottom:1px solid var(--border2)}
+.sb-sync-label{font-size:8px;color:var(--accent);letter-spacing:2px;margin-bottom:6px}
+.sb-sync-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px}
+.sb-sync-btn{display:flex;align-items:center;gap:2px;border:1px solid var(--border2);border-radius:5px;background:transparent;color:var(--muted);font-family:inherit;font-size:11px;font-weight:700;padding:4px 9px;cursor:pointer;transition:all .15s}
+.sb-sync-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.sb-sync-btn.save-btn{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.sb-sync-btn.save-btn:hover:not(:disabled){opacity:.82}
+.sb-sync-btn:disabled{opacity:.3;cursor:default}
+.sb-sync-time{font-size:8px;color:var(--muted);margin-top:2px}
+
+
+</style>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+<div id="page-wrap">
+
+  <!-- ════════════════════════════
+       SHELL WRAP (mobile frame)
+  ════════════════════════════ -->
+  <div id="shell-wrap">
+    <div id="app">
+
+      <!-- mobile header -->
+      <div id="top-header">
+        <div class="th-row">
+          <div class="th-left"><div class="th-sub">MY RECORD</div><div class="th-title">わたしの記録</div></div>
+          <div class="th-right">
+            <div class="hdr-sync" id="hdr-sync">
+              <!-- ログイン済み -->
+              <div class="hdr-sync-row1" id="hdr-sync-loggedin" style="display:none">
+                <div class="sync-status-pill connected" id="hdr-sync-pill">
+                  <div class="sync-dot on" id="hdr-sync-dot"></div>
+                  <span class="sync-pill-lbl" id="hdr-sync-lbl">☁ 接続中</span>
+                </div>
+                <button class="hdr-sync-btn save-btn" id="hdr-up-btn" onclick="gdSaveWithCheck()" title="クラウドへ保存">☁↑</button>
+                <button class="hdr-sync-btn" id="hdr-dn-btn" onclick="gdLoad()" title="クラウドから読み込み">☁↓</button>
+              </div>
+              <div class="hdr-sync-row2" id="hdr-sync-row2">
+                <span class="sync-time-mini" id="hdr-sync-time"></span>
+                <button class="hdr-login-link" id="hdr-login-btn" onclick="gSignIn()">☁ ログイン</button>
+                <button class="hdr-logout-link" id="hdr-logout-btn" onclick="gSignOut()" style="display:none" title="ログアウト">✕</button>
+              </div>
+            </div>
+            <div class="th-clock"><div class="tc-date" id="hdr-date"></div><div class="tc-time" id="hdr-time"></div></div>
+            <button class="hdr-tog-btn" id="hdr-tog" onclick="quickToggleLayout()" title="レイアウト切り替え">🖥️</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- main content -->
+      <div id="main"><div class="content">
+      <div class="sync-warn" id="sync-warn">
+        <span class="sync-warn-icon">⚠</span>
+        <div class="sync-warn-body">
+          <div class="sync-warn-title">クラウドのデータの方が新しい</div>
+          <div class="sync-warn-text" id="sync-warn-text"></div>
+          <div class="sync-warn-btns">
+            <button class="sync-warn-ok" onclick="doOverwriteSave()">上書きして保存</button>
+            <button class="sync-warn-cancel" onclick="dismissWarn()">キャンセル</button>
+          </div>
+          <div class="sync-warn-cb"><input type="checkbox" id="warn-neverchk"><label for="warn-neverchk">今後この警告を表示しない</label></div>
+        </div>
+      </div>
+
+        <!-- LOG -->
+        <div id="tab-log">
+          <div class="date-nav">
+            <button class="dnav-btn" onclick="prevDay()">‹</button>
+            <div style="flex:1;position:relative">
+              <button class="date-disp-btn" id="date-disp" onclick="trigDP()" style="width:100%">—</button>
+              <div id="dp-popup" style="display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);z-index:200;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:10px;box-shadow:0 8px 30px rgba(0,0,0,.4);flex-direction:column;align-items:center;gap:6px;min-width:200px">
+                <div style="font-size:9px;color:var(--accent);letter-spacing:2px;margin-bottom:2px">日付を選択</div>
+                <input type="date" id="dp-input" onchange="onDP(event)" style="background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:inherit;font-size:14px;padding:7px 10px;outline:none;color-scheme:dark;width:100%">
+              </div>
+            </div>
+            <button class="dnav-btn" onclick="nextDay()">›</button>
+            <button class="today-btn" id="today-btn" onclick="goToday()">TODAY</button>
+          </div>
+          <div class="group" id="grp-body">
+            <button class="group-hd open" onclick="toggleGroup('body')"><span class="group-icon">📊</span><span class="group-title">体組成</span><span class="group-arrow">▾</span></button>
+            <div class="group-bd open" id="grpb-body">
+              <div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="cp-btn" onclick="copyPrev()">↩ 前回の値をコピー</button></div>
+              <div class="form-grid">
+                <div class="field"><label>体重 (kg)</label><input type="number" id="f-weight" step="0.1" placeholder="--" oninput="onBI()"></div>
+                <div class="field"><label>体脂肪率 (%)</label><input type="number" id="f-bodyfat" step="0.1" placeholder="--" oninput="onBI()"></div>
+                <div class="field"><label>筋肉量 (kg)</label><input type="number" id="f-muscle" step="0.1" placeholder="--" oninput="onMI()">
+                  <div class="auto-row" id="m-auto"><span class="auto-lbl">推定</span><span class="auto-val" id="m-av">--</span><span class="auto-lbl">kg</span></div></div>
+                <div class="field"><label>内臓脂肪 (レベル)</label><input type="number" id="f-visceral" step="0.5" placeholder="--"></div>
+                <div class="field"><label>基礎代謝 (kcal)</label><input type="number" id="f-metabolism" step="1" placeholder="--" oninput="onMeI()">
+                  <div class="auto-row" id="me-auto"><span class="auto-lbl">推定</span><span class="auto-val" id="me-av">--</span><span class="auto-lbl">kcal</span></div></div>
+                <div class="field"><label>BMI</label><input type="number" id="f-bmi" step="0.1" placeholder="--" oninput="onBMII()">
+                  <div class="auto-row" id="b-auto"><span class="auto-lbl">推定</span><span class="auto-val" id="b-av">--</span></div></div>
+                <div class="field"><label id="bust-lbl">バスト (cm)</label><input type="number" id="f-bust" step="0.5" placeholder="--"></div>
+                <div class="field"><label>ウエスト (cm)</label><input type="number" id="f-waist" step="0.5" placeholder="--"></div>
+                <div class="field full"><label>ヒップ (cm)</label><input type="number" id="f-hip" step="0.5" placeholder="--"></div>
+              </div>
+            </div>
+          </div>
+          <div class="group" id="grp-meal">
+            <button class="group-hd open" onclick="toggleGroup('meal')"><span class="group-icon">🍽️</span><span class="group-title">食事</span><span class="group-arrow">▾</span></button>
+            <div class="group-bd open" id="grpb-meal">
+              <div class="hint-t">朝食・昼食・夕食・間食など、1日に何件でも追加できます</div>
+              <div class="log-entries" id="meal-entries"></div>
+              <button class="add-btn" onclick="addMeal()">＋ 食事を追加</button>
+            </div>
+          </div>
+          <div class="group" id="grp-exercise">
+            <button class="group-hd" onclick="toggleGroup('exercise')"><span class="group-icon">🏃</span><span class="group-title">運動</span><span class="group-arrow">▾</span></button>
+            <div class="group-bd" id="grpb-exercise">
+              <div class="field"><label>歩数</label><input type="number" id="f-steps" step="1" placeholder="--"></div>
+              <div class="hint-t" style="margin-top:4px">運動セッション</div>
+              <div class="log-entries" id="ex-entries"></div>
+              <button class="add-btn" onclick="addEx()">＋ 運動を追加</button>
+            </div>
+          </div>
+          <div class="group" id="grp-health">
+            <button class="group-hd" onclick="toggleGroup('health')"><span class="group-icon">💉</span><span class="group-title">健康指標</span><span class="group-arrow">▾</span></button>
+            <div class="group-bd" id="grpb-health">
+              <div class="form-grid">
+                <div class="field full"><label>HbA1c (%)</label><input type="number" id="f-hba1c" step="0.1" placeholder="--"></div>
+                <div class="field full"><label>血圧</label>
+                  <div class="input-pair"><input type="number" id="f-bph" step="1" placeholder="上 mmHg"><span style="color:var(--muted);font-size:12px;flex-shrink:0">/</span><input type="number" id="f-bpl" step="1" placeholder="下 mmHg"></div>
+                </div>
+              </div>
+              <div class="hint-t" style="margin-top:4px">日内血糖値ログ</div>
+              <div class="log-entries" id="glc-entries"></div>
+              <button class="add-btn" onclick="addGlc()">＋ 血糖値を追加</button>
+            </div>
+          </div>
+          <div class="group" id="grp-condition">
+            <button class="group-hd open" onclick="toggleGroup('condition')"><span class="group-icon">🌸</span><span class="group-title">体調</span><span class="group-arrow">▾</span></button>
+            <div class="group-bd open" id="grpb-condition">
+              <div id="sex-setting-hint" style="display:none;font-size:9px;color:var(--muted);background:var(--bg3);border-radius:7px;padding:7px 10px;margin-bottom:10px;letter-spacing:.5px;line-height:1.6">⚙️ プロフィールで性別を設定すると、追加の項目が表示されます</div>
+              <div class="field"><label>気分</label><div class="emoji-grid" id="mood-grid"></div></div>
+              <div class="field" style="margin-top:8px"><label>天気</label><div class="emoji-grid" id="wth-grid"></div></div>
+              <div id="period-sec" style="display:none">
+                <div class="field" style="margin-top:10px"><label>🌸 生理</label>
+                  <div class="period-row"><span style="font-size:12px">開始日として記録</span><div class="ptoggle" id="ptoggle" onclick="togPeriod()"></div></div>
+                </div>
+                <div class="period-detail">
+                  <div class="field"><label>経血量</label><div class="blood-grid" id="blood-grid"></div></div>
+                  <div class="field" style="margin-top:8px"><label>痛みの強さ</label><div class="pain-scale" id="pain-scale"></div></div>
+                  <div class="field" style="margin-top:8px"><label>痛みの場所 <span style="color:var(--muted);font-weight:normal;font-size:8px">複数可</span></label><div class="ploc-grid" id="ploc-grid"></div></div>
+                  <div class="field" style="margin-top:8px"><label>症状</label><div class="sym-grid" id="sym-grid"></div></div>
+                  <div class="field" style="margin-top:8px"><label>メモ</label><textarea class="field-ta" id="f-pnote" placeholder="生理に関するメモ（任意）" style="min-height:48px"></textarea></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="group" id="grp-note">
+            <button class="group-hd" onclick="toggleGroup('note')"><span class="group-icon">📝</span><span class="group-title">記録</span><span class="group-arrow">▾</span></button>
+            <div class="group-bd" id="grpb-note">
+              <div class="field"><label>備考</label><textarea class="field-ta" id="f-note" placeholder="この日のメモ（自由記述）"></textarea></div>
+              <div style="margin-top:12px">
+                <div class="hint-t">イベント（通院・薬の変更・旅行など）</div>
+                <div class="log-entries" id="ev-entries"></div>
+                <button class="add-btn" onclick="addEv()">＋ イベントを追加</button>
+              </div>
+            </div>
+          </div>
+          <div class="btn-row"><button class="btn-p" onclick="saveRec()">💾 保存</button><button class="btn-g" onclick="delRec()">削除</button></div>
+          <div style="height:10px"></div>
+        </div>
+
+        <!-- CHART -->
+        <div id="tab-chart" style="display:none">
+          <div class="chart-ctrl">
+            <!-- period buttons -->
+            <div class="period-btns">
+              <button class="period-btn active" id="period-1m" onclick="setPeriod('1m')">1ヶ月</button>
+              <button class="period-btn" id="period-3m" onclick="setPeriod('3m')">3ヶ月</button>
+              <button class="period-btn" id="period-6m" onclick="setPeriod('6m')">6ヶ月</button>
+              <button class="period-btn" id="period-all" onclick="setPeriod('all')">全期間</button>
+              <button class="period-btn" id="period-custom" onclick="setPeriod('custom')">カスタム</button>
+            </div>
+            <!-- custom date range -->
+            <div class="custom-range" id="custom-range" style="display:none">
+              <input type="date" id="chart-from" onchange="onChartRangeChange()">
+              <span class="cr-sep">〜</span>
+              <input type="date" id="chart-to" onchange="onChartRangeChange()">
+            </div>
+          </div>
+          <!-- energy chart mode toggle (shown only for energy tab) -->
+          <div id="energy-mode-row" style="display:none;margin-bottom:8px">
+            <div class="metric-mode-row">
+              <button class="tg-opt active" id="em-bar" onclick="setEnergyMode('bar')">棒グラフ</button>
+              <button class="tg-opt" id="em-line" onclick="setEnergyMode('line')">折れ線</button>
+            </div>
+          </div>
+          <!-- graph type tabs -->
+          <div class="chart-type-tabs">
+            <button class="ct-tab active" id="ct-body" onclick="setChartType('body')">📊 体組成</button>
+            <button class="ct-tab" id="ct-energy" onclick="setChartType('energy')">🍽️ エネルギー</button>
+            <button class="ct-tab" id="ct-glucose" onclick="setChartType('glucose')">💉 血糖値</button>
+          </div>
+          <!-- chart area -->
+          <div class="chart-wrap">
+            <div class="chart-canvas-con" id="chart-canvas-con">
+              <canvas id="chart-canvas"></canvas>
+            </div>
+            <!-- body metric selector -->
+            <div class="chart-metric-ctrl" id="body-metric-ctrl">
+              <div class="metric-mode-row">
+                <button class="tg-opt active" id="bm-group" onclick="setBodyMode('group')">グループ</button>
+                <button class="tg-opt" id="bm-custom" onclick="setBodyMode('custom')">カスタム</button>
+              </div>
+              <div class="metric-picks" id="group-picks" style="margin-bottom:6px"></div>
+              <div class="metric-picks" id="metric-picks" style="display:none"></div>
+            </div>
+          </div>
+          <!-- event list -->
+          <div id="chart-ev-wrap" style="display:none">
+            <div style="font-size:9px;color:var(--accent);letter-spacing:2px;margin-bottom:6px">EVENTS</div>
+            <div class="ev-list" id="chart-ev-list"></div>
+          </div>
+        </div>
+
+
+        <!-- HISTORY -->
+        <div id="tab-history" style="display:none">
+          <div class="hist-toggle">
+            <button class="ht-btn active" id="ht-cal" onclick="setHistView('cal')">📅 カレンダー</button>
+            <button class="ht-btn" id="ht-list" onclick="setHistView('list')">📋 リスト</button>
+          </div>
+          <div id="hist-cal-view"></div>
+          <div id="hist-con" style="display:none"></div>
+          <div id="hist-empty" class="empty" style="display:none"><div class="ei">📋</div><div>まだ記録がありません</div></div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div id="tab-settings" style="display:none">
+          <div class="panel">
+            <div class="panel-title">👤 プロフィール</div>
+            <div class="form-grid">
+              <div class="field full"><label>身長 (cm)</label><input type="number" id="s-height" step="0.1" placeholder="例: 165.0" oninput="saveProfile()"></div>
+              <div class="field full"><label>生まれた年 <span style="color:var(--muted);font-weight:normal">（月・日は任意）</span></label>
+                <div style="display:flex;gap:6px;align-items:center">
+                  <input type="number" id="s-by" step="1" placeholder="例: 1990" oninput="saveProfile()" style="flex:2;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--text);padding:8px 11px;font-size:14px;font-family:inherit;outline:none;color-scheme:dark">
+                  <span style="color:var(--muted);font-size:12px">年</span>
+                  <input type="number" id="s-bm" min="1" max="12" step="1" placeholder="月" oninput="saveProfile()" style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--text);padding:8px 11px;font-size:14px;font-family:inherit;outline:none;color-scheme:dark">
+                  <span style="color:var(--muted);font-size:12px">月</span>
+                  <input type="number" id="s-bd" min="1" max="31" step="1" placeholder="日" oninput="saveProfile()" style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--text);padding:8px 11px;font-size:14px;font-family:inherit;outline:none;color-scheme:dark">
+                  <span style="color:var(--muted);font-size:12px">日</span>
+                </div>
+              </div>
+              <div class="field full"><label>性別</label>
+                <div style="display:flex;gap:6px;margin-top:2px">
+                  <button class="tg-opt" id="sex-unknown" onclick="setSex('unknown')">未設定</button>
+                  <button class="tg-opt" id="sex-male" onclick="setSex('male')">男性</button>
+                  <button class="tg-opt" id="sex-female" onclick="setSex('female')">女性</button>
+                </div>
+                <div id="sex-hint" style="font-size:9px;color:var(--accent);margin-top:6px;letter-spacing:1px"></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">📐 レイアウト</div>
+            <div class="setting-row">
+              <div><div class="setting-label">表示モード</div><div class="setting-sub">768px以上で自動的にPC表示になります</div></div>
+              <div class="tg-group">
+                <button class="tg-opt" id="tog-auto" onclick="setLayoutMode('auto')">自動</button>
+                <button class="tg-opt" id="tog-mobile" onclick="setLayoutMode('mobile')">📱 スマホ固定</button>
+                <button class="tg-opt" id="tog-desktop" onclick="setLayoutMode('desktop')">🖥️ PC固定</button>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">サイドバー位置</div><div class="setting-sub">PCモード時のサイドバーの位置</div></div>
+              <div class="tg-group">
+                <button class="tg-opt" id="tog-sb-left" onclick="setSbPos('left')">左</button>
+                <button class="tg-opt" id="tog-sb-right" onclick="setSbPos('right')">右</button>
+              </div>
+            </div>
+            <div class="setting-row" style="border-bottom:none">
+              <div><div class="setting-label">サイドバー統計</div><div class="setting-sub">体重・BMI・統計情報をサイドバーに表示</div></div>
+              <div class="tg-group">
+                <button class="tg-opt" id="tog-stats-on" onclick="setSbStats(true)">表示</button>
+                <button class="tg-opt" id="tog-stats-off" onclick="setSbStats(false)">非表示</button>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">🌓 ディスプレイ</div>
+            <div class="setting-row" style="border:none;padding:0">
+              <div><div class="setting-sub">テーマの明暗を上書きします</div></div>
+              <div class="tg-group">
+                <button class="tg-opt" id="disp-normal" onclick="setDisp('normal')">テーマに従う</button>
+                <button class="tg-opt" id="disp-dark" onclick="setDisp('dark')">🌙 ダーク</button>
+                <button class="tg-opt" id="disp-light" onclick="setDisp('light')">☀️ ライト</button>
+                <button class="tg-opt" id="disp-system" onclick="setDisp('system')">🖥 システム</button>
+              </div>
+            </div>
+          </div>
+          <div class="panel"><div class="panel-title">🎨 テーマ</div><div class="theme-grid" id="theme-grid"></div></div>
+          <div class="panel">
+            <div class="panel-title">🌸 生理表示設定</div>
+            <div class="setting-row" style="border-bottom:none">
+              <div><div class="setting-label">カレンダーに生理ドットを表示</div><div class="setting-sub">オフにすると他人に見せる際に非表示になります</div></div>
+              <div class="tg-group">
+                <button class="tg-opt" id="pdots-on" onclick="setPeriodDots(true)">表示</button>
+                <button class="tg-opt active" id="pdots-off" onclick="setPeriodDots(false)">非表示</button>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">☁️ クラウド同期（Google Drive）</div>
+            <div style="font-size:10px;color:var(--muted);line-height:1.7;margin-bottom:10px">Googleアカウントでログインすると、データをDriveに保存・読み込みできます。データは各自のGoogleアカウントに非公開で保存されます。</div>
+            <div class="setting-row">
+              <div><div class="setting-label">ログイン状態</div><div class="setting-sub" id="sync-sub">ログインしていません</div></div>
+              <div style="display:flex;gap:6px">
+                <button class="btn-g" id="sync-login-btn" onclick="gSignIn()" style="font-size:11px;padding:6px 13px">Googleでログイン</button>
+                <button class="btn-d" id="sync-logout-btn" onclick="gSignOut()" style="display:none;font-size:11px;padding:6px 13px">ログアウト</button>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">保存</div><div class="setting-sub">現在のデータをDriveに保存</div></div>
+              <button class="btn-g" id="sync-save-btn" onclick="gdSaveWithCheck()" disabled style="font-size:11px;padding:6px 13px">↑ Driveへ保存</button>
+            </div>
+            <div class="setting-row" style="border-bottom:none">
+              <div><div class="setting-label">読み込み</div><div class="setting-sub">Driveのデータをこのデバイスへ反映</div></div>
+              <button class="btn-g" id="sync-load-btn" onclick="gdLoad()" disabled style="font-size:11px;padding:6px 13px">↓ Driveから読込</button>
+            </div>
+            <div class="setting-row" style="border-bottom:none;padding-top:0">
+              <div><div class="setting-label">上書き警告</div><div class="setting-sub">クラウドが新しい時に確認する</div></div>
+              <input type="checkbox" id="warn-toggle" onchange="toggleSyncWarnSetting(this.checked)" checked style="width:18px;height:18px;cursor:pointer;accent-color:var(--accent)">
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">💾 データ管理</div>
+            <div class="setting-row"><div><div class="setting-label">エクスポート</div><div class="setting-sub">JSONファイルに保存</div></div><button class="btn-g" style="font-size:11px;padding:6px 13px" onclick="exportD()">⬇ 書き出し</button></div>
+            <div class="setting-row" style="border-bottom:none"><div><div class="setting-label">インポート</div><div class="setting-sub">JSON（旧形式も可）</div></div><button class="btn-g" style="font-size:11px;padding:6px 13px" onclick="document.getElementById('imp-f').click()">⬆ 読み込み</button></div>
+            <input type="file" id="imp-f" accept=".json" style="display:none" onchange="importD(event)">
+          </div>
+          <div class="panel"><div class="panel-title">📊 統計サマリー</div><div id="stats-con"></div></div>
+          <div class="panel"><div class="setting-row" style="border:none;padding:0"><div><div class="setting-label">データをリセット</div><div class="setting-sub">全記録を削除します</div></div><button class="btn-d" onclick="resetD()">削除</button></div></div>
+        </div>
+
+      </div></div><!-- /content /main -->
+
+      <!-- mobile tab bar -->
+      <div id="tab-bar">
+        <button class="tab-btn active" data-tab="log" onclick="switchTab('log')"><span class="ticon">✏️</span>記録</button>
+        <button class="tab-btn" data-tab="chart" onclick="switchTab('chart')"><span class="ticon">📈</span>グラフ</button>
+        <button class="tab-btn" data-tab="history" onclick="switchTab('history')"><span class="ticon">📋</span>履歴</button>
+        <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')"><span class="ticon">⚙️</span>設定</button>
+      </div>
+
+    </div><!-- /app -->
+  </div><!-- /shell-wrap -->
+
+  <!-- ════════════════════════════
+       SIDEBAR (desktop only)
+       order:-1 = 左, order:1 = 右
+  ════════════════════════════ -->
+  <div id="sidebar">
+    <div id="sidebar-logo">
+      <div class="logo-txt"><div class="sub">MY RECORD</div><div class="title">わたしの記録</div></div>
+      <button class="sb-tog-btn" onclick="quickToggleLayout()" title="スマホ表示に切り替え">📱</button>
+    </div>
+    <div id="sidebar-clock"><div class="sc-date" id="sb-date"></div><div class="sc-time" id="sb-time"></div></div>
+    <div class="sb-sync-compact">
+      <div class="sb-sync-label">CLOUD SYNC</div>
+      <div id="sb-sync-loggedin" style="display:none">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px">
+          <div class="sync-status-pill connected">
+            <div class="sync-dot on"></div>
+            <span class="sync-pill-lbl">☁ 接続中</span>
+          </div>
+          <button class="hdr-logout-link" id="sb-logout-btn" onclick="gSignOut()" title="ログアウト">✕</button>
+        </div>
+        <div class="sb-sync-row">
+          <button class="sb-sync-btn save-btn" id="sb-up-btn" onclick="gdSaveWithCheck()">☁↑ 保存</button>
+          <button class="sb-sync-btn" id="sb-dn-btn" onclick="gdLoad()">☁↓ 読込</button>
+        </div>
+      </div>
+      <div id="sb-login-wrap">
+        <button class="hdr-login-link" id="sb-login-btn" onclick="gSignIn()">☁ Googleでログイン</button>
+      </div>
+      <div class="sb-sync-time" id="sb-sync-time"></div>
+      <div style="display:flex;gap:5px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+        <button class="sb-sync-btn" onclick="exportD()" style="flex:1">⬇ 書き出し</button>
+        <button class="sb-sync-btn" onclick="document.getElementById('imp-f').click()" style="flex:1">⬆ 読み込み</button>
+      </div>
+    </div>
+    <div id="sb-info">
+      <div class="si-grid">
+        <div class="si-item"><div class="si-lbl">最新体重</div><div class="si-val" id="sd-weight">--</div></div>
+        <div class="si-item"><div class="si-lbl">BMI</div><div class="si-val" id="sd-bmi">--</div></div>
+        <div class="si-item"><div class="si-lbl">身長</div><div class="si-val" id="sd-height">--</div></div>
+        <div class="si-item"><div class="si-lbl">年齢</div><div class="si-val" id="sd-age">--</div></div>
+      </div>
+    </div>
+    <nav id="sidebar-nav">
+      <button class="snav-btn active" data-tab="log" onclick="switchTab('log')"><span class="snav-icon">✏️</span>記録</button>
+      <button class="snav-btn" data-tab="chart" onclick="switchTab('chart')"><span class="snav-icon">📈</span>グラフ</button>
+      <button class="snav-btn" data-tab="history" onclick="switchTab('history')"><span class="snav-icon">📋</span>履歴</button>
+      <button class="snav-btn" data-tab="settings" onclick="switchTab('settings')"><span class="snav-icon">⚙️</span>設定</button>
+    </nav>
+    <div id="sb-stats">
+      <div class="ss-title">STATS</div>
+      <div class="ss-item"><span class="ss-lbl">平均体重</span><span class="ss-val" id="sd-avg">--</span></div>
+      <div class="ss-item"><span class="ss-lbl">最低体重</span><span class="ss-val" id="sd-min">--</span></div>
+      <div class="ss-item"><span class="ss-lbl">記録数</span><span class="ss-val" id="sd-count">--</span></div>
+      <div class="ss-item"><span class="ss-lbl">前回比</span><span class="ss-val" id="sd-diff">--</span></div>
+    </div>
+  </div><!-- /sidebar -->
+
+</div><!-- /page-wrap -->
+<div class="day-overlay" id="day-overlay" onclick="closeDayPanel(event)">
+  <div class="day-panel" id="day-panel" onclick="event.stopPropagation()">
+    <div class="dp-hd">
+      <div class="dp-nav">
+        <button class="dp-nav-btn" onclick="navDayPanel(-1)">‹</button>
+        <div class="dp-date" id="dp-date-lbl"></div>
+        <button class="dp-nav-btn" onclick="navDayPanel(1)">›</button>
+      </div>
+      <button class="dp-close" onclick="closeDayPanel()">✕</button>
+    </div>
+    <div class="dp-body" id="dp-body"></div>
+  </div>
+</div>
+<div id="toast"></div>
+<script>
+const SK='myrecord-v1',OLD_SK='body-tracker-data';
+const MOODS=['😊','😄','😐','😔','😢','😤','😴','🤒','😰','🥰'];
+const WEATHERS=['☀️','🌤️','⛅','☁️','🌧️','🌩️','🌨️','⛄'];
+const MEAL_T=['朝食','昼食','夕食','間食','夜食','その他'];
+const EX_T=['歩行','エアロバイク','ヨガ','フィットボクシング','筋トレ','ウォーキング','ランニング','その他'];
+const GLC_T=['空腹時','食後2時間','随時'];
+const THEMES=[{k:'moon',n:'月',bg:'#0d0d1a',ac:'#c8a8e9'},{k:'sun',n:'太陽',bg:'#fff8f0',ac:'#e07800'},{k:'sky',n:'空',bg:'#f0f8ff',ac:'#1a80d0'},{k:'ocean',n:'海',bg:'#020d1a',ac:'#00c8f0'},{k:'sunset',n:'夕日',bg:'#1a0808',ac:'#ff7830'}];
+const BLOOD_VOLS=['少ない','普通','多い','非常に多い'];
+const PAIN_LEVELS=[{n:'なし',c:'var(--muted)'},{n:'軽い',c:'#86efac'},{n:'中程度',c:'#fde68a'},{n:'強い',c:'#fb923c'},{n:'非常に強い',c:'#f87171'},{n:'激痛',c:'#dc2626'}];
+const PAIN_LOCS=['下腹部','腰','太もも','頭','その他'];
+const SYMPTOMS=['頭痛','腰痛','むくみ','気分の落ち込み','吐き気','だるさ','胸の張り'];
+let records=[],mealLogs=[],exerciseLogs=[],glucoseLogs=[],events=[];
+let goal=null,profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown'};
+let appL='auto',appT='sky',appD='normal',appSbRight=false,showSbStats=true;
+let og={body:true,meal:true,exercise:false,health:false,condition:true,note:false};
+let curDate=todayStr(),selMood=null,selWth=null,periodOn=false;
+let selBloodVol=null,selPainLevel=null,selPainLocs=new Set(),selSymptoms=new Set();
+let mMan=false,meMan=false,bmiMan=false;
+let histView='cal',calYear=new Date().getFullYear(),calMonth=new Date().getMonth(),showPeriodDots=false;
+let dpDate=null;
+let tM=[],tE=[],tG=[],tEv=[];
+function todayStr(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function genId(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5);}
+function showToast(msg,ms=2200){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}
+function getNum(id){const v=document.getElementById(id)?.value;if(v===''||v==null)return null;const n=parseFloat(v);return isNaN(n)?null:n;}
+function setText(id,val){const e=document.getElementById(id);if(e)e.textContent=val;}
+function calcAge(){if(!profile.birthYear)return null;const now=new Date();let a=now.getFullYear()-profile.birthYear;if(profile.birthMonth&&profile.birthday&&now<new Date(now.getFullYear(),profile.birthMonth-1,profile.birthday))a--;return a;}
+function calcBMI(w,h){if(!w||!h)return null;return Math.round(w/(h/100)**2*10)/10;}
+function calcMuscle(w,bf){if(w==null||bf==null)return null;return Math.round(w*(1-bf/100)*10)/10;}
+function calcMeta(w,h,age,sex){if(!w||!h||!age)return null;let b=sex==='female'?655.1+9.563*w+1.850*h-4.676*age:66.5+13.75*w+5.003*h-6.75*age;return Math.round(b);}
+function loadData(){
+  const raw=localStorage.getItem(SK);
+  if(raw){try{const d=JSON.parse(raw);records=d.records||[];mealLogs=d.mealLogs||[];exerciseLogs=d.exerciseLogs||[];glucoseLogs=d.glucoseLogs||[];events=d.events||[];goal=d.goal??null;profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown',...(d.profile||{})};appL=d.layout??'auto';appT=d.theme||'sky';appD=d.display||'normal';appSbRight=d.sbRight??false;showSbStats=d.sbStats??true;og=d.og||og;showPeriodDots=d.showPeriodDots??false;return true;}catch(e){}}
+  const old=localStorage.getItem(OLD_SK);
+  if(old){try{const d=JSON.parse(old);records=(d.records||[]).map(r=>({bust:null,waist:null,hip:null,hba1c:null,bpHigh:null,bpLow:null,mood:null,weather:null,period:false,periodNote:'',muscleManual:false,bmiManual:false,...r}));goal=d.goal??null;profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown',...(d.profile||{})};return true;}catch(e){}}
+  return false;
+}
+function saveData(){localStorage.setItem(SK,JSON.stringify({records,mealLogs,exerciseLogs,glucoseLogs,events,goal,profile,layout:appL,theme:appT,display:appD,sbRight:appSbRight,sbStats:showSbStats,og,showPeriodDots}));}
+function getEff(){return appL==='auto'?(window.innerWidth>=768?'desktop':'mobile'):appL;}
+function applyLayout(){
+  const eff=getEff();
+  const pw=document.getElementById('page-wrap');
+  // set layout class + sidebar position
+  pw.className=(eff==='desktop'?'layout-desktop':'layout-mobile')+(appSbRight?' sb-right':'');
+  // preserve data-force attribute for display mode
+  // toggle button icons
+  const hdrTog=document.getElementById('hdr-tog');
+  if(hdrTog)hdrTog.textContent=eff==='desktop'?'📱':'🖥️';
+  // settings toggles
+  ['auto','mobile','desktop'].forEach(k=>document.getElementById('tog-'+k)?.classList.toggle('active',k===appL));
+  ['left','right'].forEach(k=>document.getElementById('tog-sb-'+k)?.classList.toggle('active',k===(appSbRight?'right':'left')));
+  updSidebar();
+}
+function setLayoutMode(m){appL=m;applyLayout();saveData();}
+function setSbPos(p){appSbRight=(p==='right');applyLayout();saveData();}
+function setSbStats(v){showSbStats=v;updSidebar();saveData();}
+function quickToggleLayout(){const eff=getEff();appL=eff==='desktop'?'mobile':'desktop';applyLayout();saveData();}
+function applyT(t){appT=t;document.documentElement.setAttribute('data-theme',t);renderTG();}
+function applyD(d){
+  appD=d;
+  const pw=document.getElementById('page-wrap');
+  pw.removeAttribute('data-force');
+  if(d==='dark')pw.setAttribute('data-force','dark');
+  else if(d==='light')pw.setAttribute('data-force','light');
+  else if(d==='system')pw.setAttribute('data-force',window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+  ['normal','dark','light','system'].forEach(k=>document.getElementById('disp-'+k)?.classList.toggle('active',k===d));
+}
+function setDisp(d){applyD(d);saveData();}
+function renderTG(){const g=document.getElementById('theme-grid');if(!g)return;g.innerHTML=THEMES.map(t=>`<div class="ts ${appT===t.k?'active':''}" style="background:${t.bg};color:${t.ac}" onclick="applyT('${t.k}');saveData()">${t.n}</div>`).join('');}
+function updSidebar(){
+  const latest=records.length?records[records.length-1]:null;
+  const age=calcAge();
+  const bmi=latest?.bmi??( latest?.weight&&profile.height?calcBMI(latest.weight,profile.height):null );
+  setText('sd-weight',latest?.weight!=null?latest.weight+' kg':'--');
+  setText('sd-bmi',bmi!=null?String(bmi):'--');
+  setText('sd-height',profile.height?profile.height+' cm':'--');
+  setText('sd-age',age?age+' 歳':'--');
+  const wt=records.filter(r=>r.weight!=null);
+  setText('sd-avg',wt.length?(wt.reduce((s,r)=>s+r.weight,0)/wt.length).toFixed(1)+' kg':'--');
+  setText('sd-min',wt.length?Math.min(...wt.map(r=>r.weight))+' kg':'--');
+  setText('sd-count',records.length?records.length+' 日':'--');
+  let diff='--',diffCls='';
+  if(wt.length>=2){const l=wt[wt.length-1].weight,p=wt[wt.length-2].weight;const d=Math.round((l-p)*10)/10;diff=d>0?'▲ '+d+' kg':d<0?'▼ '+Math.abs(d)+' kg':'→ ±0 kg';diffCls=d>0?'diff-up':d<0?'diff-dn':'diff-eq';}
+  const de=document.getElementById('sd-diff');if(de){de.textContent=diff;de.className='ss-val '+diffCls;}
+  const infoEl=document.getElementById('sb-info'),statsEl=document.getElementById('sb-stats');
+  if(infoEl)infoEl.style.display=showSbStats?'':'none';
+  if(statsEl)statsEl.style.display=showSbStats?'':'none';
+  document.getElementById('tog-stats-on')?.classList.toggle('active',showSbStats);
+  document.getElementById('tog-stats-off')?.classList.toggle('active',!showSbStats);
+}
+function tickClock(){const n=new Date();const ds=n.toLocaleDateString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit',weekday:'short'});const ts=n.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});['hdr-date','sb-date'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=ds;});['hdr-time','sb-time'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=ts;});}
+function switchTab(tab){
+  ['log','chart','history','settings'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'':'none');
+  document.querySelectorAll('.tab-btn,.snav-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  if(tab==='history'){
+    // カレンダーを今月に合わせてから描画
+    const now=new Date();calYear=now.getFullYear();calMonth=now.getMonth();
+    setHistView(histView);
+  }
+  if(tab==='settings')renderSettings();
+  if(tab==='chart')renderCharts();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('day-overlay')?.classList.remove('show');});
+function updDD(){const e=document.getElementById('date-disp');if(e)e.textContent=curDate;document.getElementById('today-btn')?.classList.toggle('active',curDate===todayStr());}
+function prevDay(){shiftDay(-1);}function nextDay(){shiftDay(1);}
+function shiftDay(n){
+  const d=new Date(curDate+'T00:00:00');d.setDate(d.getDate()+n);
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  curDate=`${y}-${m}-${day}`;updDD();loadForm(curDate);
+}
+function goToday(){curDate=todayStr();updDD();loadForm(curDate);}
+function trigDP(){
+  const pop=document.getElementById('dp-popup');
+  if(!pop)return;
+  if(pop.style.display==='none'||!pop.style.display){
+    document.getElementById('dp-input').value=curDate;
+    pop.style.display='flex';
+  } else {
+    pop.style.display='none';
+  }
+}
+function onDP(e){
+  if(!e.target.value)return;
+  curDate=e.target.value;
+  document.getElementById('dp-popup').style.display='none';
+  updDD();loadForm(curDate);
+}
+document.addEventListener('click',function(e){
+  const pop=document.getElementById('dp-popup');
+  if(pop&&pop.style.display==='flex'&&!pop.contains(e.target)&&e.target.id!=='date-disp')pop.style.display='none';
+});
+function toggleGroup(key){const hd=document.querySelector(`#grp-${key} .group-hd`);const bd=document.getElementById(`grpb-${key}`);const isO=bd.classList.contains('open');hd.classList.toggle('open',!isO);bd.classList.toggle('open',!isO);og[key]=!isO;saveData();}
+function buildEmoji(){const mg=document.getElementById('mood-grid');if(mg)mg.innerHTML=MOODS.map(e=>`<div class="emoji-opt" data-m="${e}" onclick="selM('${e}')">${e}</div>`).join('');const wg=document.getElementById('wth-grid');if(wg)wg.innerHTML=WEATHERS.map(e=>`<div class="emoji-opt" data-w="${e}" onclick="selW('${e}')">${e}</div>`).join('');}
+function selM(e){selMood=selMood===e?null:e;document.querySelectorAll('.emoji-opt[data-m]').forEach(el=>el.classList.toggle('sel',el.dataset.m===selMood));}
+function selW(e){selWth=selWth===e?null:e;document.querySelectorAll('.emoji-opt[data-w]').forEach(el=>el.classList.toggle('sel',el.dataset.w===selWth));}
+function togPeriod(){periodOn=!periodOn;document.getElementById('ptoggle').classList.toggle('on',periodOn);}
+function buildPeriodCtrls(){
+  // 経血量
+  const bg=document.getElementById('blood-grid');
+  if(bg)bg.innerHTML=BLOOD_VOLS.map(v=>`<button class="bv-btn${selBloodVol===v?' sel':''}" onclick="selBV('${v}')">${v}</button>`).join('');
+  // 痛みの強さ
+  const ps=document.getElementById('pain-scale');
+  if(ps)ps.innerHTML=PAIN_LEVELS.map((p,i)=>`<button class="ps-btn${selPainLevel===i?' sel':''}" style="${selPainLevel===i?`background:${p.c};border-color:${p.c};color:#000`:''}" onclick="selPL(${i})">${i}<br><span style="font-size:8px">${p.n}</span></button>`).join('');
+  // 痛みの場所
+  const pl=document.getElementById('ploc-grid');
+  if(pl)pl.innerHTML=PAIN_LOCS.map(v=>`<button class="ploc-btn${selPainLocs.has(v)?' sel':''}" onclick="togPLoc('${v}')">${v}</button>`).join('');
+  // 症状
+  const sg=document.getElementById('sym-grid');
+  if(sg)sg.innerHTML=SYMPTOMS.map(v=>`<button class="sym-btn${selSymptoms.has(v)?' sel':''}" onclick="togSym('${v}')">${v}</button>`).join('');
+}
+function selBV(v){selBloodVol=selBloodVol===v?null:v;buildPeriodCtrls();}
+function selPL(i){selPainLevel=selPainLevel===i?null:i;buildPeriodCtrls();}
+function togPLoc(v){selPainLocs.has(v)?selPainLocs.delete(v):selPainLocs.add(v);buildPeriodCtrls();}
+function togSym(v){selSymptoms.has(v)?selSymptoms.delete(v):selSymptoms.add(v);buildPeriodCtrls();}
+function updPeriodSec(){
+  const s=document.getElementById('period-sec');
+  const h=document.getElementById('sex-setting-hint');
+  const isFemale=profile.sex==='female';
+  if(s)s.style.display=isFemale?'':'none';
+  if(h)h.style.display=profile.sex==='unknown'?'':'none';
+}
+function onBI(){
+  const w=getNum('f-weight'),bf=getNum('f-bodyfat');
+  if(!mMan){const m=calcMuscle(w,bf);setText('m-av',m??'--');document.getElementById('m-auto').style.display=m!=null?'':'none';}
+  if(!bmiMan){const b=calcBMI(w,profile.height);setText('b-av',b??'--');document.getElementById('b-auto').style.display=b!=null?'':'none';}
+  if(!meMan){const m=calcMeta(w,profile.height,calcAge(),profile.sex);setText('me-av',m??'--');document.getElementById('me-auto').style.display=m!=null?'':'none';}
+}
+function onMI(){mMan=document.getElementById('f-muscle').value!=='';document.getElementById('m-auto').style.display=mMan?'none':'';if(!mMan)onBI();}
+function onMeI(){meMan=document.getElementById('f-metabolism').value!=='';document.getElementById('me-auto').style.display=meMan?'none':'';if(!meMan)onBI();}
+function onBMII(){bmiMan=document.getElementById('f-bmi').value!=='';document.getElementById('b-auto').style.display=bmiMan?'none':'';if(!bmiMan)onBI();}
+function copyPrev(){const p=records.filter(r=>r.date<curDate).sort((a,b)=>b.date.localeCompare(a.date))[0];if(!p){showToast('前回の記録がありません');return;}[['f-weight','weight'],['f-bodyfat','bodyFat'],['f-visceral','visceralFat'],['f-bust','bust'],['f-waist','waist'],['f-hip','hip']].forEach(([id,k])=>{if(p[k]!=null)document.getElementById(id).value=p[k];});if(p.muscleManual&&p.muscle!=null)document.getElementById('f-muscle').value=p.muscle;onBI();showToast(`${p.date} の値をコピーしました`);}
+function mkSel(opts,cur,cb){return`<select class="le-sel" onchange="${cb}">${opts.map(t=>`<option value="${t}" ${cur===t?'selected':''}>${t}</option>`).join('')}</select>`;}
+function addMeal(){tM.push({id:genId(),time:'',type:'朝食',kcal:''});renderMeals();}
+function rmMeal(id){tM=tM.filter(e=>e.id!==id);renderMeals();}
+function upM(id,f,v){const e=tM.find(e=>e.id===id);if(e)e[f]=v;}
+function renderMeals(){
+  document.getElementById('meal-entries').innerHTML=tM.map(e=>`
+    <div class="log-entry">
+      <div class="le-hd">
+        ${mkSel(MEAL_T,e.type,`upM('${e.id}','type',this.value)`)}
+        <button class="le-rm" onclick="rmMeal('${e.id}')">×</button>
+      </div>
+      <div class="le-row">
+        <div class="field"><label>時刻</label>
+          <input type="time" class="le-in-t" value="${e.time}" onchange="upM('${e.id}','time',this.value)">
+        </div>
+        <div class="field"><label>摂取 kcal</label>
+          <input type="number" class="le-in" value="${e.kcal}" placeholder="0" oninput="upM('${e.id}','kcal',this.value)">
+        </div>
+      </div>
+    </div>`).join('');
+}
+function addEx(){tE.push({id:genId(),time:'',type:'歩行',minutes:'',kcal:''});renderEx();}
+function rmEx(id){tE=tE.filter(e=>e.id!==id);renderEx();}
+function upE(id,f,v){const e=tE.find(e=>e.id===id);if(e)e[f]=v;}
+function renderEx(){
+  document.getElementById('ex-entries').innerHTML=tE.map(e=>`
+    <div class="log-entry">
+      <div class="le-hd">
+        ${mkSel(EX_T,e.type,`upE('${e.id}','type',this.value)`)}
+        <button class="le-rm" onclick="rmEx('${e.id}')">×</button>
+      </div>
+      <div class="le-row">
+        <div class="field"><label>時刻</label>
+          <input type="time" class="le-in-t" value="${e.time}" onchange="upE('${e.id}','time',this.value)">
+        </div>
+        <div class="field"><label>時間 (分)</label>
+          <input type="number" class="le-in" value="${e.minutes}" placeholder="0" oninput="upE('${e.id}','minutes',this.value)">
+        </div>
+        <div class="field"><label>消費 kcal</label>
+          <input type="number" class="le-in" value="${e.kcal}" placeholder="0" oninput="upE('${e.id}','kcal',this.value)">
+        </div>
+      </div>
+    </div>`).join('');
+}
+function addGlc(){tG.push({id:genId(),time:'',type:'随時',value:''});renderGlc();}
+function rmGlc(id){tG=tG.filter(e=>e.id!==id);renderGlc();}
+function upG(id,f,v){const e=tG.find(e=>e.id===id);if(e)e[f]=v;}
+function renderGlc(){
+  document.getElementById('glc-entries').innerHTML=tG.map(e=>`
+    <div class="log-entry">
+      <div class="le-hd">
+        ${mkSel(GLC_T,e.type,`upG('${e.id}','type',this.value)`)}
+        <button class="le-rm" onclick="rmGlc('${e.id}')">×</button>
+      </div>
+      <div class="le-row">
+        <div class="field"><label>時刻</label>
+          <input type="time" class="le-in-t" value="${e.time}" onchange="upG('${e.id}','time',this.value)">
+        </div>
+        <div class="field"><label>血糖値 (mg/dL)</label>
+          <input type="number" class="le-in" value="${e.value}" placeholder="0" oninput="upG('${e.id}','value',this.value)">
+        </div>
+      </div>
+    </div>`).join('');
+}
+function addEv(){tEv.push({id:genId(),title:'',note:''});renderEv();}
+function rmEv(id){tEv=tEv.filter(e=>e.id!==id);renderEv();}
+function upEv(id,f,v){const e=tEv.find(e=>e.id===id);if(e)e[f]=v;}
+function renderEv(){
+  document.getElementById('ev-entries').innerHTML=tEv.map(e=>`
+    <div class="log-entry">
+      <div class="le-hd">
+        <span class="le-type">イベント</span>
+        <button class="le-rm" onclick="rmEv('${e.id}')">×</button>
+      </div>
+      <div class="field"><label>タイトル</label>
+        <input type="text" class="le-in" value="${e.title}" placeholder="例：通院、薬の変更..."
+          oninput="upEv('${e.id}','title',this.value)">
+      </div>
+      <div class="field"><label>メモ（任意）</label>
+        <textarea class="field-ta" style="min-height:48px"
+          oninput="upEv('${e.id}','note',this.value)"
+          placeholder="詳細メモ">${e.note}</textarea>
+      </div>
+    </div>`).join('');
+}
+function loadForm(date){
+  const r=records.find(r=>r.date===date);const nv=v=>(v!=null&&v!=='')?v:'';
+  mMan=false;meMan=false;bmiMan=false;
+  document.getElementById('f-weight').value=nv(r?.weight);document.getElementById('f-bodyfat').value=nv(r?.bodyFat);
+  document.getElementById('f-muscle').value=r?.muscleManual?nv(r?.muscle):'';document.getElementById('f-visceral').value=nv(r?.visceralFat);
+  document.getElementById('f-metabolism').value=r?.meAuto===false?nv(r?.metabolism):'';document.getElementById('f-bmi').value=r?.bmiManual?nv(r?.bmi):'';
+  document.getElementById('f-bust').value=nv(r?.bust);document.getElementById('f-waist').value=nv(r?.waist);document.getElementById('f-hip').value=nv(r?.hip);
+  document.getElementById('f-steps').value=nv(r?.steps);document.getElementById('f-hba1c').value=nv(r?.hba1c);
+  document.getElementById('f-bph').value=nv(r?.bpHigh);document.getElementById('f-bpl').value=nv(r?.bpLow);
+  document.getElementById('f-note').value=r?.note||'';document.getElementById('f-pnote').value=r?.periodNote||'';
+  selMood=r?.mood||null;selWth=r?.weather||null;
+  document.querySelectorAll('.emoji-opt[data-m]').forEach(el=>el.classList.toggle('sel',el.dataset.m===selMood));
+  document.querySelectorAll('.emoji-opt[data-w]').forEach(el=>el.classList.toggle('sel',el.dataset.w===selWth));
+  periodOn=r?.period||false;document.getElementById('ptoggle').classList.toggle('on',periodOn);
+  selBloodVol=r?.bloodVol??null;
+  selPainLevel=r?.painLevel??null;
+  selPainLocs=new Set(r?.painLocs||[]);
+  selSymptoms=new Set(r?.symptoms||[]);
+  buildPeriodCtrls();
+  tM=mealLogs.filter(m=>m.date===date).map(m=>({...m}));
+  tE=exerciseLogs.filter(e=>e.date===date).map(e=>({...e}));
+  tG=glucoseLogs.filter(g=>g.date===date).map(g=>({...g}));
+  tEv=events.filter(ev=>ev.date===date).map(ev=>({...ev}));
+  renderMeals();renderEx();renderGlc();renderEv();onBI();
+}
+function saveRec(){
+  const w=getNum('f-weight'),bf=getNum('f-bodyfat');
+  const mIn=getNum('f-muscle'),mM=mIn!==null,muscle=mM?mIn:calcMuscle(w,bf);
+  const metIn=getNum('f-metabolism'),meA=metIn===null,meta=meA?calcMeta(w,profile.height,calcAge(),profile.sex):metIn;
+  const bIn=getNum('f-bmi'),bM=bIn!==null,bmi=bM?bIn:calcBMI(w,profile.height);
+  const rec={
+    date:curDate,
+    updatedAt:new Date().toISOString(),
+    weight:w,bodyFat:bf,muscle,muscleManual:mM,
+    visceralFat:getNum('f-visceral'),metabolism:meta,meAuto:meA,
+    bmi,bmiManual:bM,
+    bust:getNum('f-bust'),waist:getNum('f-waist'),hip:getNum('f-hip'),
+    steps:getNum('f-steps'),hba1c:getNum('f-hba1c'),
+    bpHigh:getNum('f-bph'),bpLow:getNum('f-bpl'),
+    mood:selMood,weather:selWth,
+    period:periodOn,bloodVol:selBloodVol,
+    painLevel:selPainLevel,painLocs:[...selPainLocs],symptoms:[...selSymptoms],
+    periodNote:document.getElementById('f-pnote').value,
+    note:document.getElementById('f-note').value,
+  };
+  const idx=records.findIndex(r=>r.date===curDate);if(idx>=0)records[idx]=rec;else records.push(rec);
+  records.sort((a,b)=>a.date.localeCompare(b.date));
+  mealLogs=mealLogs.filter(m=>m.date!==curDate);tM.filter(m=>m.kcal).forEach(m=>mealLogs.push({...m,date:curDate}));
+  exerciseLogs=exerciseLogs.filter(e=>e.date!==curDate);tE.filter(e=>e.type).forEach(e=>exerciseLogs.push({...e,date:curDate}));
+  glucoseLogs=glucoseLogs.filter(g=>g.date!==curDate);tG.filter(g=>g.value).forEach(g=>glucoseLogs.push({...g,date:curDate}));
+  events=events.filter(ev=>ev.date!==curDate);tEv.filter(ev=>ev.title).forEach(ev=>events.push({...ev,date:curDate}));
+  saveData();updSidebar();showToast('保存しました ✓');
+}
+function delRec(){
+  if(!records.find(r=>r.date===curDate)){showToast('この日の記録はありません');return;}
+  if(!confirm(`${curDate} の記録を削除しますか？`))return;
+  records=records.filter(r=>r.date!==curDate);
+  mealLogs=mealLogs.filter(x=>x.date!==curDate);
+  exerciseLogs=exerciseLogs.filter(x=>x.date!==curDate);
+  glucoseLogs=glucoseLogs.filter(x=>x.date!==curDate);
+  events=events.filter(x=>x.date!==curDate);
+  tM=[];tE=[];tG=[];tEv=[];
+  renderMeals();renderEx();renderGlc();renderEv();
+  saveData();loadForm(curDate);updSidebar();
+  showToast('削除しました');
+}
+function setHistView(v){
+  histView=v;
+  document.getElementById('ht-cal').classList.toggle('active',v==='cal');
+  document.getElementById('ht-list').classList.toggle('active',v==='list');
+  document.getElementById('hist-cal-view').style.display=v==='cal'?'':'none';
+  document.getElementById('hist-con').style.display=v==='list'?'':'none';
+  renderHist();
+}
+function setPeriodDots(v){
+  showPeriodDots=v;
+  document.getElementById('pdots-on')?.classList.toggle('active',v);
+  document.getElementById('pdots-off')?.classList.toggle('active',!v);
+  saveData();
+  if(histView==='cal')renderHist();
+}
+function renderHist(){
+  if(histView==='cal'){renderCalendar();return;}
+  const con=document.getElementById('hist-con'),emp=document.getElementById('hist-empty');
+  if(!records.length){con.innerHTML='';emp.style.display='';return;}emp.style.display='none';
+  const months={};[...records].reverse().forEach(r=>{const ym=r.date.slice(0,7);if(!months[ym])months[ym]=[];months[ym].push(r);});
+  con.innerHTML=Object.keys(months).sort().reverse().map(ym=>{
+    const[y,m]=ym.split('-');const recs=months[ym];
+    const cards=recs.map(r=>{
+      const ri=records.findIndex(x=>x.date===r.date);const prev=ri>0?records[ri-1]:null;
+      let dh='';if(r.weight!=null&&prev?.weight!=null){const d=Math.round((r.weight-prev.weight)*10)/10;dh=d>0?`<div class="hdiff up">▲ ${d} kg</div>`:d<0?`<div class="hdiff dn">▼ ${Math.abs(d)} kg</div>`:`<div class="hdiff eq">→ 変化なし</div>`;}
+      const chips=[r.bodyFat!=null&&['体脂肪',r.bodyFat+'%'],r.muscle!=null&&['筋肉量',r.muscle+'kg'],r.waist!=null&&['ウエスト',r.waist+'cm'],r.steps!=null&&['歩数',r.steps.toLocaleString()+'歩'],r.hba1c!=null&&['HbA1c',r.hba1c+'%'],r.bpHigh!=null&&r.bpLow!=null&&['血圧',r.bpHigh+'/'+r.bpLow],r.mood!=null&&['気分',r.mood],r.weather!=null&&['天気',r.weather],r.period&&['生理','🌸'],r.bloodVol&&['経血量',r.bloodVol],r.painLevel!=null&&r.painLevel>0&&['痛み',PAIN_LEVELS[r.painLevel]?.n]].filter(Boolean).map(([l,v])=>`<div class="chip"><span class="cl">${l} </span><span class="cv">${v}</span></div>`).join('');
+      const mc=mealLogs.filter(m=>m.date===r.date).length,ec=exerciseLogs.filter(e=>e.date===r.date).length,evl=events.filter(ev=>ev.date===r.date);
+      return`<div class="hcard"><div class="htop"><div><div class="hdate">${r.date}</div><div class="hw">${r.weight??'--'}<span>kg</span></div>${dh}</div><div style="display:flex;gap:5px;flex-shrink:0"><button class="btn-e" onclick="editDate('${r.date}')">編集</button><button class="btn-d" onclick="delDateRec('${r.date}')">削除</button></div></div>${chips?`<div class="chips">${chips}</div>`:''}${mc?`<div style="font-size:10px;color:var(--muted);margin-top:5px">🍽️ 食事 ${mc}件</div>`:''}${ec?`<div style="font-size:10px;color:var(--muted);margin-top:3px">🏃 運動 ${ec}件</div>`:''}${evl.map(ev=>`<div style="font-size:10px;color:var(--accent);margin-top:3px">📌 ${ev.title}</div>`).join('')}${r.note?`<div class="hnote">${r.note}</div>`:''}</div>`;
+    }).join('');
+    return`<div class="month-group"><div class="month-hd open" onclick="togMonth(this)"><span class="month-title">${y}年 ${parseInt(m)}月</span><div style="display:flex;align-items:center;gap:8px"><span class="month-count">${recs.length}件</span><span class="month-arrow">▾</span></div></div><div class="month-bd open">${cards}</div></div>`;
+  }).join('');
+}
+function togMonth(hd){const bd=hd.nextElementSibling;const isO=bd.classList.contains('open');hd.classList.toggle('open',!isO);bd.classList.toggle('open',!isO);}
+function editDate(date){curDate=date;updDD();loadForm(date);switchTab('log');}
+function navCal(dir){
+  calMonth+=dir;
+  if(calMonth>11){calMonth=0;calYear++;}
+  if(calMonth<0){calMonth=11;calYear--;}
+  renderCalendar();
+}
+function renderCalendar(){
+  const con=document.getElementById('hist-cal-view');
+  if(!con)return;
+  const y=calYear,m=calMonth;
+  const firstDay=new Date(y,m,1).getDay();
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const today=todayStr();
+  const DOT_COLORS={body:'var(--accent)',meal:'#fb923c',exercise:'#6bffb8',health:'#f87171',note:'#ffb830',period:'#ff7eb3'};
+  const WDAYS=['日','月','火','水','木','金','土'];
+  let cells='';
+  for(let i=0;i<firstDay;i++)cells+=`<div class="cal-cell empty"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const r=records.find(x=>x.date===ds);
+    const hasMeal=mealLogs.some(x=>x.date===ds);
+    const hasEx=exerciseLogs.some(x=>x.date===ds);
+    const hasGlc=glucoseLogs.some(x=>x.date===ds);
+    const hasEv=events.some(x=>x.date===ds);
+    const isToday=ds===today;
+    const dow=new Date(y,m,d).getDay();
+    const isSun=dow===0;
+    let dots='';
+    if(r){
+      const hasBody=r.weight!=null||r.bodyFat!=null||r.muscle!=null||r.bust!=null||r.waist!=null||r.hip!=null;
+      const hasHealth=r.hba1c!=null||r.bpHigh!=null||r.steps!=null;
+      const hasNote=r.note||hasEv;
+      if(hasBody)dots+=`<div class="cal-dot" style="background:${DOT_COLORS.body}"></div>`;
+      if(hasMeal)dots+=`<div class="cal-dot" style="background:${DOT_COLORS.meal}"></div>`;
+      if(hasEx)dots+=`<div class="cal-dot" style="background:${DOT_COLORS.exercise}"></div>`;
+      if(hasHealth||hasGlc)dots+=`<div class="cal-dot" style="background:${DOT_COLORS.health}"></div>`;
+      if(hasNote)dots+=`<div class="cal-dot" style="background:${DOT_COLORS.note}"></div>`;
+      if(showPeriodDots&&r.period)dots+=`<div class="cal-dot" style="background:${DOT_COLORS.period}"></div>`;
+    }
+    const emoji=r?(r.mood||r.weather||''):'';
+    const hasRec=!!r;
+    cells+=`<div class="cal-cell${isToday?' today':''}${isSun?' sun':''}${!hasRec?' no-rec':''}" onclick="openDayPanel('${ds}')">
+      <div class="cal-dn">${d}</div>
+      <div class="cal-emoji">${emoji}</div>
+      <div class="cal-dots">${dots}</div>
+    </div>`;
+  }
+  const legendItems=[
+    {c:'var(--accent)',l:'体組成'},{c:'#fb923c',l:'食事'},{c:'#6bffb8',l:'運動'},
+    {c:'#f87171',l:'健康指標'},{c:'#ffb830',l:'メモ'},
+    ...(showPeriodDots?[{c:'#ff7eb3',l:'生理'}]:[])
+  ].map(x=>`<div class="cal-leg"><div class="cal-leg-dot" style="background:${x.c}"></div>${x.l}</div>`).join('');
+  const periodBtnCls=showPeriodDots?'on':'';
+  con.innerHTML=`
+    <div class="cal-ctrl">
+      <button class="cal-nav-btn" onclick="navCal(-1)">‹</button>
+      <span class="cal-month-lbl">${y}年 ${m+1}月</span>
+      <div style="display:flex;gap:5px;align-items:center">
+        <button class="period-vis-btn ${periodBtnCls}" onclick="setPeriodDots(${!showPeriodDots})" title="生理ドット表示切替">🌸</button>
+        <button class="cal-nav-btn" onclick="navCal(1)">›</button>
+      </div>
+    </div>
+    <div class="cal-wdays">${WDAYS.map((w,i)=>`<div class="cal-wd${i===0?' sun':i===6?' sat':''}">${w}</div>`).join('')}</div>
+    <div class="cal-grid">${cells}</div>
+    <div class="cal-legend">${legendItems}</div>`;
+}
+function openDayPanel(date){
+  dpDate=date;
+  renderDayPanel();
+  document.getElementById('day-overlay').classList.add('show');
+}
+function closeDayPanel(e){
+  if(e&&e.target!==document.getElementById('day-overlay'))return;
+  document.getElementById('day-overlay').classList.remove('show');
+}
+function navDayPanel(dir){
+  const d=new Date(dpDate+'T00:00:00');d.setDate(d.getDate()+dir);
+  const y=d.getFullYear(),mo=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  dpDate=`${y}-${mo}-${day}`;
+  renderDayPanel();
+}
+function renderDayPanel(){
+  const date=dpDate;
+  const r=records.find(x=>x.date===date);
+  const meals=mealLogs.filter(x=>x.date===date);
+  const exs=exerciseLogs.filter(x=>x.date===date);
+  const glcs=glucoseLogs.filter(x=>x.date===date);
+  const evs=events.filter(x=>x.date===date);
+  const d=new Date(date+'T00:00:00');
+  const DOW=['日','月','火','水','木','金','土'];
+  document.getElementById('dp-date-lbl').textContent=`${date} (${DOW[d.getDay()]})`;
+  let html='';
+  if(!r&&!meals.length&&!exs.length&&!glcs.length&&!evs.length){
+    html=`<div class="dp-empty">📋<br><br>この日の記録はありません</div>`;
+  } else {
+    if(r){
+      const rows=[];
+      if(r.weight!=null)rows.push(['体重',r.weight+' kg']);
+      if(r.bodyFat!=null)rows.push(['体脂肪率',r.bodyFat+' %']);
+      if(r.muscle!=null)rows.push(['筋肉量',r.muscle+' kg']);
+      if(r.waist!=null)rows.push(['ウエスト',r.waist+' cm']);
+      if(r.steps!=null)rows.push(['歩数',r.steps.toLocaleString()+' 歩']);
+      if(r.bpHigh!=null&&r.bpLow!=null)rows.push(['血圧',r.bpHigh+'/'+r.bpLow+' mmHg']);
+      if(r.hba1c!=null)rows.push(['HbA1c',r.hba1c+' %']);
+      if(rows.length)html+=`<div class="dp-section"><div class="dp-sec-title">体組成 / 健康指標</div>${rows.map(([l,v])=>`<div class="dp-row"><span class="dp-lbl">${l}</span><span class="dp-val">${v}</span></div>`).join('')}</div>`;
+      const condRows=[];
+      if(r.mood)condRows.push(['気分',r.mood]);
+      if(r.weather)condRows.push(['天気',r.weather]);
+      if(condRows.length)html+=`<div class="dp-section"><div class="dp-sec-title">体調</div>${condRows.map(([l,v])=>`<div class="dp-row"><span class="dp-lbl">${l}</span><span class="dp-val">${v}</span></div>`).join('')}</div>`;
+      if(r.period){
+        let phtml=`<div class="dp-section"><div class="dp-sec-title">🌸 生理</div>`;
+        const prows=[];
+        if(r.bloodVol)prows.push(['経血量',r.bloodVol]);
+        if(r.painLevel!=null)prows.push(['痛みの強さ',PAIN_LEVELS[r.painLevel]?.n??'']);
+        if(prows.length)phtml+=prows.map(([l,v])=>`<div class="dp-row"><span class="dp-lbl">${l}</span><span class="dp-val">${v}</span></div>`).join('');
+        if(r.painLocs?.length)phtml+=`<div style="margin-top:6px">${r.painLocs.map(x=>`<span class="dp-chip dp-period-chip">${x}</span>`).join('')}</div>`;
+        if(r.symptoms?.length)phtml+=`<div style="margin-top:4px">${r.symptoms.map(x=>`<span class="dp-chip dp-period-chip">${x}</span>`).join('')}</div>`;
+        if(r.periodNote)phtml+=`<div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5">${r.periodNote}</div>`;
+        phtml+='</div>';html+=phtml;
+      }
+    }
+    if(meals.length){
+      const total=meals.reduce((s,m)=>s+(parseFloat(m.kcal)||0),0);
+      html+=`<div class="dp-section"><div class="dp-sec-title">食事 (合計 ${total} kcal)</div>${meals.map(m=>`<div class="dp-row"><span class="dp-lbl">${m.type}${m.time?' '+m.time.slice(0,5):''}</span><span class="dp-val">${m.kcal||'--'} kcal</span></div>`).join('')}</div>`;
+    }
+    if(exs.length){
+      html+=`<div class="dp-section"><div class="dp-sec-title">運動</div>${exs.map(e=>`<div class="dp-row"><span class="dp-lbl">${e.type}${e.time?' '+e.time.slice(0,5):''}</span><span class="dp-val">${e.minutes?e.minutes+'分 ':''} ${e.kcal?e.kcal+' kcal':''}</span></div>`).join('')}</div>`;
+    }
+    if(glcs.length){
+      html+=`<div class="dp-section"><div class="dp-sec-title">血糖値</div>${glcs.map(g=>`<div class="dp-row"><span class="dp-lbl">${g.type}${g.time?' '+g.time.slice(0,5):''}</span><span class="dp-val">${g.value} mg/dL</span></div>`).join('')}</div>`;
+    }
+    if(evs.length){
+      html+=`<div class="dp-section"><div class="dp-sec-title">イベント</div>${evs.map(e=>`<div class="dp-row"><span class="dp-lbl">📌 ${e.title}</span></div>`).join('')}</div>`;
+    }
+    if(r?.note){
+      html+=`<div class="dp-section"><div class="dp-sec-title">メモ</div><div style="font-size:11px;color:var(--text);line-height:1.6">${r.note}</div></div>`;
+    }
+  }
+  html+=`<button class="dp-edit-btn" onclick="editDate('${date}');closeDayPanel()">✏️ この日を編集する</button>`;
+  document.getElementById('dp-body').innerHTML=html;
+}
+function delDateRec(date){if(!confirm(`${date} の記録を削除しますか？`))return;records=records.filter(r=>r.date!==date);mealLogs=mealLogs.filter(x=>x.date!==date);exerciseLogs=exerciseLogs.filter(x=>x.date!==date);glucoseLogs=glucoseLogs.filter(x=>x.date!==date);events=events.filter(x=>x.date!==date);saveData();updSidebar();renderHist();showToast('削除しました');}
+function renderSettings(){
+  document.getElementById('s-height').value=profile.height??'';document.getElementById('s-by').value=profile.birthYear??'';document.getElementById('s-bm').value=profile.birthMonth??'';document.getElementById('s-bd').value=profile.birthday??'';
+  document.getElementById('pdots-on')?.classList.toggle('active',showPeriodDots);
+  document.getElementById('pdots-off')?.classList.toggle('active',!showPeriodDots);
+  ['unknown','male','female'].forEach(k=>document.getElementById('sex-'+k)?.classList.toggle('active',k===profile.sex));
+  updSexHint();applyD(appD);renderTG();
+  ['auto','mobile','desktop'].forEach(k=>document.getElementById('tog-'+k)?.classList.toggle('active',k===appL));
+  ['left','right'].forEach(k=>document.getElementById('tog-sb-'+k)?.classList.toggle('active',k===(appSbRight?'right':'left')));
+  document.getElementById('tog-stats-on')?.classList.toggle('active',showSbStats);
+  document.getElementById('tog-stats-off')?.classList.toggle('active',!showSbStats);
+  const sc=document.getElementById('stats-con');if(!records.length){sc.innerHTML='<div style="color:var(--muted);font-size:11px">まだ記録がありません</div>';return;}
+  const wt=records.filter(r=>r.weight!=null);const avg=wt.length?(wt.reduce((s,r)=>s+r.weight,0)/wt.length).toFixed(1):'--';const minW=wt.length?Math.min(...wt.map(r=>r.weight)):'--';const maxW=wt.length?Math.max(...wt.map(r=>r.weight)):'--';
+  sc.innerHTML=[['記録数',records.length+'日'],['平均体重',avg!=='--'?avg+' kg':'--'],['最低体重',minW!=='--'?minW+' kg':'--'],['最高体重',maxW!=='--'?maxW+' kg':'--'],['最初の記録',records[0]?.date??'--'],['最新の記録',records[records.length-1]?.date??'--'],['食事ログ',mealLogs.length+'件'],['運動ログ',exerciseLogs.length+'件'],['血糖値ログ',glucoseLogs.length+'件'],['イベント',events.length+'件']].map(([l,v])=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)"><span style="font-size:11px;color:var(--muted)">${l}</span><span style="font-size:12px;font-weight:700">${v}</span></div>`).join('');
+}
+function saveProfile(){profile.height=parseFloat(document.getElementById('s-height').value)||null;profile.birthYear=parseInt(document.getElementById('s-by').value)||null;profile.birthMonth=parseInt(document.getElementById('s-bm').value)||null;profile.birthday=parseInt(document.getElementById('s-bd').value)||null;saveData();updBustLbl();updPeriodSec();onBI();updSidebar();}
+function setSex(sex){profile.sex=sex;saveProfile();['unknown','male','female'].forEach(k=>document.getElementById('sex-'+k)?.classList.toggle('active',k===sex));updSexHint();updBustLbl();updPeriodSec();}
+function updSexHint(){const h=document.getElementById('sex-hint');if(!h)return;h.textContent=profile.sex==='female'?'✦ 女性向け機能（生理記録）が有効になります':profile.sex==='male'?'✦ バスト欄が「胸囲」として表示されます':'';}
+function updBustLbl(){const l=document.getElementById('bust-lbl');if(l)l.textContent=profile.sex==='male'?'胸囲 (cm)':'バスト (cm)';}
+function exportD(){
+  const data={records,mealLogs,exerciseLogs,glucoseLogs,events,goal,profile,
+    layout:appL,theme:appT,display:appD,sbRight:appSbRight,sbStats:showSbStats};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='myrecord-'+todayStr()+'.json';a.click();
+  URL.revokeObjectURL(url);
+  showToast('エクスポートしました ✓');
+}
+function importD(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      // 既存レコードとマージ（日付をキーに上書き）
+      const map={};
+      records.forEach(r=>map[r.date]=r);
+      (d.records||[]).forEach(r=>{
+        map[r.date]={
+          bust:null,waist:null,hip:null,hba1c:null,bpHigh:null,bpLow:null,
+          mood:null,weather:null,period:false,periodNote:'',
+          muscleManual:false,bmiManual:false,
+          ...r
+        };
+      });
+      records=Object.values(map).sort((a,b)=>a.date.localeCompare(b.date));
+      // サブログはIDで重複除去してマージ
+      if(d.mealLogs)    mealLogs=    [...mealLogs,    ...d.mealLogs.filter(x=>    !mealLogs.find(y=>y.id===x.id))];
+      if(d.exerciseLogs)exerciseLogs=[...exerciseLogs,...d.exerciseLogs.filter(x=>!exerciseLogs.find(y=>y.id===x.id))];
+      if(d.glucoseLogs) glucoseLogs= [...glucoseLogs, ...d.glucoseLogs.filter(x=>!glucoseLogs.find(y=>y.id===x.id))];
+      if(d.events)      events=      [...events,      ...d.events.filter(x=>      !events.find(y=>y.id===x.id))];
+      if(d.goal!=null)goal=d.goal;
+      if(d.profile)profile={...profile,...d.profile};
+      saveData();loadForm(curDate);updSidebar();
+      showToast(Object.keys(map).length+'件を読み込みました ✓');
+    }catch(err){showToast('読み込みに失敗しました');}
+    e.target.value='';
+  };
+  reader.readAsText(file);
+}
+function resetD(){
+  if(!confirm('全ての記録を削除しますか？\nプロフィールも含め、すべてのデータが消えます。\nこの操作は取り消せません。'))return;
+  records=[];mealLogs=[];exerciseLogs=[];glucoseLogs=[];events=[];
+  goal=null;
+  profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown'};
+  tM=[];tE=[];tG=[];tEv=[];
+  saveData();loadForm(curDate);
+  renderMeals();renderEx();renderGlc();renderEv();
+  updSidebar();updBustLbl();updPeriodSec();
+  showToast('データを削除しました');
+}
+function initApp(){buildEmoji();buildPeriodCtrls();updDD();loadForm(curDate);updPeriodSec();updBustLbl();Object.keys(og).forEach(k=>{document.querySelector(`#grp-${k} .group-hd`)?.classList.toggle('open',og[k]);document.getElementById(`grpb-${k}`)?.classList.toggle('open',og[k]);});onBI();updSidebar();}
+loadData();
+applyLayout();
+applyT(appT);
+applyD(appD);
+initApp();
+tickClock();
+if(!window._ck){window._ck=true;setInterval(tickClock,1000);}
+let _rzTimer;window.addEventListener('resize',()=>{if(appL==='auto'){clearTimeout(_rzTimer);_rzTimer=setTimeout(applyLayout,150);}});
+window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{if(appD==='system')applyD('system');});
+// ══ CHART TOUCH（スワイプパン・ピンチズーム）══
+// keikoroku.html より移植
+function attachChartTouch(chart,getAllDates,onSaveRange){
+  if(!chart||!chart.canvas)return;
+  const canvas=chart.canvas;
+  let t1x=null,t1y=null,t2x=null;
+  let startMin=null,startMax=null,startDist=null;
+  let isHorizontal=null;
+
+  function getCurRange(){
+    const dates=getAllDates();
+    const total=dates.length;
+    const xsc=chart.scales&&chart.scales.x;
+    if(!xsc)return{min:0,max:total-1,total};
+    const mn=Math.max(0,Math.round(xsc.min??0));
+    const mx=Math.min(total-1,Math.round(xsc.max??(total-1)));
+    return{min:mn,max:mx,total};
+  }
+  function applyRange(min,max){
+    const total=getAllDates().length;
+    min=Math.max(0,min);max=Math.min(total-1,max);
+    if(max-min<1)return;
+    if(!chart.options?.scales?.x)return;
+    chart.options.scales.x.min=Math.round(min);
+    chart.options.scales.x.max=Math.round(max);
+    try{chart.update('none');}catch(e){}
+  }
+  canvas.addEventListener('touchstart',e=>{
+    if(e.touches.length===1){
+      const r=getCurRange();
+      t1x=e.touches[0].clientX;t1y=e.touches[0].clientY;
+      t2x=null;startDist=null;
+      startMin=r.min;startMax=r.max;
+      isHorizontal=null;
+    }else if(e.touches.length===2){
+      const r=getCurRange();
+      t1x=e.touches[0].clientX;t1y=e.touches[0].clientY;
+      t2x=e.touches[1].clientX;
+      startDist=Math.abs(t1x-t2x);
+      startMin=r.min;startMax=r.max;
+      isHorizontal=null;
+      e.preventDefault();
+    }
+  },{passive:false});
+  canvas.addEventListener('touchmove',e=>{
+    if(e.touches.length>=2&&startDist!==null){
+      e.preventDefault();
+      const d=Math.abs(e.touches[0].clientX-e.touches[1].clientX);
+      if(d<5)return;
+      const scale=startDist/d;
+      const center=(startMin+startMax)/2;
+      const range=startMax-startMin;
+      const newRange=Math.max(2,Math.min(getAllDates().length-1,range*scale));
+      applyRange(center-newRange/2,center+newRange/2);
+    }else if(e.touches.length===1&&t1x!==null){
+      const dx=e.touches[0].clientX-t1x;
+      const dy=e.touches[0].clientY-t1y;
+      if(isHorizontal===null){
+        if(Math.abs(dx)>8||Math.abs(dy)>8)isHorizontal=Math.abs(dx)>Math.abs(dy);
+      }
+      if(!isHorizontal)return;
+      e.preventDefault();
+      const w=canvas.clientWidth||300;
+      const range=startMax-startMin;
+      if(range<=0)return;
+      const perPx=range/w;
+      const shift=-dx*perPx;
+      const total=getAllDates().length;
+      const newMin=Math.max(0,Math.min(total-1-range,startMin+shift));
+      applyRange(newMin,newMin+range);
+    }
+  },{passive:false});
+  canvas.addEventListener('touchend',e=>{
+    if(e.touches.length===0){
+      const xsc=chart.scales&&chart.scales.x;
+      if(xsc&&(xsc.min!=null||xsc.max!=null)){
+        const total=getAllDates().length;
+        const mn=Math.max(0,Math.round(xsc.min??0));
+        const mx=Math.min(total-1,Math.round(xsc.max??(total-1)));
+        if(mn<=0&&mx>=total-1)onSaveRange(null,null);
+        else onSaveRange(mn,mx);
+      }
+      t1x=null;t1y=null;t2x=null;startDist=null;startMin=null;startMax=null;isHorizontal=null;
+    }else if(e.touches.length===1){
+      const r=getCurRange();
+      t1x=e.touches[0].clientX;t1y=e.touches[0].clientY;
+      t2x=null;startDist=null;
+      startMin=r.min;startMax=r.max;
+      isHorizontal=null;
+    }
+  },{passive:false});
+  canvas.addEventListener('touchcancel',()=>{
+    t1x=null;t1y=null;t2x=null;startDist=null;startMin=null;startMax=null;isHorizontal=null;
+  });
+}
+
+// ══ CHART ══
+const METRICS={
+  weight:     {label:'体重',     unit:'kg',   axis:'y',  color:'#c8a8e9', type:'line'},
+  bodyFat:    {label:'体脂肪率', unit:'%',    axis:'y1', color:'#ff7eb3', type:'line'},
+  muscle:     {label:'筋肉量',   unit:'kg',   axis:'y',  color:'#6bffb8', type:'line'},
+  visceralFat:{label:'内臓脂肪', unit:'',     axis:'y1', color:'#ffb830', type:'line'},
+  bmi:        {label:'BMI',      unit:'',     axis:'y1', color:'#60a5fa', type:'line'},
+  waist:      {label:'ウエスト', unit:'cm',   axis:'y',  color:'#fb923c', type:'line'},
+  bust:       {label:'バスト',   unit:'cm',   axis:'y',  color:'#f9a8d4', type:'line'},
+  hip:        {label:'ヒップ',   unit:'cm',   axis:'y',  color:'#c4b5fd', type:'line'},
+  metabolism: {label:'基礎代謝', unit:'kcal', axis:'y',  color:'#fde68a', type:'line'},
+  steps:      {label:'歩数',     unit:'歩',   axis:'y2', color:'#86efac', type:'bar'},
+  hba1c:      {label:'HbA1c',    unit:'%',    axis:'y1', color:'#f472b6', type:'line'},
+  bpHigh:     {label:'最高血圧', unit:'mmHg', axis:'y',  color:'#f87171', type:'line'},
+  bpLow:      {label:'最低血圧', unit:'mmHg', axis:'y',  color:'#fca5a5', type:'line'},
+};
+const METRIC_GROUPS={
+  body:   {label:'体組成',   color:'#c8a8e9', metrics:['weight','bodyFat']},
+  health: {label:'健康指標', color:'#f472b6', metrics:['hba1c','bpHigh','bpLow']},
+};
+let chartPeriod='1m',chartFrom='',chartTo='',chartType='body';
+let chartBodyMode='group',chartBodyGroup='body',chartBodyMetrics=['weight','bodyFat'];
+let chartInst=null,hiEvDate=null,energyMode='bar';
+// チャートタイプごとのパン・ズーム位置保存
+let chartBodyPan={min:null,max:null};
+let chartEnergyPan={min:null,max:null};
+let chartGlcPan={min:null,max:null};
+
+function cssV(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+function getChartRange(){
+  const today=new Date(),toStr=today.toISOString().slice(0,10);
+  if(chartPeriod==='custom')return{from:chartFrom||'2000-01-01',to:chartTo||toStr};
+  const f=new Date(today);
+  if(chartPeriod==='1m')f.setMonth(f.getMonth()-1);
+  else if(chartPeriod==='3m')f.setMonth(f.getMonth()-3);
+  else if(chartPeriod==='6m')f.setMonth(f.getMonth()-6);
+  else f.setFullYear(2000);
+  return{from:f.toISOString().slice(0,10),to:toStr};
+}
+function getFilteredRecs(){const{from,to}=getChartRange();return records.filter(r=>r.date>=from&&r.date<=to);}
+function getFilteredEvents(){const{from,to}=getChartRange();return events.filter(ev=>ev.date>=from&&ev.date<=to);}
+
+function setPeriod(p){
+  chartPeriod=p;
+  // 期間変更時はパン位置をリセット
+  chartBodyPan={min:null,max:null};
+  chartEnergyPan={min:null,max:null};
+  chartGlcPan={min:null,max:null};
+  ['1m','3m','6m','all','custom'].forEach(k=>document.getElementById('period-'+k)?.classList.toggle('active',k===p));
+  document.getElementById('custom-range').style.display=p==='custom'?'flex':'none';
+  if(p!=='custom')renderCharts();
+}
+function onChartRangeChange(){
+  chartFrom=document.getElementById('chart-from').value;
+  chartTo=document.getElementById('chart-to').value;
+  if(chartFrom&&chartTo)renderCharts();
+}
+function setChartType(t){
+  chartType=t;
+  ['body','energy','glucose'].forEach(k=>document.getElementById('ct-'+k)?.classList.toggle('active',k===t));
+  const bmc=document.getElementById('body-metric-ctrl');
+  if(bmc)bmc.style.display=t==='body'?'':'none';
+  const emr=document.getElementById('energy-mode-row');
+  if(emr)emr.style.display=t==='energy'?'':'none';
+  renderCharts();
+}
+function setEnergyMode(m){
+  energyMode=m;
+  document.getElementById('em-bar')?.classList.toggle('active',m==='bar');
+  document.getElementById('em-line')?.classList.toggle('active',m==='line');
+  renderCharts();
+}
+function setBodyMode(m){
+  chartBodyMode=m;
+  document.getElementById('bm-group')?.classList.toggle('active',m==='group');
+  document.getElementById('bm-custom')?.classList.toggle('active',m==='custom');
+  document.getElementById('group-picks').style.display=m==='group'?'flex':'none';
+  document.getElementById('metric-picks').style.display=m==='custom'?'flex':'none';
+  renderCharts();
+}
+function setBodyGroup(g){
+  chartBodyGroup=g;
+  renderGroupPicks();
+  renderCharts();
+}
+function toggleMetric(mk){
+  const idx=chartBodyMetrics.indexOf(mk);
+  if(idx>=0)chartBodyMetrics.splice(idx,1);
+  else if(chartBodyMetrics.length<5)chartBodyMetrics.push(mk);
+  renderMetricPicks();renderCharts();
+}
+function renderGroupPicks(){
+  const con=document.getElementById('group-picks');if(!con)return;
+  con.innerHTML=Object.entries(METRIC_GROUPS).map(([gk,g])=>{
+    const sel=chartBodyGroup===gk;
+    return`<button class="mpick${sel?' sel':''}" style="${sel?`background:${g.color};border-color:${g.color}`:`border-color:${g.color}`}" onclick="setBodyGroup('${gk}')"><span class="dot" style="background:${g.color}"></span>${g.label}</button>`;
+  }).join('');
+}
+function renderMetricPicks(){
+  const con=document.getElementById('metric-picks');if(!con)return;
+  con.innerHTML=Object.entries(METRICS).map(([mk,m])=>{
+    const sel=chartBodyMetrics.includes(mk);
+    return`<button class="mpick${sel?' sel':''}" style="${sel?`background:${m.color};border-color:${m.color}`:`border-color:${m.color}`}" onclick="toggleMetric('${mk}')"><span class="dot" style="background:${m.color}"></span>${m.label}</button>`;
+  }).join('');
+}
+
+// ── イベント縦線プラグイン（fullLabelsで正確にマッチ） ──
+const evLinePlugin={
+  id:'evLines',
+  afterDraw(chart,args,opts){
+    const{ctx,chartArea,scales}=chart;
+    const evs=opts.events||[];
+    const fullLabels=opts.fullLabels||[];
+    evs.forEach(ev=>{
+      const xi=fullLabels.indexOf(ev.date);
+      if(xi<0)return;
+      const x=scales.x.getPixelForValue(xi);
+      if(x==null||x<chartArea.left||x>chartArea.right)return;
+      const isHi=ev.date===hiEvDate;
+      ctx.save();
+      ctx.strokeStyle=isHi?'#ffb830':'rgba(255,184,48,0.45)';
+      ctx.lineWidth=isHi?2:1.5;
+      ctx.setLineDash([4,3]);
+      ctx.beginPath();ctx.moveTo(x,chartArea.top);ctx.lineTo(x,chartArea.bottom);ctx.stroke();
+      if(isHi){
+        ctx.setLineDash([]);
+        ctx.fillStyle='#ffb830';
+        ctx.font='bold 10px DM Mono,monospace';
+        ctx.textAlign='center';
+        ctx.fillText('📌',x,chartArea.top+14);
+      }
+      ctx.restore();
+    });
+  }
+};
+
+function renderCharts(){
+  if(!document.getElementById('tab-chart')||document.getElementById('tab-chart').style.display==='none')return;
+  if(chartInst){chartInst.destroy();chartInst=null;}
+  renderGroupPicks();renderMetricPicks();
+  const recs=getFilteredRecs();
+  const evs=getFilteredEvents();
+  // events list
+  const evWrap=document.getElementById('chart-ev-wrap');
+  const evList=document.getElementById('chart-ev-list');
+  if(evs.length&&evWrap){
+    evWrap.style.display='';
+    evList.innerHTML=evs.map(ev=>`<div class="ev-item${hiEvDate===ev.date?' hi':''}" onclick="hiEvent('${ev.date}')"><span class="ev-date">${ev.date}</span><span class="ev-title">${ev.title}</span></div>`).join('');
+  } else if(evWrap){evWrap.style.display='none';}
+  const con=document.getElementById('chart-canvas-con');
+  const{from,to}=getChartRange();
+  if(chartType!=='glucose'&&!recs.length){
+    con.innerHTML='<div class="chart-no-data"><div class="ni">📊</div><div style="font-size:11px;color:var(--muted2)">この期間にデータがありません</div></div>';
+    return;
+  }
+  con.innerHTML='<canvas id="chart-canvas"></canvas>';
+  if(chartType==='body')renderBodyChart(recs,evs);
+  else if(chartType==='energy')renderEnergyChart(recs,evs);
+  else renderGlucoseChart(from,to,evs);
+}
+
+function hiEvent(date){hiEvDate=hiEvDate===date?null:date;renderCharts();}
+function chartColors(){
+  const text=cssV('--text')||'#f0f0f0';
+  const muted=cssV('--muted')||'#777';
+  return{text,muted,grid:'rgba(128,128,128,0.12)'};
+}
+function baseScales(text,muted,grid){
+  return{
+    x:{ticks:{color:muted,maxTicksLimit:8,maxRotation:45,font:{size:9}},grid:{color:grid}},
+    y:{position:'left',ticks:{color:muted,font:{size:9}},grid:{color:grid}},
+  };
+}
+
+// ── ① 体組成グラフ ──
+function renderBodyChart(recs,evs){
+  // bust label changes with sex
+  if(METRICS.bust) METRICS.bust.label = profile.sex==='male'?'胸囲':'バスト';
+  const metrics=chartBodyMode==='group'
+    ?(METRIC_GROUPS[chartBodyGroup]?.metrics||['weight','bodyFat'])
+    :chartBodyMetrics;
+  if(!metrics.length)return;
+  const fullLabels=recs.map(r=>r.date);
+  const labels=recs.map(r=>r.date.slice(5));
+  const{text,muted,grid}=chartColors();
+  const hasY1=metrics.some(mk=>METRICS[mk].axis==='y1');
+  const datasets=metrics.map(mk=>{
+    const m=METRICS[mk];
+    const data=recs.map(r=>{
+      if(r[mk]!=null)return r[mk];
+      if(mk==='bmi'&&r.weight&&profile.height)return calcBMI(r.weight,profile.height);
+      if(mk==='muscle'&&r.weight&&r.bodyFat)return calcMuscle(r.weight,r.bodyFat);
+      if(mk==='metabolism'&&r.metabolism==null&&r.weight&&profile.height&&calcAge()&&profile.sex)return calcMeta(r.weight,profile.height,calcAge(),profile.sex);
+      return null;
+    });
+    const isBar=m.type==='bar';
+    return{
+      label:m.label+(m.unit?` (${m.unit})`:''),
+      data,type:isBar?'bar':'line',
+      yAxisID:m.axis,borderColor:m.color,
+      backgroundColor:isBar?m.color+'80':m.color+'20',
+      borderWidth:2,pointRadius:isBar?0:3,pointHoverRadius:isBar?0:5,
+      tension:0.3,spanGaps:!isBar,
+    };
+  });
+  const ctx=document.getElementById('chart-canvas').getContext('2d');
+  const hasY2=metrics.includes('steps');
+  const sc=baseScales(text,muted,grid);
+  if(hasY1)sc.y1={position:'right',ticks:{color:muted,font:{size:9}},grid:{drawOnChartArea:false}};
+  if(hasY2)sc.y2={position:'right',ticks:{color:muted,font:{size:9},callback:v=>v>=1000?(v/1000).toFixed(1)+'k':v},grid:{drawOnChartArea:false},offset:hasY1};
+  chartInst=new Chart(ctx,{
+    type:'line',data:{labels,datasets},plugins:[evLinePlugin],
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        evLines:{events:evs,fullLabels},
+        legend:{labels:{color:text,font:{family:'DM Mono,monospace',size:10},boxWidth:12,padding:10}},
+        tooltip:{callbacks:{title:t=>{const i=t[0]?.dataIndex;return i!=null?fullLabels[i]:'';}}},
+      },
+      scales:sc,
+    }
+  });
+  // 保存済みパン位置を復元
+  if(chartBodyPan.min!==null){
+    chartInst.options.scales.x.min=chartBodyPan.min;
+    chartInst.options.scales.x.max=chartBodyPan.max;
+    chartInst.update('none');
+  }
+  attachChartTouch(chartInst,()=>fullLabels,(mn,mx)=>{chartBodyPan.min=mn;chartBodyPan.max=mx;});
+}
+
+// ── ② エネルギー収支グラフ（摂取↑・消費↓・血糖値右軸線） ──
+function renderEnergyChart(recs,evs){
+  const{text,muted,grid}=chartColors();
+  const fullLabels=recs.map(r=>r.date);
+  const labels=recs.map(r=>r.date.slice(5));
+  const intake=recs.map(r=>{
+    const t=mealLogs.filter(m=>m.date===r.date).reduce((s,m)=>s+(parseFloat(m.kcal)||0),0);
+    return t||null;
+  });
+  const burn=recs.map(r=>{
+    const t=exerciseLogs.filter(e=>e.date===r.date).reduce((s,e)=>s+(parseFloat(e.kcal)||0),0);
+    return t?-t:null;
+  });
+  // 日平均血糖値（右軸）
+  const glcAvg=recs.map(r=>{
+    const gs=glucoseLogs.filter(g=>g.date===r.date&&g.value);
+    if(!gs.length)return null;
+    return Math.round(gs.reduce((s,g)=>s+parseFloat(g.value),0)/gs.length);
+  });
+  const hasGlc=glcAvg.some(v=>v!=null);
+  const isLine=energyMode==='line';
+  const datasets=[
+    {label:'摂取 (kcal)',data:intake,type:energyMode,
+      backgroundColor:isLine?'transparent':'rgba(200,168,233,0.55)',
+      borderColor:'#c8a8e9',borderWidth:isLine?2:1,
+      fill:isLine?false:undefined,tension:0.3,spanGaps:true,
+      pointRadius:isLine?3:0,yAxisID:'y'},
+    {label:'消費 (kcal)',data:burn,type:energyMode,
+      backgroundColor:isLine?'transparent':'rgba(107,255,184,0.45)',
+      borderColor:'#6bffb8',borderWidth:isLine?2:1,
+      fill:isLine?false:undefined,tension:0.3,spanGaps:true,
+      pointRadius:isLine?3:0,yAxisID:'y'},
+  ];
+  if(hasGlc)datasets.push({label:'血糖値平均 (mg/dL)',data:glcAvg,type:'line',borderColor:'#f472b6',backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointHoverRadius:5,tension:0.3,spanGaps:true,yAxisID:'y1'});
+  const sc=baseScales(text,muted,grid);
+  if(hasGlc)sc.y1={position:'right',ticks:{color:muted,font:{size:9}},grid:{drawOnChartArea:false},title:{display:true,text:'mg/dL',color:muted,font:{size:8}}};
+  const ctx=document.getElementById('chart-canvas').getContext('2d');
+  chartInst=new Chart(ctx,{
+    type:'bar',data:{labels,datasets},plugins:[evLinePlugin],
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        evLines:{events:evs,fullLabels},
+        legend:{labels:{color:text,font:{family:'DM Mono,monospace',size:10},boxWidth:12,padding:10}},
+        tooltip:{callbacks:{
+          title:t=>{const i=t[0]?.dataIndex;return i!=null?fullLabels[i]:'';},
+          label:t=>`${t.dataset.label}: ${Math.abs(t.parsed.y).toLocaleString()}`,
+        }},
+      },
+      scales:sc,
+    }
+  });
+  // 保存済みパン位置を復元
+  if(chartEnergyPan.min!==null){
+    chartInst.options.scales.x.min=chartEnergyPan.min;
+    chartInst.options.scales.x.max=chartEnergyPan.max;
+    chartInst.update('none');
+  }
+  attachChartTouch(chartInst,()=>fullLabels,(mn,mx)=>{chartEnergyPan.min=mn;chartEnergyPan.max=mx;});
+}
+
+// ── ③ 血糖値専用グラフ（日時軸・タイプ別色分け線グラフ） ──
+function renderGlucoseChart(from,to,evs){
+  const glcInRange=glucoseLogs.filter(g=>g.date>=from&&g.date<=to&&g.value);
+  const con=document.getElementById('chart-canvas-con');
+  if(!glcInRange.length){
+    con.innerHTML='<div class="chart-no-data"><div class="ni">💉</div><div style="font-size:11px;color:var(--muted2)">この期間に血糖値データがありません</div></div>';
+    return;
+  }
+  const sorted=[...glcInRange].sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
+  // ラベル：日付＋時刻（時刻があれば）
+  const allLabels=[...new Set(sorted.map(g=>g.time?`${g.date.slice(5)} ${g.time.slice(0,5)}`:g.date.slice(5)))];
+  const typeColors={'空腹時':'#60a5fa','食後2時間':'#ff7eb3','随時':'#6bffb8'};
+  const types=[...new Set(sorted.map(g=>g.type))];
+  const{text,muted,grid}=chartColors();
+  const datasets=types.map(tp=>{
+    const pts=sorted.filter(g=>g.type===tp);
+    const data=allLabels.map(lbl=>{
+      const match=pts.find(g=>(g.time?`${g.date.slice(5)} ${g.time.slice(0,5)}`:g.date.slice(5))===lbl);
+      return match?parseFloat(match.value):null;
+    });
+    return{
+      label:tp,data,
+      borderColor:typeColors[tp]||'#c8a8e9',
+      backgroundColor:(typeColors[tp]||'#c8a8e9')+'30',
+      borderWidth:2,pointRadius:4,pointHoverRadius:6,
+      tension:0.2,spanGaps:false,
+    };
+  });
+  con.innerHTML='<canvas id="chart-canvas"></canvas>';
+  const ctx=document.getElementById('chart-canvas').getContext('2d');
+  chartInst=new Chart(ctx,{
+    type:'line',data:{labels:allLabels,datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'nearest',intersect:true},
+      plugins:{
+        legend:{labels:{color:text,font:{family:'DM Mono,monospace',size:10},boxWidth:12,padding:10}},
+        tooltip:{callbacks:{label:t=>`${t.dataset.label}: ${t.parsed.y} mg/dL`}},
+      },
+      scales:{
+        x:{ticks:{color:muted,maxTicksLimit:10,maxRotation:45,font:{size:9}},grid:{color:grid}},
+        y:{ticks:{color:muted,font:{size:9}},grid:{color:grid},title:{display:true,text:'mg/dL',color:muted,font:{size:8}}},
+      }
+    }
+  });
+  // 保存済みパン位置を復元
+  if(chartGlcPan.min!==null){
+    chartInst.options.scales.x.min=chartGlcPan.min;
+    chartInst.options.scales.x.max=chartGlcPan.max;
+    chartInst.update('none');
+  }
+  attachChartTouch(chartInst,()=>allLabels,(mn,mx)=>{chartGlcPan.min=mn;chartGlcPan.max=mx;});
+}
+
+// ══ GOOGLE DRIVE SYNC ══
+const GD_CLIENT_ID='1020015092975-eheh7mf0vjv55a7lufvbc1mi50ele8bv.apps.googleusercontent.com';
+const GD_SCOPE='https://www.googleapis.com/auth/drive.appdata';
+const GD_FILE='myrecord_data.json';
+let gdToken=null,gdTokenClient=null,_gdFileId=null,syncWarnDisabled=false;
+let _lastSyncTime=localStorage.getItem('gd-last-sync')?new Date(localStorage.getItem('gd-last-sync')):null;
+
+function gdReady(){
+  if(typeof google==='undefined'||!google.accounts)return false;
+  if(!gdTokenClient){
+    gdTokenClient=google.accounts.oauth2.initTokenClient({
+      client_id:GD_CLIENT_ID,scope:GD_SCOPE,
+      callback:function(resp){
+        if(resp.error){gdSetSub('ログインに失敗しました: '+resp.error);return;}
+        gdToken=resp.access_token;
+        gdSetSub('ログイン済み ✓');
+        updGDSync();
+      }
+    });
+  }
+  return true;
+}
+function gSignIn(){if(!gdReady()){gdSetSub('Googleライブラリ読み込み中…再度お試しください');return;}gdTokenClient.requestAccessToken({prompt:'select_account'});}
+function gSignOut(){if(gdToken)google.accounts.oauth2.revoke(gdToken,function(){});gdToken=null;_gdFileId=null;updGDSync();gdSetSub('ログアウトしました');}
+function gdSetSub(msg){const e=document.getElementById('sync-sub');if(e)e.textContent=msg;}
+function toggleSyncWarnSetting(v){syncWarnDisabled=!v;}
+function updGDSync(){
+  const on=!!gdToken;
+  // ヘッダー
+  const hdrLI=document.getElementById('hdr-sync-loggedin');
+  if(hdrLI)hdrLI.style.display=on?'flex':'none';
+  document.getElementById('hdr-login-btn').style.display=on?'none':'';
+  document.getElementById('hdr-logout-btn').style.display=on?'':'none';
+  // サイドバー
+  const sbLI=document.getElementById('sb-sync-loggedin');
+  const sbLW=document.getElementById('sb-login-wrap');
+  if(sbLI)sbLI.style.display=on?'block':'none';
+  if(sbLW)sbLW.style.display=on?'none':'';
+  document.getElementById('sb-login-btn').style.display=on?'none':'';
+  document.getElementById('sb-logout-btn').style.display=on?'':'none';
+  // 設定タブ内ボタン
+  const stLogin=document.getElementById('sync-login-btn');
+  const stLogout=document.getElementById('sync-logout-btn');
+  const stSave=document.getElementById('sync-save-btn');
+  const stLoad=document.getElementById('sync-load-btn');
+  if(stLogin)stLogin.style.display=on?'none':'';
+  if(stLogout)stLogout.style.display=on?'':'none';
+  if(stSave)stSave.disabled=!on;
+  if(stLoad)stLoad.disabled=!on;
+  // 最終同期時刻
+  const tl=_lastSyncTime?('最終同期 '+fmtSyncTime(_lastSyncTime)):'';
+  ['hdr-sync-time','sb-sync-time'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=tl;});
+}
+function fmtSyncTime(d){
+  const now=new Date();const diff=Math.round((now-d)/60000);
+  if(diff<1)return 'たった今';
+  if(diff<60)return diff+'分前';
+  const h=Math.floor(diff/60);
+  if(h<24)return h+'時間前';
+  return d.toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'});
+}
+function showSyncWarn(cloudTime,localTime){
+  const el=document.getElementById('sync-warn');const txt=document.getElementById('sync-warn-text');
+  if(!el)return;
+  const fmt=d=>d?d.toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'不明';
+  if(txt)txt.innerHTML='クラウド: '+fmt(cloudTime)+'&nbsp;／&nbsp;最終同期: '+fmt(localTime)+'<br>上書きするとクラウドのデータが失われます。続けますか？';
+  el.classList.add('show');el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function dismissWarn(){const el=document.getElementById('sync-warn');if(el)el.classList.remove('show');}
+async function doOverwriteSave(){
+  const chk=document.getElementById('warn-neverchk');
+  if(chk&&chk.checked){syncWarnDisabled=true;const wt=document.getElementById('warn-toggle');if(wt)wt.checked=false;}
+  dismissWarn();await gdSave();
+}
+async function gdFindFile(){
+  const res=await fetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name%3D%22'+GD_FILE+'%22&fields=files(id,name)',{headers:{Authorization:'Bearer '+gdToken}});
+  const d=await res.json();
+  const fid=(d.files&&d.files.length)?d.files[0].id:null;
+  if(fid)_gdFileId=fid;
+  return fid;
+}
+async function gdSaveWithCheck(){
+  if(!gdToken){showToast('先にGoogleログインしてください');return;}
+  if(syncWarnDisabled){await gdSave();return;}
+  try{
+    const fid=_gdFileId||(await gdFindFile());
+    if(fid&&_lastSyncTime){
+      const res=await fetch('https://www.googleapis.com/drive/v3/files/'+fid+'?fields=modifiedTime',{headers:{Authorization:'Bearer '+gdToken}});
+      if(res.ok){
+        const d=await res.json();
+        const cloudMod=d.modifiedTime?new Date(d.modifiedTime):null;
+        if(cloudMod&&_lastSyncTime&&cloudMod>_lastSyncTime){showSyncWarn(cloudMod,_lastSyncTime);return;}
+      }
+    }
+  }catch(e){}
+  await gdSave();
+}
+async function gdSave(){
+  if(!gdToken){gdSetSub('先にログインしてください');return;}
+  gdSetSub('保存中…');showToast('Driveに保存中…');
+  try{
+    const now=new Date().toISOString();
+    // updatedAtが未設定のレコードに付与
+    const recs=records.map(r=>r.updatedAt?r:{...r,updatedAt:now});
+    const payload=JSON.stringify({
+      version:'myrecord-v1',
+      records:recs,mealLogs,exerciseLogs,glucoseLogs,events,
+      goal,profile,layout:appL,theme:appT,display:appD,
+      sbRight:appSbRight,sbStats:showSbStats,savedAt:now
+    },null,2);
+    let fid=_gdFileId||(await gdFindFile());
+    let resp;
+    if(fid){
+      resp=await fetch('https://www.googleapis.com/upload/drive/v3/files/'+fid+'?uploadType=media',{method:'PATCH',headers:{Authorization:'Bearer '+gdToken,'Content-Type':'application/json'},body:payload});
+    }else{
+      const meta=JSON.stringify({name:GD_FILE,parents:['appDataFolder']});
+      const bd='myrecordboundary';const NL='\r\n';
+      const parts=['--'+bd,'Content-Type: application/json; charset=UTF-8','',meta,'--'+bd,'Content-Type: application/json','',payload,'--'+bd+'--'];
+      resp=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+gdToken,'Content-Type':'multipart/related; boundary='+bd},body:parts.join(NL)});
+    }
+    if(resp.ok){
+      _lastSyncTime=new Date();
+      localStorage.setItem('gd-last-sync',_lastSyncTime.toISOString());
+      updGDSync();
+      gdSetSub('Driveに保存しました ✓ ('+_lastSyncTime.toLocaleTimeString('ja-JP')+')');
+      showToast('Driveに保存しました ✓');
+    }else{
+      const e2=await resp.json();
+      gdSetSub('保存に失敗: '+((e2.error&&e2.error.message)||resp.status));
+      showToast('保存に失敗しました');
+    }
+  }catch(e){gdSetSub('エラー: '+e.message);showToast('エラーが発生しました');}
+}
+async function gdLoad(){
+  if(!gdToken){gdSetSub('先にログインしてください');return;}
+  gdSetSub('読み込み中…');showToast('Driveから読み込み中…');
+  try{
+    const fid=_gdFileId||(await gdFindFile());
+    if(!fid){gdSetSub('Driveにデータが見つかりません');showToast('Driveにデータがありません');return;}
+    const res=await fetch('https://www.googleapis.com/drive/v3/files/'+fid+'?alt=media',{headers:{Authorization:'Bearer '+gdToken}});
+    const d=await res.json();
+    // ── マージ：上書きではなく日付ごとにupdatedAtが新しい方を優先 ──
+    if(d.records){
+      const localMap={};
+      records.forEach(r=>localMap[r.date]=r);
+      (d.records||[]).forEach(cr=>{
+        const lr=localMap[cr.date];
+        if(!lr){
+          localMap[cr.date]=cr; // ローカルにない日付はクラウドから追加
+        }else{
+          const lt=lr.updatedAt?new Date(lr.updatedAt):new Date(0);
+          const ct=cr.updatedAt?new Date(cr.updatedAt):new Date(0);
+          if(ct>lt)localMap[cr.date]=cr; // クラウドの方が新しければ上書き
+        }
+      });
+      records=Object.values(localMap).sort((a,b)=>a.date.localeCompare(b.date));
+    }
+    // サブログもIDごとにマージ
+    function mergeSubLog(local,cloud){
+      const m={};
+      local.forEach(x=>m[x.id]=x);
+      (cloud||[]).forEach(cx=>{
+        const lx=m[cx.id];
+        if(!lx){m[cx.id]=cx;}
+        else{
+          const lt=lx.updatedAt?new Date(lx.updatedAt):new Date(0);
+          const ct=cx.updatedAt?new Date(cx.updatedAt):new Date(0);
+          if(ct>lt)m[cx.id]=cx;
+        }
+      });
+      return Object.values(m);
+    }
+    if(d.mealLogs)    mealLogs=    mergeSubLog(mealLogs,    d.mealLogs);
+    if(d.exerciseLogs)exerciseLogs=mergeSubLog(exerciseLogs,d.exerciseLogs);
+    if(d.glucoseLogs) glucoseLogs= mergeSubLog(glucoseLogs, d.glucoseLogs);
+    if(d.events)      events=      mergeSubLog(events,       d.events);
+    if(d.goal!=null)goal=d.goal;
+    if(d.profile)profile={...profile,...d.profile};
+    if(d.layout)appL=d.layout;
+    if(d.theme)appT=d.theme;
+    if(d.display)appD=d.display;
+    if(d.sbRight!=null)appSbRight=d.sbRight;
+    if(d.sbStats!=null)showSbStats=d.sbStats;
+    _lastSyncTime=new Date();
+    localStorage.setItem('gd-last-sync',_lastSyncTime.toISOString());
+    saveData();applyLayout();applyT(appT);applyD(appD);
+    loadForm(curDate);updSidebar();
+    updGDSync();
+    gdSetSub('マージ完了 ✓ ('+new Date().toLocaleTimeString('ja-JP')+')');
+    showToast('マージ完了 ✓');
+  }catch(e){gdSetSub('エラー: '+e.message);showToast('読み込みに失敗しました');}
+}
+
+</script>
+</html>
