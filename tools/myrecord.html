@@ -699,19 +699,27 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
     <div id="sidebar-clock"><div class="sc-date" id="sb-date"></div><div class="sc-time" id="sb-time"></div></div>
     <div class="sb-sync-compact">
       <div class="sb-sync-label">CLOUD SYNC</div>
-      <div class="sb-sync-row" id="sb-sync-loggedin" style="display:none">
-        <div class="sync-status-pill connected">
-          <div class="sync-dot on"></div>
-          <span class="sync-pill-lbl">☁ 接続中</span>
+      <div id="sb-sync-loggedin" style="display:none">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px">
+          <div class="sync-status-pill connected">
+            <div class="sync-dot on"></div>
+            <span class="sync-pill-lbl">☁ 接続中</span>
+          </div>
+          <button class="hdr-logout-link" id="sb-logout-btn" onclick="gSignOut()" title="ログアウト">✕</button>
         </div>
-        <button class="sb-sync-btn save-btn" id="sb-up-btn" onclick="gdSaveWithCheck()">☁↑ 保存</button>
-        <button class="sb-sync-btn" id="sb-dn-btn" onclick="gdLoad()">☁↓ 読込</button>
+        <div class="sb-sync-row">
+          <button class="sb-sync-btn save-btn" id="sb-up-btn" onclick="gdSaveWithCheck()">☁↑ 保存</button>
+          <button class="sb-sync-btn" id="sb-dn-btn" onclick="gdLoad()">☁↓ 読込</button>
+        </div>
       </div>
-      <div style="display:flex;align-items:center;gap:6px">
+      <div id="sb-login-wrap">
         <button class="hdr-login-link" id="sb-login-btn" onclick="gSignIn()">☁ Googleでログイン</button>
-        <button class="hdr-logout-link" id="sb-logout-btn" onclick="gSignOut()" style="display:none" title="ログアウト">✕ ログアウト</button>
       </div>
       <div class="sb-sync-time" id="sb-sync-time"></div>
+      <div style="display:flex;gap:5px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+        <button class="sb-sync-btn" onclick="exportD()" style="flex:1">⬇ 書き出し</button>
+        <button class="sb-sync-btn" onclick="document.getElementById('imp-f').click()" style="flex:1">⬆ 読み込み</button>
+      </div>
     </div>
     <div id="sb-info">
       <div class="si-grid">
@@ -1810,7 +1818,9 @@ function updGDSync(){
   document.getElementById('hdr-logout-btn').style.display=on?'':'none';
   // サイドバー
   const sbLI=document.getElementById('sb-sync-loggedin');
-  if(sbLI)sbLI.style.display=on?'flex':'none';
+  const sbLW=document.getElementById('sb-login-wrap');
+  if(sbLI)sbLI.style.display=on?'block':'none';
+  if(sbLW)sbLW.style.display=on?'none':'';
   document.getElementById('sb-login-btn').style.display=on?'none':'';
   document.getElementById('sb-logout-btn').style.display=on?'':'none';
   // 設定タブ内ボタン
