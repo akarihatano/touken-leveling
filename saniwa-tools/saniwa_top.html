@@ -33,7 +33,9 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   grid-template-areas:
     "apps info"
     "wavebox wavebox"
-    "mail mail";
+    "twitter twitter"
+    "mail mail"
+    "neko neko";
   min-height: 100vh;
 }
 
@@ -431,13 +433,36 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
 
 .mail-panel {
   grid-area: mail;
-  margin: 0 44px 28px;
+  margin: 0 44px 12px;
   background: rgba(255,255,255,.82);
   border: 1.5px solid rgba(180,120,80,.3);
   border-radius: 16px;
   padding: 20px 24px;
   box-shadow: 3px 4px 16px rgba(0,0,0,.2);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .22s, box-shadow .22s, background .22s;
 }
+.mail-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 8px 22px rgba(0,0,0,.25);
+  background: rgba(255,255,255,.93);
+}
+.mail-icon-area {
+  flex-shrink: 0;
+  width: 56px; height: 56px;
+  background: rgba(200,168,75,.1);
+  border: 1.5px dashed rgba(200,168,75,.4);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.mail-icon-area img {
+  width: 48px; height: 48px; object-fit: contain; border-radius: 8px;
+}
+.mail-body { flex: 1; }
 .wavebox-panel {
   grid-area: wavebox;
   margin: 0 44px 12px;
@@ -485,27 +510,159 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   white-space: nowrap;
 }
 .mail-title {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: .12em;
-  color: #2c1a10;
-  margin-bottom: 8px;
+  font-size: 16px; font-weight: 700; letter-spacing: .12em; color: #2c1a10; margin-bottom: 5px;
 }
 .mail-desc {
-  font-size: 12px;
-  line-height: 1.9;
-  color: #4a3020;
+  font-size: 12px; line-height: 1.8; color: #4a3020;
   font-family: 'Noto Sans JP', sans-serif;
 }
 .mail-link {
-  display: inline-block;
-  margin-top: 10px;
-  font-size: 12px;
-  letter-spacing: .12em;
-  color: #8b4513;
+  flex-shrink: 0;
+  font-size: 12px; letter-spacing: .12em; color: #8b4513;
   border-bottom: 1px solid rgba(139,69,19,.35);
-  text-decoration: none;
   font-family: 'Noto Sans JP', sans-serif;
+  white-space: nowrap;
+}
+
+.twitter-panel {
+  grid-area: twitter;
+  margin: 0 44px 12px;
+  background: rgba(255,255,255,.82);
+  border: 1.5px solid rgba(180,120,80,.3);
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 3px 4px 16px rgba(0,0,0,.2);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .22s, box-shadow .22s, background .22s;
+}
+.twitter-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 8px 22px rgba(0,0,0,.25);
+  background: rgba(255,255,255,.93);
+}
+.twitter-icon-area {
+  flex-shrink: 0;
+  width: 56px; height: 56px;
+  background: rgba(200,168,75,.1);
+  border: 1.5px dashed rgba(200,168,75,.4);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.twitter-icon-area img {
+  width: 48px; height: 48px; object-fit: contain; border-radius: 8px;
+}
+.twitter-body { flex: 1; }
+.twitter-title {
+  font-size: 16px; font-weight: 700; letter-spacing: .12em; color: #2c1a10; margin-bottom: 5px;
+}
+.twitter-desc {
+  font-size: 12px; line-height: 1.8; color: #4a3020;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.twitter-link {
+  flex-shrink: 0;
+  font-size: 12px; letter-spacing: .12em; color: #8b4513;
+  border-bottom: 1px solid rgba(139,69,19,.35);
+  font-family: 'Noto Sans JP', sans-serif;
+  white-space: nowrap;
+}
+
+.neko-panel {
+  grid-area: neko;
+  margin: 0 44px 28px;
+  background: rgba(255,255,255,.82);
+  border: 1.5px solid rgba(180,120,80,.3);
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 3px 4px 16px rgba(0,0,0,.2);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .22s, box-shadow .22s, background .22s;
+}
+.neko-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 8px 22px rgba(0,0,0,.25);
+  background: rgba(255,255,255,.93);
+}
+.neko-icon-area {
+  flex-shrink: 0;
+  width: 56px; height: 56px;
+  background: rgba(200,168,75,.1);
+  border: 1.5px dashed rgba(200,168,75,.4);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.neko-icon-area img {
+  width: 48px; height: 48px; object-fit: contain; border-radius: 8px;
+}
+.neko-body { flex: 1; }
+.neko-title {
+  font-size: 16px; font-weight: 700; letter-spacing: .12em; color: #2c1a10; margin-bottom: 5px;
+}
+.neko-desc {
+  font-size: 12px; line-height: 1.8; color: #4a3020;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.neko-link {
+  flex-shrink: 0;
+  font-size: 12px; letter-spacing: .12em; color: #8b4513;
+  border-bottom: 1px solid rgba(139,69,19,.35);
+  font-family: 'Noto Sans JP', sans-serif;
+  white-space: nowrap;
+}
+
+.amazon-panel {
+  grid-area: amazon;
+  margin: 0 44px 28px;
+  background: rgba(255,255,255,.82);
+  border: 1.5px solid rgba(180,120,80,.3);
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 3px 4px 16px rgba(0,0,0,.2);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .22s, box-shadow .22s, background .22s;
+}
+.amazon-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 8px 22px rgba(0,0,0,.25);
+  background: rgba(255,255,255,.93);
+}
+.amazon-icon-area {
+  flex-shrink: 0;
+  width: 56px; height: 56px;
+  background: rgba(200,168,75,.1);
+  border: 1.5px dashed rgba(200,168,75,.4);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.amazon-icon-area img {
+  width: 48px; height: 48px; object-fit: contain; border-radius: 8px;
+}
+.amazon-body { flex: 1; }
+.amazon-title {
+  font-size: 16px; font-weight: 700; letter-spacing: .12em; color: #2c1a10; margin-bottom: 5px;
+}
+.amazon-desc {
+  font-size: 12px; line-height: 1.8; color: #4a3020;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.amazon-link {
+  flex-shrink: 0;
+  font-size: 12px; letter-spacing: .12em; color: #8b4513;
+  border-bottom: 1px solid rgba(139,69,19,.35);
+  font-family: 'Noto Sans JP', sans-serif;
+  white-space: nowrap;
 }
 
 footer {
@@ -523,15 +680,19 @@ footer {
       "sp-update"
       "info"
       "wavebox"
-      "mail";
+      "twitter"
+      "mail"
+      "neko";
   }
   .col-left { padding: 28px 20px 16px; }
   .col-right { padding: 8px 20px 32px; }
   .site-title { font-size: 20px; }
   .card-title { font-size: 18px; }
   .info-panel { padding: 20px 18px; }
-  .mail-panel { margin: 0 20px 24px; padding: 16px 18px; }
+  .mail-panel { margin: 0 20px 12px; padding: 16px 18px; }
   .wavebox-panel { margin: 0 20px 12px; padding: 16px 18px; }
+  .twitter-panel { margin: 0 20px 12px; padding: 16px 18px; }
+  .neko-panel { margin: 0 20px 28px; padding: 16px 18px; }
   .sp-update-bar { display: block; }
   .update-panel { display: none; }
 }
@@ -609,16 +770,16 @@ footer {
 <div class="sp-update-bar">
   <div class="sp-update-toggle" onclick="spUpdateToggle()" id="sp-update-btn">
     <span class="sp-update-label">最新更新</span>
-    <span class="sp-update-date">2026.04.26</span>
+    <span class="sp-update-date">2026.05.05</span>
     <span class="sp-update-badge">最新</span>
     <span class="sp-update-arrow">▼</span>
   </div>
   <div class="sp-update-body" id="sp-update-body">
     <div class="tl-content">
+      <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">資源帳</div>
       <ul>
-        <li>連絡ツール（Wavebox）を追加</li>
-        <li>ボタン配置の調整</li>
-        <li>軽微なバグ修正</li>
+        <li>内番タイマーを追加</li>
+        <li>松竹梅富士の札グラフを追加（ON/OFFボタンあり）</li>
       </ul>
     </div>
   </div>
@@ -715,16 +876,16 @@ footer {
       <!-- 1件目：最新・最初から開く -->
       <div class="tl-entry is-latest" id="tl-0">
         <div class="tl-header" onclick="tlToggle('tl-0')">
-          <span class="tl-date">2026.04.26</span>
+          <span class="tl-date">2026.05.05</span>
           <span class="tl-badge">最新</span>
           <span class="tl-arrow">▼</span>
         </div>
         <div class="tl-body">
           <div class="tl-content">
+            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">資源帳</div>
             <ul>
-              <li>連絡ツール（Wavebox）を追加</li>
-              <li>ボタン配置の調整</li>
-              <li>軽微なバグ修正</li>
+              <li>内番タイマーを追加</li>
+              <li>松竹梅富士の札グラフを追加（ON/OFFボタンあり）</li>
             </ul>
           </div>
         </div>
@@ -733,22 +894,15 @@ footer {
       <!-- 2件目：折りたたみ -->
       <div class="tl-entry" id="tl-1">
         <div class="tl-header" onclick="tlToggle('tl-1')">
-          <span class="tl-date">2026.04.25</span>
+          <span class="tl-date">2026.05.02</span>
           <span class="tl-arrow">▼</span>
         </div>
         <div class="tl-body">
           <div class="tl-content">
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">資源帳</div>
+            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
             <ul>
-              <li>期間メモをグラフで選択強調できるように</li>
-              <li>その他軽微な改修</li>
-            </ul>
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
-            <ul>
-              <li>期間メモ・日メモのUI刷新</li>
-              <li>刀種複数選択に対応</li>
-              <li>PCヘッダー刷新（同期ボタン・ログアウト・最終同期時刻）</li>
-              <li>クラウド同期・グラフ操作の改修（試運転中）</li>
+              <li>「選ぶ」と「グラフ線」にソート・絞込要素を追加</li>
+              <li>グラフの経験値・レベル線を個別にON/OFF可能に</li>
             </ul>
           </div>
         </div>
@@ -757,19 +911,23 @@ footer {
       <!-- 3件目：折りたたみ -->
       <div class="tl-entry" id="tl-2">
         <div class="tl-header" onclick="tlToggle('tl-2')">
-          <span class="tl-date">2026.04.24</span>
+          <span class="tl-date">2026.04.30</span>
           <span class="tl-arrow">▼</span>
         </div>
         <div class="tl-body">
           <div class="tl-content">
+            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">資源帳</div>
             <ul>
-              <li>「イベント・キャンペーン」→「期間メモ」に名称変更</li>
-              <li>「メモ」→「日メモ」に名称変更</li>
-              <li>グラフ表示を三種類から選べるようになりました（設定・グラフ内ボタンで切替）</li>
-              <li>グラフで期間メモを選択して強調できるようになりました</li>
-              <li>グラフの日付形式を切り替えできるようになりました</li>
-              <li>期間メモ・日メモのプリセット表示を改善しました</li>
+              <li>クラウドの保存・読込の挙動を変更しました</li>
+              <li>保存時：今まで通り（ローカルの全データをクラウドへ）</li>
+              <li>読込時：クラウドと手元のデータを合体し、日付ごとに新しい方を優先</li>
             </ul>
+            <div class="tl-note">
+              ※同じ日付にスマホとPCで別々に入力した場合、後から保存した方を優先（タイムスタンプで判断）<br>
+              ※複数端末利用時、一方で期間メモを削除しても、もう一方から保存し直すと復活する場合があります<br>
+              ※不評であれば元の上書き方式に戻す予定です<br>
+              この機能は試運転中です。
+            </div>
           </div>
         </div>
       </div>
@@ -786,6 +944,64 @@ footer {
 
         <div class="tl-entry" id="tl-3">
           <div class="tl-header" onclick="tlToggle('tl-3')">
+            <span class="tl-date">2026.04.26</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <ul>
+                <li>連絡ツール（Wavebox）を追加</li>
+                <li>ボタン配置の調整</li>
+                <li>軽微なバグ修正</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-4">
+          <div class="tl-header" onclick="tlToggle('tl-4')">
+            <span class="tl-date">2026.04.25</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">資源帳</div>
+              <ul>
+                <li>期間メモをグラフで選択強調できるように</li>
+                <li>その他軽微な改修</li>
+              </ul>
+              <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
+              <ul>
+                <li>期間メモ・日メモのUI刷新</li>
+                <li>刀種複数選択に対応</li>
+                <li>PCヘッダー刷新（同期ボタン・ログアウト・最終同期時刻）</li>
+                <li>クラウド同期・グラフ操作の改修（試運転中）</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-5">
+          <div class="tl-header" onclick="tlToggle('tl-5')">
+            <span class="tl-date">2026.04.24</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <ul>
+                <li>「イベント・キャンペーン」→「期間メモ」に名称変更</li>
+                <li>「メモ」→「日メモ」に名称変更</li>
+                <li>グラフ表示を三種類から選べるようになりました（設定・グラフ内ボタンで切替）</li>
+                <li>グラフで期間メモを選択して強調できるようになりました</li>
+                <li>グラフの日付形式を切り替えできるようになりました</li>
+                <li>期間メモ・日メモのプリセット表示を改善しました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-6">
+          <div class="tl-header" onclick="tlToggle('tl-6')">
             <span class="tl-date">2026.04.23</span>
             <span class="tl-arrow">▼</span>
           </div>
@@ -806,8 +1022,8 @@ footer {
           </div>
         </div>
 
-        <div class="tl-entry" id="tl-4">
-          <div class="tl-header" onclick="tlToggle('tl-4')">
+        <div class="tl-entry" id="tl-7">
+          <div class="tl-header" onclick="tlToggle('tl-7')">
             <span class="tl-date">2026.04.22</span>
             <span class="tl-arrow">▼</span>
           </div>
@@ -822,8 +1038,8 @@ footer {
           </div>
         </div>
 
-        <div class="tl-entry" id="tl-5">
-          <div class="tl-header" onclick="tlToggle('tl-5')">
+        <div class="tl-entry" id="tl-8">
+          <div class="tl-header" onclick="tlToggle('tl-8')">
             <span class="tl-date">2026.04.21</span>
             <span class="tl-arrow">▼</span>
           </div>
@@ -858,13 +1074,50 @@ footer {
   </div>
   <span class="wavebox-link">開く →</span>
 </a>
-<div class="mail-panel">
-  <div class="mail-title">メールフォーム</div>
-  <div class="mail-desc">
-    ご意見・ご要望などはこちらからお送りください。
+<!-- Twitterパネル -->
+<a class="twitter-panel" href="https://twitter.com/suwasuwamochi00" target="_blank" rel="noopener">
+  <div class="twitter-icon-area">
+    <!-- twitter_icon.png を同じフォルダに入れると表示されます -->
+    <img src="twitter_icon.png" alt="Twitter / X" onerror="this.style.display='none'">
   </div>
-  <a class="mail-link" href="contact.html">メールフォームを開く →</a>
-</div>
+  <div class="twitter-body">
+    <div class="twitter-title">Twitter / X</div>
+    <div class="twitter-desc">
+      管理人が思う今後のここの更新予定や開発メモなどをポストしています。<br>
+      必ず機能追加するわけではありません。
+    </div>
+  </div>
+  <span class="twitter-link">開く →</span>
+</a>
+<a class="mail-panel" href="contact.html">
+  <div class="mail-icon-area">
+    <!-- mail_icon.png を同じフォルダに入れると表示されます -->
+    <img src="mail_icon.png" alt="メールフォーム" onerror="this.style.display='none'">
+  </div>
+  <div class="mail-body">
+    <div class="mail-title">メールフォーム</div>
+    <div class="mail-desc">
+      ご意見・ご要望などはこちらからお送りください。
+    </div>
+  </div>
+  <span class="mail-link">開く →</span>
+</a>
+<!-- 猫の休憩所パネル -->
+<a class="neko-panel" href="../index.html">
+  <div class="neko-icon-area">
+    <!-- necomomi.png を同じフォルダに入れると表示されます -->
+    <img src="necomomi.png" alt="猫の休憩所" onerror="this.style.display='none'">
+  </div>
+  <div class="neko-body">
+    <div class="neko-title">猫の休憩所</div>
+    <div class="neko-desc">
+      他の一般的なツールが置いてあります。試作品です。<br>
+      ちょっと寄ってみてください。
+    </div>
+  </div>
+  <span class="neko-link">開く →</span>
+</a>
+
 </div>
 </div>
 <footer>
