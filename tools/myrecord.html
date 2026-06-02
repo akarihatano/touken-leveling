@@ -251,6 +251,22 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 .period-btns{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
 .period-btn{background:none;border:1px solid var(--border2);border-radius:20px;color:var(--muted);font-family:inherit;font-size:10px;font-weight:700;letter-spacing:.5px;padding:5px 12px;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .period-btn.active{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.time-section{margin-bottom:12px}
+.time-section-hd{display:flex;align-items:center;gap:7px;padding:7px 0 8px;border-bottom:1px solid var(--border2);margin-bottom:10px}
+.am-pm-diff{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 11px;background:var(--bg3);border-radius:8px;margin-top:2px;margin-bottom:10px}
+.diff-item{display:flex;align-items:center;gap:5px;font-size:11px}
+.diff-lbl{color:var(--muted);font-size:9px}
+.diff-val{font-weight:700}
+.diff-val.up{color:var(--danger)}
+.diff-val.dn{color:var(--accent2)}
+.diff-val.eq{color:var(--muted)}
+.diff-val.good{color:#22c55e}
+.diff-val.warn{color:#fb923c}
+.time-section-lbl{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1px}
+.time-section-sub{font-size:9px;color:var(--muted);margin-left:auto}
+.chart-time-toggle{display:flex;gap:4px;margin-bottom:8px}
+.ctt-btn{padding:4px 12px;border-radius:20px;border:1.5px solid var(--border2);background:none;color:var(--muted);font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;transition:all .15s}
+.ctt-btn.active{background:color-mix(in srgb,var(--accent) 20%,transparent);border-color:var(--accent);color:var(--accent)}
 .custom-range{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;margin-bottom:8px}
 .custom-range input[type=date]{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:inherit;font-size:12px;padding:5px 8px;outline:none;color-scheme:dark;}
 .custom-range input[type=date]:focus{border-color:var(--accent)}
@@ -350,6 +366,13 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 </style>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
+<script>
+  window.dataLayer=window.dataLayer||[];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js',new Date());
+  gtag('config','G-QM317D9ESN');
+</script>
 </head>
 <body>
 <div id="page-wrap">
@@ -420,16 +443,62 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
             <button class="group-hd open" onclick="toggleGroup('body')"><span class="group-icon">📊</span><span class="group-title">体組成</span><span class="group-arrow">▾</span></button>
             <div class="group-bd open" id="grpb-body">
               <div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="cp-btn" onclick="copyPrev()">↩ 前回の値をコピー</button></div>
-              <div class="form-grid">
-                <div class="field"><label>体重 (kg)</label><input type="number" id="f-weight" step="0.1" placeholder="--" oninput="onBI()"></div>
-                <div class="field"><label>体脂肪率 (%)</label><input type="number" id="f-bodyfat" step="0.1" placeholder="--" oninput="onBI()"></div>
-                <div class="field"><label>筋肉量 (kg)</label><input type="number" id="f-muscle" step="0.1" placeholder="--" oninput="onMI()">
-                  <div class="auto-row" id="m-auto"><span class="auto-lbl">推定</span><span class="auto-val" id="m-av">--</span><span class="auto-lbl">kg</span></div></div>
-                <div class="field"><label>内臓脂肪 (レベル)</label><input type="number" id="f-visceral" step="0.5" placeholder="--"></div>
-                <div class="field"><label>基礎代謝 (kcal)</label><input type="number" id="f-metabolism" step="1" placeholder="--" oninput="onMeI()">
-                  <div class="auto-row" id="me-auto"><span class="auto-lbl">推定</span><span class="auto-val" id="me-av">--</span><span class="auto-lbl">kcal</span></div></div>
-                <div class="field"><label>BMI</label><input type="number" id="f-bmi" step="0.1" placeholder="--" oninput="onBMII()">
-                  <div class="auto-row" id="b-auto"><span class="auto-lbl">推定</span><span class="auto-val" id="b-av">--</span></div></div>
+
+              <!-- 1日1回モード -->
+              <div id="body-once">
+                <div class="form-grid">
+                  <div class="field"><label>体重 (kg)</label><input type="number" id="f-weight" step="0.1" placeholder="--" oninput="onBI()"></div>
+                  <div class="field"><label>体脂肪率 (%)</label><input type="number" id="f-bodyfat" step="0.1" placeholder="--" oninput="onBI()"></div>
+                  <div class="field"><label>筋肉量 (kg)</label><input type="number" id="f-muscle" step="0.1" placeholder="--" oninput="onMI()">
+                    <div class="auto-row" id="m-auto"><span class="auto-lbl">推定</span><span class="auto-val" id="m-av">--</span><span class="auto-lbl">kg</span></div></div>
+                  <div class="field"><label>内臓脂肪 (レベル)</label><input type="number" id="f-visceral" step="0.5" placeholder="--"></div>
+                  <div class="field"><label>基礎代謝 (kcal)</label><input type="number" id="f-metabolism" step="1" placeholder="--" oninput="onMeI()">
+                    <div class="auto-row" id="me-auto"><span class="auto-lbl">推定</span><span class="auto-val" id="me-av">--</span><span class="auto-lbl">kcal</span></div></div>
+                  <div class="field"><label>BMI</label><input type="number" id="f-bmi" step="0.1" placeholder="--" oninput="onBMII()">
+                    <div class="auto-row" id="b-auto"><span class="auto-lbl">推定</span><span class="auto-val" id="b-av">--</span></div></div>
+                </div>
+              </div>
+
+              <!-- 朝夜2回モード -->
+              <div id="body-twice" style="display:none">
+                <div class="time-section">
+                  <div class="time-section-hd">
+                    <span class="time-section-lbl">🌅 朝</span>
+                    <span class="time-section-sub">長期トレンドの基準値</span>
+                  </div>
+                  <div class="form-grid">
+                    <div class="field"><label>体重 (kg)</label><input type="number" id="f-weight-m" step="0.1" placeholder="--" oninput="onBI()"></div>
+                    <div class="field"><label>体脂肪率 (%)</label><input type="number" id="f-bodyfat-m" step="0.1" placeholder="--" oninput="onBI()"></div>
+                    <div class="field full"><label>筋肉量 (kg)</label><input type="number" id="f-muscle-m" step="0.1" placeholder="--" oninput="onMI()">
+                      <div class="auto-row" id="m-auto-m"><span class="auto-lbl">推定</span><span class="auto-val" id="m-av-m">--</span><span class="auto-lbl">kg</span></div></div>
+                    <div class="field"><label>基礎代謝 (kcal)</label><input type="number" id="f-metabolism" step="1" placeholder="--" oninput="onMeI()">
+                      <div class="auto-row" id="me-auto"><span class="auto-lbl">推定</span><span class="auto-val" id="me-av">--</span><span class="auto-lbl">kcal</span></div></div>
+                    <div class="field"><label>BMI</label><input type="number" id="f-bmi" step="0.1" placeholder="--" oninput="onBMII()">
+                      <div class="auto-row" id="b-auto"><span class="auto-lbl">推定</span><span class="auto-val" id="b-av">--</span></div></div>
+                  </div>
+                  <div style="font-size:9px;color:var(--muted);margin-top:6px;line-height:1.6">※ 基礎代謝・BMIの推定値は朝の体重・体脂肪率をもとに計算しています</div>
+                </div>
+                <div class="time-section">
+                  <div class="time-section-hd">
+                    <span class="time-section-lbl">🌙 夜</span>
+                    <span class="time-section-sub">その日の生活の結果</span>
+                  </div>
+                  <div class="form-grid">
+                    <div class="field"><label>体重 (kg)</label><input type="number" id="f-weight-e" step="0.1" placeholder="--" oninput="onBI()"></div>
+                    <div class="field"><label>体脂肪率 (%)</label><input type="number" id="f-bodyfat-e" step="0.1" placeholder="--" oninput="onBI()"></div>
+                    <div class="field full"><label>筋肉量 (kg)</label><input type="number" id="f-muscle-e" step="0.1" placeholder="--" oninput="onMI()"></div>
+                  </div>
+                </div>
+                <!-- 朝夜差 -->
+                <div id="am-pm-diff" class="am-pm-diff" style="display:none"></div>
+                <!-- 朝夜共通項目 -->
+                <div class="form-grid">
+                  <div class="field"><label>内臓脂肪 (レベル)</label><input type="number" id="f-visceral" step="0.5" placeholder="--"></div>
+                </div>
+              </div>
+
+              <!-- 共通：バスト・ウエスト・ヒップ -->
+              <div class="form-grid" style="margin-top:8px">
                 <div class="field"><label id="bust-lbl">バスト (cm)</label><input type="number" id="f-bust" step="0.5" placeholder="--"></div>
                 <div class="field"><label>ウエスト (cm)</label><input type="number" id="f-waist" step="0.5" placeholder="--"></div>
                 <div class="field full"><label>ヒップ (cm)</label><input type="number" id="f-hip" step="0.5" placeholder="--"></div>
@@ -447,8 +516,11 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
           <div class="group" id="grp-exercise">
             <button class="group-hd" onclick="toggleGroup('exercise')"><span class="group-icon">🏃</span><span class="group-title">運動</span><span class="group-arrow">▾</span></button>
             <div class="group-bd" id="grpb-exercise">
+              <div class="field" style="margin-bottom:10px">
+                <div class="period-row"><span style="font-size:12px">🏅 今日運動した！</span><div class="ptoggle" id="ex-toggle" onclick="togExercised()"></div></div>
+              </div>
               <div class="field"><label>歩数</label><input type="number" id="f-steps" step="1" placeholder="--"></div>
-              <div class="hint-t" style="margin-top:4px">運動セッション</div>
+              <div class="hint-t" style="margin-top:8px">運動セッション（種別・時間・カロリーは空でもOK）</div>
               <div class="log-entries" id="ex-entries"></div>
               <button class="add-btn" onclick="addEx()">＋ 運動を追加</button>
             </div>
@@ -540,6 +612,12 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
             </div>
             <!-- body metric selector -->
             <div class="chart-metric-ctrl" id="body-metric-ctrl">
+              <!-- 朝夜2回モード時のみ表示するトグル -->
+              <div class="chart-time-toggle" id="chart-time-toggle" style="display:none">
+                <button class="ctt-btn active" id="ctt-morning" onclick="setChartBodyTime('morning')">🌅 朝</button>
+                <button class="ctt-btn" id="ctt-evening" onclick="setChartBodyTime('evening')">🌙 夜</button>
+                <button class="ctt-btn" id="ctt-both" onclick="setChartBodyTime('both')">両方</button>
+              </div>
               <div class="metric-mode-row">
                 <button class="tg-opt active" id="bm-group" onclick="setBodyMode('group')">グループ</button>
                 <button class="tg-opt" id="bm-custom" onclick="setBodyMode('custom')">カスタム</button>
@@ -631,6 +709,16 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
             </div>
           </div>
           <div class="panel"><div class="panel-title">🎨 テーマ</div><div class="theme-grid" id="theme-grid"></div></div>
+          <div class="panel">
+            <div class="panel-title">⚖️ 体重・体組成の記録方式</div>
+            <div class="setting-row" style="border-bottom:none">
+              <div><div class="setting-label">測定回数</div><div class="setting-sub">朝夜2回にすると入力欄が分かれます</div></div>
+              <div class="tg-group">
+                <button class="tg-opt" id="btm-once" onclick="setBodyTwiceMode(false)">1日1回</button>
+                <button class="tg-opt" id="btm-twice" onclick="setBodyTwiceMode(true)">朝夜2回</button>
+              </div>
+            </div>
+          </div>
           <div class="panel">
             <div class="panel-title">🌸 生理表示設定</div>
             <div class="setting-row" style="border-bottom:none">
@@ -774,13 +862,18 @@ const SYMPTOMS=['頭痛','腰痛','むくみ','気分の落ち込み','吐き気
 let records=[],mealLogs=[],exerciseLogs=[],glucoseLogs=[],events=[];
 let goal=null,profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown'};
 let appL='auto',appT='sky',appD='normal',appSbRight=false,showSbStats=true;
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 朝夜2回モード関連変数
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let bodyTwiceMode=false; // 1日1回 vs 朝夜2回の切り替えフラグ
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 let og={body:true,meal:true,exercise:false,health:false,condition:true,note:false};
-let curDate=todayStr(),selMood=null,selWth=null,periodOn=false;
+let curDate=todayStr(),selMood=null,selWth=null,periodOn=false,exercisedOn=false;
 let selBloodVol=null,selPainLevel=null,selPainLocs=new Set(),selSymptoms=new Set();
-let mMan=false,meMan=false,bmiMan=false;
+let mMan=false,meMan=false,bmiMan=false; // 手動入力フラグ
 let histView='cal',calYear=new Date().getFullYear(),calMonth=new Date().getMonth(),showPeriodDots=false;
 let dpDate=null;
-let tM=[],tE=[],tG=[],tEv=[];
+let tM=[],tE=[],tG=[],tEv=[]; // 一時フォームデータ
 function todayStr(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function genId(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5);}
 function showToast(msg,ms=2200){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}
@@ -792,12 +885,26 @@ function calcMuscle(w,bf){if(w==null||bf==null)return null;return Math.round(w*(
 function calcMeta(w,h,age,sex){if(!w||!h||!age)return null;let b=sex==='female'?655.1+9.563*w+1.850*h-4.676*age:66.5+13.75*w+5.003*h-6.75*age;return Math.round(b);}
 function loadData(){
   const raw=localStorage.getItem(SK);
-  if(raw){try{const d=JSON.parse(raw);records=d.records||[];mealLogs=d.mealLogs||[];exerciseLogs=d.exerciseLogs||[];glucoseLogs=d.glucoseLogs||[];events=d.events||[];goal=d.goal??null;profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown',...(d.profile||{})};appL=d.layout??'auto';appT=d.theme||'sky';appD=d.display||'normal';appSbRight=d.sbRight??false;showSbStats=d.sbStats??true;og=d.og||og;showPeriodDots=d.showPeriodDots??false;return true;}catch(e){}}
+  if(raw){try{const d=JSON.parse(raw);records=d.records||[];mealLogs=d.mealLogs||[];exerciseLogs=d.exerciseLogs||[];glucoseLogs=d.glucoseLogs||[];events=d.events||[];goal=d.goal??null;profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown',...(d.profile||{})};appL=d.layout??'auto';appT=d.theme||'sky';appD=d.display??'normal';appSbRight=d.sbRight??false;showSbStats=d.sbStats??true;og=d.og||og;showPeriodDots=d.showPeriodDots??false;bodyTwiceMode=d.bodyTwiceMode??false;
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // 旧フィールド→新フィールド の移行（1回モード→2回モードへの対応）
+    // - weight → weightMorning
+    // - bodyFat → bodyFatMorning
+    // - muscle → muscleMorning
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    records=records.map(r=>{
+      const out={...r};
+      if(r.weightMorning==null&&r.weight!=null){out.weightMorning=r.weight;}
+      if(r.bodyFatMorning==null&&r.bodyFat!=null){out.bodyFatMorning=r.bodyFat;}
+      if(r.muscleMorning==null&&r.muscle!=null){out.muscleMorning=r.muscle;}
+      return out;
+    });
+    return true;}catch(e){}}
   const old=localStorage.getItem(OLD_SK);
   if(old){try{const d=JSON.parse(old);records=(d.records||[]).map(r=>({bust:null,waist:null,hip:null,hba1c:null,bpHigh:null,bpLow:null,mood:null,weather:null,period:false,periodNote:'',muscleManual:false,bmiManual:false,...r}));goal=d.goal??null;profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown',...(d.profile||{})};return true;}catch(e){}}
   return false;
 }
-function saveData(){localStorage.setItem(SK,JSON.stringify({records,mealLogs,exerciseLogs,glucoseLogs,events,goal,profile,layout:appL,theme:appT,display:appD,sbRight:appSbRight,sbStats:showSbStats,og,showPeriodDots}));}
+function saveData(){localStorage.setItem(SK,JSON.stringify({records,mealLogs,exerciseLogs,glucoseLogs,events,goal,profile,layout:appL,theme:appT,display:appD,sbRight:appSbRight,sbStats:showSbStats,og,showPeriodDots,bodyTwiceMode}));}
 function getEff(){return appL==='auto'?(window.innerWidth>=768?'desktop':'mobile'):appL;}
 function applyLayout(){
   const eff=getEff();
@@ -833,16 +940,18 @@ function updSidebar(){
   const latest=records.length?records[records.length-1]:null;
   const age=calcAge();
   const bmi=latest?.bmi??( latest?.weight&&profile.height?calcBMI(latest.weight,profile.height):null );
-  setText('sd-weight',latest?.weight!=null?latest.weight+' kg':'--');
+  const latestW=latest?.weightMorning??latest?.weight;
+  setText('sd-weight',latestW!=null?latestW+' kg':'--');
   setText('sd-bmi',bmi!=null?String(bmi):'--');
   setText('sd-height',profile.height?profile.height+' cm':'--');
   setText('sd-age',age?age+' 歳':'--');
-  const wt=records.filter(r=>r.weight!=null);
-  setText('sd-avg',wt.length?(wt.reduce((s,r)=>s+r.weight,0)/wt.length).toFixed(1)+' kg':'--');
-  setText('sd-min',wt.length?Math.min(...wt.map(r=>r.weight))+' kg':'--');
+  const wt=records.filter(r=>(r.weightMorning??r.weight)!=null);
+  const wVal=r=>(r.weightMorning??r.weight);
+  setText('sd-avg',wt.length?(wt.reduce((s,r)=>s+wVal(r),0)/wt.length).toFixed(1)+' kg':'--');
+  setText('sd-min',wt.length?Math.min(...wt.map(r=>wVal(r)))+' kg':'--');
   setText('sd-count',records.length?records.length+' 日':'--');
   let diff='--',diffCls='';
-  if(wt.length>=2){const l=wt[wt.length-1].weight,p=wt[wt.length-2].weight;const d=Math.round((l-p)*10)/10;diff=d>0?'▲ '+d+' kg':d<0?'▼ '+Math.abs(d)+' kg':'→ ±0 kg';diffCls=d>0?'diff-up':d<0?'diff-dn':'diff-eq';}
+  if(wt.length>=2){const l=wVal(wt[wt.length-1]),p=wVal(wt[wt.length-2]);const d=Math.round((l-p)*10)/10;diff=d>0?'▲ '+d+' kg':d<0?'▼ '+Math.abs(d)+' kg':'→ ±0 kg';diffCls=d>0?'diff-up':d<0?'diff-dn':'diff-eq';}
   const de=document.getElementById('sd-diff');if(de){de.textContent=diff;de.className='ss-val '+diffCls;}
   const infoEl=document.getElementById('sb-info'),statsEl=document.getElementById('sb-stats');
   if(infoEl)infoEl.style.display=showSbStats?'':'none';
@@ -868,9 +977,9 @@ function prevDay(){shiftDay(-1);}function nextDay(){shiftDay(1);}
 function shiftDay(n){
   const d=new Date(curDate+'T00:00:00');d.setDate(d.getDate()+n);
   const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
-  curDate=`${y}-${m}-${day}`;updDD();loadForm(curDate);
+  curDate=`${y}-${m}-${day}`;updDD();updBodyForm();loadForm(curDate);
 }
-function goToday(){curDate=todayStr();updDD();loadForm(curDate);}
+function goToday(){curDate=todayStr();updDD();updBodyForm();loadForm(curDate);}
 function trigDP(){
   const pop=document.getElementById('dp-popup');
   if(!pop)return;
@@ -885,7 +994,7 @@ function onDP(e){
   if(!e.target.value)return;
   curDate=e.target.value;
   document.getElementById('dp-popup').style.display='none';
-  updDD();loadForm(curDate);
+  updDD();updBodyForm();loadForm(curDate);
 }
 document.addEventListener('click',function(e){
   const pop=document.getElementById('dp-popup');
@@ -896,6 +1005,7 @@ function buildEmoji(){const mg=document.getElementById('mood-grid');if(mg)mg.inn
 function selM(e){selMood=selMood===e?null:e;document.querySelectorAll('.emoji-opt[data-m]').forEach(el=>el.classList.toggle('sel',el.dataset.m===selMood));}
 function selW(e){selWth=selWth===e?null:e;document.querySelectorAll('.emoji-opt[data-w]').forEach(el=>el.classList.toggle('sel',el.dataset.w===selWth));}
 function togPeriod(){periodOn=!periodOn;document.getElementById('ptoggle').classList.toggle('on',periodOn);}
+function togExercised(){exercisedOn=!exercisedOn;document.getElementById('ex-toggle').classList.toggle('on',exercisedOn);}
 function buildPeriodCtrls(){
   // 経血量
   const bg=document.getElementById('blood-grid');
@@ -914,6 +1024,108 @@ function selBV(v){selBloodVol=selBloodVol===v?null:v;buildPeriodCtrls();}
 function selPL(i){selPainLevel=selPainLevel===i?null:i;buildPeriodCtrls();}
 function togPLoc(v){selPainLocs.has(v)?selPainLocs.delete(v):selPainLocs.add(v);buildPeriodCtrls();}
 function togSym(v){selSymptoms.has(v)?selSymptoms.delete(v):selSymptoms.add(v);buildPeriodCtrls();}
+// ═══════════════════════════════════════════════════════════
+// 朝夜体測フォーム表示切り替え（bodyTwiceMode対応）
+// ═══════════════════════════════════════════════════════════
+function updBodyForm(){
+  document.getElementById('body-once').style.display=bodyTwiceMode?'none':'';
+  document.getElementById('body-twice').style.display=bodyTwiceMode?'':'none';
+}
+function setBodyTwiceMode(v){
+  bodyTwiceMode=v;
+  updBodyForm();
+  loadForm(curDate);
+  saveData();
+  // 設定タブのボタン状態を更新
+  document.getElementById('btm-once')?.classList.toggle('active',!v);
+  document.getElementById('btm-twice')?.classList.toggle('active',v);
+}
+
+// ═══════════════════════════════════════════════════════════
+// 体組成の自動計算（筋肉量・BMI・基礎代謝）
+// ═══════════════════════════════════════════════════════════
+function updAmPmDiff(){
+  const el=document.getElementById('am-pm-diff');
+  if(!el)return;
+  const wM=getNum('f-weight-m'),wE=getNum('f-weight-e');
+  const bfM=getNum('f-bodyfat-m'),bfE=getNum('f-bodyfat-e');
+  const muM=getNum('f-muscle-m'),muE=getNum('f-muscle-e');
+  const items=[];
+  function diffItem(lbl,m,e,unit,dec=1,invertColor=false){
+    if(m==null||e==null)return;
+    const d=Math.round((e-m)*Math.pow(10,dec))/Math.pow(10,dec);
+    const isUp=d>0,isDown=d<0;
+    let cls;
+    if(invertColor) cls=isUp?'good':isDown?'warn':'eq';
+    else cls=isUp?'up':isDown?'dn':'eq';
+    const sign=isUp?'▲ +':isDown?'▼ ':' ';
+    items.push(`<div class="diff-item"><span class="diff-lbl">${lbl}</span><span class="diff-val ${cls}">${sign}${Math.abs(d)}${unit}</span></div>`);
+  }
+  diffItem('体重',wM,wE,' kg');
+  diffItem('体脂肪率',bfM,bfE,' %');
+  diffItem('筋肉量',muM,muE,' kg',1,true);
+  if(items.length){
+    el.style.display='flex';
+    el.innerHTML=`<span style="font-size:9px;color:var(--muted);margin-right:4px">朝夜差</span>`+items.join('');
+  }else{
+    el.style.display='none';
+  }
+}
+function onBI(){
+  // 朝（Morning）の値を使用して計算
+  const getWeight=()=>bodyTwiceMode?getNum('f-weight-m'):getNum('f-weight');
+  const getBodyFat=()=>bodyTwiceMode?getNum('f-bodyfat-m'):getNum('f-bodyfat');
+  const w=getWeight(),bf=getBodyFat();
+  
+  // 筋肉量の自動計算
+  if(!mMan){
+    const m=calcMuscle(w,bf);
+    if(bodyTwiceMode){
+      setText('m-av-m',m??'--');
+      const el=document.getElementById('m-auto-m');if(el)el.style.display=m!=null?'':'none';
+    }else{
+      setText('m-av',m??'--');
+      document.getElementById('m-auto').style.display=m!=null?'':'none';
+    }
+  }
+  // BMIの自動計算
+  if(!bmiMan){
+    const b=calcBMI(w,profile.height);
+    setText('b-av',b??'--');
+    document.getElementById('b-auto').style.display=b!=null?'':'none';
+  }
+  // 基礎代謝の自動計算
+  if(!meMan){
+    const m=calcMeta(w,profile.height,calcAge(),profile.sex);
+    setText('me-av',m??'--');
+    document.getElementById('me-auto').style.display=m!=null?'':'none';
+  }
+  // 朝夜差の表示（朝夜2回モード時）
+  if(bodyTwiceMode)updAmPmDiff();
+}
+function onMI(){
+  // 筋肉量入力の手動フラグを更新
+  if(bodyTwiceMode){
+    const el=document.getElementById('f-muscle-m');
+    mMan=el?el.value!=='':false;
+    const am=document.getElementById('m-auto-m');if(am)am.style.display=mMan?'none':'';
+  }else{
+    mMan=document.getElementById('f-muscle').value!=='';
+    document.getElementById('m-auto').style.display=mMan?'none':'';
+  }
+  if(!mMan)onBI();else if(bodyTwiceMode)updAmPmDiff();
+}
+function onMeI(){
+  meMan=document.getElementById('f-metabolism').value!=='';
+  document.getElementById('me-auto').style.display=meMan?'none':'';
+  if(!meMan)onBI();
+}
+function onBMII(){
+  bmiMan=document.getElementById('f-bmi').value!=='';
+  document.getElementById('b-auto').style.display=bmiMan?'none':'';
+  if(!bmiMan)onBI();
+}
+
 function updPeriodSec(){
   const s=document.getElementById('period-sec');
   const h=document.getElementById('sex-setting-hint');
@@ -921,16 +1133,23 @@ function updPeriodSec(){
   if(s)s.style.display=isFemale?'':'none';
   if(h)h.style.display=profile.sex==='unknown'?'':'none';
 }
-function onBI(){
-  const w=getNum('f-weight'),bf=getNum('f-bodyfat');
-  if(!mMan){const m=calcMuscle(w,bf);setText('m-av',m??'--');document.getElementById('m-auto').style.display=m!=null?'':'none';}
-  if(!bmiMan){const b=calcBMI(w,profile.height);setText('b-av',b??'--');document.getElementById('b-auto').style.display=b!=null?'':'none';}
-  if(!meMan){const m=calcMeta(w,profile.height,calcAge(),profile.sex);setText('me-av',m??'--');document.getElementById('me-auto').style.display=m!=null?'':'none';}
+function copyPrev(){
+  const p=records.filter(r=>r.date<curDate).sort((a,b)=>b.date.localeCompare(a.date))[0];
+  if(!p){showToast('前回の記録がありません');return;}
+  if(!bodyTwiceMode){
+    [['f-weight','weightMorning'],['f-bodyfat','bodyFatMorning'],['f-visceral','visceralFat'],['f-bust','bust'],['f-waist','waist'],['f-hip','hip']].forEach(([id,k])=>{if(p[k]!=null)document.getElementById(id).value=p[k];});
+    if(p.muscleMorning!=null)document.getElementById('f-muscle').value=p.muscleMorning;
+  }else{
+    if(p.weightMorning!=null)document.getElementById('f-weight-m').value=p.weightMorning;
+    if(p.bodyFatMorning!=null)document.getElementById('f-bodyfat-m').value=p.bodyFatMorning;
+    if(p.muscleMorning!=null)document.getElementById('f-muscle-m').value=p.muscleMorning;
+    if(p.weightEvening!=null)document.getElementById('f-weight-e').value=p.weightEvening;
+    if(p.bodyFatEvening!=null)document.getElementById('f-bodyfat-e').value=p.bodyFatEvening;
+    if(p.muscleEvening!=null)document.getElementById('f-muscle-e').value=p.muscleEvening;
+    [['f-visceral','visceralFat'],['f-bust','bust'],['f-waist','waist'],['f-hip','hip']].forEach(([id,k])=>{if(p[k]!=null)document.getElementById(id).value=p[k];});
+  }
+  onBI();showToast(`${p.date} の値をコピーしました`);
 }
-function onMI(){mMan=document.getElementById('f-muscle').value!=='';document.getElementById('m-auto').style.display=mMan?'none':'';if(!mMan)onBI();}
-function onMeI(){meMan=document.getElementById('f-metabolism').value!=='';document.getElementById('me-auto').style.display=meMan?'none':'';if(!meMan)onBI();}
-function onBMII(){bmiMan=document.getElementById('f-bmi').value!=='';document.getElementById('b-auto').style.display=bmiMan?'none':'';if(!bmiMan)onBI();}
-function copyPrev(){const p=records.filter(r=>r.date<curDate).sort((a,b)=>b.date.localeCompare(a.date))[0];if(!p){showToast('前回の記録がありません');return;}[['f-weight','weight'],['f-bodyfat','bodyFat'],['f-visceral','visceralFat'],['f-bust','bust'],['f-waist','waist'],['f-hip','hip']].forEach(([id,k])=>{if(p[k]!=null)document.getElementById(id).value=p[k];});if(p.muscleManual&&p.muscle!=null)document.getElementById('f-muscle').value=p.muscle;onBI();showToast(`${p.date} の値をコピーしました`);}
 function mkSel(opts,cur,cb){return`<select class="le-sel" onchange="${cb}">${opts.map(t=>`<option value="${t}" ${cur===t?'selected':''}>${t}</option>`).join('')}</select>`;}
 function addMeal(){tM.push({id:genId(),time:'',type:'朝食',kcal:''});renderMeals();}
 function rmMeal(id){tM=tM.filter(e=>e.id!==id);renderMeals();}
@@ -1019,17 +1238,38 @@ function renderEv(){
 function loadForm(date){
   const r=records.find(r=>r.date===date);const nv=v=>(v!=null&&v!=='')?v:'';
   mMan=false;meMan=false;bmiMan=false;
-  document.getElementById('f-weight').value=nv(r?.weight);document.getElementById('f-bodyfat').value=nv(r?.bodyFat);
-  document.getElementById('f-muscle').value=r?.muscleManual?nv(r?.muscle):'';document.getElementById('f-visceral').value=nv(r?.visceralFat);
-  document.getElementById('f-metabolism').value=r?.meAuto===false?nv(r?.metabolism):'';document.getElementById('f-bmi').value=r?.bmiManual?nv(r?.bmi):'';
-  document.getElementById('f-bust').value=nv(r?.bust);document.getElementById('f-waist').value=nv(r?.waist);document.getElementById('f-hip').value=nv(r?.hip);
-  document.getElementById('f-steps').value=nv(r?.steps);document.getElementById('f-hba1c').value=nv(r?.hba1c);
+  if(!bodyTwiceMode){
+    // 1日1回モード：weightMorningを優先、なければ旧weightを使う
+    document.getElementById('f-weight').value=nv(r?.weightMorning??r?.weight);
+    document.getElementById('f-bodyfat').value=nv(r?.bodyFatMorning??r?.bodyFat);
+    document.getElementById('f-muscle').value=(r?.muscleManual||r?.muscleMorning!=null)?nv(r?.muscleMorning??r?.muscle):'';
+    document.getElementById('f-visceral').value=nv(r?.visceralFat);
+    document.getElementById('f-metabolism').value=r?.meAuto===false?nv(r?.metabolism):'';
+    document.getElementById('f-bmi').value=r?.bmiManual?nv(r?.bmi):'';
+  }else{
+    // 朝夜2回モード
+    document.getElementById('f-weight-m').value=nv(r?.weightMorning??r?.weight);
+    document.getElementById('f-bodyfat-m').value=nv(r?.bodyFatMorning??r?.bodyFat);
+    document.getElementById('f-muscle-m').value=nv(r?.muscleMorning??r?.muscle);
+    document.getElementById('f-weight-e').value=nv(r?.weightEvening);
+    document.getElementById('f-bodyfat-e').value=nv(r?.bodyFatEvening);
+    document.getElementById('f-muscle-e').value=nv(r?.muscleEvening);
+    document.getElementById('f-visceral').value=nv(r?.visceralFat);
+    document.getElementById('f-metabolism').value=r?.meAuto===false?nv(r?.metabolism):'';
+    document.getElementById('f-bmi').value=r?.bmiManual?nv(r?.bmi):'';
+  }
+  document.getElementById('f-bust').value=nv(r?.bust);
+  document.getElementById('f-waist').value=nv(r?.waist);
+  document.getElementById('f-hip').value=nv(r?.hip);
+  document.getElementById('f-steps').value=nv(r?.steps);
+  document.getElementById('f-hba1c').value=nv(r?.hba1c);
   document.getElementById('f-bph').value=nv(r?.bpHigh);document.getElementById('f-bpl').value=nv(r?.bpLow);
   document.getElementById('f-note').value=r?.note||'';document.getElementById('f-pnote').value=r?.periodNote||'';
   selMood=r?.mood||null;selWth=r?.weather||null;
   document.querySelectorAll('.emoji-opt[data-m]').forEach(el=>el.classList.toggle('sel',el.dataset.m===selMood));
   document.querySelectorAll('.emoji-opt[data-w]').forEach(el=>el.classList.toggle('sel',el.dataset.w===selWth));
   periodOn=r?.period||false;document.getElementById('ptoggle').classList.toggle('on',periodOn);
+  exercisedOn=r?.exercised||false;document.getElementById('ex-toggle').classList.toggle('on',exercisedOn);
   selBloodVol=r?.bloodVol??null;
   selPainLevel=r?.painLevel??null;
   selPainLocs=new Set(r?.painLocs||[]);
@@ -1042,21 +1282,41 @@ function loadForm(date){
   renderMeals();renderEx();renderGlc();renderEv();onBI();
 }
 function saveRec(){
-  const w=getNum('f-weight'),bf=getNum('f-bodyfat');
-  const mIn=getNum('f-muscle'),mM=mIn!==null,muscle=mM?mIn:calcMuscle(w,bf);
-  const metIn=getNum('f-metabolism'),meA=metIn===null,meta=meA?calcMeta(w,profile.height,calcAge(),profile.sex):metIn;
-  const bIn=getNum('f-bmi'),bM=bIn!==null,bmi=bM?bIn:calcBMI(w,profile.height);
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // 朝夜2回モード判定で、フォーム入力フィールドを切り替え
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  let wM,bfM,muscleM,wE,bfE,muscleE;
+  if(!bodyTwiceMode){
+    // 1日1回モード：体重(朝)のみを使用
+    wM=getNum('f-weight');bfM=getNum('f-bodyfat');
+    const mIn=getNum('f-muscle');mMan=mIn!==null;
+    muscleM=mMan?mIn:calcMuscle(wM,bfM);
+    wE=null;bfE=null;muscleE=null; // 夜のデータはnull
+  }else{
+    // 朝夜2回モード：朝と夜の値を別途取得
+    wM=getNum('f-weight-m');bfM=getNum('f-bodyfat-m');
+    const mInM=getNum('f-muscle-m');mMan=mInM!==null;
+    muscleM=mMan?mInM:calcMuscle(wM,bfM);
+    wE=getNum('f-weight-e');bfE=getNum('f-bodyfat-e');
+    muscleE=getNum('f-muscle-e');
+  }
+  const metIn=getNum('f-metabolism'),meA=metIn===null,meta=meA?calcMeta(wM,profile.height,calcAge(),profile.sex):metIn;
+  const bIn=getNum('f-bmi'),bM=bIn!==null,bmi=bM?bIn:calcBMI(wM,profile.height);
   const rec={
     date:curDate,
     updatedAt:new Date().toISOString(),
-    weight:w,bodyFat:bf,muscle,muscleManual:mM,
+    // 朝の体測値
+    weightMorning:wM,bodyFatMorning:bfM,muscleMorning:muscleM,muscleManual:mMan,
+    // 夜の体測値（2回モード時のみ有効）
+    weightEvening:wE,bodyFatEvening:bfE,muscleEvening:muscleE,
+    // 共通項目
     visceralFat:getNum('f-visceral'),metabolism:meta,meAuto:meA,
     bmi,bmiManual:bM,
     bust:getNum('f-bust'),waist:getNum('f-waist'),hip:getNum('f-hip'),
     steps:getNum('f-steps'),hba1c:getNum('f-hba1c'),
     bpHigh:getNum('f-bph'),bpLow:getNum('f-bpl'),
     mood:selMood,weather:selWth,
-    period:periodOn,bloodVol:selBloodVol,
+    period:periodOn,exercised:exercisedOn,bloodVol:selBloodVol,
     painLevel:selPainLevel,painLocs:[...selPainLocs],symptoms:[...selSymptoms],
     periodNote:document.getElementById('f-pnote').value,
     note:document.getElementById('f-note').value,
@@ -1106,16 +1366,22 @@ function renderHist(){
     const[y,m]=ym.split('-');const recs=months[ym];
     const cards=recs.map(r=>{
       const ri=records.findIndex(x=>x.date===r.date);const prev=ri>0?records[ri-1]:null;
-      let dh='';if(r.weight!=null&&prev?.weight!=null){const d=Math.round((r.weight-prev.weight)*10)/10;dh=d>0?`<div class="hdiff up">▲ ${d} kg</div>`:d<0?`<div class="hdiff dn">▼ ${Math.abs(d)} kg</div>`:`<div class="hdiff eq">→ 変化なし</div>`;}
-      const chips=[r.bodyFat!=null&&['体脂肪',r.bodyFat+'%'],r.muscle!=null&&['筋肉量',r.muscle+'kg'],r.waist!=null&&['ウエスト',r.waist+'cm'],r.steps!=null&&['歩数',r.steps.toLocaleString()+'歩'],r.hba1c!=null&&['HbA1c',r.hba1c+'%'],r.bpHigh!=null&&r.bpLow!=null&&['血圧',r.bpHigh+'/'+r.bpLow],r.mood!=null&&['気分',r.mood],r.weather!=null&&['天気',r.weather],r.period&&['生理','🌸'],r.bloodVol&&['経血量',r.bloodVol],r.painLevel!=null&&r.painLevel>0&&['痛み',PAIN_LEVELS[r.painLevel]?.n]].filter(Boolean).map(([l,v])=>`<div class="chip"><span class="cl">${l} </span><span class="cv">${v}</span></div>`).join('');
+      const wM=r.weightMorning??r.weight,wE=r.weightEvening;
+      const pWM=prev?.weightMorning??prev?.weight;
+      let dh='';
+      if(wM!=null&&pWM!=null){const d=Math.round((wM-pWM)*10)/10;dh=d>0?`<div class="hdiff up">▲ ${d} kg</div>`:d<0?`<div class="hdiff dn">▼ ${Math.abs(d)} kg</div>`:`<div class="hdiff eq">→ 変化なし</div>`;}
+      const wDisp=bodyTwiceMode&&wE!=null?`🌅${wM??'--'} / 🌙${wE}`:(wM??'--');
+      const bfM=r.bodyFatMorning??r.bodyFat;
+      const chips=[bfM!=null&&['体脂肪',bfM+'%'],(r.muscleMorning??r.muscle)!=null&&['筋肉量',(r.muscleMorning??r.muscle)+'kg'],r.waist!=null&&['ウエスト',r.waist+'cm'],r.steps!=null&&['歩数',r.steps.toLocaleString()+'歩'],r.hba1c!=null&&['HbA1c',r.hba1c+'%'],r.bpHigh!=null&&r.bpLow!=null&&['血圧',r.bpHigh+'/'+r.bpLow],r.mood!=null&&['気分',r.mood],r.weather!=null&&['天気',r.weather],r.period&&['生理','🌸'],r.bloodVol&&['経血量',r.bloodVol],r.painLevel!=null&&r.painLevel>0&&['痛み',PAIN_LEVELS[r.painLevel]?.n]].filter(Boolean).map(([l,v])=>`<div class="chip"><span class="cl">${l} </span><span class="cv">${v}</span></div>`).join('');
       const mc=mealLogs.filter(m=>m.date===r.date).length,ec=exerciseLogs.filter(e=>e.date===r.date).length,evl=events.filter(ev=>ev.date===r.date);
-      return`<div class="hcard"><div class="htop"><div><div class="hdate">${r.date}</div><div class="hw">${r.weight??'--'}<span>kg</span></div>${dh}</div><div style="display:flex;gap:5px;flex-shrink:0"><button class="btn-e" onclick="editDate('${r.date}')">編集</button><button class="btn-d" onclick="delDateRec('${r.date}')">削除</button></div></div>${chips?`<div class="chips">${chips}</div>`:''}${mc?`<div style="font-size:10px;color:var(--muted);margin-top:5px">🍽️ 食事 ${mc}件</div>`:''}${ec?`<div style="font-size:10px;color:var(--muted);margin-top:3px">🏃 運動 ${ec}件</div>`:''}${evl.map(ev=>`<div style="font-size:10px;color:var(--accent);margin-top:3px">📌 ${ev.title}</div>`).join('')}${r.note?`<div class="hnote">${r.note}</div>`:''}</div>`;
+      const exLabel=r.exercised&&!ec?'🏅 運動した':ec?`🏃 運動 ${ec}件`:'';
+      return`<div class="hcard"><div class="htop"><div><div class="hdate">${r.date}</div><div class="hw">${wDisp}<span>kg</span></div>${dh}</div><div style="display:flex;gap:5px;flex-shrink:0"><button class="btn-e" onclick="editDate('${r.date}')">編集</button><button class="btn-d" onclick="delDateRec('${r.date}')">削除</button></div></div>${chips?`<div class="chips">${chips}</div>`:''}${mc?`<div style="font-size:10px;color:var(--muted);margin-top:5px">🍽️ 食事 ${mc}件</div>`:''}${exLabel?`<div style="font-size:10px;color:var(--muted);margin-top:3px">${exLabel}</div>`:''}${evl.map(ev=>`<div style="font-size:10px;color:var(--accent);margin-top:3px">📌 ${ev.title}</div>`).join('')}${r.note?`<div class="hnote">${r.note}</div>`:''}</div>`;
     }).join('');
     return`<div class="month-group"><div class="month-hd open" onclick="togMonth(this)"><span class="month-title">${y}年 ${parseInt(m)}月</span><div style="display:flex;align-items:center;gap:8px"><span class="month-count">${recs.length}件</span><span class="month-arrow">▾</span></div></div><div class="month-bd open">${cards}</div></div>`;
   }).join('');
 }
 function togMonth(hd){const bd=hd.nextElementSibling;const isO=bd.classList.contains('open');hd.classList.toggle('open',!isO);bd.classList.toggle('open',!isO);}
-function editDate(date){curDate=date;updDD();loadForm(date);switchTab('log');}
+function editDate(date){curDate=date;updDD();updBodyForm();loadForm(date);switchTab('log');}
 function navCal(dir){
   calMonth+=dir;
   if(calMonth>11){calMonth=0;calYear++;}
@@ -1137,7 +1403,7 @@ function renderCalendar(){
     const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const r=records.find(x=>x.date===ds);
     const hasMeal=mealLogs.some(x=>x.date===ds);
-    const hasEx=exerciseLogs.some(x=>x.date===ds);
+    const hasEx=exerciseLogs.some(x=>x.date===ds)||(r?.exercised===true);
     const hasGlc=glucoseLogs.some(x=>x.date===ds);
     const hasEv=events.some(x=>x.date===ds);
     const isToday=ds===today;
@@ -1145,7 +1411,7 @@ function renderCalendar(){
     const isSun=dow===0;
     let dots='';
     if(r){
-      const hasBody=r.weight!=null||r.bodyFat!=null||r.muscle!=null||r.bust!=null||r.waist!=null||r.hip!=null;
+      const hasBody=r?(r.weightMorning??r.weight)!=null||r.bodyFatMorning!=null||r.muscleMorning!=null||r.bust!=null||r.waist!=null||r.hip!=null:false;
       const hasHealth=r.hba1c!=null||r.bpHigh!=null||r.steps!=null;
       const hasNote=r.note||hasEv;
       if(hasBody)dots+=`<div class="cal-dot" style="background:${DOT_COLORS.body}"></div>`;
@@ -1213,14 +1479,39 @@ function renderDayPanel(){
   } else {
     if(r){
       const rows=[];
-      if(r.weight!=null)rows.push(['体重',r.weight+' kg']);
-      if(r.bodyFat!=null)rows.push(['体脂肪率',r.bodyFat+' %']);
-      if(r.muscle!=null)rows.push(['筋肉量',r.muscle+' kg']);
+      const wM=r.weightMorning??r.weight,wE=r.weightEvening;
+      const bfM=r.bodyFatMorning??r.bodyFat,bfE=r.bodyFatEvening;
+      const muM=r.muscleMorning??r.muscle,muE=r.muscleEvening;
+      if(bodyTwiceMode){
+        if(wM!=null||wE!=null)rows.push(['体重',`🌅 ${wM??'--'} kg　🌙 ${wE??'--'} kg`]);
+        if(bfM!=null||bfE!=null)rows.push(['体脂肪率',`🌅 ${bfM??'--'} %　🌙 ${bfE??'--'} %`]);
+        if(muM!=null||muE!=null)rows.push(['筋肉量',`🌅 ${muM??'--'} kg　🌙 ${muE??'--'} kg`]);
+      }else{
+        if(wM!=null)rows.push(['体重',wM+' kg']);
+        if(bfM!=null)rows.push(['体脂肪率',bfM+' %']);
+        if(muM!=null)rows.push(['筋肉量',muM+' kg']);
+      }
       if(r.waist!=null)rows.push(['ウエスト',r.waist+' cm']);
       if(r.steps!=null)rows.push(['歩数',r.steps.toLocaleString()+' 歩']);
       if(r.bpHigh!=null&&r.bpLow!=null)rows.push(['血圧',r.bpHigh+'/'+r.bpLow+' mmHg']);
       if(r.hba1c!=null)rows.push(['HbA1c',r.hba1c+' %']);
       if(rows.length)html+=`<div class="dp-section"><div class="dp-sec-title">体組成 / 健康指標</div>${rows.map(([l,v])=>`<div class="dp-row"><span class="dp-lbl">${l}</span><span class="dp-val">${v}</span></div>`).join('')}</div>`;
+      // 朝夜差（朝夜2回モード時、両方データがある場合のみ）
+      if(bodyTwiceMode){
+        const diffs=[];
+        function dpDiff(lbl,m,e,unit,dec=1,invert=false){
+          if(m==null||e==null)return;
+          const d=Math.round((e-m)*Math.pow(10,dec))/Math.pow(10,dec);
+          const isUp=d>0,isDown=d<0;
+          const cls=invert?(isUp?'good':isDown?'warn':'eq'):(isUp?'up':isDown?'dn':'eq');
+          const sign=isUp?'▲ +':isDown?'▼ ':' ';
+          diffs.push(`<div class="diff-item"><span class="diff-lbl">${lbl}</span><span class="diff-val ${cls}">${sign}${Math.abs(d)}${unit}</span></div>`);
+        }
+        dpDiff('体重',wM,wE,' kg');
+        dpDiff('体脂肪率',bfM,bfE,' %');
+        dpDiff('筋肉量',muM,muE,' kg',1,true);
+        if(diffs.length)html+=`<div class="am-pm-diff" style="margin-bottom:12px"><span style="font-size:9px;color:var(--muted);margin-right:4px">朝夜差</span>${diffs.join('')}</div>`;
+      }
       const condRows=[];
       if(r.mood)condRows.push(['気分',r.mood]);
       if(r.weather)condRows.push(['天気',r.weather]);
@@ -1243,6 +1534,8 @@ function renderDayPanel(){
     }
     if(exs.length){
       html+=`<div class="dp-section"><div class="dp-sec-title">運動</div>${exs.map(e=>`<div class="dp-row"><span class="dp-lbl">${e.type}${e.time?' '+e.time.slice(0,5):''}</span><span class="dp-val">${e.minutes?e.minutes+'分 ':''} ${e.kcal?e.kcal+' kcal':''}</span></div>`).join('')}</div>`;
+    }else if(r?.exercised){
+      html+=`<div class="dp-section"><div class="dp-sec-title">運動</div><div class="dp-row"><span class="dp-lbl">🏅 運動した</span></div></div>`;
     }
     if(glcs.length){
       html+=`<div class="dp-section"><div class="dp-sec-title">血糖値</div>${glcs.map(g=>`<div class="dp-row"><span class="dp-lbl">${g.type}${g.time?' '+g.time.slice(0,5):''}</span><span class="dp-val">${g.value} mg/dL</span></div>`).join('')}</div>`;
@@ -1260,6 +1553,8 @@ function renderDayPanel(){
 function delDateRec(date){if(!confirm(`${date} の記録を削除しますか？`))return;records=records.filter(r=>r.date!==date);mealLogs=mealLogs.filter(x=>x.date!==date);exerciseLogs=exerciseLogs.filter(x=>x.date!==date);glucoseLogs=glucoseLogs.filter(x=>x.date!==date);events=events.filter(x=>x.date!==date);saveData();updSidebar();renderHist();showToast('削除しました');}
 function renderSettings(){
   document.getElementById('s-height').value=profile.height??'';document.getElementById('s-by').value=profile.birthYear??'';document.getElementById('s-bm').value=profile.birthMonth??'';document.getElementById('s-bd').value=profile.birthday??'';
+  document.getElementById('btm-once')?.classList.toggle('active',!bodyTwiceMode);
+  document.getElementById('btm-twice')?.classList.toggle('active',bodyTwiceMode);
   document.getElementById('pdots-on')?.classList.toggle('active',showPeriodDots);
   document.getElementById('pdots-off')?.classList.toggle('active',!showPeriodDots);
   ['unknown','male','female'].forEach(k=>document.getElementById('sex-'+k)?.classList.toggle('active',k===profile.sex));
@@ -1269,7 +1564,7 @@ function renderSettings(){
   document.getElementById('tog-stats-on')?.classList.toggle('active',showSbStats);
   document.getElementById('tog-stats-off')?.classList.toggle('active',!showSbStats);
   const sc=document.getElementById('stats-con');if(!records.length){sc.innerHTML='<div style="color:var(--muted);font-size:11px">まだ記録がありません</div>';return;}
-  const wt=records.filter(r=>r.weight!=null);const avg=wt.length?(wt.reduce((s,r)=>s+r.weight,0)/wt.length).toFixed(1):'--';const minW=wt.length?Math.min(...wt.map(r=>r.weight)):'--';const maxW=wt.length?Math.max(...wt.map(r=>r.weight)):'--';
+  const wt=records.filter(r=>(r.weightMorning??r.weight)!=null);const wVal2=r=>(r.weightMorning??r.weight);const avg=wt.length?(wt.reduce((s,r)=>s+wVal2(r),0)/wt.length).toFixed(1):'--';const minW=wt.length?Math.min(...wt.map(r=>wVal2(r))):'--';const maxW=wt.length?Math.max(...wt.map(r=>wVal2(r))):'--';
   sc.innerHTML=[['記録数',records.length+'日'],['平均体重',avg!=='--'?avg+' kg':'--'],['最低体重',minW!=='--'?minW+' kg':'--'],['最高体重',maxW!=='--'?maxW+' kg':'--'],['最初の記録',records[0]?.date??'--'],['最新の記録',records[records.length-1]?.date??'--'],['食事ログ',mealLogs.length+'件'],['運動ログ',exerciseLogs.length+'件'],['血糖値ログ',glucoseLogs.length+'件'],['イベント',events.length+'件']].map(([l,v])=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)"><span style="font-size:11px;color:var(--muted)">${l}</span><span style="font-size:12px;font-weight:700">${v}</span></div>`).join('');
 }
 function saveProfile(){profile.height=parseFloat(document.getElementById('s-height').value)||null;profile.birthYear=parseInt(document.getElementById('s-by').value)||null;profile.birthMonth=parseInt(document.getElementById('s-bm').value)||null;profile.birthday=parseInt(document.getElementById('s-bd').value)||null;saveData();updBustLbl();updPeriodSec();onBI();updSidebar();}
@@ -1329,7 +1624,7 @@ function resetD(){
   updSidebar();updBustLbl();updPeriodSec();
   showToast('データを削除しました');
 }
-function initApp(){buildEmoji();buildPeriodCtrls();updDD();loadForm(curDate);updPeriodSec();updBustLbl();Object.keys(og).forEach(k=>{document.querySelector(`#grp-${k} .group-hd`)?.classList.toggle('open',og[k]);document.getElementById(`grpb-${k}`)?.classList.toggle('open',og[k]);});onBI();updSidebar();}
+function initApp(){buildEmoji();buildPeriodCtrls();updDD();updBodyForm();loadForm(curDate);updPeriodSec();updBustLbl();Object.keys(og).forEach(k=>{document.querySelector(`#grp-${k} .group-hd`)?.classList.toggle('open',og[k]);document.getElementById(`grpb-${k}`)?.classList.toggle('open',og[k]);});onBI();updSidebar();}
 loadData();
 applyLayout();
 applyT(appT);
@@ -1437,26 +1732,30 @@ function attachChartTouch(chart,getAllDates,onSaveRange){
 
 // ══ CHART ══
 const METRICS={
-  weight:     {label:'体重',     unit:'kg',   axis:'y',  color:'#c8a8e9', type:'line'},
-  bodyFat:    {label:'体脂肪率', unit:'%',    axis:'y1', color:'#ff7eb3', type:'line'},
-  muscle:     {label:'筋肉量',   unit:'kg',   axis:'y',  color:'#6bffb8', type:'line'},
-  visceralFat:{label:'内臓脂肪', unit:'',     axis:'y1', color:'#ffb830', type:'line'},
-  bmi:        {label:'BMI',      unit:'',     axis:'y1', color:'#60a5fa', type:'line'},
-  waist:      {label:'ウエスト', unit:'cm',   axis:'y',  color:'#fb923c', type:'line'},
-  bust:       {label:'バスト',   unit:'cm',   axis:'y',  color:'#f9a8d4', type:'line'},
-  hip:        {label:'ヒップ',   unit:'cm',   axis:'y',  color:'#c4b5fd', type:'line'},
-  metabolism: {label:'基礎代謝', unit:'kcal', axis:'y',  color:'#fde68a', type:'line'},
-  steps:      {label:'歩数',     unit:'歩',   axis:'y2', color:'#86efac', type:'bar'},
-  hba1c:      {label:'HbA1c',    unit:'%',    axis:'y1', color:'#f472b6', type:'line'},
-  bpHigh:     {label:'最高血圧', unit:'mmHg', axis:'y',  color:'#f87171', type:'line'},
-  bpLow:      {label:'最低血圧', unit:'mmHg', axis:'y',  color:'#fca5a5', type:'line'},
+  weightMorning:  {label:'体重(朝)',     unit:'kg',   axis:'y',  color:'#c8a8e9', type:'line'},
+  weightEvening:  {label:'体重(夜)',     unit:'kg',   axis:'y',  color:'#9370db', type:'line', dashed:true},
+  bodyFatMorning: {label:'体脂肪率(朝)', unit:'%',    axis:'y1', color:'#ff7eb3', type:'line'},
+  bodyFatEvening: {label:'体脂肪率(夜)', unit:'%',    axis:'y1', color:'#e0508a', type:'line', dashed:true},
+  muscleMorning:  {label:'筋肉量(朝)',   unit:'kg',   axis:'y',  color:'#6bffb8', type:'line'},
+  muscleEvening:  {label:'筋肉量(夜)',   unit:'kg',   axis:'y',  color:'#38d18e', type:'line', dashed:true},
+  visceralFat:    {label:'内臓脂肪', unit:'',     axis:'y1', color:'#ffb830', type:'line'},
+  bmi:            {label:'BMI',      unit:'',     axis:'y1', color:'#60a5fa', type:'line'},
+  waist:          {label:'ウエスト', unit:'cm',   axis:'y',  color:'#fb923c', type:'line'},
+  bust:           {label:'バスト',   unit:'cm',   axis:'y',  color:'#f9a8d4', type:'line'},
+  hip:            {label:'ヒップ',   unit:'cm',   axis:'y',  color:'#c4b5fd', type:'line'},
+  metabolism:     {label:'基礎代謝', unit:'kcal', axis:'y',  color:'#fde68a', type:'line'},
+  steps:          {label:'歩数',     unit:'歩',   axis:'y2', color:'#86efac', type:'bar'},
+  hba1c:          {label:'HbA1c',    unit:'%',    axis:'y1', color:'#f472b6', type:'line'},
+  bpHigh:         {label:'最高血圧', unit:'mmHg', axis:'y',  color:'#f87171', type:'line'},
+  bpLow:          {label:'最低血圧', unit:'mmHg', axis:'y',  color:'#fca5a5', type:'line'},
 };
 const METRIC_GROUPS={
-  body:   {label:'体組成',   color:'#c8a8e9', metrics:['weight','bodyFat']},
+  body:   {label:'体組成',   color:'#c8a8e9', metrics:['weightMorning','bodyFatMorning']},
   health: {label:'健康指標', color:'#f472b6', metrics:['hba1c','bpHigh','bpLow']},
 };
 let chartPeriod='1m',chartFrom='',chartTo='',chartType='body';
-let chartBodyMode='group',chartBodyGroup='body',chartBodyMetrics=['weight','bodyFat'];
+let chartBodyMode='group',chartBodyGroup='body',chartBodyMetrics=['weightMorning','bodyFatMorning'];
+let chartBodyTime='morning'; // 朝夜2回モード時のグラフ表示切替：'morning'|'evening'|'both'
 let chartInst=null,hiEvDate=null,energyMode='bar';
 // チャートタイプごとのパン・ズーム位置保存
 let chartBodyPan={min:null,max:null};
@@ -1465,14 +1764,16 @@ let chartGlcPan={min:null,max:null};
 
 function cssV(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
 function getChartRange(){
-  const today=new Date(),toStr=today.toISOString().slice(0,10);
+  const toStr=todayStr(); // UTCではなくローカル日付を使う
   if(chartPeriod==='custom')return{from:chartFrom||'2000-01-01',to:chartTo||toStr};
+  const today=new Date();
   const f=new Date(today);
   if(chartPeriod==='1m')f.setMonth(f.getMonth()-1);
   else if(chartPeriod==='3m')f.setMonth(f.getMonth()-3);
   else if(chartPeriod==='6m')f.setMonth(f.getMonth()-6);
   else f.setFullYear(2000);
-  return{from:f.toISOString().slice(0,10),to:toStr};
+  const y=f.getFullYear(),m=String(f.getMonth()+1).padStart(2,'0'),d=String(f.getDate()).padStart(2,'0');
+  return{from:`${y}-${m}-${d}`,to:toStr};
 }
 function getFilteredRecs(){const{from,to}=getChartRange();return records.filter(r=>r.date>=from&&r.date<=to);}
 function getFilteredEvents(){const{from,to}=getChartRange();return events.filter(ev=>ev.date>=from&&ev.date<=to);}
@@ -1499,6 +1800,9 @@ function setChartType(t){
   if(bmc)bmc.style.display=t==='body'?'':'none';
   const emr=document.getElementById('energy-mode-row');
   if(emr)emr.style.display=t==='energy'?'':'none';
+  // 朝夜2回モード時だけトグルを表示
+  const ctt=document.getElementById('chart-time-toggle');
+  if(ctt)ctt.style.display=(t==='body'&&bodyTwiceMode)?'flex':'none';
   renderCharts();
 }
 function setEnergyMode(m){
@@ -1524,6 +1828,7 @@ function toggleMetric(mk){
   const idx=chartBodyMetrics.indexOf(mk);
   if(idx>=0)chartBodyMetrics.splice(idx,1);
   else if(chartBodyMetrics.length<5)chartBodyMetrics.push(mk);
+  chartBodyPan={min:null,max:null}; // 指標変更時にパン位置リセット
   renderMetricPicks();renderCharts();
 }
 function renderGroupPicks(){
@@ -1573,6 +1878,9 @@ const evLinePlugin={
 
 function renderCharts(){
   if(!document.getElementById('tab-chart')||document.getElementById('tab-chart').style.display==='none')return;
+  // 朝夜トグルの表示を常に最新状態に
+  const ctt=document.getElementById('chart-time-toggle');
+  if(ctt)ctt.style.display=(chartType==='body'&&bodyTwiceMode)?'flex':'none';
   if(chartInst){chartInst.destroy();chartInst=null;}
   renderGroupPicks();renderMetricPicks();
   const recs=getFilteredRecs();
@@ -1609,42 +1917,128 @@ function baseScales(text,muted,grid){
   };
 }
 
+// ──朝夜指標フィルタリング（グループモード/カスタムモード両対応）──
+function applyTimeFilter(baseMetrics,timeMode,isGroupMode){
+  if(timeMode==='morning'){
+    return isGroupMode?baseMetrics:baseMetrics.filter(mk=>!mk.endsWith('Evening'));
+  }
+  if(timeMode==='evening'){
+    if(isGroupMode){
+      // グループモード：Morning→Eveningに変換
+      return baseMetrics.map(mk=>{
+        if(mk.endsWith('Morning')){
+          const ev=mk.replace('Morning','Evening');
+          return METRICS[ev]?ev:null;
+        }
+        return mk; // steps等は時間非依存
+      }).filter(Boolean);
+    }else{
+      // カスタムモード：Evening指標のみ
+      return baseMetrics.filter(mk=>mk.endsWith('Evening'));
+    }
+  }
+  // 'both'の場合はそのまま返す
+  return baseMetrics;
+}
+function normalizeMetricsToMorning(metrics){
+  const seen=new Set();
+  return metrics.map(mk=>{
+    if(mk.endsWith('Evening')){
+      const mo=mk.replace('Evening','Morning');
+      return METRICS[mo]?mo:mk;
+    }
+    return mk;
+  }).filter(mk=>{if(seen.has(mk))return false;seen.add(mk);return true;});
+}
+function expandToMorningEvening(metrics){
+  const expanded=[];
+  metrics.forEach(mk=>{
+    expanded.push(mk);
+    if(mk.endsWith('Morning')){
+      const ev=mk.replace('Morning','Evening');
+      if(METRICS[ev])expanded.push(ev);
+    }
+  });
+  return expanded;
+}
+
 // ── ① 体組成グラフ ──
+function setChartBodyTime(t){
+  chartBodyTime=t;
+  ['morning','evening','both'].forEach(v=>document.getElementById('ctt-'+v)?.classList.toggle('active',v===t));
+  renderCharts();
+}
 function renderBodyChart(recs,evs){
   // bust label changes with sex
   if(METRICS.bust) METRICS.bust.label = profile.sex==='male'?'胸囲':'バスト';
-  const metrics=chartBodyMode==='group'
-    ?(METRIC_GROUPS[chartBodyGroup]?.metrics||['weight','bodyFat'])
-    :chartBodyMetrics;
+  // 表示する指標を決定
+  let metrics;
+  if(!bodyTwiceMode){
+    // 1日1回モード：Evening系を除外
+    metrics=(chartBodyMode==='group'
+      ?(METRIC_GROUPS[chartBodyGroup]?.metrics||['weightMorning','bodyFatMorning'])
+      :chartBodyMetrics).filter(mk=>!mk.endsWith('Evening'));
+  }else{
+    // 朝夜2回モード
+    let baseMetrics=chartBodyMode==='group'
+      ?(METRIC_GROUPS[chartBodyGroup]?.metrics||['weightMorning','bodyFatMorning'])
+      :chartBodyMetrics;
+    // グループモード時にEvening指標をMorningに正規化
+    if(chartBodyMode==='group'){
+      baseMetrics=normalizeMetricsToMorning(baseMetrics);
+    }
+    // 時間モードに応じてフィルタ
+    if(chartBodyTime==='both'&&chartBodyMode==='group'){
+      metrics=expandToMorningEvening(baseMetrics);
+    }else{
+      metrics=applyTimeFilter(baseMetrics,chartBodyTime,chartBodyMode==='group');
+    }
+  }
   if(!metrics.length)return;
   const fullLabels=recs.map(r=>r.date);
   const labels=recs.map(r=>r.date.slice(5));
   const{text,muted,grid}=chartColors();
-  const hasY1=metrics.some(mk=>METRICS[mk].axis==='y1');
+  const hasY1=metrics.some(mk=>METRICS[mk]?.axis==='y1');
   const datasets=metrics.map(mk=>{
-    const m=METRICS[mk];
+    const m=METRICS[mk];if(!m)return null;
     const data=recs.map(r=>{
       if(r[mk]!=null)return r[mk];
-      if(mk==='bmi'&&r.weight&&profile.height)return calcBMI(r.weight,profile.height);
-      if(mk==='muscle'&&r.weight&&r.bodyFat)return calcMuscle(r.weight,r.bodyFat);
-      if(mk==='metabolism'&&r.metabolism==null&&r.weight&&profile.height&&calcAge()&&profile.sex)return calcMeta(r.weight,profile.height,calcAge(),profile.sex);
+      if(mk==='bmi'&&r.weightMorning&&profile.height)return calcBMI(r.weightMorning,profile.height);
+      if(mk==='muscleMorning'&&r.weightMorning&&r.bodyFatMorning)return calcMuscle(r.weightMorning,r.bodyFatMorning);
+      if(mk==='metabolism'&&r.metabolism==null&&r.weightMorning&&profile.height&&calcAge()&&profile.sex)return calcMeta(r.weightMorning,profile.height,calcAge(),profile.sex);
       return null;
     });
+    const nonNullCount=data.filter(v=>v!=null).length;
     const isBar=m.type==='bar';
-    return{
+    const ds={
       label:m.label+(m.unit?` (${m.unit})`:''),
       data,type:isBar?'bar':'line',
       yAxisID:m.axis,borderColor:m.color,
       backgroundColor:isBar?m.color+'80':m.color+'20',
-      borderWidth:2,pointRadius:isBar?0:3,pointHoverRadius:isBar?0:5,
+      borderWidth:2,
+      pointRadius:isBar?0:(nonNullCount<=3?5:3),
+      pointHoverRadius:isBar?0:6,
       tension:0.3,spanGaps:!isBar,
     };
-  });
+    if(m.dashed)ds.borderDash=[5,3]; // undefined を避けて条件付きで追加
+    return ds;
+  }).filter(Boolean);
+  // 有効データが1件もない場合のメッセージ
+  const hasAnyData=datasets.some(ds=>ds.data.some(v=>v!=null));
   const ctx=document.getElementById('chart-canvas').getContext('2d');
+  if(!hasAnyData){
+    const con2=document.getElementById('chart-canvas-con');
+    const timeLabel=bodyTwiceMode?{morning:'朝',evening:'夜',both:'朝夜'}[chartBodyTime]||'':'';
+    con2.innerHTML=`<div class="chart-no-data"><div class="ni">📊</div><div style="font-size:11px;color:var(--muted2)">${timeLabel?timeLabel+'の':''}データがまだありません<br><span style="font-size:9px">記録して保存すると表示されます</span></div></div>`;
+    return;
+  }
   const hasY2=metrics.includes('steps');
   const sc=baseScales(text,muted,grid);
-  if(hasY1)sc.y1={position:'right',ticks:{color:muted,font:{size:9}},grid:{drawOnChartArea:false}};
-  if(hasY2)sc.y2={position:'right',ticks:{color:muted,font:{size:9},callback:v=>v>=1000?(v/1000).toFixed(1)+'k':v},grid:{drawOnChartArea:false},offset:hasY1};
+  if(hasY1){
+    sc.y.display='auto'; // データがある場合だけ表示
+    sc.y1={display:'auto',position:'right',ticks:{color:muted,font:{size:9}},grid:{drawOnChartArea:false}};
+  }
+  if(hasY2)sc.y2={display:'auto',position:'right',ticks:{color:muted,font:{size:9},callback:v=>v>=1000?(v/1000).toFixed(1)+'k':v},grid:{drawOnChartArea:false},offset:hasY1};
   chartInst=new Chart(ctx,{
     type:'line',data:{labels,datasets},plugins:[evLinePlugin],
     options:{
@@ -1658,7 +2052,6 @@ function renderBodyChart(recs,evs){
       scales:sc,
     }
   });
-  // 保存済みパン位置を復元
   if(chartBodyPan.min!==null){
     chartInst.options.scales.x.min=chartBodyPan.min;
     chartInst.options.scales.x.max=chartBodyPan.max;
