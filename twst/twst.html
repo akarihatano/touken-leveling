@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>NRC生徒手帳</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QM317D9ESN');
+</script>
+<style>
+:root{
+  --bg0:#0d0d10;--bg1:#13121a;--bg2:#1e1c2c;
+  --bd1:#1e1c28;--bd2:#2a2840;
+  --t1:#d8d0e8;--t2:#9a8faa;--t3:#6a6480;
+  --acc:#c8a84b;--acc2:#e8c870;--acdim:#c8a84b18;
+  --grn:#5abf7a;--red:#d87070;
+}
+#app.light, body.light{
+  --bg0:#f7f3ec;--bg1:#fffef9;--bg2:#f0ead8;
+  --bd1:#ddd4b8;--bd2:#c8b898;
+  --t1:#2a2218;--t2:#5a4e38;--t3:#9a8c70;
+  --acc:#8a6010;--acc2:#6a4808;--acdim:#8a601018;
+  --grn:#2a7a4a;--red:#a83030;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sans-serif;
+  font-size:14px;background:var(--bg0);color:var(--t1);min-height:100vh;
+  -webkit-tap-highlight-color:transparent}
+.app{max-width:480px;margin:0 auto;padding:12px 12px 60px}
+
+/* ── Header ── */
+.hdr{display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:12px;padding-bottom:11px;border-bottom:1px solid var(--bd1);gap:8px}
+.hdr-left{display:flex;flex-direction:column;gap:2px}
+.hdr-title h1{font-size:19px;font-weight:500;color:var(--acc);letter-spacing:.1em}
+.hdr-sub{font-size:10px;color:var(--t3);letter-spacing:.06em;margin-top:1px}
+.hdr-clock{font-size:12px;color:var(--t3);font-variant-numeric:tabular-nums;margin-top:2px}
+.hdr-actions{display:flex;align-items:flex-start;gap:4px;flex-shrink:0}
+.hdr-btn{display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:5px 8px;border:1px solid var(--bd1);border-radius:7px;
+  background:transparent;color:var(--t3);cursor:pointer;font-family:inherit;transition:all .15s;min-width:36px}
+.hdr-btn:hover{background:var(--bg2);color:var(--t2)}
+.hdr-btn-icon{font-size:14px;line-height:1}
+.hdr-btn-lbl{font-size:10px;white-space:nowrap}
+.hdr-div{width:1px;height:30px;background:var(--bd1);flex-shrink:0;align-self:center}
+.sync-group{display:flex;flex-direction:column;align-items:center;gap:2px}
+.sync-time{font-size:10px;color:var(--t3);white-space:nowrap;min-height:13px;text-align:center}
+.sync-btns{display:flex;gap:3px}
+.sync-btn{display:flex;align-items:center;gap:2px;padding:5px 7px;
+  border:1px solid var(--bd1);border-radius:6px;background:transparent;
+  color:var(--t3);cursor:pointer;font-family:inherit;font-size:11px;transition:all .15s;white-space:nowrap}
+.sync-btn:hover:not(:disabled){background:var(--bg2);color:var(--t2)}
+.sync-btn:disabled{opacity:.3;cursor:default}
+.sync-login-lnk{color:var(--acc);font-size:10px;padding:3px 7px;border:1px solid var(--acc);
+  border-radius:5px;background:transparent;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
+.sync-login-lnk:hover{background:var(--acdim)}
+.sync-logout-lnk{color:var(--red);font-size:10px;padding:3px 7px;border:none;
+  background:transparent;cursor:pointer;font-family:inherit}
+
+/* ── Tabs ── */
+.tab-bar{display:flex;gap:2px;margin-bottom:12px;border-bottom:1px solid var(--bd1)}
+.tab{flex:1;padding:8px 6px;font-size:12px;border:none;background:transparent;
+  color:var(--t3);cursor:pointer;font-family:inherit;letter-spacing:.04em;
+  border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.tab.on{color:var(--acc);border-bottom-color:var(--acc)}
+
+/* ── Sections ── */
+.sec{display:none}.sec.on{display:block}
+
+/* ── Cards ── */
+.card{background:var(--bg1);border:1px solid var(--bd1);border-radius:10px;
+  padding:13px 14px;margin-bottom:10px}
+.card-h{font-size:11px;font-weight:500;color:var(--t2);letter-spacing:.07em;margin-bottom:10px}
+.lbl{font-size:11px;color:var(--t3);letter-spacing:.03em;margin-bottom:4px}
+.fld{display:flex;flex-direction:column}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+
+/* ── Inputs ── */
+input[type=text],input[type=number],select{
+  width:100%;padding:8px 10px;border:1px solid var(--bd1);border-radius:7px;
+  background:var(--bg0);color:var(--t1);font-size:13px;font-family:inherit;
+  outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none}
+input:focus,select:focus{border-color:var(--bd2)}
+input[type=number]{text-align:right}
+
+/* ── Seg control ── */
+.seg{display:flex;border:1px solid var(--bd1);border-radius:7px;overflow:hidden;margin-bottom:10px}
+.seg-btn{flex:1;padding:7px 4px;font-size:11px;border:none;background:transparent;
+  color:var(--t3);cursor:pointer;font-family:inherit;letter-spacing:.03em;transition:all .15s}
+.seg-btn.on{background:var(--bg2);color:var(--acc)}
+
+/* ── Timer display ── */
+.timer-disp{background:var(--bg0);border:1px solid var(--bd2);border-radius:9px;
+  padding:12px 14px;text-align:center;margin-bottom:10px}
+.timer-big{font-size:36px;font-weight:500;color:var(--acc);letter-spacing:.06em;
+  font-variant-numeric:tabular-nums;line-height:1.1}
+.timer-sub{font-size:11px;color:var(--t3);margin-top:3px}
+.timer-finish{font-size:12px;color:var(--t2);margin-top:5px}
+.timer-finish em{color:var(--acc);font-style:normal;font-weight:500}
+.timer-done{font-size:13px;color:var(--grn);margin-top:5px;font-weight:500}
+
+/* ── Progress bar ── */
+.pbar{height:3px;background:var(--bd1);border-radius:2px;margin-top:10px;overflow:hidden}
+.pfill{height:100%;background:var(--acc);border-radius:2px;transition:width .8s linear}
+
+/* ── Buttons ── */
+button{padding:9px 16px;font-size:13px;border:1px solid var(--bd2);border-radius:7px;
+  background:var(--bg2);color:var(--t1);cursor:pointer;font-family:inherit;transition:all .15s}
+button:hover{background:var(--bg1)}
+.btn-acc{background:transparent;border-color:var(--acc);color:var(--acc)}
+.btn-acc:hover{background:var(--acdim)}
+.btn-stop{background:transparent;border-color:var(--red);color:var(--red)}
+.btn-stop:hover{background:rgba(216,112,112,.08)}
+.btn-danger{color:var(--red);border-color:rgba(216,112,112,.28);background:transparent}
+.btn-danger:hover{background:rgba(216,112,112,.08)}
+.btn-sm{padding:5px 10px;font-size:11px;border-radius:6px}
+.btn-full{width:100%}
+
+/* ── Early notification row ── */
+.early-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t2);
+  margin-bottom:10px;flex-wrap:wrap}
+.early-row select{width:auto;padding:5px 8px;font-size:12px}
+
+/* ── Food timer card ── */
+.tc{background:var(--bg1);border:1px solid var(--bd1);border-radius:9px;
+  padding:10px 12px;margin-bottom:7px}
+.tc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.tc-left{flex:1;min-width:0}
+.tc-name{font-size:13px;font-weight:500;color:var(--t1);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tc-time{font-size:26px;font-weight:500;color:var(--acc);letter-spacing:.05em;
+  font-variant-numeric:tabular-nums;margin-top:3px;line-height:1.1}
+.tc-finish{font-size:11px;color:var(--t2);margin-top:2px}
+.tc-finish em{color:var(--acc);font-style:normal;font-weight:500}
+.tc-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.tc-dur{font-size:11px;color:var(--t3)}
+.tc-skip-used{font-size:10px;color:var(--t3)}
+.tc-actions{display:flex;gap:5px;margin-top:7px}
+.tc-bar{height:2px;background:var(--bd1);border-radius:1px;margin-top:7px;overflow:hidden}
+.tc-fill{height:100%;background:var(--acc);border-radius:1px;transition:width .8s linear}
+
+/* ── Stock grid ── */
+.stock-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.stock-item{background:var(--bg0);border:1px solid var(--bd1);border-radius:8px;padding:8px 9px}
+.stock-name{font-size:12px;color:var(--t1);font-weight:500;margin-bottom:1px}
+.stock-loc{font-size:10px;color:var(--t3);margin-bottom:5px}
+.stock-ctrl{display:flex;align-items:center;gap:5px}
+.pm-btn{width:26px;height:26px;border:1px solid var(--bd2);border-radius:5px;
+  background:var(--bg1);color:var(--t2);font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;line-height:1;padding:0;font-family:inherit;transition:all .15s}
+.pm-btn:hover{background:var(--bg2);color:var(--t1)}
+.stock-inp{flex:1;text-align:center !important;background:transparent !important;
+  border:none !important;color:var(--t1);font-size:16px;font-weight:500;padding:0 !important;
+  font-variant-numeric:tabular-nums;outline:none;min-width:0}
+
+/* ── Medal ── */
+.medal-row{display:flex;align-items:center;gap:10px;
+  background:var(--bg0);border:1px solid var(--bd2);border-radius:10px;
+  padding:12px 13px;margin-bottom:2px}
+.medal-icon{width:34px;height:34px;border-radius:50%;background:var(--acdim);
+  border:1px solid var(--acc);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.medal-info{flex:1}
+.medal-lbl{font-size:11px;color:var(--t3);margin-bottom:2px}
+.medal-val{display:flex;align-items:baseline;gap:3px}
+.medal-num{font-size:24px;font-weight:500;color:var(--acc);font-variant-numeric:tabular-nums}
+.medal-unit{font-size:12px;color:var(--t3)}
+.medal-btns{display:flex;flex-direction:column;gap:5px}
+
+/* ── Event section ── */
+.ev-section{border:1px solid var(--bd1);border-radius:10px;overflow:hidden;margin-bottom:10px}
+.ev-hdr{display:flex;justify-content:space-between;align-items:center;
+  padding:10px 13px;background:var(--bg1);cursor:pointer;user-select:none}
+.ev-hdr-left{display:flex;align-items:center;gap:7px}
+.ev-badge-on{font-size:10px;background:rgba(90,191,122,.12);border:1px solid rgba(90,191,122,.3);
+  color:var(--grn);padding:2px 7px;border-radius:10px;letter-spacing:.03em}
+.ev-name-lbl{font-size:13px;font-weight:500;color:var(--t1)}
+.ev-arrow{font-size:11px;color:var(--t3)}
+.ev-body{padding:11px 12px 13px;background:var(--bg0);border-top:1px solid var(--bd1)}
+.ev-sub-h{font-size:11px;color:var(--t3);letter-spacing:.06em;margin-bottom:8px;padding-top:2px}
+.add-form{background:var(--bg1);border:1px solid var(--bd1);border-radius:9px;
+  padding:11px 12px;margin-bottom:10px}
+.add-form-h{font-size:11px;color:var(--t2);letter-spacing:.06em;margin-bottom:9px}
+.add-empty-btn{width:100%;padding:8px;background:transparent;border:1px dashed var(--bd2);
+  border-radius:8px;color:var(--t3);font-size:12px;font-family:inherit;cursor:pointer;
+  letter-spacing:.04em;transition:all .15s}
+.add-empty-btn:hover{border-color:var(--acc);color:var(--acc)}
+.sep{height:1px;background:var(--bd1);margin:11px 0}
+.empty{text-align:center;padding:30px 0;color:var(--t3);font-size:13px;line-height:1.8}
+
+/* ── Settings ── */
+.set-row{display:flex;justify-content:space-between;align-items:flex-start;
+  padding:13px 0;border-bottom:1px solid var(--bd1);gap:12px;flex-wrap:wrap}
+.set-row:last-child{border-bottom:none}
+.set-lbl{font-size:13px;color:var(--t1)}
+.set-sub{font-size:11px;color:var(--t3);margin-top:3px;line-height:1.6;max-width:240px}
+.toggle-sw{width:38px;height:21px;background:var(--bd2);border-radius:11px;
+  position:relative;cursor:pointer;flex-shrink:0;transition:background .2s;
+  border:none;padding:0;display:inline-flex;align-items:center}
+.toggle-sw.on{background:var(--grn)}
+.toggle-knob{position:absolute;top:3px;left:3px;width:15px;height:15px;
+  background:#fff;border-radius:50%;transition:left .2s;pointer-events:none}
+.toggle-sw.on .toggle-knob{left:20px}
+
+/* ── Sync warn ── */
+.sync-warn{display:none;background:var(--bg1);border:1px solid #d4a020;
+  border-radius:9px;padding:11px 13px;margin-bottom:10px}
+.sync-warn.show{display:flex;gap:9px;align-items:flex-start}
+.sync-warn-icon{font-size:14px;color:#d4a020;flex-shrink:0;line-height:1.3}
+.sync-warn-title{font-size:13px;font-weight:500;color:#c8980a;margin-bottom:3px}
+.sync-warn-text{font-size:11px;color:var(--t2);line-height:1.6;margin-bottom:7px}
+
+/* ── Stock quality ── */
+.stock-quals{display:flex;flex-direction:column;gap:4px}
+.qual-row{display:flex;align-items:center;gap:6px}
+.qual-row input[type=number]::-webkit-inner-spin-button,
+.qual-row input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.qual-row input[type=number]{-moz-appearance:textfield}
+.qual-g{font-size:11px;font-weight:500;color:#b8900a;width:14px;flex-shrink:0}
+.qual-s{font-size:11px;font-weight:500;color:#7a9ab0;width:14px;flex-shrink:0}
+.qual-b{font-size:11px;font-weight:500;color:#a06830;width:14px;flex-shrink:0}
+.q-stepper{display:flex;align-items:center;flex:1;border:1px solid var(--bd1);border-radius:6px;overflow:hidden;height:26px}
+.q-stepper input{flex:1;text-align:center;background:transparent;border:none;outline:none;
+  padding:0 3px;font-size:13px;font-weight:500;color:var(--t1);font-variant-numeric:tabular-nums;min-width:0;width:100%}
+.q-btn{width:27px;height:26px;border:none;background:var(--bg2);color:var(--t2);font-size:12px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;font-family:inherit;transition:all .15s}
+.q-btn:hover{background:var(--bd2);color:var(--t1)}
+.q-div{width:1px;height:100%;background:var(--bd1);flex-shrink:0}
+
+/* ── Optimizer ── */
+.opt-card{background:var(--bg1);border:1px solid var(--bd1);border-radius:10px;
+  padding:12px 13px;margin-bottom:10px}
+.opt-result-wrap{margin-top:6px;display:flex;flex-direction:column;gap:3px}
+.opt-row{display:flex;justify-content:space-between;align-items:center;
+  font-size:13px;color:var(--t1);padding:2px 0}
+.opt-name{color:var(--t1)}
+.opt-count{color:var(--acc);font-weight:500;font-variant-numeric:tabular-nums}
+.opt-total{font-size:13px;font-weight:500;color:var(--t2);
+  border-top:1px solid var(--bd1);margin-top:5px;padding-top:5px}
+.opt-total-val{font-size:18px;color:var(--acc);font-weight:600;margin:0 2px;font-variant-numeric:tabular-nums}
+.opt-total-unit{font-size:12px;color:var(--t3)}
+.opt-leftover{font-size:11px;color:var(--t3);margin-top:3px}
+.opt-btn-row{display:flex;gap:8px;margin-top:10px}
+.opt-btn{flex:1;padding:8px 6px;border-radius:8px;font-size:12px;line-height:1.5;
+  cursor:pointer;font-family:inherit;border:1px solid var(--bd2);
+  background:var(--bg2);color:var(--t1);transition:all .15s;text-align:center}
+.opt-btn:hover{background:var(--bg1)}
+.opt-btn-cook{border-color:rgba(90,191,122,.4);color:var(--grn);background:rgba(90,191,122,.06)}
+.opt-btn-cook:hover{background:rgba(90,191,122,.12)}
+.opt-btn-clear{color:var(--t3)}
+.opt-confirm{display:none;background:rgba(90,191,122,.07);border:1px solid rgba(90,191,122,.3);
+  border-radius:8px;padding:11px 13px;margin-top:10px}
+.opt-confirm.show{display:block}
+.opt-confirm-title{font-size:12px;font-weight:500;color:var(--grn);margin-bottom:6px}
+.opt-confirm-list{font-size:11px;color:var(--t2);line-height:1.9;margin-bottom:10px}
+.opt-confirm-btns{display:flex;gap:8px}
+.opt-confirm-yes{flex:1;padding:7px;border-radius:7px;font-size:12px;cursor:pointer;
+  font-family:inherit;background:var(--grn);border:none;color:#fff}
+.opt-confirm-no{flex:1;padding:7px;border-radius:7px;font-size:12px;cursor:pointer;
+  font-family:inherit;background:transparent;border:1px solid var(--bd2);color:var(--t2)}
+
+/* ── Modal ── */
+.modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,.65);z-index:100;align-items:center;justify-content:center;padding:16px}
+.modal-bg.show{display:flex}
+.modal{background:var(--bg1);border:1px solid var(--bd2);border-radius:11px;
+  padding:20px;width:100%;max-width:420px;max-height:85vh;overflow-y:auto}
+.modal-h{font-size:15px;font-weight:500;color:var(--t1);margin-bottom:14px}
+.modal-foot{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+
+/* ── Toast ── */
+#toast-area{position:fixed;bottom:max(20px,env(safe-area-inset-bottom));right:14px;
+  z-index:200;display:flex;flex-direction:column;gap:7px;pointer-events:none}
+.toast{background:var(--bg1);border:1px solid var(--bd2);border-radius:10px;
+  padding:11px 15px;min-width:190px;max-width:280px;
+  box-shadow:0 4px 18px rgba(0,0,0,.4);animation:toastIn .22s ease;pointer-events:auto}
+.toast-title{font-size:13px;font-weight:500;color:var(--t1);margin-bottom:2px}
+.toast-body{font-size:12px;color:var(--t2)}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── AP calc info ── */
+.ap-calc{font-size:12px;color:var(--t3);margin-bottom:8px;min-height:16px}
+.ap-calc.ready{color:var(--grn)}
+
+/* ── Responsive ── */
+@media(max-width:380px){
+  .hdr-btn-lbl{display:none}
+  .hdr-btn{min-width:32px;padding:5px 5px}
+  .sync-btn{padding:5px 5px;font-size:10px}
+  .sync-time{display:none}
+  .hdr-title h1{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+<!-- ─── Header ─── -->
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="hdr-title"><h1>NRC生徒手帳</h1></div>
+    <div class="hdr-clock" id="clock"></div>
+  </div>
+  <div class="hdr-actions">
+    <button class="hdr-btn" onclick="toggleTheme()" title="テーマ切替">
+      <span class="hdr-btn-icon" id="theme-icon">🌙</span>
+      <span class="hdr-btn-lbl" id="theme-lbl">ダーク</span>
+    </button>
+    <div class="hdr-div"></div>
+    <div class="sync-group" id="sync-group">
+      <div class="sync-time" id="sync-time"></div>
+      <div class="sync-btns">
+        <button class="sync-btn" id="up-btn" onclick="gdSaveWithCheck()" disabled>↑ 保存</button>
+        <button class="sync-btn" id="dn-btn" onclick="gdLoad()" disabled>↓ 読込</button>
+      </div>
+      <button class="sync-login-lnk" id="login-btn" onclick="gSignIn()">同期ログイン</button>
+      <button class="sync-logout-lnk" id="logout-btn" onclick="gSignOut()" style="display:none">ログアウト</button>
+    </div>
+  </div>
+</div>
+
+<!-- sync warn -->
+<div class="sync-warn" id="sync-warn">
+  <span class="sync-warn-icon">⚠</span>
+  <div style="flex:1;min-width:0">
+    <div class="sync-warn-title">クラウドのデータが新しい</div>
+    <div class="sync-warn-text" id="sync-warn-text"></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn-sm btn-danger" onclick="doOverwriteSave()">上書き保存</button>
+      <button class="btn-sm" onclick="hideSyncWarn()">キャンセル</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Tabs ─── -->
+<div class="tab-bar">
+  <button class="tab on" id="tab-ap" onclick="switchTab('ap')">AP回復</button>
+  <button class="tab" id="tab-ev" onclick="switchTab('ev')">イベント</button>
+  <button class="tab" id="tab-st" onclick="switchTab('st')">設定</button>
+</div>
+
+<!-- ─── AP回復 ─── -->
+<div class="sec on" id="s-ap">
+  <div class="card">
+    <p class="card-h">AP 回復タイマー</p>
+    <div class="seg">
+      <button class="seg-btn on" id="mode-ap"   onclick="setAPMode('ap')">AP 入力</button>
+      <button class="seg-btn"    id="mode-time" onclick="setAPMode('time')">時間入力</button>
+    </div>
+
+    <!-- AP入力モード -->
+    <div id="ap-input-ui">
+      <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:6px">
+        <div class="fld" style="flex:1">
+          <p class="lbl">現在の AP</p>
+          <input type="number" id="ap-cur" value="0" min="0" oninput="onAPInput()" onfocus="this.select()">
+        </div>
+        <div style="color:var(--bd2);font-size:22px;padding-bottom:7px">/</div>
+        <div class="fld" style="flex:1">
+          <p class="lbl">AP 上限</p>
+          <input type="number" id="ap-max-disp" value="30" min="1" oninput="onAPMaxFromAP()" onfocus="this.select()">
+        </div>
+      </div>
+      <div class="ap-calc" id="ap-calc"></div>
+    </div>
+
+    <!-- 時間入力モード -->
+    <div id="ap-time-ui" style="display:none">
+      <div class="row3">
+        <div class="fld"><p class="lbl">時間 (h)</p><input type="number" id="ap-h" value="0" min="0" max="23" onfocus="this.select()"></div>
+        <div class="fld"><p class="lbl">分 (m)</p><input type="number"   id="ap-m" value="0" min="0" max="59" onfocus="this.select()"></div>
+        <div class="fld"><p class="lbl">秒 (s)</p><input type="number"   id="ap-s" value="0" min="0" max="59" onfocus="this.select()"></div>
+      </div>
+    </div>
+
+    <div class="timer-disp">
+      <div class="timer-big" id="ap-cd">--:--:--</div>
+      <div id="ap-finish"></div>
+      <div class="pbar"><div class="pfill" id="ap-pbar" style="width:0%"></div></div>
+    </div>
+
+    <div class="early-row">
+      <span>早め通知</span>
+      <select id="ap-early" onchange="D.apEarlyMin=parseInt(this.value);save()">
+        <option value="1">1分前</option>
+        <option value="5">5分前</option>
+        <option value="10" selected>10分前</option>
+        <option value="15">15分前</option>
+        <option value="20">20分前</option>
+        <option value="30">30分前</option>
+      </select>
+    </div>
+    <button class="btn-acc btn-full" id="ap-btn" onclick="toggleAPTimer()">スタート</button>
+  </div>
+</div>
+
+<!-- ─── イベント ─── -->
+<div class="sec" id="s-ev">
+  <div id="ev-container"></div>
+  <div class="empty" id="ev-empty" style="display:none">
+    有効なイベントがありません<br>
+    <span style="font-size:12px;color:var(--t3)">設定タブから有効化できます</span>
+  </div>
+</div>
+
+<!-- ─── 設定 ─── -->
+<div class="sec" id="s-st">
+  <div style="max-width:520px">
+
+    <div class="set-row">
+      <div>
+        <div class="set-lbl">AP 上限</div>
+        <div class="set-sub">あなたの最大AP（15分 / 1AP）</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" id="st-apmax" value="30" min="1" max="999"
+          style="width:72px" onchange="onAPMaxFromSettings()">
+        <span style="font-size:13px;color:var(--t3)">AP</span>
+      </div>
+    </div>
+
+    <div class="set-row">
+      <div><div class="set-lbl">カラーテーマ</div></div>
+      <div class="seg" style="margin-bottom:0">
+        <button class="seg-btn on" id="th-dark"  onclick="setTheme('dark')">ダーク（魔道書）</button>
+        <button class="seg-btn"    id="th-light" onclick="setTheme('light')">ライト（羊皮紙）</button>
+      </div>
+    </div>
+
+    <div class="set-row">
+      <div>
+        <div class="set-lbl">ボタンの向き</div>
+        <div class="set-sub">食材・メダルの増減ボタンの並び順</div>
+      </div>
+      <div class="seg" style="margin-bottom:0">
+        <button class="seg-btn" id="bo-dec" onclick="setBtnOrder('dec-left')">▼ 数字 ▲</button>
+        <button class="seg-btn" id="bo-inc" onclick="setBtnOrder('inc-left')">▲ 数字 ▼</button>
+      </div>
+    </div>
+
+    <div class="set-row">
+        <div class="set-sub">オンにするとイベントタブに表示されます</div>
+      </div>
+      <div id="ev-toggles" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+
+    <div class="set-row">
+      <div>
+        <div class="set-lbl">通知</div>
+        <div class="set-sub">タイマー完了・早め通知に使用します</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start">
+        <button class="btn-sm" id="notif-btn" onclick="reqNotif()">許可を求める</button>
+        <button class="btn-sm" onclick="fireNotif('テスト通知','動作確認！',true)">テスト通知</button>
+        <div style="font-size:11px;color:var(--t3);max-width:220px" id="notif-sub"></div>
+      </div>
+    </div>
+
+    <div class="set-row">
+      <div>
+        <div class="set-lbl">クラウド同期（Google Drive）</div>
+        <div class="set-sub" id="st-sync-sub">Google アカウントでログインしてデータを同期します<br>
+          ※ クライアントIDを設定してください（コード内 GD_CLIENT_ID）</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start">
+        <button class="btn-sm" id="st-login-btn"  onclick="gSignIn()">Google でログイン</button>
+        <button class="btn-sm btn-danger" id="st-logout-btn" onclick="gSignOut()" style="display:none">ログアウト</button>
+      </div>
+    </div>
+
+    <div class="set-row" style="border-bottom:none">
+      <div>
+        <div class="set-lbl">データのリセット</div>
+        <div class="set-sub">全データを削除します（元に戻せません）</div>
+      </div>
+      <button class="btn-sm btn-danger" onclick="resetAll()">リセット</button>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- .app -->
+<div id="toast-area"></div>
+
+<!-- ─── タイマー編集モーダル ─── -->
+<div class="modal-bg" id="tc-edit-modal" onclick="if(event.target===this)closeTCEdit()">
+  <div class="modal">
+    <div class="modal-h" id="tc-edit-title">タイマーを編集</div>
+    <div id="tc-edit-body"></div>
+    <div class="modal-foot">
+      <button class="btn-sm" onclick="closeTCEdit()">キャンセル</button>
+      <button class="btn-sm btn-acc" onclick="saveTCEdit()">保存</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+/* ════════════════════════════════════
+   Config
+════════════════════════════════════ */
+// 資材帳・稽古録と同じ Google Client ID を入力してください
+var GD_CLIENT_ID = '1020015092975-ceq95hcvttcn1acgdo369u8ge99pqdoh.apps.googleusercontent.com';
+var GD_SCOPES    = 'https://www.googleapis.com/auth/drive.appdata';
+var GD_FILENAME  = 'twst_data.json';
+var LS_KEY       = 'twst_mgr_v1';
+var APP_VER      = '1.0000';
+
+/* ════════════════════════════════════
+   Master data
+════════════════════════════════════ */
+var INGREDIENTS = [
+  {name:'米',          loc:'サバナクロー'},
+  {name:'レタス',      loc:'植物園'},
+  {name:'玉ねぎ',      loc:'植物園'},
+  {name:'パプリカ',    loc:'植物園'},
+  {name:'牛乳',        loc:'厩舎'},
+  {name:'チーズ',      loc:'厩舎'},
+  {name:'エビ',        loc:'購買部'},
+  {name:'貝',          loc:'購買部'},
+  {name:'砂糖',        loc:'購買部'},
+  {name:'辛味パウダー',loc:'購買部'},
+  {name:'パン粉',      loc:'風車'},
+  {name:'豆',          loc:'風車'},
+  {name:'肉',          loc:'鶏舎'},
+  {name:'卵',          loc:'鶏舎'},
+];
+
+var FOOD_PRESETS = [
+  {min:20,  label:'20分'},
+  {min:60,  label:'1時間'},
+  {min:120, label:'2時間'},
+  {min:360, label:'6時間'},
+];
+
+// 食材調達場所マスター
+var LOCATIONS = [
+  {name:'サバナクロー寮',    items:['米']},
+  {name:'植物園-温帯ゾーン', items:['レタス','玉ねぎ','パプリカ']},
+  {name:'厩舎',             items:['牛乳','チーズ']},
+  {name:'購買部',           items:['エビ','貝','砂糖','辛味パウダー']},
+  {name:'風車',             items:['パン粉','豆']},
+  {name:'鶏舎',             items:['肉','卵']},
+];
+
+// 早め通知オプション（秒）
+var EARLY_SECS = [
+  {sec:60, label:'1分前'},
+  {sec:50, label:'50秒前'},
+  {sec:40, label:'40秒前'},
+  {sec:30, label:'30秒前'},
+  {sec:20, label:'20秒前'},
+  {sec:10, label:'10秒前'},
+];
+
+var EVENT_DEFS = {
+  masterchef: {id:'masterchef', label:'マスターシェフ'}
+};
+
+/* ── レシピマスター ── */
+var RECIPES = [
+  {id:'rocomo',    name:'ロコモコ',         madol:450, mg:30, ing:{'米':1,'レタス':1,'肉':1,'卵':1}},
+  {id:'ricecro',   name:'ライスコロッケ',   madol:450, mg:30, ing:{'米':1,'玉ねぎ':1,'チーズ':1,'パン粉':1}},
+  {id:'vermicelli',name:'スープビーフン',   madol:350, mg:30, ing:{'米':2,'エビ':2}},
+  {id:'topoki',    name:'チーズトッポギ',   madol:400, mg:30, ing:{'米':1,'チーズ':1,'辛味パウダー':1}},
+  {id:'dosa',      name:'マサラドーサ',     madol:400, mg:30, ing:{'米':1,'辛味パウダー':1,'豆':1}},
+  {id:'pudding',   name:'ライスプディング', madol:400, mg:30, ing:{'米':1,'牛乳':1,'砂糖':1}},
+  {id:'katsudon',  name:'かつ丼',           madol:450, mg:30, ing:{'米':1,'パン粉':1,'卵':1,'肉':1}},
+  {id:'salad',     name:'ライスサラダ',     madol:450, mg:30, ing:{'米':1,'レタス':1,'パプリカ':1,'豆':1}},
+  {id:'paella',    name:'パエリア',         madol:500, mg:30, ing:{'米':1,'パプリカ':2,'エビ':1,'貝':1,'玉ねぎ':1}},
+];
+
+/* ════════════════════════════════════
+   Data
+════════════════════════════════════ */
+var D = {
+  version:    APP_VER,
+  theme:      'light',
+  apMax:      30,
+  apMode:     'ap',
+  apEarlyMin: 10,
+  btnOrder:   'dec-left',  // 'dec-left'=▼数字▲  'inc-left'=▲数字▼
+  apTimer:    null,   // {endTime, totalMs, earlyFired, doneFired}
+  events: {
+    masterchef: {
+      enabled:       true,
+      open:          true,
+      timers:        [],  // [{id,locName,locItems,durationMin,endTime,totalMs,earlySec,earlyFired,doneFired,skipMin}]
+      timerEarlySec: 60,
+      stocks:        {},
+      medals:        0,
+      medalGoal:     0,
+    }
+  },
+  _savedAt: 0,
+};
+
+// Init stocks {g:金, s:銀, b:銅}
+INGREDIENTS.forEach(function(ing){ D.events.masterchef.stocks[ing.name] = {g:0,s:0,b:0}; });
+
+/* ════════════════════════════════════
+   Save / Load
+════════════════════════════════════ */
+function save(){
+  try { localStorage.setItem(LS_KEY, JSON.stringify(D)); } catch(e){}
+}
+
+function load(){
+  try {
+    var raw = localStorage.getItem(LS_KEY);
+    if (!raw) return;
+    var s = JSON.parse(raw);
+    if (s.theme)      D.theme      = s.theme;
+    if (s.apMax)      D.apMax      = s.apMax;
+    if (s.apMode)     D.apMode     = s.apMode;
+    if (s.apEarlyMin) D.apEarlyMin = s.apEarlyMin;
+    if (s.btnOrder)   D.btnOrder   = s.btnOrder;
+    if (s.apTimer)    D.apTimer    = s.apTimer;
+    if (s._savedAt)   D._savedAt   = s._savedAt;
+    if (s.events) {
+      Object.keys(s.events).forEach(function(id){
+        if (!D.events[id]) return;
+        var se = s.events[id], de = D.events[id];
+        if (se.enabled  !== undefined) de.enabled       = se.enabled;
+        if (se.open     !== undefined) de.open          = se.open;
+        if (se.timers)                 de.timers        = se.timers;
+        if (se.timerEarlySec)          de.timerEarlySec = se.timerEarlySec;
+        if (se.timerEarlyMin)          de.timerEarlySec = (se.timerEarlyMin||1)*60; // 旧形式互換
+        if (se.medals   !== undefined) de.medals        = se.medals;
+        if (se.medalGoal !== undefined) de.medalGoal    = se.medalGoal;
+        if (se.stocks) Object.keys(se.stocks).forEach(function(k){
+          if (de.stocks[k] !== undefined){
+            var v = se.stocks[k];
+            // 旧形式（数値）→新形式へ移行
+            de.stocks[k] = (typeof v === 'number') ? {g:v,s:0,b:0} : {g:v.g||0,s:v.s||0,b:v.b||0};
+          }
+        });
+      });
+    }
+  } catch(e){}
+}
+
+/* ════════════════════════════════════
+   Theme
+════════════════════════════════════ */
+function setTheme(t){
+  D.theme = t;
+  applyTheme();
+  save();
+}
+function toggleTheme(){ setTheme(D.theme === 'dark' ? 'light' : 'dark'); }
+function applyTheme(){
+  var app = document.getElementById('app');
+  app.classList.toggle('light', D.theme === 'light');
+  document.body.classList.toggle('light', D.theme === 'light');
+  document.body.style.background = D.theme === 'light' ? '#f7f3ec' : '#0d0d10';
+  var icon = document.getElementById('theme-icon');
+  var lbl  = document.getElementById('theme-lbl');
+  if (icon) icon.textContent = D.theme === 'dark' ? '🌙' : '☀';
+  if (lbl)  lbl.textContent  = D.theme === 'dark' ? 'ダーク' : 'ライト';
+  var td = document.getElementById('th-dark');
+  var tl = document.getElementById('th-light');
+  if (td) td.classList.toggle('on', D.theme === 'dark');
+  if (tl) tl.classList.toggle('on', D.theme === 'light');
+}
+
+/* ════════════════════════════════════
+   Clock
+════════════════════════════════════ */
+function updateClock(){
+  var n = new Date();
+  var el = document.getElementById('clock');
+  if (el) el.textContent = [n.getHours(), n.getMinutes(), n.getSeconds()]
+    .map(function(v){ return String(v).padStart(2,'0'); }).join(':');
+}
+
+/* ════════════════════════════════════
+   Time helpers
+════════════════════════════════════ */
+function fmtCD(ms){
+  if (ms <= 0) return '0:00:00';
+  var s = Math.floor(ms / 1000);
+  var h = Math.floor(s / 3600);
+  var m = Math.floor((s % 3600) / 60);
+  return h + ':' + String(m).padStart(2,'0') + ':' + String(s % 60).padStart(2,'0');
+}
+function fmtHM(ts){
+  var d = new Date(ts);
+  return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+}
+
+/* ════════════════════════════════════
+   AP Timer
+════════════════════════════════════ */
+function setAPMode(mode){
+  D.apMode = mode;
+  document.getElementById('mode-ap').classList.toggle('on', mode === 'ap');
+  document.getElementById('mode-time').classList.toggle('on', mode === 'time');
+  document.getElementById('ap-input-ui').style.display = mode === 'ap'   ? '' : 'none';
+  document.getElementById('ap-time-ui').style.display  = mode === 'time' ? '' : 'none';
+  save();
+}
+
+function onAPInput(){
+  var cur = parseInt(document.getElementById('ap-cur').value)      || 0;
+  var max = parseInt(document.getElementById('ap-max-disp').value) || 30;
+  D.apMax = max;
+  var el = document.getElementById('st-apmax');
+  if (el) el.value = max;
+  var info = document.getElementById('ap-calc');
+  var rem = Math.max(0, max - cur);
+  if (cur >= max){
+    info.textContent = '✦ AP は満タンです';
+    info.className = 'ap-calc ready';
+  } else {
+    var mins = rem * 15;
+    var finTs = Date.now() + mins * 60000;
+    var h = Math.floor(mins/60), m = mins%60;
+    info.textContent = '▷ 今スタートすると… ' + (h>0 ? h+'時間' : '') + m + '分後 → ' + fmtHM(finTs) + ' に全回復';
+    info.className = 'ap-calc';
+  }
+  save();
+}
+
+function onAPMaxFromAP(){
+  D.apMax = parseInt(document.getElementById('ap-max-disp').value) || 30;
+  var el = document.getElementById('st-apmax');
+  if (el) el.value = D.apMax;
+  onAPInput();
+}
+
+function onAPMaxFromSettings(){
+  D.apMax = parseInt(document.getElementById('st-apmax').value) || 30;
+  var el = document.getElementById('ap-max-disp');
+  if (el) el.value = D.apMax;
+  save();
+}
+
+function toggleAPTimer(){
+  if (D.apTimer){
+    D.apTimer = null;
+    save();
+    renderAPTimer();
+    return;
+  }
+  var totalMs = 0;
+  if (D.apMode === 'ap'){
+    var cur = parseInt(document.getElementById('ap-cur').value) || 0;
+    var max = parseInt(document.getElementById('ap-max-disp').value) || D.apMax;
+    var rem = Math.max(0, max - cur);
+    if (rem <= 0){ showToast('AP確認', 'APはすでに満タンです', false); return; }
+    totalMs = rem * 15 * 60000;
+  } else {
+    var h = parseInt(document.getElementById('ap-h').value) || 0;
+    var m = parseInt(document.getElementById('ap-m').value) || 0;
+    var s = parseInt(document.getElementById('ap-s').value) || 0;
+    totalMs = (h*3600 + m*60 + s) * 1000;
+    if (totalMs <= 0){ showToast('入力エラー', '時間を入力してください', false); return; }
+  }
+  D.apTimer = {
+    endTime:    Date.now() + totalMs,
+    totalMs:    totalMs,
+    earlyFired: false,
+    doneFired:  false,
+  };
+  save();
+}
+
+function renderAPTimer(){
+  var cd   = document.getElementById('ap-cd');
+  var fin  = document.getElementById('ap-finish');
+  var pbar = document.getElementById('ap-pbar');
+  var btn  = document.getElementById('ap-btn');
+  if (!D.apTimer){
+    cd.textContent = '--:--:--';
+    cd.style.color = 'var(--acc)';
+    fin.innerHTML  = '<div class="timer-sub">タイマー未設定</div>';
+    pbar.style.width = '0%';
+    if (btn){ btn.textContent = 'スタート'; btn.className = 'btn-acc btn-full'; }
+    return;
+  }
+  var rem = D.apTimer.endTime - Date.now();
+  if (rem <= 0){
+    cd.textContent = '0:00:00';
+    cd.style.color = 'var(--grn)';
+    fin.innerHTML  = '<div class="timer-done">✦ AP 全回復！</div>';
+    pbar.style.width = '100%';
+    if (btn){ btn.textContent = 'クリア'; btn.className = 'btn-sm btn-full'; }
+  } else {
+    cd.textContent = fmtCD(rem);
+    cd.style.color = 'var(--acc)';
+    fin.innerHTML  = '<div class="timer-finish">✦ <em>' + fmtHM(D.apTimer.endTime) + '</em> に全回復</div>';
+    var pct = Math.max(0, Math.min(100, (1 - rem / D.apTimer.totalMs) * 100));
+    pbar.style.width = pct.toFixed(1) + '%';
+    if (btn){ btn.textContent = '停止'; btn.className = 'btn-stop btn-full'; }
+  }
+}
+
+function checkAPNotif(){
+  if (!D.apTimer) return;
+  var rem = D.apTimer.endTime - Date.now();
+  var earlyMs = D.apEarlyMin * 60000;
+  if (!D.apTimer.earlyFired && rem > 0 && rem <= earlyMs){
+    D.apTimer.earlyFired = true; save();
+    fireNotif('AP回復まもなく', D.apEarlyMin + '分後に全回復します', false);
+  }
+  if (!D.apTimer.doneFired && rem <= 0){
+    D.apTimer.doneFired = true; save();
+    fireNotif('AP全回復！', 'APが満タンになりました', true);
+  }
+}
+
+/* ════════════════════════════════════
+   Food Timers
+════════════════════════════════════ */
+var _tcid = Date.now();
+function newTCID(){ return ++_tcid; }
+
+function startFoodTimer(evId){
+  var ev = D.events[evId];
+  if (!ev) return;
+  var locEl   = document.getElementById('ft-loc-'   + evId);
+  var durEl   = document.getElementById('ft-dur-'   + evId);
+  var earlyEl = document.getElementById('ft-early-' + evId);
+  var locName  = locEl   ? locEl.value   : '';
+  if (!locName){ showToast('未選択', '調達場所を選んでください', false); return; }
+  var loc = LOCATIONS.find(function(l){ return l.name === locName; });
+  var dur      = parseInt(durEl   ? durEl.value   : 60) || 60;
+  var earlySec = parseInt(earlyEl ? earlyEl.value : 60) || 60;
+  var totalMs  = dur * 60000;
+  ev.timers.push({
+    id: newTCID(),
+    locName:  locName,
+    locItems: loc ? loc.items : [],
+    durationMin: dur,
+    endTime:  Date.now() + totalMs,
+    totalMs:  totalMs,
+    earlySec: earlySec,
+    earlyFired: false, doneFired: false, skipMin: 0,
+  });
+  ev.timerEarlySec = earlySec;
+  save();
+  renderFoodTimers(evId);
+}
+
+function skipFoodTimer(evId, tid, dir){
+  var ev = D.events[evId]; if (!ev) return;
+  var t = ev.timers.find(function(x){ return x.id===tid; }); if (!t) return;
+  t.endTime += dir * 600000; // ±10分
+  if (dir < 0){
+    t.skipMin = (t.skipMin||0) + 10;
+    if (t.earlyFired && (t.endTime - Date.now()) > t.earlySec * 1000) t.earlyFired = false;
+  } else {
+    t.skipMin = Math.max(0, (t.skipMin||0) - 10);
+    t.earlyFired = false;
+  }
+  save();
+  renderFoodTimers(evId);
+}
+
+function deleteFoodTimer(evId, tid){
+  var ev = D.events[evId]; if (!ev) return;
+  ev.timers = ev.timers.filter(function(x){ return x.id !== tid; });
+  save();
+  renderFoodTimers(evId);
+}
+
+function checkFoodTimers(){
+  var changed = false;
+  Object.keys(D.events).forEach(function(evId){
+    var ev = D.events[evId];
+    if (!ev.timers) return;
+    var now = Date.now();
+    ev.timers.forEach(function(t){
+      var rem = t.endTime - now;
+      if (!t.earlyFired && rem > 0 && rem <= t.earlySec * 1000){
+        t.earlyFired = true; changed = true;
+        var earlyLbl = t.earlySec >= 60 ? (t.earlySec/60)+'分' : t.earlySec+'秒';
+        fireNotif(t.locName + ' まもなく完了', earlyLbl + '後に調達完了', false);
+      }
+      if (!t.doneFired && rem <= 0){
+        t.doneFired = true; changed = true;
+        fireNotif(t.locName + ' 調達完了！', '食材を受け取りましょう', true);
+      }
+    });
+  });
+  if (changed) save();
+}
+
+function renderFoodTimers(evId){
+  var listEl = document.getElementById('ft-list-' + evId);
+  if (!listEl) return;
+  var ev = D.events[evId];
+  if (!ev || !ev.timers.length){ listEl.innerHTML = ''; return; }
+  var now = Date.now();
+  listEl.innerHTML = ev.timers.map(function(t){
+    var rem      = t.endTime - now;
+    var isDone   = rem <= 0;
+    var pct      = isDone ? 100 : Math.max(0, Math.min(100, (1 - rem / t.totalMs) * 100));
+    var cdStr    = isDone ? '0:00:00' : fmtCD(rem);
+    var finStr   = isDone
+      ? '<span style="color:var(--grn);font-weight:500">✦ 完了！</span>'
+      : '✦ <em>' + fmtHM(t.endTime) + '</em> 完了';
+    var durLabel = t.durationMin >= 60
+      ? Math.floor(t.durationMin/60) + '時間' + (t.durationMin%60 ? (t.durationMin%60)+'分' : '')
+      : t.durationMin + '分';
+    var itemsStr = (t.locItems||[]).join('・');
+    var skipNote = t.skipMin > 0 ? '<span class="tc-skip-used">±' + t.skipMin + '分</span>' : '';
+    return '<div class="tc">'
+      + '<div class="tc-top">'
+      +   '<div class="tc-left">'
+      +     '<div class="tc-name">' + esc(t.locName||'調達') + '</div>'
+      +     (itemsStr ? '<div style="font-size:10px;color:var(--t3);margin-top:1px">' + esc(itemsStr) + '</div>' : '')
+      +     '<div class="tc-time"' + (isDone?' style="color:var(--grn)"':'') + '>' + cdStr + '</div>'
+      +     '<div class="tc-finish">' + finStr + '</div>'
+      +   '</div>'
+      +   '<div class="tc-right"><span class="tc-dur">' + durLabel + '</span>' + skipNote + '</div>'
+      + '</div>'
+      + '<div class="tc-actions">'
+      +   '<button class="btn-sm" onclick="skipFoodTimer(\'' + evId + '\',' + t.id + ',-1)">−10分</button>'
+      +   '<button class="btn-sm" onclick="skipFoodTimer(\'' + evId + '\',' + t.id + ',1)">+10分</button>'
+      +   '<button class="btn-sm" onclick="openTCEdit(\'' + evId + '\',' + t.id + ')">編集</button>'
+      +   '<button class="btn-sm btn-danger" onclick="deleteFoodTimer(\'' + evId + '\',' + t.id + ')">削除</button>'
+      + '</div>'
+      + '<div class="tc-bar"><div class="tc-fill" style="width:' + pct.toFixed(1) + '%"></div></div>'
+      + '</div>';
+  }).join('');
+}
+
+/* ════════════════════════════════════
+   Event rendering
+════════════════════════════════════ */
+function renderAllEvents(){
+  var container = document.getElementById('ev-container');
+  var emptyEl   = document.getElementById('ev-empty');
+  container.innerHTML = '';
+  var hasAny = false;
+  Object.keys(EVENT_DEFS).forEach(function(evId){
+    var ev = D.events[evId];
+    if (!ev || !ev.enabled) return;
+    hasAny = true;
+    var wrap = document.createElement('div');
+    wrap.className = 'ev-section';
+    wrap.id = 'ev-sec-' + evId;
+    wrap.innerHTML = buildEvHdr(evId) + buildEvBody(evId);
+    container.appendChild(wrap);
+    renderFoodTimers(evId);
+  });
+  emptyEl.style.display = hasAny ? 'none' : '';
+}
+
+function buildEvHdr(evId){
+  var def   = EVENT_DEFS[evId];
+  var isOpen = D.events[evId].open !== false;
+  return '<div class="ev-hdr" onclick="toggleEvSection(\'' + evId + '\')">'
+    + '<div class="ev-hdr-left">'
+    + '<span class="ev-badge-on">開催中</span>'
+    + '<span class="ev-name-lbl">' + def.label + '</span>'
+    + '</div>'
+    + '<span class="ev-arrow" id="ev-arr-' + evId + '">' + (isOpen?'▼':'▶') + '</span>'
+    + '</div>';
+}
+
+function buildEvBody(evId){
+  var ev = D.events[evId];
+  var isOpen = ev.open !== false;
+  var html = '<div class="ev-body" id="ev-body-' + evId + '"'
+    + (isOpen ? '' : ' style="display:none"') + '>';
+  if (evId === 'masterchef') html += buildMasterChefBody();
+  html += '</div>';
+  return html;
+}
+
+function buildMasterChefBody(){
+  var ev = D.events.masterchef;
+  var earlyVal = ev.timerEarlySec || 60;
+
+  // Add form
+  var html = '<div class="add-form">'
+    + '<p class="add-form-h">食材調達を出発させる</p>'
+    + '<div style="margin-bottom:7px">'
+    +   '<p class="lbl">調達場所</p>'
+    +   '<select id="ft-loc-masterchef" onchange="updateLocItems(\'masterchef\')">'
+    +   '<option value="">場所を選択...</option>'
+    +   LOCATIONS.map(function(l){ return '<option value="' + esc(l.name) + '">' + esc(l.name) + '</option>'; }).join('')
+    +   '</select>'
+    +   '<div id="ft-loc-items-masterchef" style="font-size:11px;color:var(--t3);margin-top:4px;min-height:15px"></div>'
+    + '</div>'
+    + '<div style="display:flex;gap:8px;margin-bottom:8px">'
+    +   '<div class="fld" style="flex:1"><p class="lbl">調達時間</p>'
+    +   '<select id="ft-dur-masterchef">'
+    +   FOOD_PRESETS.map(function(p){ return '<option value="' + p.min + '">' + p.label + '</option>'; }).join('')
+    +   '</select></div>'
+    +   '<div class="fld" style="flex:1"><p class="lbl">早め通知</p>'
+    +   '<select id="ft-early-masterchef" onchange="D.events.masterchef.timerEarlySec=parseInt(this.value);save()">'
+    +   EARLY_SECS.map(function(e){
+          return '<option value="' + e.sec + '"' + (e.sec===earlyVal?' selected':'') + '>' + e.label + '</option>';
+        }).join('')
+    +   '</select></div>'
+    + '</div>'
+    + '<button class="btn-acc btn-full" onclick="startFoodTimer(\'masterchef\')">出発</button>'
+    + '</div>';
+
+  // Timer list
+  html += '<div id="ft-list-masterchef"></div>';
+
+  // Optimizer card
+  html += '<div class="opt-card" id="opt-card-masterchef">'
+    + '<p class="card-h" style="margin-bottom:8px">最適化計算（金食材）</p>'
+    + '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">'
+    +   '<button class="btn-sm btn-acc" onclick="runOptimize(\'masterchef\',\'medals\')">メダル最大化</button>'
+    +   '<button class="btn-sm btn-acc" onclick="runOptimize(\'masterchef\',\'madol\')">マドル最大化</button>'
+    + '</div>'
+    + '<div id="opt-result-masterchef" style="font-size:12px;color:var(--t3)">上のボタンで計算できます</div>'
+    + '</div>';
+
+  // Stock
+  html += '<div class="sep"></div>';
+  html += '<p class="ev-sub-h">食材在庫</p>';
+  html += '<div class="stock-grid">';
+  INGREDIENTS.forEach(function(ing){
+    var s = ev.stocks[ing.name] || {g:0,s:0,b:0};
+    var base = 'st-' + ing.name.replace(/\s/g,'_');
+    var quals = [{k:'g',lbl:'金',cls:'qual-g'},{k:'s',lbl:'銀',cls:'qual-s'},{k:'b',lbl:'銅',cls:'qual-b'}];
+    html += '<div class="stock-item">'
+      +   '<div class="stock-name">' + ing.name + '</div>'
+      +   '<div class="stock-loc">' + ing.loc + '</div>'
+      +   '<div class="stock-quals">'
+      +   quals.map(function(q){
+            var id  = base + '-' + q.k;
+            var val = s[q.k]||0;
+            var dec = "adjStock('masterchef','"+ing.name+"','"+q.k+"',-1)";
+            var inc = "adjStock('masterchef','"+ing.name+"','"+q.k+"',1)";
+            var chg = "setStock('masterchef','"+ing.name+"','"+q.k+"',this.value)";
+            return '<div class="qual-row">'
+              +'<span class="'+q.cls+'">'+q.lbl+'</span>'
+              +qStepper(dec,inc,id,val,chg)
+              +'</div>';
+          }).join('')
+      +   '</div>'
+      + '</div>';
+  });
+  html += '</div>';
+
+  // Medal
+  html += '<div class="sep"></div>';
+  html += '<p class="ev-sub-h">マスターシェフメダル</p>';
+  html += '<div class="medal-row">'
+    +   '<div class="medal-icon">'
+    +     '<svg width="18" height="18" viewBox="0 0 18 18" fill="none">'
+    +       '<path d="M9 1.5l2.06 4.6 4.94.5-3.6 3.1 1.1 4.8L9 12.2l-4.5 2.3 1.1-4.8-3.6-3.1 4.94-.5z" fill="var(--acc)"/>'
+    +     '</svg>'
+    +   '</div>'
+    +   '<div class="medal-info" style="flex:1;min-width:0">'
+    +     '<div class="medal-lbl" id="medal-lbl">マスターシェフメダル' + (ev.medalGoal ? ' / 目標 ' + ev.medalGoal + '枚' : '') + '</div>'
+    +     '<div style="display:flex;align-items:center;gap:5px;margin-top:3px">'
+    +     (function(){
+            var dec="adjMedal(-1)", inc="adjMedal(1)";
+            var left  = D.btnOrder==='dec-left'
+              ? '<button class="pm-btn" onclick="'+dec+'">▼</button>'
+              : '<button class="pm-btn" onclick="'+inc+'">▲</button>';
+            var right = D.btnOrder==='dec-left'
+              ? '<button class="pm-btn" onclick="'+inc+'">▲</button>'
+              : '<button class="pm-btn" onclick="'+dec+'">▼</button>';
+            return left
+              +'<input type="number" id="medal-num" value="'+(ev.medals||0)+'" min="0"'
+              +' onchange="setMedalDirect(this.value)" onfocus="this.select()"'
+              +' style="flex:1;text-align:center;font-size:20px;font-weight:500;color:var(--acc);'
+              +'font-variant-numeric:tabular-nums;min-width:0;background:transparent;border-color:var(--bd2)">'
+              +right;
+          })()
+    +     '<span style="font-size:12px;color:var(--t3);flex-shrink:0">枚</span>'
+    +     '</div>'
+    +   '</div>'
+    + '</div>'
+    // Medal goal row
+    + '<div style="display:flex;align-items:center;gap:8px;margin-top:7px">'
+    +   '<span style="font-size:11px;color:var(--t3);flex-shrink:0">目標</span>'
+    +   '<input type="number" id="medal-goal-inp" value="' + (ev.medalGoal || '') + '" min="0"'
+    +     ' placeholder="目標枚数を入力..."'
+    +     ' onchange="setMedalGoal(this.value)"'
+    +     ' style="flex:1;font-size:13px">'
+    +   '<span style="font-size:11px;color:var(--t3);flex-shrink:0">枚</span>'
+    + '</div>';
+
+  return html;
+}
+
+function toggleEvSection(evId){
+  var ev = D.events[evId]; if (!ev) return;
+  ev.open = !ev.open;
+  save();
+  var body = document.getElementById('ev-body-' + evId);
+  var arr  = document.getElementById('ev-arr-'  + evId);
+  if (body) body.style.display = ev.open ? '' : 'none';
+  if (arr)  arr.textContent    = ev.open ? '▼' : '▶';
+}
+
+/* ════════════════════════════════════
+   Stock / Medal
+════════════════════════════════════ */
+function adjStock(evId, name, q, d){
+  var ev = D.events[evId]; if (!ev) return;
+  if (!ev.stocks[name]) ev.stocks[name] = {g:0,s:0,b:0};
+  ev.stocks[name][q] = Math.max(0, (ev.stocks[name][q]||0) + d);
+  var el = document.getElementById('st-' + name.replace(/\s/g,'_') + '-' + q);
+  if (el) el.value = ev.stocks[name][q];
+  save();
+}
+function setStock(evId, name, q, val){
+  var ev = D.events[evId]; if (!ev) return;
+  if (!ev.stocks[name]) ev.stocks[name] = {g:0,s:0,b:0};
+  ev.stocks[name][q] = Math.max(0, parseInt(val)||0);
+  save();
+}
+function adjMedal(d){
+  D.events.masterchef.medals = Math.max(0, (D.events.masterchef.medals||0) + d);
+  var el = document.getElementById('medal-num');
+  if (el) el.value = D.events.masterchef.medals;
+  updateMedalLabel();
+  save();
+}
+function setMedalDirect(val){
+  D.events.masterchef.medals = Math.max(0, parseInt(val)||0);
+  updateMedalLabel();
+  save();
+}
+function setMedalGoal(val){
+  D.events.masterchef.medalGoal = Math.max(0, parseInt(val)||0);
+  updateMedalLabel();
+  save();
+}
+function updateMedalLabel(){
+  var ev  = D.events.masterchef;
+  var num = document.getElementById('medal-num');
+  if (num) num.value = ev.medals||0;
+  var lbl = document.getElementById('medal-lbl');
+  if (lbl) lbl.textContent = 'マスターシェフメダル' + (ev.medalGoal ? ' / 目標 ' + ev.medalGoal + '枚' : '');
+}
+
+/* ── 最適化エンジン（金食材のみ）── */
+function solveRecipes(goldStocks, mode){
+  // branch-and-bound
+  var best = {score:0, counts:RECIPES.map(function(){return 0;}), rem:Object.assign({},goldStocks)};
+
+  function ubRemaining(rem, fromIdx){
+    var ub = 0;
+    for(var i=fromIdx;i<RECIPES.length;i++){
+      var r=RECIPES[i], mx=Infinity;
+      Object.keys(r.ing).forEach(function(k){
+        if(r.ing[k]>0) mx=Math.min(mx,Math.floor((rem[k]||0)/r.ing[k]));
+      });
+      if(!isFinite(mx))mx=0;
+      ub+=mx*(mode==='medals'?r.mg:r.madol);
+    }
+    return ub;
+  }
+
+  function dfs(idx, rem, counts, score){
+    if(idx===RECIPES.length){
+      if(score>best.score){ best.score=score; best.counts=counts.slice(); best.rem=Object.assign({},rem); }
+      return;
+    }
+    var r=RECIPES[idx], mx=Infinity;
+    Object.keys(r.ing).forEach(function(k){
+      if(r.ing[k]>0) mx=Math.min(mx,Math.floor((rem[k]||0)/r.ing[k]));
+    });
+    if(!isFinite(mx)||isNaN(mx))mx=0;
+    for(var n=mx;n>=0;n--){
+      var ps=(mode==='medals'?r.mg:r.madol);
+      if(score+n*ps+ubRemaining(rem,idx+1)<=best.score) break; // pruning
+      var nr=Object.assign({},rem);
+      Object.keys(r.ing).forEach(function(k){ nr[k]=(nr[k]||0)-n*r.ing[k]; });
+      counts[idx]=n;
+      dfs(idx+1,nr,counts,score+n*ps);
+    }
+    counts[idx]=0;
+  }
+
+  dfs(0,Object.assign({},goldStocks),new Array(RECIPES.length).fill(0),0);
+  return best;
+}
+
+// 最後の計算結果を保存
+var _lastOpt = {};
+
+function runOptimize(evId, mode){
+  var ev = D.events[evId]; if(!ev) return;
+  var stocks = {};
+  INGREDIENTS.forEach(function(ing){
+    var s = ev.stocks[ing.name] || {g:0,s:0,b:0};
+    stocks[ing.name] = mode==='medals'
+      ? (s.g||0)
+      : (s.g||0)+(s.s||0)+(s.b||0);
+  });
+
+  var result = solveRecipes(stocks, mode);
+  var el = document.getElementById('opt-result-' + evId);
+  if(!el) return;
+
+  if(result.score===0){
+    el.innerHTML='<span style="font-size:12px;color:var(--t3)">食材が不足しています</span>';
+    _lastOpt[evId] = null;
+    return;
+  }
+
+  // 結果を保存
+  _lastOpt[evId] = {mode: mode, counts: result.counts, rem: result.rem};
+
+  var totalDishes=0;
+  var rows=RECIPES.map(function(r,i){
+    var c=result.counts[i]; if(c===0) return '';
+    totalDishes+=c;
+    return '<div class="opt-row"><span class="opt-name">'+r.name+'</span>'
+      +'<span class="opt-count">× '+c+'</span></div>';
+  }).join('');
+
+  var label = mode==='medals'
+    ? '<span class="opt-total-val">'+result.score+'</span><span class="opt-total-unit">枚</span>'
+    : '<span class="opt-total-val">'+result.score.toLocaleString()+'</span><span class="opt-total-unit">マドル</span>';
+
+  var modeNote = mode==='medals' ? '金食材のみで計算' : '全品質（金＋銀＋銅）で計算';
+  var leftovers = INGREDIENTS.filter(function(ing){ return (result.rem[ing.name]||0)>0; })
+    .map(function(ing){ return ing.name+'×'+(result.rem[ing.name]||0); }).join('　');
+
+  el.innerHTML = '<div class="opt-result-wrap">'
+    +'<div style="font-size:10px;color:var(--t3);margin-bottom:5px">'+modeNote+'</div>'
+    +rows
+    +'<div class="opt-total">合計 '+label+'　'+totalDishes+'皿</div>'
+    +(leftovers?'<div class="opt-leftover">余り：'+leftovers+'</div>':'')
+    +'<div class="opt-btn-row">'
+    +'<button class="opt-btn opt-btn-cook" onclick="showConsumeConfirm(\''+evId+'\')">'
+    +'調理した<br><span style="font-size:10px">（食材を消費）</span></button>'
+    +'<button class="opt-btn opt-btn-clear" onclick="clearOptResult(\''+evId+'\')">クリア</button>'
+    +'</div>'
+    +'<div class="opt-confirm" id="opt-confirm-'+evId+'">'
+    +'<div class="opt-confirm-title">この内容で食材を消費しますか？</div>'
+    +'<div class="opt-confirm-list" id="opt-confirm-list-'+evId+'"></div>'
+    +'<div class="opt-confirm-btns">'
+    +'<button class="opt-confirm-yes" onclick="confirmConsume(\''+evId+'\')">消費する</button>'
+    +'<button class="opt-confirm-no" onclick="hideConsumeConfirm(\''+evId+'\')">キャンセル</button>'
+    +'</div></div>'
+    +'</div>';
+}
+
+function clearOptResult(evId){
+  var el = document.getElementById('opt-result-'+evId);
+  if(el) el.innerHTML='<span style="font-size:12px;color:var(--t3)">上のボタンで計算できます</span>';
+  _lastOpt[evId] = null;
+}
+
+function showConsumeConfirm(evId){
+  var last = _lastOpt[evId]; if(!last) return;
+  var ev = D.events[evId]; if(!ev) return;
+
+  // 消費する食材を計算
+  var needed = {};
+  RECIPES.forEach(function(r,i){
+    var c = last.counts[i]; if(!c) return;
+    Object.keys(r.ing).forEach(function(k){
+      needed[k] = (needed[k]||0) + r.ing[k]*c;
+    });
+  });
+
+  // 表示テキスト生成（モードによって品質内訳を表示）
+  var lines = [];
+  Object.keys(needed).forEach(function(k){
+    var n = needed[k];
+    if(last.mode==='medals'){
+      lines.push(k+'×'+n+'（金）');
+    } else {
+      var s = ev.stocks[k]||{g:0,s:0,b:0};
+      var g=Math.min(s.g||0,n), rem1=n-g;
+      var sv=Math.min(s.s||0,rem1), rem2=rem1-sv;
+      var b=Math.min(s.b||0,rem2);
+      var detail=[];
+      if(g>0) detail.push('金×'+g);
+      if(sv>0) detail.push('銀×'+sv);
+      if(b>0) detail.push('銅×'+b);
+      lines.push(k+'×'+n+'（'+detail.join('・')+'）');
+    }
+  });
+
+  var listEl = document.getElementById('opt-confirm-list-'+evId);
+  if(listEl) listEl.innerHTML = lines.map(function(l){ return '・'+l; }).join('<br>');
+  var box = document.getElementById('opt-confirm-'+evId);
+  if(box) box.classList.add('show');
+}
+
+function hideConsumeConfirm(evId){
+  var box = document.getElementById('opt-confirm-'+evId);
+  if(box) box.classList.remove('show');
+}
+
+function confirmConsume(evId){
+  var last = _lastOpt[evId]; if(!last) return;
+  var ev = D.events[evId]; if(!ev) return;
+
+  // 消費する食材を計算
+  var needed = {};
+  RECIPES.forEach(function(r,i){
+    var c = last.counts[i]; if(!c) return;
+    Object.keys(r.ing).forEach(function(k){
+      needed[k] = (needed[k]||0) + r.ing[k]*c;
+    });
+  });
+
+  // 在庫から引く（金→銀→銅の順）
+  Object.keys(needed).forEach(function(k){
+    var n = needed[k];
+    var s = ev.stocks[k]; if(!s) return;
+    if(last.mode==='medals'){
+      s.g = Math.max(0,(s.g||0)-n);
+    } else {
+      var take = n;
+      var fromG = Math.min(s.g||0, take); s.g = (s.g||0)-fromG; take-=fromG;
+      var fromS = Math.min(s.s||0, take); s.s = (s.s||0)-fromS; take-=fromS;
+      var fromB = Math.min(s.b||0, take); s.b = (s.b||0)-fromB;
+    }
+    // DOM更新
+    ['g','s','b'].forEach(function(q){
+      var el = document.getElementById('st-'+k.replace(/\s/g,'_')+'-'+q);
+      if(el) el.value = ev.stocks[k][q];
+    });
+  });
+
+  save();
+  hideConsumeConfirm(evId);
+  clearOptResult(evId);
+  showToast('調理完了！', '食材を消費しました', false);
+}
+
+/* ── ステッパーボタン生成ヘルパー ── */
+// D.btnOrder: 'dec-left'=▼数字▲  'inc-left'=▲数字▼
+function qStepper(decCall, incCall, id, val, onChange){
+  var left  = D.btnOrder==='dec-left'
+    ? '<button class="q-btn" onclick="'+decCall+'">▼</button>'
+    : '<button class="q-btn" onclick="'+incCall+'">▲</button>';
+  var right = D.btnOrder==='dec-left'
+    ? '<button class="q-btn" onclick="'+incCall+'">▲</button>'
+    : '<button class="q-btn" onclick="'+decCall+'">▼</button>';
+  return '<div class="q-stepper">'
+    +left+'<div class="q-div"></div>'
+    +'<input type="number" id="'+id+'" value="'+val+'" min="0"'
+    +' onchange="'+onChange+'" onfocus="this.select()">'
+    +'<div class="q-div"></div>'+right
+    +'</div>';
+}
+
+/* ── Location ingredient hint ── */
+function updateLocItems(evId){
+  var locEl  = document.getElementById('ft-loc-'       + evId);
+  var itemEl = document.getElementById('ft-loc-items-' + evId);
+  if (!locEl || !itemEl) return;
+  var loc = LOCATIONS.find(function(l){ return l.name === locEl.value; });
+  itemEl.textContent = loc ? '食材：' + loc.items.join('・') : '';
+}
+
+/* ── Timer edit modal ── */
+var _tcEditEvId = '', _tcEditId = 0;
+function openTCEdit(evId, tid){
+  _tcEditEvId = evId; _tcEditId = tid;
+  var ev = D.events[evId]; if (!ev) return;
+  var t  = ev.timers.find(function(x){ return x.id===tid; }); if (!t) return;
+  var rem = Math.max(0, t.endTime - Date.now());
+  var rh  = Math.floor(rem/3600000);
+  var rm  = Math.floor((rem%3600000)/60000);
+  var rs  = Math.floor((rem%60000)/1000);
+  document.getElementById('tc-edit-title').textContent = esc(t.locName||'調達') + ' を編集';
+  document.getElementById('tc-edit-body').innerHTML =
+    '<div style="font-size:12px;color:var(--t3);margin-bottom:10px">現在の残り時間：'
+    + rh + 'h ' + rm + 'm ' + rs + 's</div>'
+    + '<p class="lbl" style="margin-bottom:6px">時間を追加 / 減算（分）</p>'
+    + '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">'
+    + '<button class="btn-sm" onclick="tcAdjAdd(-60)">−1h</button>'
+    + '<button class="btn-sm" onclick="tcAdjAdd(-10)">−10</button>'
+    + '<button class="btn-sm" onclick="tcAdjAdd(-1)">−1</button>'
+    + '<input type="number" id="tc-adj" value="0" style="width:68px;text-align:center">'
+    + '<button class="btn-sm" onclick="tcAdjAdd(1)">+1</button>'
+    + '<button class="btn-sm" onclick="tcAdjAdd(10)">+10</button>'
+    + '<button class="btn-sm" onclick="tcAdjAdd(60)">+1h</button>'
+    + '</div>';
+  document.getElementById('tc-edit-modal').classList.add('show');
+}
+function tcAdjAdd(v){
+  var el = document.getElementById('tc-adj'); if (!el) return;
+  el.value = (parseInt(el.value)||0) + v;
+}
+function saveTCEdit(){
+  var ev = D.events[_tcEditEvId]; if (!ev) return;
+  var t  = ev.timers.find(function(x){ return x.id===_tcEditId; }); if (!t) return;
+  var addMin = parseFloat(document.getElementById('tc-adj').value) || 0;
+  if (addMin) t.endTime += addMin * 60000;
+  t.earlyFired = false; t.doneFired = false;
+  save();
+  closeTCEdit();
+  renderFoodTimers(_tcEditEvId);
+}
+function closeTCEdit(){
+  document.getElementById('tc-edit-modal').classList.remove('show');
+}
+
+/* ════════════════════════════════════
+   Settings
+════════════════════════════════════ */
+function renderEvToggles(){
+  var el = document.getElementById('ev-toggles'); if (!el) return;
+  el.innerHTML = Object.keys(EVENT_DEFS).map(function(evId){
+    var ev = D.events[evId];
+    var isOn = ev && ev.enabled;
+    return '<div style="display:flex;align-items:center;gap:10px">'
+      + '<span style="font-size:13px;color:var(--t1)">' + EVENT_DEFS[evId].label + '</span>'
+      + '<button class="toggle-sw' + (isOn?' on':'') + '" onclick="toggleEvent(\'' + evId + '\')">'
+      +   '<div class="toggle-knob"></div>'
+      + '</button>'
+      + '</div>';
+  }).join('');
+}
+function setBtnOrder(v){
+  D.btnOrder = v;
+  save();
+  document.getElementById('bo-dec').classList.toggle('on', v==='dec-left');
+  document.getElementById('bo-inc').classList.toggle('on', v==='inc-left');
+  renderAllEvents();
+}
+function toggleEvent(evId){
+  if (!D.events[evId]) return;
+  D.events[evId].enabled = !D.events[evId].enabled;
+  save();
+  renderEvToggles();
+  renderAllEvents();
+}
+
+/* ════════════════════════════════════
+   Tabs
+════════════════════════════════════ */
+var TABS = ['ap','ev','st'];
+function switchTab(name){
+  TABS.forEach(function(t){
+    document.getElementById('s-'+t).classList.toggle('on', t===name);
+    document.getElementById('tab-'+t).classList.toggle('on', t===name);
+  });
+  if (name === 'ev') renderAllEvents();
+  if (name === 'st'){ renderEvToggles(); updNotifBtn(); }
+}
+
+/* ════════════════════════════════════
+   Notifications
+════════════════════════════════════ */
+function updNotifBtn(){
+  var btn = document.getElementById('notif-btn');
+  var sub = document.getElementById('notif-sub');
+  if (!('Notification' in window)){
+    if (sub) sub.textContent = 'このブラウザでは通知未対応です';
+    if (btn) btn.disabled = true;
+    return;
+  }
+  var p = Notification.permission;
+  if (p === 'granted'){
+    if (btn){ btn.textContent = '許可済み ✓'; btn.disabled = true; }
+    if (sub) sub.textContent = 'ブラウザ通知が許可されています';
+  } else if (p === 'denied'){
+    if (btn){ btn.textContent = '拒否されています'; btn.disabled = true; }
+    if (sub) sub.textContent = 'ブラウザの設定から許可してください';
+  } else {
+    if (btn){ btn.textContent = '許可を求める'; btn.disabled = false; }
+    if (sub) sub.textContent = '';
+  }
+}
+function reqNotif(){
+  if (!('Notification' in window)) return;
+  Notification.requestPermission().then(function(){ updNotifBtn(); });
+}
+function fireNotif(title, body, sound){
+  if (sound) beep();
+  showToast(title, body);
+  if ('Notification' in window && Notification.permission === 'granted'){
+    try { new Notification(title, {body: body}); } catch(e){}
+  }
+}
+function beep(){
+  try {
+    var ctx = new (window.AudioContext||window.webkitAudioContext)();
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    osc.frequency.setValueAtTime(660, ctx.currentTime + 0.18);
+    gain.gain.setValueAtTime(0.25, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.65);
+    osc.start(); osc.stop(ctx.currentTime + 0.65);
+  } catch(e){}
+}
+function showToast(title, body){
+  var area = document.getElementById('toast-area');
+  var div  = document.createElement('div');
+  div.className = 'toast';
+  div.innerHTML = '<div class="toast-title">' + esc(title) + '</div>'
+    + (body ? '<div class="toast-body">' + esc(body) + '</div>' : '');
+  area.appendChild(div);
+  setTimeout(function(){
+    div.style.transition = 'opacity .4s';
+    div.style.opacity = '0';
+    setTimeout(function(){ if (div.parentNode) div.parentNode.removeChild(div); }, 400);
+  }, 3500);
+}
+
+/* ════════════════════════════════════
+   Google Drive
+════════════════════════════════════ */
+var gToken = null, gTokenClient = null, gFileId = null;
+
+function gInit(){
+  if (!GD_CLIENT_ID || GD_CLIENT_ID === 'YOUR_GOOGLE_CLIENT_ID_HERE') return;
+  if (typeof google === 'undefined' || !google.accounts){
+    setTimeout(gInit, 600); return;
+  }
+  gTokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GD_CLIENT_ID,
+    scope: GD_SCOPES,
+    callback: function(resp){
+      if (resp.error) {
+        showToast('認証エラー', 'ログインに失敗しました: ' + resp.error, false);
+        return;
+      }
+      gToken = resp.access_token;
+      onGSignedIn();
+    }
+  });
+}
+function gSignIn(){
+  if (!gTokenClient){ 
+    showToast('同期エラー', 'クライアントIDを設定してください（コード内 GD_CLIENT_ID）', false); 
+    return; 
+  }
+  gTokenClient.requestAccessToken();
+}
+function gSignOut(){
+  if (gToken){ try{ google.accounts.oauth2.revoke(gToken, function(){}); }catch(e){} gToken = null; }
+  gFileId = null;
+  onGSignedOut();
+}
+function onGSignedIn(){
+  ['login-btn','st-login-btn'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.style.display = 'none';
+  });
+  ['logout-btn','st-logout-btn'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.style.display = '';
+  });
+  document.getElementById('up-btn').disabled = false;
+  document.getElementById('dn-btn').disabled = false;
+  showToast('ログイン完了', 'Google Drive と同期できます', false);
+  // 新しいブラウザ（ローカルデータなし）なら自動ロード
+  gdFindFile(D._savedAt === 0);
+}
+function onGSignedOut(){
+  ['login-btn','st-login-btn'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.style.display = '';
+  });
+  ['logout-btn','st-logout-btn'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.style.display = 'none';
+  });
+  document.getElementById('up-btn').disabled = true;
+  document.getElementById('dn-btn').disabled = true;
+  document.getElementById('sync-time').textContent = '';
+  showToast('ログアウト', 'Google Drive の同期を終了しました', false);
+}
+function gdFindFile(autoLoad){
+  if (!gToken) return;
+  fetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder'
+    + '&q=name%3D%27' + GD_FILENAME + '%27&fields=files(id,modifiedTime)',
+    {headers:{Authorization:'Bearer ' + gToken}})
+    .then(function(r){ 
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json(); 
+    })
+    .then(function(d){
+      if (d.files && d.files.length){
+        gFileId = d.files[0].id;
+        if (autoLoad) gdLoad();
+      } else {
+      }
+    }).catch(function(err){
+    });
+}
+function gdLoad(){
+  if (!gToken){ showToast('読み込みエラー', 'ログインしてください', false); return; }
+  // gFileId がまだ取得できていない場合は先にファイルを探す
+  if (!gFileId){
+    showToast('読み込み中…', 'ファイルを検索しています', false);
+    fetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder'
+      + '&q=name%3D%27' + GD_FILENAME + '%27&fields=files(id,modifiedTime)',
+      {headers:{Authorization:'Bearer ' + gToken}})
+      .then(function(r){ 
+        if (!r.ok) throw new Error('ファイル検索失敗: HTTP ' + r.status);
+        return r.json(); 
+      })
+      .then(function(d){
+        if (d.files && d.files.length){
+          gFileId = d.files[0].id;
+          gdLoad(); // 再試行
+        } else {
+          showToast('読み込み', 'クラウドにデータがありません', false);
+        }
+      }).catch(function(err){ 
+        showToast('読み込みエラー', 'ファイル検索に失敗しました', false); 
+      });
+    return;
+  }
+  fetch('https://www.googleapis.com/drive/v3/files/' + gFileId + '?alt=media',
+    {headers:{Authorization:'Bearer ' + gToken}})
+    .then(function(r){ 
+      if (!r.ok) throw new Error('ダウンロード失敗: HTTP ' + r.status);
+      return r.json(); 
+    })
+    .then(function(data){
+      if (!data || typeof data !== 'object') throw new Error('無効なデータ形式');
+      applyCloud(data);
+      showToast('読み込み完了', 'クラウドからデータを読み込みました', false);
+    }).catch(function(err){ 
+      showToast('読み込みエラー', '読み込みに失敗しました: ' + err.message, false); 
+    });
+}
+function applyCloud(data){
+  if (data.theme)      { D.theme = data.theme; applyTheme(); }
+  if (data.apMax)        D.apMax = data.apMax;
+  if (data.apMode)       D.apMode = data.apMode;
+  if (data.apEarlyMin)   D.apEarlyMin = data.apEarlyMin;
+  if (data.btnOrder)     D.btnOrder = data.btnOrder;
+  if (data.apTimer !== undefined) D.apTimer = data.apTimer;
+  if (data._savedAt)     D._savedAt = data._savedAt;
+  if (data.events) Object.keys(data.events).forEach(function(id){
+    if (!D.events[id]) return;
+    var se = data.events[id], de = D.events[id];
+    if (se.enabled  !== undefined) de.enabled       = se.enabled;
+    if (se.open     !== undefined) de.open          = se.open;
+    if (se.timers)                 de.timers        = se.timers;
+    if (se.stocks)   Object.keys(se.stocks).forEach(function(k){
+      if (de.stocks[k]!==undefined){
+        var v=se.stocks[k];
+        de.stocks[k]=(typeof v==='number')?{g:v,s:0,b:0}:{g:v.g||0,s:v.s||0,b:v.b||0};
+      }
+    });
+    if (se.medals   !== undefined) de.medals        = se.medals;
+    if (se.medalGoal !== undefined) de.medalGoal    = se.medalGoal;
+    if (se.timerEarlySec)          de.timerEarlySec = se.timerEarlySec;
+  });
+  save();
+  renderAll();
+}
+function gdSaveWithCheck(){
+  if (!gToken) return;
+  if (!gFileId){ gdSave(); return; }
+  fetch('https://www.googleapis.com/drive/v3/files/' + gFileId + '?fields=modifiedTime',
+    {headers:{Authorization:'Bearer ' + gToken}})
+    .then(function(r){ 
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json(); 
+    })
+    .then(function(meta){
+      var cloudMs = new Date(meta.modifiedTime).getTime();
+      if (cloudMs > (D._savedAt||0) + 5000){
+        var warn = document.getElementById('sync-warn');
+        var txt  = document.getElementById('sync-warn-text');
+        if (txt) txt.textContent = 'クラウド: ' + new Date(cloudMs).toLocaleString()
+          + ' / ローカル: ' + (D._savedAt ? new Date(D._savedAt).toLocaleString() : '不明');
+        if (warn) warn.classList.add('show');
+      } else { gdSave(); }
+    }).catch(function(err){ 
+      gdSave(); 
+    });
+}
+function doOverwriteSave(){ hideSyncWarn(); gdSave(); }
+function hideSyncWarn(){
+  var el = document.getElementById('sync-warn');
+  if (el) el.classList.remove('show');
+}
+function gdSave(){
+  if (!gToken) return;
+  D._savedAt = Date.now();
+  save();
+  var json = JSON.stringify(D);
+  
+  if (gFileId) {
+    // UPDATE existing file
+    gdUpdateFile(json);
+  } else {
+    // CREATE new file
+    gdCreateFile(json);
+  }
+}
+
+function gdCreateFile(json){
+  var bd = 'twst_' + Date.now();
+  var meta = JSON.stringify({
+    name: GD_FILENAME,
+    mimeType: 'application/json',
+    parents: ['appDataFolder']
+  });
+  
+  var body = '--' + bd + '\r\n'
+    + 'Content-Type: application/json; charset=UTF-8\r\n\r\n'
+    + meta + '\r\n'
+    + '--' + bd + '\r\n'
+    + 'Content-Type: application/json; charset=UTF-8\r\n\r\n'
+    + json + '\r\n'
+    + '--' + bd + '--\r\n';
+  
+  
+  fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + gToken,
+      'Content-Type': 'multipart/related; boundary=' + bd
+    },
+    body: body
+  })
+  .then(function(r){ 
+    if (!r.ok) {
+      return r.text().then(function(text){
+        throw new Error('HTTP ' + r.status + ': ' + text.substring(0, 150));
+      });
+    }
+    return r.json(); 
+  })
+  .then(function(d){
+    if (d.id) {
+      gFileId = d.id;
+      var now = new Date();
+      var lbl = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0') + ' 保存';
+      document.getElementById('sync-time').textContent = lbl;
+      showToast('保存完了', 'クラウドに新規保存しました', false);
+    }
+  }).catch(function(err){ 
+    showToast('保存エラー', err.message, false); 
+  });
+}
+
+function gdUpdateFile(json){
+  
+  fetch('https://www.googleapis.com/upload/drive/v3/files/' + gFileId + '?uploadType=media', {
+    method: 'PATCH',
+    headers: {
+      'Authorization': 'Bearer ' + gToken,
+      'Content-Type': 'application/json; charset=UTF-8'
+    },
+    body: json
+  })
+  .then(function(r){ 
+    if (!r.ok) {
+      return r.text().then(function(text){
+        throw new Error('HTTP ' + r.status + ': ' + text.substring(0, 150));
+      });
+    }
+    return r.json(); 
+  })
+  .then(function(d){
+    var now = new Date();
+    var lbl = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0') + ' 保存';
+    document.getElementById('sync-time').textContent = lbl;
+    showToast('保存完了', 'クラウドに保存しました', false);
+  }).catch(function(err){ 
+    showToast('保存エラー', err.message, false); 
+  });
+}
+
+/* ════════════════════════════════════
+   Utils
+════════════════════════════════════ */
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function resetAll(){
+  if (!confirm('全データを削除しますか？この操作は元に戻せません。')) return;
+  localStorage.removeItem(LS_KEY);
+  location.reload();
+}
+
+/* ════════════════════════════════════
+   Main tick
+════════════════════════════════════ */
+function tick(){
+  updateClock();
+  renderAPTimer();
+  checkAPNotif();
+  checkFoodTimers();
+  // タイマー表示は画面上にいる時だけ更新
+  var evSec = document.getElementById('s-ev');
+  if (evSec && evSec.classList.contains('on')){
+    Object.keys(D.events).forEach(function(evId){
+      if (D.events[evId].enabled) renderFoodTimers(evId);
+    });
+  }
+}
+
+/* ════════════════════════════════════
+   Full render
+════════════════════════════════════ */
+function renderAll(){
+  applyTheme();
+  setAPMode(D.apMode);
+  // ボタン向き
+  var bd = document.getElementById('bo-dec');
+  var bi = document.getElementById('bo-inc');
+  if(bd) bd.classList.toggle('on', D.btnOrder==='dec-left');
+  if(bi) bi.classList.toggle('on', D.btnOrder==='inc-left');
+  var apMaxDisp = document.getElementById('ap-max-disp');
+  var stApmax   = document.getElementById('st-apmax');
+  var apEarly   = document.getElementById('ap-early');
+  if (apMaxDisp) apMaxDisp.value = D.apMax;
+  if (stApmax)   stApmax.value   = D.apMax;
+  if (apEarly)   apEarly.value   = D.apEarlyMin;
+  renderAPTimer();
+  renderAllEvents();
+  renderEvToggles();
+  updNotifBtn();
+}
+
+/* ════════════════════════════════════
+   Init
+════════════════════════════════════ */
+function init(){
+  load();
+  renderAll();
+  setInterval(tick, 1000);
+  gInit();
+  // AP calc info 初期表示
+  onAPInput();
+}
+init();
+</script>
+</body>
+</html>

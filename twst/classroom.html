@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula Magica — 魔法の教室</title>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-QM317D9ESN');
+  </script>
+  <style>
+    /* =============================================
+       カラー変数
+    ============================================= */
+    :root {
+      --col-bg:          #0d0b24;
+      --col-bg-deep:     #1a1640;
+      --col-purple:      #26215C;
+      --col-purple-mid:  #3C3489;
+      --col-purple-acc:  #534AB7;
+      --col-purple-soft: #AFA9EC;
+      --col-purple-mute: #7F77DD;
+      --col-gold:        #EF9F27;
+      --col-gold-light:  #FAC775;
+      --col-gold-dark:   #BA7517;
+      --col-text:        #E8E4FF;
+      --col-text-mute:   #AFA9EC;
+    }
+
+    /* =============================================
+       ベース
+    ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: var(--col-bg);
+      color: var(--col-text);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+
+    a { color: var(--col-gold); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* =============================================
+       ヘッダー
+    ============================================= */
+    .site-header {
+      position: relative;
+      padding: 64px 32px 52px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    /* ダマスク柄SVG背景 */
+    .site-header__bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .site-header__content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .site-header__latin {
+      font-size: 11px;
+      letter-spacing: .22em;
+      color: var(--col-gold-dark);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .site-header__title {
+      font-size: 32px;
+      font-weight: normal;
+      color: var(--col-gold);
+      letter-spacing: .06em;
+      margin-bottom: 6px;
+    }
+
+    .site-header__sub {
+      font-size: 11px;
+      color: var(--col-purple-mute);
+      letter-spacing: .14em;
+    }
+
+    .site-header__divider {
+      width: 100px;
+      height: 1px;
+      background: rgba(239,159,39,.35);
+      margin: 18px auto;
+    }
+
+    .site-header__desc {
+      font-size: 12px;
+      color: var(--col-text-mute);
+      letter-spacing: .06em;
+    }
+
+    /* =============================================
+       メインコンテンツ
+    ============================================= */
+    .site-body {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 36px 24px 32px;
+    }
+
+    /* セクション共通 */
+    .section { margin-bottom: 40px; }
+
+    .section__head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .section__bar {
+      width: 3px;
+      height: 18px;
+      background: var(--col-gold);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .section__title {
+      font-size: 15px;
+      font-weight: normal;
+      color: var(--col-gold);
+      letter-spacing: .08em;
+    }
+
+    /* =============================================
+       お知らせ
+    ============================================= */
+    .news {
+      background: rgba(26,22,64,.85);
+      border: .5px solid rgba(239,159,39,.25);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .news__row {
+      padding: 12px 18px;
+      display: flex;
+      gap: 18px;
+      align-items: baseline;
+      border-bottom: .5px solid rgba(239,159,39,.12);
+    }
+
+    .news__row:last-child { border-bottom: none; }
+
+    .news__date {
+      font-size: 10px;
+      color: var(--col-gold-dark);
+      min-width: 78px;
+      letter-spacing: .04em;
+      flex-shrink: 0;
+    }
+
+    .news__text {
+      font-size: 12px;
+      color: var(--col-text);
+      line-height: 1.6;
+    }
+
+    .news__text--mute { color: var(--col-purple-mute); }
+
+    /* =============================================
+       ツールカード
+    ============================================= */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: rgba(26,22,64,.9);
+      border: .5px solid rgba(239,159,39,.4);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card--dim {
+      opacity: .6;
+      border-color: rgba(175,169,236,.2);
+    }
+
+    .card__head {
+      background: rgba(83,74,183,.25);
+      padding: 18px 20px 14px;
+      border-bottom: .5px solid rgba(239,159,39,.18);
+    }
+
+    .card--dim .card__head {
+      background: rgba(60,52,137,.15);
+      border-bottom-color: rgba(175,169,236,.15);
+    }
+
+    .card__tag {
+      font-size: 9px;
+      color: var(--col-gold-dark);
+      letter-spacing: .16em;
+      margin-bottom: 6px;
+    }
+
+    .card--dim .card__tag { color: var(--col-purple-acc); }
+
+    .card__icon-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    /*
+      =============================================
+      カードアイコン
+      画像に差し替えたい場合は、.card__icon の中の
+      <span class="card__icon-emoji"> を削除して
+      <img src="画像パス" alt="説明"> に置き換えてください。
+      推奨サイズ: 48×48px
+      =============================================
+    */
+    .card__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      background: rgba(239,159,39,.12);
+      border: .5px solid rgba(239,159,39,.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .card--dim .card__icon {
+      background: rgba(175,169,236,.08);
+      border-color: rgba(175,169,236,.15);
+    }
+
+    .card__icon-emoji { font-size: 24px; }
+
+    .card__icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .card__name {
+      font-size: 16px;
+      color: var(--col-gold-light);
+    }
+
+    .card--dim .card__name { color: var(--col-text-mute); }
+
+    .card__en {
+      font-size: 10px;
+      color: var(--col-purple-mute);
+    }
+
+    .card--dim .card__en { color: var(--col-purple-mid); }
+
+    .card__body {
+      padding: 14px 20px;
+      flex: 1;
+    }
+
+    .card__list {
+      font-size: 11px;
+      color: var(--col-text-mute);
+      line-height: 2;
+    }
+
+    .card--dim .card__list { color: var(--col-purple-acc); }
+
+    .card__foot {
+      padding: 0 20px 16px;
+    }
+
+    .card__btn {
+      display: inline-block;
+      font-size: 10px;
+      color: var(--col-gold);
+      border: .5px solid rgba(239,159,39,.5);
+      padding: 5px 16px;
+      border-radius: 20px;
+      letter-spacing: .04em;
+      transition: background .2s;
+    }
+
+    .card__btn:hover {
+      background: rgba(239,159,39,.1);
+      text-decoration: none;
+    }
+
+    /* =============================================
+       注意事項
+    ============================================= */
+    .notice {
+      background: rgba(13,11,36,.85);
+      border: .5px solid rgba(175,169,236,.2);
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+
+    .notice__head {
+      font-size: 11px;
+      color: var(--col-purple-mute);
+      letter-spacing: .08em;
+      margin-bottom: 10px;
+    }
+
+    .notice__text {
+      font-size: 11px;
+      color: var(--col-purple-acc);
+      line-height: 1.9;
+    }
+
+    /* =============================================
+       マニュアル
+    ============================================= */
+    .manual {
+      text-align: center;
+      padding-bottom: 4px;
+    }
+
+    .manual__link {
+      font-size: 12px;
+      color: var(--col-text-mute);
+      border-bottom: .5px solid rgba(175,169,236,.35);
+      padding-bottom: 2px;
+      letter-spacing: .04em;
+    }
+
+    .manual__link:hover {
+      color: var(--col-gold-light);
+      text-decoration: none;
+      border-bottom-color: rgba(239,159,39,.4);
+    }
+
+    /* =============================================
+       フッター
+    ============================================= */
+    .site-footer {
+      text-align: center;
+      padding: 20px;
+      border-top: .5px solid rgba(239,159,39,.12);
+      margin-top: 8px;
+    }
+
+    .site-footer__text {
+      font-size: 10px;
+      color: var(--col-purple-mid);
+      letter-spacing: .1em;
+    }
+
+    /* =============================================
+       レスポンシブ
+    ============================================= */
+    @media (max-width: 600px) {
+      .site-header { padding: 48px 20px 40px; }
+      .site-header__title { font-size: 26px; }
+      .site-body { padding: 28px 16px 24px; }
+      .cards { grid-template-columns: 1fr; }
+      .news__row { flex-direction: column; gap: 4px; }
+      .news__date { min-width: unset; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =============================================
+       ヘッダー（ダマスク柄 + 羊皮紙オーバーレイ）
+  ============================================= -->
+  <header class="site-header">
+    <svg class="site-header__bg" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="damask" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+          <path d="M40,3 L77,40 L40,77 L3,40 Z"   fill="none" stroke="rgba(239,159,39,0.18)" stroke-width="0.8"/>
+          <path d="M40,17 L63,40 L40,63 L17,40 Z"  fill="none" stroke="rgba(239,159,39,0.10)" stroke-width="0.5"/>
+          <circle cx="40" cy="40" r="3.5"  fill="rgba(239,159,39,0.13)"/>
+          <ellipse cx="40" cy="9"  rx="2.5" ry="4.5" fill="rgba(239,159,39,0.10)"/>
+          <ellipse cx="40" cy="71" rx="2.5" ry="4.5" fill="rgba(239,159,39,0.10)"/>
+          <ellipse cx="9"  cy="40" rx="4.5" ry="2.5" fill="rgba(239,159,39,0.10)"/>
+          <ellipse cx="71" cy="40" rx="4.5" ry="2.5" fill="rgba(239,159,39,0.10)"/>
+          <circle cx="0"  cy="0"  r="2" fill="rgba(239,159,39,0.12)"/>
+          <circle cx="80" cy="0"  r="2" fill="rgba(239,159,39,0.12)"/>
+          <circle cx="0"  cy="80" r="2" fill="rgba(239,159,39,0.12)"/>
+          <circle cx="80" cy="80" r="2" fill="rgba(239,159,39,0.12)"/>
+          <line x1="40" y1="3"  x2="40" y2="17" stroke="rgba(239,159,39,0.10)" stroke-width="0.6"/>
+          <line x1="40" y1="63" x2="40" y2="77" stroke="rgba(239,159,39,0.10)" stroke-width="0.6"/>
+          <line x1="3"  y1="40" x2="17" y2="40" stroke="rgba(239,159,39,0.10)" stroke-width="0.6"/>
+          <line x1="63" y1="40" x2="77" y2="40" stroke="rgba(239,159,39,0.10)" stroke-width="0.6"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="#1a1640"/>
+      <rect width="100%" height="100%" fill="url(#damask)"/>
+      <!-- 羊皮紙っぽい暖色オーバーレイ -->
+      <rect width="100%" height="100%" fill="rgba(100,65,10,0.13)"/>
+    </svg>
+
+    <div class="site-header__content">
+      <p class="site-header__latin">Aula Magica</p>
+      <h1 class="site-header__title">魔法の教室</h1>
+      <p class="site-header__sub">二次創作ゲームツール集</p>
+      <div class="site-header__divider"></div>
+      <p class="site-header__desc">ゲームをもっと楽しむための、手作りツールたち</p>
+    </div>
+  </header>
+
+  <!-- =============================================
+       メインコンテンツ
+  ============================================= -->
+  <main class="site-body">
+
+    <!-- お知らせ -->
+    <section class="section">
+      <div class="section__head">
+        <div class="section__bar"></div>
+        <h2 class="section__title">お知らせ</h2>
+      </div>
+      <div class="news">
+        <!-- 新しいお知らせを上に追加してください -->
+        <div class="news__row">
+          <span class="news__date">2025.05.10</span>
+          <span class="news__text">NRC生徒手帳 マスターシェフイベントツールを公開しました</span>
+        </div>
+        <div class="news__row">
+          <span class="news__date">2025.05.01</span>
+          <span class="news__text news__text--mute">Aula Magica オープン</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ツール一覧 -->
+    <section class="section">
+      <div class="section__head">
+        <div class="section__bar"></div>
+        <h2 class="section__title">ツール一覧</h2>
+      </div>
+      <div class="cards">
+
+        <!-- NRC生徒手帳カード -->
+        <div class="card">
+          <div class="card__head">
+            <div class="card__tag">TWISTED WONDERLAND</div>
+            <div class="card__icon-wrap">
+              <!--
+                アイコン差し替え方法：
+                下の <span class="card__icon-emoji"> を削除して
+                <img src="../images/nrc_icon.png" alt="NRC生徒手帳"> に置き換えてください。
+              -->
+              <div class="card__icon">
+                <span class="card__icon-emoji">📒</span>
+              </div>
+              <div>
+                <div class="card__name">NRC生徒手帳</div>
+                <div class="card__en">Night Raven College</div>
+              </div>
+            </div>
+          </div>
+          <div class="card__body">
+            <div class="card__list">
+              ・マスターシェフ イベントツール<br>
+              ・キャラカード管理（準備中）
+            </div>
+          </div>
+          <div class="card__foot">
+            <!-- リンク先は後で設定してください -->
+            <a href="./nrc_seitotecho.html" class="card__btn">手帳を開く →</a>
+          </div>
+        </div>
+
+        <!-- 次のツール（準備中） -->
+        <div class="card card--dim">
+          <div class="card__head">
+            <div class="card__tag">COMING SOON</div>
+            <div class="card__icon-wrap">
+              <div class="card__icon">
+                <span class="card__icon-emoji">✦</span>
+              </div>
+              <div>
+                <div class="card__name">次のツール</div>
+                <div class="card__en">New Tool</div>
+              </div>
+            </div>
+          </div>
+          <div class="card__body">
+            <div class="card__list">・準備中…</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 注意事項 -->
+    <section class="section">
+      <div class="section__head">
+        <div class="section__bar"></div>
+        <h2 class="section__title">注意事項</h2>
+      </div>
+      <div class="notice">
+        <div class="notice__head">⚠ このサイトについて</div>
+        <p class="notice__text">
+          このサイトはツイステッドワンダーランド等の二次創作ファンサイトです。<br>
+          各公式・ディズニーとは一切関係ありません。転載・無断使用はご遠慮ください。
+        </p>
+      </div>
+    </section>
+
+    <!-- マニュアル -->
+    <section class="section manual">
+      <!-- リンク先は後で設定してください -->
+      <a href="#" class="manual__link">📖 使い方マニュアル</a>
+    </section>
+
+  </main>
+
+  <!-- =============================================
+       フッター
+  ============================================= -->
+  <footer class="site-footer">
+    <p class="site-footer__text">Aula Magica — 魔法の教室 &copy; 2025</p>
+  </footer>
+
+</body>
+</html>
