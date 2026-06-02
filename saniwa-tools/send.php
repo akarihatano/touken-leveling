@@ -8,6 +8,10 @@ define('MAIL_FROM', 'noreply@suwachan.sakura.ne.jp');  // 送信元（さくら�
 define('SITE_NAME', '審神者の道具箱');
 // ============================================================
 
+mb_language('ja');
+mb_internal_encoding('UTF-8');
+date_default_timezone_set('Asia/Tokyo');
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: saniwa_top.html'); exit;
 }
@@ -28,17 +32,17 @@ $app      = clean_header('app');
 $category = clean_header('category');
 $name     = clean_header('name');
 $subject  = clean_header('subject');
-$body     = clean('body');
+$body     = str_replace("\r\n", "\n", clean('body'));
 $email    = clean_header('email');
 
 // 必須チェック
 if (empty($app) || empty($category) || empty($body)) {
-    header('Location: contact.html'); exit;
+    header('Location: contact.html?error=invalid'); exit;
 }
 
 // メールアドレス形式チェック
 if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    header('Location: contact.html'); exit;
+    header('Location: contact.html?error=invalid'); exit;
 }
 
 // 端末環境情報（User-Agent）
@@ -47,6 +51,7 @@ $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] :
 // ---- 管理者宛メール ----
 $mail_subject = '[' . SITE_NAME . '] ';
 $mail_subject .= empty($subject) ? $category . ' / ' . $app : $subject;
+$mail_subject = '=?UTF-8?B?' . base64_encode($mail_subject) . '?=';
 
 $nl = "\n";
 $mail_body  = SITE_NAME . ' お問い合わせフォームより' . $nl;
@@ -70,43 +75,8 @@ $headers .= 'Reply-To: ' . (!empty($email) ? $email : MAIL_FROM) . "\r\n";
 $headers .= 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
 $headers .= 'Content-Transfer-Encoding: 8bit' . "\r\n";
 
-mb_language('ja');
-mb_internal_encoding('UTF-8');
+$result = mail(MAIL_TO, $mail_subject, $mail_body, $headers);
 
-$result = mb_send_mail(MAIL_TO, $mail_subject, $mail_body, $headers);
-
-// ---- 自動返信メール（メールアドレスが入力されている場合のみ） ----
-if ($result && !empty($email)) {
-    $reply_subject = '【' . SITE_NAME . '】お問い合わせを受け付けました';
-
-    $reply_body  = (empty($name) ? 'お世話になっております' : $name . ' さん') . $nl;
-    $reply_body .= $nl;
-    $reply_body .= SITE_NAME . ' へのお問い合わせを受け付けました。' . $nl;
-    $reply_body .= 'お手紙をありがとうございます。' . $nl;
-    $reply_body .= $nl;
-    $reply_body .= '内容によってはお返事をお送りできない場合もございますが、' . $nl;
-    $reply_body .= 'どうぞご了承ください。' . $nl;
-    $reply_body .= $nl;
-    $reply_body .= str_repeat('─', 30) . $nl;
-    $reply_body .= '■ 送信内容' . $nl;
-    $reply_body .= str_repeat('─', 30) . $nl;
-    $reply_body .= '対象アプリ：' . $app . $nl;
-    $reply_body .= 'カテゴリ　：' . $category . $nl;
-    $reply_body .= '件名　　　：' . (empty($subject) ? '（未入力）' : $subject) . $nl;
-    $reply_body .= str_repeat('─', 30) . $nl;
-    $reply_body .= $body . $nl;
-    $reply_body .= str_repeat('─', 30) . $nl;
-    $reply_body .= $nl;
-    $reply_body .= '※ このメールは自動送信されています。このメールへの返信はできません。' . $nl;
-    $reply_body .= $nl;
-    $reply_body .= SITE_NAME . $nl;
-
-    $reply_headers  = 'From: ' . $encoded_name . ' <' . MAIL_FROM . '>' . "\r\n";
-    $reply_headers .= 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
-    $reply_headers .= 'Content-Transfer-Encoding: 8bit' . "\r\n";
-
-    mb_send_mail($email, $reply_subject, $reply_body, $reply_headers);
-}
 
 if ($result) {
     header('Location: complete.html');

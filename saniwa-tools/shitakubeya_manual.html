@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>出陣支度部屋 説明書 — 審神者の道具箱</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QM317D9ESN');
+</script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Serif JP', serif;
+  min-height: 100vh;
+  background: #8b1a1a;
+}
+
+.bg { min-height: 100vh; position: relative; }
+
+.bg-fixed {
+  position: fixed; inset: 0; z-index: -1;
+  background-color: #8b1a1a;
+  background-image:
+    linear-gradient(rgba(30,10,8,.28), rgba(20,8,6,.42)),
+    url('background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.bg::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    repeating-linear-gradient(45deg, rgba(0,0,0,.05) 0px, rgba(0,0,0,.05) 1px, transparent 1px, transparent 9px),
+    repeating-linear-gradient(-45deg, rgba(0,0,0,.04) 0px, rgba(0,0,0,.04) 1px, transparent 1px, transparent 9px);
+  pointer-events: none; z-index: 0;
+}
+
+.wrapper {
+  position: relative; z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+/* ── ヘッダー ── */
+.page-header {
+  margin-bottom: 28px;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 14px 18px;
+}
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-family: 'Noto Sans JP', sans-serif;
+  color: rgba(240,220,190,.55); text-decoration: none;
+  letter-spacing: .1em; transition: color .2s;
+}
+.back-link:hover { color: #f0dcc0; }
+
+.page-title-block {
+  background: rgba(255,255,255,.88);
+  border: 2px solid rgba(180,120,80,.4);
+  border-radius: 12px;
+  padding: 16px 28px;
+  display: inline-block;
+  box-shadow: 2px 3px 14px rgba(0,0,0,.22);
+}
+.page-title {
+  font-size: 24px; font-weight: 700; letter-spacing: .18em; color: #2c1a10;
+  display: flex; align-items: baseline; gap: 12px;
+}
+.page-title-sub {
+  font-size: 12px; font-weight: 400; color: #6a4428;
+  letter-spacing: .12em; font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* ── 目次 ── */
+.toc-panel {
+  background: rgba(0,0,0,.30);
+  border: 1px solid rgba(255,220,160,.16);
+  border-radius: 12px; padding: 18px 22px; margin-bottom: 20px;
+  backdrop-filter: blur(3px);
+}
+.toc-heading {
+  font-size: 11px; font-weight: 500; letter-spacing: .28em; color: #e9d2ad;
+  margin-bottom: 12px; font-family: 'Noto Sans JP', sans-serif;
+}
+.toc-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.toc-btn {
+  font-size: 12px; font-family: 'Noto Sans JP', sans-serif;
+  color: #e8c878; background: rgba(200,168,75,.08);
+  border: 1px solid rgba(200,168,75,.25); border-radius: 20px;
+  padding: 5px 14px; cursor: pointer; text-decoration: none;
+  transition: background .2s, color .2s; display: inline-block;
+  letter-spacing: .05em;
+}
+.toc-btn:hover { background: rgba(200,168,75,.2); color: #f8e8a0; }
+
+/* ── セクション ── */
+.section {
+  background: rgba(0,0,0,.34);
+  border: 1px solid rgba(255,220,160,.18);
+  border-radius: 12px; padding: 24px 26px; margin-bottom: 16px;
+  backdrop-filter: blur(3px); scroll-margin-top: 16px;
+}
+.section-heading {
+  font-size: 18px; font-weight: 700; letter-spacing: .14em; color: #f0dcc0;
+  margin-bottom: 16px; padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,220,160,.2);
+  display: flex; align-items: center; gap: 10px;
+}
+
+/* ── 共通パーツ ── */
+.label {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 600; letter-spacing: .18em;
+  color: #c8a84b; background: rgba(200,168,75,.12);
+  border: 1px solid rgba(200,168,75,.25); border-radius: 4px;
+  padding: 3px 10px; margin-bottom: 8px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.text {
+  font-size: 13px; line-height: 2.1; color: #f0dcc0; text-align: justify;
+  font-family: 'Noto Sans JP', sans-serif; font-weight: 300;
+}
+.text em { font-style: normal; color: #f8eecc; font-weight: 500; }
+.note {
+  font-size: 12px; line-height: 1.9; color: #d4b898; margin-top: 8px;
+  padding-left: 12px; border-left: 2px solid rgba(255,200,120,.28);
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.note em { font-style: normal; color: #f0c870; font-weight: 500; }
+.divider { height: 1px; background: rgba(255,220,160,.1); margin: 16px 0; }
+.block { margin-bottom: 14px; }
+.block:last-child { margin-bottom: 0; }
+.list { list-style: none; padding: 0; margin: 0; }
+.list li {
+  font-size: 13px; line-height: 2.0; color: #f0dcc0;
+  font-family: 'Noto Sans JP', sans-serif; font-weight: 300;
+  padding-left: 14px; position: relative;
+}
+.list li::before { content: '・'; position: absolute; left: 0; color: #c8a84b; opacity: .7; }
+.warn {
+  background: rgba(200,120,50,.15); border: 1px solid rgba(220,150,80,.25);
+  border-radius: 8px; padding: 10px 14px; margin-top: 8px;
+}
+.warn-head { font-size: 11px; font-weight: 600; color: #e8b870; letter-spacing: .1em; margin-bottom: 5px; font-family: 'Noto Sans JP', sans-serif; }
+.warn-text { font-size: 12px; line-height: 1.9; color: #d4a870; font-family: 'Noto Sans JP', sans-serif; }
+.hint {
+  background: rgba(42,170,122,.1); border: 1px solid rgba(42,170,122,.25);
+  border-radius: 8px; padding: 10px 14px; margin-top: 8px;
+}
+.hint-head { font-size: 11px; font-weight: 600; color: #5adaaa; letter-spacing: .1em; margin-bottom: 5px; font-family: 'Noto Sans JP', sans-serif; }
+.hint-text { font-size: 12px; line-height: 1.9; color: #a8e8d0; font-family: 'Noto Sans JP', sans-serif; }
+.sub-section { margin-top: 14px; }
+.sub-heading {
+  font-size: 13px; font-weight: 500; color: #e8c878; letter-spacing: .08em;
+  margin-bottom: 6px; font-family: 'Noto Sans JP', sans-serif;
+  display: flex; align-items: center; gap: 6px;
+}
+.sub-heading::before { content: '▸'; color: rgba(200,168,75,.6); font-size: 10px; }
+
+/* ── 2カラムグリッド ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.col-card {
+  background: rgba(0,0,0,.2); border: 1px solid rgba(255,220,160,.12);
+  border-radius: 8px; padding: 12px 14px;
+}
+.col-card-title { font-size: 12px; font-weight: 600; color: #e8c878; margin-bottom: 5px; font-family: 'Noto Sans JP', sans-serif; }
+.col-card-text { font-size: 12px; line-height: 1.8; color: #c0a880; font-family: 'Noto Sans JP', sans-serif; font-weight: 300; }
+
+/* ── モードバッジ ── */
+.mode-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; font-family: 'Noto Sans JP', sans-serif;
+  border-radius: 5px; padding: 2px 10px; font-weight: 500;
+  vertical-align: middle;
+}
+.mode-kei { background: rgba(80,140,200,.15); border: 1px solid rgba(100,160,220,.3); color: #88c0f0; }
+.mode-local { background: rgba(200,168,75,.12); border: 1px solid rgba(200,168,75,.3); color: #e8c878; }
+
+/* ── キーバッジ ── */
+.key {
+  display: inline-block; font-size: 11px; font-family: 'Noto Sans JP', sans-serif;
+  background: rgba(255,220,160,.1); border: 1px solid rgba(255,220,160,.3);
+  border-radius: 4px; padding: 1px 7px; color: #f0dcc0; vertical-align: middle;
+}
+
+/* ── フッター ── */
+footer {
+  position: relative; z-index: 1; text-align: center; padding: 18px;
+  font-size: 11px; color: rgba(240,220,190,.55); letter-spacing: .15em;
+  font-family: 'Noto Sans JP', sans-serif; background: rgba(0,0,0,.4);
+}
+
+/* ── トップへ戻るボタン ── */
+.scroll-top {
+  position: fixed; bottom: 24px; right: 20px; z-index: 50;
+  width: 40px; height: 40px;
+  background: rgba(200,168,75,.2); border: 1px solid rgba(200,168,75,.4);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #c8a84b; font-size: 16px; transition: all .2s;
+  text-decoration: none; opacity: 0; pointer-events: none; backdrop-filter: blur(2px);
+}
+.scroll-top.visible { opacity: 1; pointer-events: auto; }
+.scroll-top:hover { background: rgba(200,168,75,.35); }
+
+@media (max-width: 600px) {
+  .wrapper { padding: 20px 14px 50px; }
+  .section { padding: 18px 16px; }
+  .page-title { font-size: 20px; }
+  .two-col { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="bg">
+<div class="bg-fixed"></div>
+
+<div class="wrapper">
+
+<!-- ヘッダー -->
+<div class="page-header">
+  <a class="back-link" href="saniwa_top.html">← 審神者の道具箱へ戻る</a>
+  <div class="page-title-block">
+    <div class="page-title">出陣支度部屋 <span class="page-title-sub">説明書</span></div>
+  </div>
+</div>
+
+<!-- 目次 -->
+<nav class="toc-panel" id="top">
+  <div class="toc-heading">＊ 目 次 ＊</div>
+  <div class="toc-grid">
+    <a class="toc-btn" href="#about">このアプリについて</a>
+    <a class="toc-btn" href="#datasource">データの取得元</a>
+    <a class="toc-btn" href="#mainview">メイン画面の見かた</a>
+    <a class="toc-btn" href="#list">リストの絞り込み・並べ替え</a>
+    <a class="toc-btn" href="#party">部隊を組む</a>
+    <a class="toc-btn" href="#equip">装備を編集する</a>
+    <a class="toc-btn" href="#sortie">出陣装備について</a>
+    <a class="toc-btn" href="#stats">ステータス表示</a>
+    <a class="toc-btn" href="#sum">部隊合計・閾値チェック</a>
+    <a class="toc-btn" href="#mobile">スマートフォンで使う</a>
+    <a class="toc-btn" href="#data">データの保存・管理</a>
+    <a class="toc-btn" href="#settings">設定</a>
+    <a class="toc-btn" href="#faq">よくある質問</a>
+  </div>
+</nav>
+
+
+<!-- ── このアプリについて ── -->
+<section class="section" id="about">
+  <div class="section-heading">📖 このアプリについて</div>
+  <div class="block">
+    <div class="label">概要</div>
+    <div class="text"><em>出陣支度部屋</em>は、刀剣男士の出陣部隊編成と刀装・馬・宝物・お守りなどの装備計画を立てるツールです。複数の部隊を登録・保存し、各男士の装備をシミュレーションすることができます。<br>ゲームには直接接続しません。<em>データはすべてお使いの端末に保存</em>されます。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="label">💾 データの保存</div>
+    <div class="text">データはお使いの端末のブラウザ内（ローカルストレージ）に保存されます。管理人がデータを確認・取得することは<em>一切ありません</em>。</div>
+    <div class="note">Google ドライブとの同期機能（☁ボタン）も利用できます。複数の端末で同じデータを使いたい場合にご利用ください。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="label">🌐 推奨ブラウザ</div>
+    <ul class="list">
+      <li>PC：Chrome / Edge / Firefox</li>
+      <li>スマートフォン：Chrome / Safari / Firefox</li>
+    </ul>
+    <div class="warn" style="margin-top:10px">
+      <div class="warn-head">⚠ アプリ内ブラウザ（WebView）をお使いの方へ</div>
+      <div class="warn-text">SNSアプリなどのアプリ内ブラウザでは、Google ドライブとの同期が動作しません。同期機能を使う場合は推奨ブラウザからアクセスしてください。</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── データの取得元 ── -->
+<section class="section" id="datasource">
+  <div class="section-heading">🔗 データの取得元（2モード）</div>
+  <div class="text">出陣支度部屋には、男士データの取得元として<em>2つのモード</em>があります。ヘッダーの取得元ボタン（<span class="key">🔗</span> / <span class="key">📦</span>）または設定から切り替えられます。</div>
+
+  <div class="two-col" style="margin-top:14px">
+    <div class="col-card">
+      <div class="col-card-title">🔗 稽古録連携</div>
+      <div class="col-card-text">稽古録に登録した男士データを使用します。実際の刀剣男士のLvや乱舞Lvが反映されます。稽古録と<em>同じドメイン</em>（同じサーバー）で開いている必要があります。</div>
+    </div>
+    <div class="col-card">
+      <div class="col-card-title">📦 このアプリで管理</div>
+      <div class="col-card-text">稽古録がなくても使えるモードです。<em>全刀剣男士がリストに表示</em>され、ステータスは乱舞Lv10想定の最大値で表示されます。</div>
+    </div>
+  </div>
+
+  <div class="sub-section">
+    <div class="sub-heading">部隊・装備データの扱い</div>
+    <div class="text">部隊の編成・装備データは<em>モードごとに独立して保存</em>されます。稽古録連携で組んだ部隊は「このアプリで管理」モードには影響せず、切り替えても互いのデータは壊れません。</div>
+  </div>
+
+  <div class="sub-section">
+    <div class="sub-heading">📦 このアプリで管理モードのステータスについて</div>
+    <div class="text">このモードでは、すべての刀剣男士が<em>乱舞Lv10想定の最大値</em>でステータス表示されます。実際の手持ちのLvや乱舞Lvではなく、最高補正をかけた想定値です。ステータスバーの注記（例：「乱舞Lv10想定・装備なし」）で確認できます。</div>
+    <div class="hint">
+      <div class="hint-head">💡 初/極について</div>
+      <div class="hint-text">各男士のカードには<em>初/極トグル</em>があり、タップするだけで切り替えられます。極のある男士のみ極が選択可能です。左カラム（PC）または≡部隊メニュー（スマホ）から「全部初」「全部極」の一括設定もできます。</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── メイン画面の見かた ── -->
+<section class="section" id="mainview">
+  <div class="section-heading">⚔ メイン画面の見かた</div>
+
+  <div class="block">
+    <div class="label">💻 PC版（3カラム構成）</div>
+    <div class="text">PC版では画面が3つのエリアに分かれています。</div>
+    <div class="sub-section">
+      <div class="sub-heading">左カラム — 並べ替え・絞り込み</div>
+      <div class="text">ステータスでの並べ替えと刀種・極の絞り込みを行います。このアプリで管理モードの場合は、初/極一括設定ボタンもここに表示されます。</div>
+    </div>
+    <div class="sub-section">
+      <div class="sub-heading">中央カラム — 男士リスト</div>
+      <div class="text">刀剣男士のカードが並びます。各カードから部隊への追加・装備編集・ステータス確認・出陣装備の「移す➤」操作が行えます。現在編成中の刀は<em>ハイライト表示</em>されます。</div>
+    </div>
+    <div class="sub-section">
+      <div class="sub-heading">右カラム — 編成エリア</div>
+      <div class="text">現在の部隊スロット（6人）と部隊タブが表示されます。部隊合計・閾値チェック・各種一括操作もここから行えます。<span class="key">📊 全ステータス</span>トグルを使うと、各スロットに全8項目のステータスをまとめて表示できます。</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">📱 スマホ版</div>
+    <div class="text">スマホ版では縦に各エリアが積み重なります。</div>
+    <div class="sub-section">
+      <div class="sub-heading">上部 — 編成エリア</div>
+      <div class="text">部隊タブとスロットが表示されます。<span class="key">▾ 編成</span>の見出しをタップすると折りたたみ/展開できます。右端の <span class="key">≡</span> から部隊メニューが開きます。<br>スロット表示は「コンパクト」（小さい正方形）と「詳しく」（フルネーム＋ステータス）の2種類から選べます。</div>
+    </div>
+    <div class="sub-section">
+      <div class="sub-heading">中部 — 並べ替えバー</div>
+      <div class="text">タップで並べ替えの切替と絞り込みができます。</div>
+    </div>
+    <div class="sub-section">
+      <div class="sub-heading">下部 — 男士リスト</div>
+      <div class="text">カードをタップして部隊への追加・装備・詳細の各操作ができます。</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── リストの絞り込み・並べ替え ── -->
+<section class="section" id="list">
+  <div class="section-heading">🗂 リストの絞り込み・並べ替え</div>
+
+  <div class="block">
+    <div class="label">並べ替え</div>
+    <div class="text">刀帳No・Lv・経験値・各ステータス（生存〜必殺）で並べ替えられます。同じボタンを再クリックすると昇順↔降順が切り替わります。<br>このアプリで管理モードでは、Lv・経験値の並べ替えは表示されません（実データがないため）。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="label">絞り込み</div>
+    <div class="text">刀種（短刀・脇差・打刀・太刀・大太刀・槍・薙刀・剣）での絞り込みと、極/初の絞り込みができます。刀種は「全て」または1種類を選んで表示します。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="label">ステータス表示モード</div>
+    <div class="text">画面上部のモードバーで表示するステータスの種類を切り替えられます。並べ替えのステータスソートにも反映されます。</div>
+    <ul class="list" style="margin-top:8px">
+      <li><em>素</em>：乱舞補正なし・装備なしの基礎値（稽古録連携のみ）</li>
+      <li><em>乱舞込み</em>：乱舞補正を加算した値（装備は含まない）</li>
+      <li><em>実力</em>：乱舞補正＋装備をすべて込みにした実力値</li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- ── 部隊を組む ── -->
+<section class="section" id="party">
+  <div class="section-heading">⚔ 部隊を組む</div>
+
+  <div class="block">
+    <div class="label">部隊タブ</div>
+    <div class="text">複数の部隊を登録して切り替えられます。タブの操作はPC・スマホとも共通です。</div>
+    <ul class="list" style="margin-top:8px">
+      <li>タブ右端の <span class="key">＋</span> で新しい部隊を追加</li>
+      <li>タブの <span class="key">✏</span> をクリック（タップ）して部隊名を変更</li>
+      <li><span class="key">◀</span> <span class="key">▶</span> で部隊の表示順を変更</li>
+      <li><span class="key">×</span> で部隊を削除（最後の1部隊は削除できません）</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">男士の追加</div>
+    <div class="text">リストのカードから部隊スロットへ男士を追加します。</div>
+    <div class="sub-section">
+      <div class="sub-heading">PC版</div>
+      <div class="text">右カラムの空きスロットをクリックしてターゲット（選択状態）にしてから、中央リストのカード右上にある <span class="key">＋ 追加</span> をクリックします。または、スロット選択後にリストカードをクリックしても追加できます。</div>
+    </div>
+    <div class="sub-section">
+      <div class="sub-heading">スマホ版</div>
+      <div class="text">リストカード下部の <span class="key">＋ 追加</span> ボタンをタップします。追加後は <span class="key">✓ 編成中</span> 表示に変わります。同じ男士を2回追加することはできません。</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">スロットの操作</div>
+    <div class="sub-section">
+      <div class="sub-heading">スマホ版</div>
+      <div class="text">編成済みのスロットをタップするとアクションバーが表示されます。</div>
+      <ul class="list" style="margin-top:6px">
+        <li><em>装備</em>：この部隊専用の出陣装備を編集（次のセクション参照）</li>
+        <li><em>詳細</em>：ステータスモーダルを表示</li>
+        <li><em>◀▶</em>：スロット間で位置を移動</li>
+        <li><em>外す</em> / <em>×</em>：スロットから男士を取り除く</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <div class="sub-heading">PC版</div>
+      <div class="text">各スロットに <span class="key">装備</span> ボタン・<span class="key">▲▼</span>（上下移動）・<span class="key">×</span>（外す）が直接表示されます。ステータスは右カラムの <span class="key">📊 全ステータス</span> 表示で確認できます。</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">部隊の一括操作</div>
+    <div class="text">右カラム（PC）または ≡ 部隊メニュー（スマホ）から以下の操作が行えます。</div>
+    <ul class="list" style="margin-top:8px">
+      <li><em>📋 全員の通常装備を取り込む</em>：全員の通常装備を一括でこの部隊の出陣装備にコピー</li>
+      <li><em>🗑 全員の装備を外す</em>：全員の出陣装備記録を一括解除</li>
+      <li><em>↺ 部隊をリセット</em>：この部隊のスロットを全て空にする</li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- ── 装備を編集する ── -->
+<section class="section" id="equip">
+  <div class="section-heading">🛡 装備を編集する</div>
+
+  <div class="block">
+    <div class="text">各男士には<em>刀装・馬・宝物・お守り</em>の4種類の装備が設定できます。男士リストのカードにある <span class="key">装備</span> ボタンから編集画面を開きます。</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">刀装</div>
+    <div class="text">刀装スロットの数は刀種と初/極によって異なり、男士のマスターデータに基づいて自動的に決まります。各スロットに刀装の種類とレアリティを設定できます。</div>
+    <div class="note">スロットをタップ（クリック）すると刀装の一覧から選択できます。刀装には装備できる刀種が決まっているものがあり、設定の「刀種に合う刀装のみ表示」をオン/オフして絞り込みを切り替えられます。</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">馬・宝物・お守り</div>
+    <div class="text">それぞれのタブで一覧から選択して装備できます。</div>
+    <div class="note"><em>宝物</em>には強化レベルの設定もあります。宝物タブ内で合わせて設定してください。</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">編集モードについて（PC）</div>
+    <div class="text">設定から装備の編集方法を選べます。</div>
+    <div class="two-col" style="margin-top:8px">
+      <div class="col-card">
+        <div class="col-card-title">モーダル</div>
+        <div class="col-card-text">ポップアップ画面で編集します。PC・スマホ両対応です。</div>
+      </div>
+      <div class="col-card">
+        <div class="col-card-title">アコーディオン（PC限定）</div>
+        <div class="col-card-text">カード直下に展開して編集します。リストを見ながら操作したい場合に便利です。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── 出陣装備について ── -->
+<section class="section" id="sortie">
+  <div class="section-heading">📋 出陣装備について</div>
+
+  <div class="block">
+    <div class="text">出陣支度部屋では、男士ごとに<em>通常装備</em>と<em>出陣装備</em>の2種類の装備を管理できます。出陣装備は部隊ごとに独立して保存されるため、「第1部隊と第2部隊で同じ男士に違う装備をさせたい」という場合に活用できます。</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">通常装備</div>
+    <div class="text">男士リストのカードにある <span class="key">装備</span> ボタンから編集する装備です。どの部隊にも属さない、その男士の「標準」の装備です。</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">出陣装備</div>
+    <div class="text">部隊スロットの <span class="key">装備</span> から編集する、<em>その部隊専用</em>の装備です。出陣装備が設定されている場合、スロットに <span class="key">📋</span> マークが表示されます。ステータス計算（実力モード）には出陣装備の値が使われます。</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">出陣装備の設定方法</div>
+    <ul class="list">
+      <li><em>移す➤</em>（リストカード下部）：通常装備の内容をそのまま今の部隊の出陣装備としてコピー。最も手軽な方法です。</li>
+      <li><em>📋 全員の通常装備を取り込む</em>（右カラム／部隊メニュー）：部隊全員の通常装備を一括コピー。</li>
+      <li><em>スロットの装備ボタン</em>：出陣装備を直接編集します。</li>
+    </ul>
+    <div class="note" style="margin-top:10px">出陣装備を解除（通常装備に戻す）したい場合は、装備編集画面の <em>↩ 出陣装備を解除</em> ボタンを使います。</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">ステータス確認（詳細）で通常/出陣を切替</div>
+    <div class="text">スロットの <span class="key">詳細</span> からステータスモーダルを開くと、<em>「通常装備」「出陣装備〈部隊名〉」</em>を切り替えて表示できます（実力モードで出陣装備が設定されている場合のみ）。</div>
+  </div>
+</section>
+
+
+<!-- ── ステータス表示 ── -->
+<section class="section" id="stats">
+  <div class="section-heading">📊 ステータス表示</div>
+
+  <div class="block">
+    <div class="label">表示モードの切り替え</div>
+    <div class="text">画面上部のモードバーで、ステータスの表示方法を切り替えられます。並べ替えの基準値にも反映されます。</div>
+    <div class="sub-section">
+      <div class="sub-heading">稽古録連携モード</div>
+      <ul class="list" style="margin-top:4px">
+        <li><em>素</em>：乱舞補正なし・装備なし。男士そのものの基礎値です。</li>
+        <li><em>乱舞込み</em>：乱舞補正を加算した値（装備は含まない）。実際の乱舞Lvに基づきます。</li>
+        <li><em>実力</em>：乱舞補正＋装備（出陣装備優先）を込みにした実力値です。</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <div class="sub-heading">このアプリで管理モード</div>
+      <ul class="list" style="margin-top:4px">
+        <li><em>乱舞込み</em>：乱舞Lv10想定の補正を加算した値（装備なし）。</li>
+        <li><em>実力</em>：乱舞Lv10想定の補正＋装備込みの値。</li>
+      </ul>
+      <div class="note">「素」（補正なし）はこのモードでは表示されません。想定最大値での計画がしやすいよう、乱舞込みを基準にしています。</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">📊 全ステータス表示（PC）</div>
+    <div class="text">右カラムのタイトル行にある <span class="key">📊 全ステータス</span> ボタンをオンにすると、各部隊スロットに生存〜必殺の8項目が一覧表示されます。6人分のステータスを一目で比較するのに便利です。オン/オフは記憶されます。</div>
+    <div class="hint">
+      <div class="hint-head">💡 スマホでも使えます</div>
+      <div class="hint-text">スマホ版の「詳しく」表示中に <span class="key">📊 ステータス</span> ボタンをオンにすると、同様に各スロットに8項目が表示されます。</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── 部隊合計・閾値チェック ── -->
+<section class="section" id="sum">
+  <div class="section-heading">🎯 部隊合計・閾値チェック</div>
+
+  <div class="block">
+    <div class="label">部隊合計</div>
+    <div class="text">右カラム（PC）または ≡ 部隊メニュー（スマホ）に、現在の部隊6人分のステータス合計が表示されます。表示モード（素/乱舞込み/実力）に連動して値が変わります。出陣装備が設定されている場合は出陣装備込みの合計になります。</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">閾値チェック（任意設定）</div>
+    <div class="text">「このステータスがこの値以上あるか？」という条件を自由に登録して、達成/未達を色で確認できる機能です。難しいクエストや騎馬統率縛りなど、特定の編成条件を満たしているかチェックするときに便利です。</div>
+    <div class="sub-section">
+      <div class="sub-heading">閾値の追加</div>
+      <div class="text">右カラムまたはスマホ部隊メニューの <span class="key">＋ 閾値を追加</span> からエディタを開き、対象ステータス・個人/合計の種別・目標値・名称を設定します。</div>
+    </div>
+    <div class="sub-section">
+      <div class="sub-heading">判定の見かた</div>
+      <ul class="list">
+        <li>緑（達成）：設定した閾値を超えています</li>
+        <li>金色（あと少し）：合計閾値で段階的な達成率を示します</li>
+        <li>赤（未達）：閾値に届いていません</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── スマートフォンで使う ── -->
+<section class="section" id="mobile">
+  <div class="section-heading">📱 スマートフォンで使う</div>
+
+  <div class="block">
+    <div class="label">編成エリアの折りたたみ</div>
+    <div class="text">上部の <span class="key">▾ 編成</span> 見出しをタップすると編成エリアを折りたたみ、男士リストを広く使えます。折りたたんでいても右端の <span class="key">≡</span> から部隊メニューを開けます。</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">スロットの表示切替</div>
+    <div class="text">編成エリアには<em>コンパクト</em>と<em>詳しく</em>の2種類の表示モードがあります。</div>
+    <div class="two-col" style="margin-top:8px">
+      <div class="col-card">
+        <div class="col-card-title">コンパクト</div>
+        <div class="col-card-text">6人を小さな正方形で並べて表示します。スペースを節約したいときに。</div>
+      </div>
+      <div class="col-card">
+        <div class="col-card-title">詳しく</div>
+        <div class="col-card-text">各男士をフルネーム・刀種・Lv・装備マーク付きの横長カードで表示します。名前が判別しやすくなります。<em>📊 ステータス</em>もここでオンにできます。</div>
+      </div>
+    </div>
+    <div class="note">表示の選択はON/OFFとも記憶されます。</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">≡ 部隊メニュー</div>
+    <div class="text">編成見出し右端の <span class="key">≡</span> ボタンで右スライドのメニューが開きます。以下の操作ができます。</div>
+    <ul class="list" style="margin-top:8px">
+      <li>稽古録と同期（稽古録連携モードのみ）</li>
+      <li>全員の通常装備を取り込む / 全員の装備を外す</li>
+      <li>部隊をリセット</li>
+      <li>▸ 部隊合計（タップして展開）</li>
+      <li>📏 閾値チェック（タップして展開・追加）</li>
+      <li>全部「初」にする / 全部「極」にする（このアプリで管理モードのみ）</li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- ── データの保存・管理 ── -->
+<section class="section" id="data">
+  <div class="section-heading">💾 データの保存・管理</div>
+
+  <div class="block">
+    <div class="label">ローカルストレージ</div>
+    <div class="text">すべてのデータはブラウザのローカルストレージに自動的に保存されます。ページを閉じても消えません。ただし<em>ブラウザのキャッシュ削除や「サイトのデータを削除」</em>を行うと消去される場合があります。</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">☁ Google ドライブ同期</div>
+    <div class="text">ヘッダーの <span class="key">☁</span> ボタンから Google アカウントと連携し、データをクラウドに保存・読み込みできます。</div>
+    <ul class="list" style="margin-top:8px">
+      <li>別の端末でも同じデータを使いたい場合に</li>
+      <li>端末の買い替えやブラウザ変更時のバックアップとして</li>
+    </ul>
+    <div class="warn" style="margin-top:10px">
+      <div class="warn-head">⚠ 同期について</div>
+      <div class="warn-text">読み込みを実行すると、現在のローカルデータが上書きされます。大切なデータがある場合は先に保存してから読み込んでください。</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">モードごとのデータ</div>
+    <div class="text">稽古録連携とこのアプリで管理のモードは、<em>それぞれ独立したデータとして保存</em>されます。Google ドライブ同期も両方のデータを含んだ形で保存されます。</div>
+  </div>
+</section>
+
+
+<!-- ── 設定 ── -->
+<section class="section" id="settings">
+  <div class="section-heading">⚙ 設定</div>
+  <div class="block">
+    <div class="text">ヘッダー右端の <span class="key">⚙</span> ボタンから設定パネルを開けます。</div>
+  </div>
+  <div class="sub-section">
+    <div class="sub-heading">男士データの取得元</div>
+    <div class="text">稽古録連携 / このアプリで管理を切り替えられます。ヘッダーの🔗/📦ボタンと同じ動作です。</div>
+  </div>
+  <div class="sub-section">
+    <div class="sub-heading">カラーテーマ</div>
+    <div class="text">和風・桜・翠・鉄の4テーマと、明暗の指定（テーマに従う／ライト固定／ダーク固定／システム連動）を選べます。</div>
+  </div>
+  <div class="sub-section">
+    <div class="sub-heading">カード表示</div>
+    <div class="text">男士リストのカードでステータスをどう見せるかを選べます。「ソート中のステータスを大きく表示」では、並べ替え中の項目だけが強調されます。「全て同じ大きさで表示」では各項目が均等に並びます。</div>
+  </div>
+  <div class="sub-section">
+    <div class="sub-heading">装備の編集方法（PC）</div>
+    <div class="text">装備編集画面の表示方法を「モーダル（ポップアップ）」「アコーディオン（カード直下展開）」から選べます。スマホは常にモーダルになります。</div>
+  </div>
+</section>
+
+
+<!-- ── よくある質問 ── -->
+<section class="section" id="faq">
+  <div class="section-heading">💬 よくある質問</div>
+
+  <div class="block">
+    <div class="sub-heading">モードを切り替えたら部隊が変わった</div>
+    <div class="text">稽古録連携とこのアプリで管理は、<em>部隊・装備データが完全に別々に保存</em>されます。切り替えると、そのモードで保存していた部隊が表示されます。元のモードに戻せば以前の編成に戻ります。</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="sub-heading">「移す➤」を押したが変化がわからない</div>
+    <div class="text">「移す➤」を押すと通常装備のデータがこの部隊の出陣装備として記録され、スロットに <span class="key">📋</span> マークが付きます。ステータスが「実力」モードのときに装備の効果が数値に反映されます。</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="sub-heading">刀装スロット数が期待と違う</div>
+    <div class="text">刀装スロット数は刀種と初/極によって異なります。稽古録連携モードでは稽古録側で設定した初/極情報が反映されます。このアプリで管理モードでは、カードの初/極トグルで切り替えることでスロット数も変わります。</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="sub-heading">データが消えてしまった</div>
+    <div class="text">ブラウザの「サイトのデータを削除」「キャッシュのクリア」などの操作でローカルストレージが消去されることがあります。大切なデータは <span class="key">☁</span> ボタンから Google ドライブに定期的にバックアップすることをおすすめします。</div>
+  </div>
+</section>
+
+</div><!-- /wrapper -->
+</div><!-- /bg -->
+
+<footer>出陣支度部屋 説明書 ── 審神者の道具箱</footer>
+
+<a href="#top" class="scroll-top" id="scroll-top">↑</a>
+
+<script>
+const btn = document.getElementById('scroll-top');
+window.addEventListener('scroll', () => {
+  btn.classList.toggle('visible', window.scrollY > 300);
+});
+</script>
+
+</body>
+</html>

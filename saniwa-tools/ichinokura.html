@@ -1,0 +1,2836 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>愛蔵の一ノ倉</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QM317D9ESN');</script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+button,select,input,textarea{font-family:inherit;}
+:root,[data-theme="ai-light"]{
+  --bg:#f5f2eb;--bg2:#eee9df;--bg3:#fff;--bgH:#1a1a2e;--bgC:#fff;
+  --bd:#ddd5c0;--bd2:#c4b89a;--tx:#1a1410;--tx2:#5a4a30;--tx3:#9a8060;
+  --ac:#c9a84c;--acBg:#f0e8d4;--acTx:#7a5a10;
+  --hTx:#f5e6c8;--hSub:#8a7a5a;--pat:rgba(245,230,200,0.13);
+  --cv:#8b6914;--r3:#c9a84c;--r2:#a0a0a0;--r1:#c87c3a;
+  --dg:#9a3020;--dgBg:#fdf0ee;
+}
+[data-theme="ai-dark"]{
+  --bg:#111120;--bg2:#1a1a2e;--bg3:#222240;--bgH:#0d0d1a;--bgC:#1e1e36;
+  --bd:#3a3a60;--bd2:#4a4a70;--tx:#e8e0d0;--tx2:#b0a880;--tx3:#706050;
+  --ac:#c9a84c;--acBg:#2a2010;--acTx:#d4b060;
+  --hTx:#f5e6c8;--hSub:#8a7a5a;--pat:rgba(245,230,200,0.10);
+  --cv:#c9a84c;--r3:#c9a84c;--r2:#909090;--r1:#c87c3a;
+  --dg:#c05040;--dgBg:#2a1010;
+}
+[data-theme="keyaki-light"]{
+  --bg:#faf6f0;--bg2:#f0ebe0;--bg3:#fff;--bgH:#4a2e12;--bgC:#fff;
+  --bd:#e0d0b8;--bd2:#c8a880;--tx:#1a0e04;--tx2:#5a3a18;--tx3:#9a7a50;
+  --ac:#c8905a;--acBg:#f5e8d4;--acTx:#5a3010;
+  --hTx:#f0dcc0;--hSub:#a08060;--pat:rgba(240,220,192,0.13);
+  --cv:#8b5a14;--r3:#c9a84c;--r2:#a0a0a0;--r1:#c87c3a;--dg:#9a3020;--dgBg:#fdf0ee;
+}
+[data-theme="keyaki-dark"]{
+  --bg:#1a0e04;--bg2:#2a1a08;--bg3:#3a2a12;--bgH:#0f0702;--bgC:#2a1a08;
+  --bd:#4a3018;--bd2:#6a4828;--tx:#f0dcc0;--tx2:#c0a070;--tx3:#806040;
+  --ac:#c8905a;--acBg:#3a2010;--acTx:#e0a870;
+  --hTx:#f0dcc0;--hSub:#907050;--pat:rgba(240,220,192,0.10);
+  --cv:#d4a060;--r3:#c9a84c;--r2:#909090;--r1:#c87c3a;--dg:#c05040;--dgBg:#2a1010;
+}
+[data-theme="kawara-light"]{
+  --bg:#f4f5f7;--bg2:#eaecf0;--bg3:#fff;--bgH:#363a40;--bgC:#fff;
+  --bd:#d4d8e0;--bd2:#a0aabc;--tx:#1a1e24;--tx2:#4a5060;--tx3:#8090a8;
+  --ac:#7e8fa0;--acBg:#e4e8f0;--acTx:#2a3848;
+  --hTx:#e4e8ee;--hSub:#707888;--pat:rgba(200,205,214,0.13);
+  --cv:#4a6880;--r3:#c9a84c;--r2:#a0a0a0;--r1:#c87c3a;--dg:#9a3020;--dgBg:#fdf0ee;
+}
+[data-theme="kawara-dark"]{
+  --bg:#1a1e24;--bg2:#22272e;--bg3:#2c323c;--bgH:#0e1014;--bgC:#22272e;
+  --bd:#343c48;--bd2:#4a5560;--tx:#e0e4ec;--tx2:#9098a8;--tx3:#505a68;
+  --ac:#8a9aaa;--acBg:#1a2230;--acTx:#a0b4c8;
+  --hTx:#e0e4ec;--hSub:#606878;--pat:rgba(200,205,214,0.10);
+  --cv:#90aac0;--r3:#c9a84c;--r2:#909090;--r1:#c87c3a;--dg:#c05040;--dgBg:#2a1010;
+}
+[data-theme="shurushi-light"]{
+  --bg:#faf4f2;--bg2:#f2e8e4;--bg3:#fff;--bgH:#2a0808;--bgC:#fff;
+  --bd:#e8d0c8;--bd2:#c89080;--tx:#1a0404;--tx2:#5a2018;--tx3:#9a6050;
+  --ac:#c03828;--acBg:#fae8e4;--acTx:#8a1a10;
+  --hTx:#f0c8b8;--hSub:#906050;--pat:rgba(232,180,160,0.13);
+  --cv:#aa2a18;--r3:#c9a84c;--r2:#a0a0a0;--r1:#c87c3a;--dg:#9a3020;--dgBg:#fdf0ee;
+}
+[data-theme="shurushi-dark"]{
+  --bg:#1a0404;--bg2:#2a0808;--bg3:#3a1010;--bgH:#0f0202;--bgC:#2a0808;
+  --bd:#4a1818;--bd2:#6a2828;--tx:#f0c8b8;--tx2:#c08070;--tx3:#804040;
+  --ac:#c03828;--acBg:#3a1010;--acTx:#e04030;
+  --hTx:#f0c8b8;--hSub:#905050;--pat:rgba(232,180,160,0.10);
+  --cv:#d05040;--r3:#c9a84c;--r2:#909090;--r1:#c87c3a;--dg:#e04030;--dgBg:#2a0808;
+}
+[data-theme="shikkui-light"]{
+  --bg:#f8f6f0;--bg2:#ede8d8;--bg3:#fff;--bgH:#ddd8c8;--bgC:#fff;
+  --bd:#d0cab8;--bd2:#b0a888;--tx:#2e2818;--tx2:#5a5040;--tx3:#8a7a60;
+  --ac:#7a6840;--acBg:#ede8d4;--acTx:#4a3c20;
+  --hTx:#2e2818;--hSub:#706050;--pat:rgba(80,64,48,0.10);
+  --cv:#6a5830;--r3:#c9a84c;--r2:#a0a0a0;--r1:#c87c3a;--dg:#9a3020;--dgBg:#fdf0ee;
+}
+[data-theme="shikkui-dark"]{
+  --bg:#1e1c14;--bg2:#2a2818;--bg3:#363420;--bgH:#0e0c08;--bgC:#2a2818;
+  --bd:#403c28;--bd2:#585430;--tx:#e8e0c8;--tx2:#b0a878;--tx3:#706848;
+  --ac:#a09060;--acBg:#2a2810;--acTx:#c8b870;
+  --hTx:#e8e0c8;--hSub:#807860;--pat:rgba(232,224,200,0.10);
+  --cv:#c0b068;--r3:#c9a84c;--r2:#909090;--r1:#c87c3a;--dg:#c05040;--dgBg:#2a1010;
+}
+body{background:var(--bg);color:var(--tx);font-family:'Noto Sans JP',sans-serif;font-size:14px;min-height:100vh;}
+.app{max-width:960px;margin:0 auto;min-height:100vh;}
+.app.mobile{max-width:420px;box-shadow:0 0 0 1px var(--bd),0 8px 32px rgba(0,0,0,0.12);}
+.header{background:var(--bgH);position:relative;overflow:hidden;}
+.hpat{position:absolute;inset:0;pointer-events:none;}
+.hinner{position:relative;z-index:1;padding:12px 16px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.htitle{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:700;color:var(--hTx);letter-spacing:0.12em;}
+.hsub{font-size:9px;color:var(--hSub);letter-spacing:0.2em;margin-top:2px;}
+.hbtns{display:flex;gap:5px;align-items:center;flex-shrink:0;}
+.hbtn{height:28px;padding:0 10px;border-radius:7px;border:0.5px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:var(--hTx);font-size:11px;cursor:pointer;display:flex;align-items:center;gap:3px;white-space:nowrap;}
+.hbtn:hover{background:rgba(255,255,255,0.15);}
+.tabbar{background:var(--bg2);border-bottom:0.5px solid var(--bd);display:flex;padding:0 12px;}
+.tab{padding:9px 12px;font-size:12px;cursor:pointer;border-bottom:2px solid transparent;color:var(--tx3);white-space:nowrap;}
+.tab.on{color:var(--tx);border-bottom-color:var(--ac);font-weight:500;}
+.mtabbar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg3);border-top:0.5px solid var(--bd);z-index:100;padding-bottom:env(safe-area-inset-bottom,0px);}
+.mtab-items{display:flex;}
+.mtab{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px 6px;font-size:10px;color:var(--tx3);cursor:pointer;gap:2px;border:none;background:transparent;}
+.mtab.on{color:var(--ac);}
+.mtab-icon{font-size:20px;line-height:1;}
+.content{padding:12px 14px;}
+.tab-pane{display:none;}
+.tab-pane.on{display:block;}
+.app.mobile .content{padding-bottom:72px;}
+.app.mobile .mtabbar{display:block;left:50%;right:auto;transform:translateX(-50%);width:100%;max-width:420px;}
+.app.mobile .tabbar{display:none;}
+.card{background:var(--bgC);border-radius:10px;border:0.5px solid var(--bd);}
+.sttl{font-family:'Noto Serif JP',serif;font-size:13px;font-weight:500;color:var(--tx2);margin-bottom:10px;letter-spacing:0.06em;}
+.smbar{display:flex;gap:8px;margin-bottom:12px;}
+.smcard{background:var(--bg2);border-radius:8px;padding:6px 12px;font-size:10px;color:var(--tx3);flex:1;text-align:center;border:0.5px solid var(--bd);}
+.smcard b{display:block;font-size:18px;font-weight:500;color:var(--tx);}
+.btn{padding:5px 12px;border-radius:7px;border:0.5px solid var(--bd2);background:var(--bgC);color:var(--tx);font-size:11px;cursor:pointer;}
+.btn.on{background:var(--bgH);color:var(--hTx);border-color:var(--bgH);font-weight:500;}
+.btn:hover{background:var(--bg2);}
+.btnp{background:var(--bgH);color:var(--hTx);border-color:var(--bgH);}
+.btnp:hover{opacity:0.88;}
+.btnd{background:var(--dg);color:#fff;border-color:var(--dg);}
+.btnd:hover{opacity:0.88;}
+.rdot{display:inline-block;width:7px;height:7px;border-radius:50%;vertical-align:middle;flex-shrink:0;}
+.r3c{background:var(--r3);}
+.r2c{background:var(--r2);}
+.r1c{background:var(--r1);}
+.rstar{display:inline-block;letter-spacing:0.5px;flex-shrink:0;line-height:1;white-space:nowrap;}
+.rs-3{color:#e0a830;}
+.rs-2{color:#9aa3b0;}
+.rs-1{color:#bd7b4a;}
+.rs-4{color:#c44a9a;}
+.rs-5{color:#5ab0d8;}
+/* 断片タブ */
+.ftbl{width:100%;border-collapse:collapse;font-size:12px;}
+.ftbl th{text-align:left;padding:5px 8px;font-size:10px;font-weight:500;color:var(--tx3);border-bottom:0.5px solid var(--bd);background:var(--bg2);}
+.ftbl th.rc,.ftbl td.rc{text-align:center;}
+.ftbl td{padding:7px 8px;border-bottom:0.5px solid var(--bd);vertical-align:middle;}
+.ftbl tr:last-child td{border-bottom:none;}
+.ftbl tr:hover td{background:var(--bg2);}
+/* 断片カード */
+.fcard{background:var(--bgC);border:0.5px solid var(--bd);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
+.fcard-hd{display:flex;align-items:center;gap:6px;cursor:pointer;}
+.fcard-nm{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;color:var(--tx);flex:1;}
+.fcard-tg{font-size:13px;color:var(--tx3);}
+.fcard-rows{margin-top:8px;display:flex;flex-direction:column;gap:7px;}
+.fcard-row{display:flex;align-items:center;gap:8px;font-size:12px;}
+.fcard-lbl{color:var(--tx3);min-width:62px;}
+.fcard-row .ninput{width:80px;}
+.fcard-detail{margin-top:8px;padding-top:8px;border-top:0.5px solid var(--bd);display:none;}
+.fcard-detail.open{display:block;}
+.mobile-only{display:none;}
+.app.mobile .mobile-only{display:block;}
+/* 断片・刀装のテーブル/カード切替 */
+.frag-cards{display:none;}
+#pane-frag.fv-card .frag-table-wrap{display:none;}
+#pane-frag.fv-card .frag-cards{display:block;}
+#pane-frag.fv-table .frag-table-wrap{display:block;}
+#pane-frag.fv-table .frag-cards{display:none;}
+.tosou-cards{display:none;}
+#pane-tosou.tv-card .tosou-table-wrap{display:none;}
+#pane-tosou.tv-card .tosou-cards{display:block;}
+#pane-tosou.tv-table .tosou-table-wrap{display:block;}
+#pane-tosou.tv-table .tosou-cards{display:none;}
+/* スマホ時は切替ボタンを隠す（カード固定） */
+.app.mobile #frag-viewbtns,.app.mobile #tosou-viewbtns{display:none;}
+/* トップへ戻るボタン */
+#toTop{position:fixed;right:16px;bottom:16px;width:42px;height:42px;border-radius:50%;background:var(--bgH);color:var(--hTx);border:none;font-size:18px;cursor:pointer;z-index:150;opacity:0;pointer-events:none;transition:opacity 0.25s;box-shadow:0 2px 10px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;}
+#toTop.show{opacity:0.85;pointer-events:auto;}
+#toTop:hover{opacity:1;}
+.app.mobile #toTop{bottom:78px;}
+/* カレンダーピッカー */
+.calpick-btn{width:100%;padding:7px 10px;border:0.5px solid var(--bd2);border-radius:7px;background:var(--bgC);color:var(--tx);font-size:13px;cursor:pointer;text-align:left;font-family:inherit;}
+.calpick-btn:hover{border-color:var(--ac);}
+#gen-cal-picker{position:fixed;display:none;z-index:300;background:var(--bgC);border:0.5px solid var(--bd2);border-radius:10px;padding:10px;box-shadow:0 6px 24px rgba(0,0,0,0.18);width:280px;}
+.gcal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.gcal-mo{font-size:13px;font-weight:500;color:var(--tx);}
+.gcal-nav{background:none;border:none;font-size:18px;color:var(--tx2);cursor:pointer;padding:2px 8px;border-radius:6px;}
+.gcal-nav:hover{background:var(--bg2);}
+.calp-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.calp-dow{font-size:10px;font-weight:500;color:var(--tx3);text-align:center;padding:3px 0;}
+.calp-day{padding:6px 0;text-align:center;border-radius:5px;cursor:pointer;font-size:12px;background:var(--bg2);color:var(--tx);border:0.5px solid var(--bd);user-select:none;}
+.calp-day:hover{background:var(--bg3);border-color:var(--bd2);}
+.calp-day.other{color:var(--tx3);opacity:0.5;}
+.calp-day.sat{color:#5b9fe8;}
+.calp-day.sun{color:#e8764a;}
+.calp-day.today{border:1.5px solid var(--ac);font-weight:700;}
+.calp-day.selected{background:var(--bgH);color:var(--hTx);border-color:var(--bgH);}
+/* 絵文字・色選択 */
+.emoji-row{display:flex;gap:4px;flex-wrap:wrap;}
+.emoji-opt{width:32px;height:32px;border-radius:7px;border:0.5px solid var(--bd2);background:var(--bgC);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+.emoji-opt.sel{border:2px solid var(--ac);background:var(--acBg);}
+.emoji-opt:hover{background:var(--bg2);}
+.ncolor-in{width:40px;height:32px;border:0.5px solid var(--bd2);border-radius:7px;background:var(--bgC);cursor:pointer;padding:2px;}
+.nmark-tab{display:flex;gap:4px;margin-bottom:8px;}
+.nmark-tab button{flex:1;padding:5px;border:0.5px solid var(--bd2);border-radius:7px;background:var(--bgC);color:var(--tx3);font-size:12px;cursor:pointer;font-family:inherit;}
+.nmark-tab button.on{background:var(--bgH);color:var(--hTx);border-color:var(--bgH);font-weight:500;}
+.tcard{background:var(--bgC);border:0.5px solid var(--bd);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
+.tcard.ev{background:var(--acBg);}
+.tcard-hd{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:6px;}
+.tcard-nm{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;color:var(--tx);}
+.tcard-cat{font-size:9px;color:var(--acTx);}
+.tcard-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:4px 8px;font-size:11px;margin-bottom:6px;}
+.tcard-stat{display:flex;justify-content:space-between;gap:4px;}
+.tcard-stat .l{color:var(--tx3);}
+.tcard-equip{font-size:11px;color:var(--tx2);padding-top:6px;border-top:0.5px solid var(--bd);}
+.tcard-equip .l{color:var(--tx3);margin-right:4px;}
+.ninput{width:70px;border:0.5px solid var(--bd2);border-radius:5px;padding:3px 6px;font-size:12px;text-align:center;background:var(--bgC);color:var(--tx);}
+.ninput:focus{outline:none;border-color:var(--ac);}
+.cbadge{font-size:11px;padding:2px 7px;border-radius:12px;font-weight:500;}
+.can{background:#e8f4ec;color:#2d6a40;}
+.need{background:#fdf0e0;color:#8b5e1a;}
+.zero{background:var(--bg2);color:var(--tx3);}
+/* 宝物帳 */
+.tbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;gap:6px;flex-wrap:wrap;}
+.ssel{font-size:11px;padding:4px 8px;border-radius:6px;border:0.5px solid var(--bd2);background:var(--bgC);color:var(--tx);cursor:pointer;}
+.sort-area{margin-bottom:9px;}
+.sort-area-lbl{font-size:11px;color:var(--tx3);white-space:nowrap;font-weight:500;}
+.stags{display:flex;gap:4px;flex-wrap:wrap;}
+.stag{font-size:11px;padding:3px 10px;border-radius:10px;border:0.5px solid var(--bd2);color:var(--tx3);background:var(--bgC);cursor:pointer;white-space:nowrap;}
+.stag.on{background:var(--bgH);color:var(--hTx);border-color:var(--bgH);font-weight:500;}
+.stag:hover:not(.on){background:var(--bg2);}
+.frag-toggle{width:20px;height:20px;border:none;background:transparent;cursor:pointer;color:var(--tx3);font-size:12px;padding:0;line-height:1;}
+.frag-toggle:hover{color:var(--ac);}
+.frag-detail{display:none;}
+.frag-detail.open{display:table-row;}
+.frag-detail>td{padding:6px 10px 10px 36px;background:var(--bg2);}
+.fstat-tbl{border-collapse:collapse;font-size:10px;}
+.fstat-tbl th{padding:2px 6px;color:var(--tx3);font-weight:500;text-align:center;border-bottom:0.5px solid var(--bd);}
+.fstat-tbl td{padding:2px 6px;text-align:center;color:var(--tx);}
+.fstat-tbl tr:nth-child(even) td{background:var(--bg3);}
+.mv-btns{display:flex;flex-direction:column;gap:1px;flex-shrink:0;}
+.mvbtn{width:18px;height:16px;border:0.5px solid var(--bd2);border-radius:3px;background:var(--bgC);cursor:pointer;font-size:9px;color:var(--tx3);display:flex;align-items:center;justify-content:center;padding:0;}
+.mvbtn:hover{background:var(--bg2);color:var(--tx);}
+.mvbtn:disabled{opacity:0.3;cursor:default;}
+.grbtn{font-size:11px;padding:3px 10px;border-radius:7px;border:0.5px solid var(--bd2);background:var(--bgC);color:var(--tx3);cursor:pointer;font-family:inherit;}
+.grbtn:hover{background:var(--bg2);}
+.grbtn.on{background:var(--bgH);color:var(--hTx);border-color:var(--bgH);font-weight:500;}
+.moitem{position:relative;}
+.moitem-menu{position:absolute;right:8px;top:8px;}
+/* スマホ5タブ対応 */
+.app.mobile .mtab-icon{font-size:16px;}
+.app.mobile .mtab{font-size:9px;padding:6px 2px 4px;}
+.app.mobile .stag[data-sort="chg"],
+.app.mobile .stag[data-sort="sct"],
+.app.mobile .stag[data-sort="hid"],
+.app.mobile .stag[data-sort="crt"],
+.app.mobile .stag[data-sort="custom"]{display:none;}
+.dirbtn{font-size:11px;padding:4px 8px;border-radius:6px;border:0.5px solid var(--bd2);background:var(--bgC);color:var(--tx);cursor:pointer;}
+.dirbtn:hover{background:var(--bg2);}
+.vbtns{display:flex;gap:3px;}
+.vb{width:28px;height:28px;border-radius:6px;border:0.5px solid var(--bd2);background:var(--bgC);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx3);font-size:14px;}
+.vb.on{background:var(--bgH);color:var(--hTx);border-color:var(--bgH);}
+.ftags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:9px;}
+.ftag{font-size:10px;padding:2px 9px;border-radius:10px;border:0.5px solid var(--bd2);color:var(--tx3);background:var(--bgC);cursor:pointer;}
+.ftag.on{background:var(--bgH);color:var(--hTx);border-color:var(--bgH);}
+.ftag:hover:not(.on){background:var(--bg2);}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:9px;}
+.app.mobile .grid{grid-template-columns:repeat(2,1fr);}
+@media (max-width:520px){.grid{grid-template-columns:repeat(2,1fr);}}
+.gcard{background:var(--bgC);border-radius:10px;border:0.5px solid var(--bd);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+.gcard.cv{border-left:3px solid var(--ac);}
+.gcard.ucv{border-left:3px solid var(--bd);}
+.gh{padding:9px 10px;flex:1;}
+.gtop{display:flex;align-items:flex-start;justify-content:space-between;gap:4px;}
+.gnm{font-family:'Noto Serif JP',serif;font-size:13px;font-weight:700;color:var(--tx);line-height:1.3;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;}
+.gnm.nm-full{white-space:normal;overflow:visible;}
+.grl{display:flex;align-items:center;gap:5px;margin-top:5px;}
+.grl-r{font-size:10px;color:var(--tx3);}
+.glv{font-size:10px;padding:1px 6px;border-radius:6px;background:var(--acBg);color:var(--acTx);font-weight:500;white-space:nowrap;margin-left:auto;}
+.gid{font-size:9px;color:var(--tx3);margin:2px 0;}
+.gcv{font-size:11px;margin-top:7px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;}
+.gcv.cvy{color:var(--cv);}
+.gcv.cvn{color:var(--tx3);font-weight:400;}
+.gcv.nm-full{white-space:normal;overflow:visible;}
+.gft{padding:8px 10px;border-top:0.5px solid var(--bd);background:var(--bg2);}
+.gaib{height:5px;background:var(--bg3);border-radius:3px;margin:0 0 3px;overflow:hidden;}
+.gaif{height:5px;border-radius:3px;}
+.gait{font-size:9px;color:var(--tx3);}
+.gcat{font-size:10px;color:var(--tx2);padding-top:4px;margin-top:0;}
+.gmo{font-size:10px;color:var(--tx3);margin-top:4px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.grid.expanded .gnm,.grid.expanded .gcv{white-space:normal;overflow:visible;}
+.mw{position:relative;}
+.mb{width:22px;height:22px;border-radius:5px;border:0.5px solid var(--bd);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--tx3);margin:0 auto;line-height:1;}
+.mb:hover{background:var(--bg2);}
+.dd{display:none;position:absolute;right:0;top:24px;background:var(--bgC);border:0.5px solid var(--bd2);border-radius:8px;z-index:50;min-width:90px;box-shadow:0 3px 12px rgba(0,0,0,0.12);}
+.dd.op{display:block;}
+.di{padding:7px 11px;font-size:11px;cursor:pointer;color:var(--tx);display:block;white-space:nowrap;}
+.di:hover{background:var(--bg2);}
+.dsep{height:0.5px;background:var(--bd);}
+.dide{color:var(--dg);}
+.dide:hover{background:var(--dgBg);}
+/* リスト表示 */
+.lwrap{overflow-x:auto;border-radius:10px;border:0.5px solid var(--bd);}
+.ltbl{width:100%;border-collapse:collapse;font-size:11px;background:var(--bgC);table-layout:fixed;}
+.ltbl thead{background:var(--bg2);}
+.ltbl th{padding:6px 3px;text-align:center;font-size:11px;font-weight:500;color:var(--tx2);border-bottom:0.5px solid var(--bd);cursor:pointer;white-space:nowrap;user-select:none;}
+.ltbl th:hover{color:var(--tx);background:var(--bg2);}
+.ltbl th.srt{color:var(--ac);background:var(--acBg);}
+.ltbl th.nl,.ltbl td.nl{text-align:left;padding-left:8px;}
+.ltbl td{padding:6px 3px;text-align:center;border-bottom:0.5px solid var(--bd);vertical-align:middle;}
+.ltbl tr:last-child td{border-bottom:none;}
+.ltbl tr:hover td{background:var(--bg2);}
+.lnm{font-family:'Noto Serif JP',serif;font-size:11px;font-weight:700;color:var(--tx);}
+.lid{font-size:9px;color:var(--tx3);}
+.sv{font-weight:500;color:var(--tx);}
+.s0{color:var(--bd2);}
+.aibg{height:3px;background:var(--bg2);border-radius:2px;margin-top:2px;}
+.aifl{height:3px;border-radius:2px;}
+.larr{font-size:9px;margin-left:2px;color:var(--bd2);}
+.ltbl th.srt .larr{color:var(--ac);}
+/* モーダル */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;align-items:center;justify-content:center;padding:16px;}
+.ov.op{display:flex;}
+.modal{background:var(--bgC);border-radius:12px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto;}
+.mhd{padding:14px 16px 10px;border-bottom:0.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between;}
+.mtitle{font-family:'Noto Serif JP',serif;font-size:15px;font-weight:700;color:var(--tx);}
+.mcls{width:26px;height:26px;border-radius:5px;border:0.5px solid var(--bd);background:transparent;cursor:pointer;font-size:14px;color:var(--tx3);display:flex;align-items:center;justify-content:center;}
+.mcls:hover{background:var(--bg2);}
+.mbdy{padding:14px 16px;}
+.mft{padding:8px 16px 14px;display:flex;gap:7px;justify-content:flex-end;}
+.frow{margin-bottom:10px;}
+.flbl{font-size:11px;color:var(--tx3);margin-bottom:3px;}
+.fin{width:100%;padding:5px 8px;border-radius:6px;border:0.5px solid var(--bd2);background:var(--bgC);color:var(--tx);font-size:12px;}
+.fin:focus{outline:none;border-color:var(--ac);}
+.fsel{width:100%;padding:5px 8px;border-radius:6px;border:0.5px solid var(--bd2);background:var(--bgC);color:var(--tx);font-size:12px;cursor:pointer;}
+.fta{width:100%;padding:5px 8px;border-radius:6px;border:0.5px solid var(--bd2);background:var(--bgC);color:var(--tx);font-size:12px;resize:none;height:56px;}
+.fta:focus{outline:none;border-color:var(--ac);}
+.calcbox{background:var(--bg2);border-radius:7px;padding:8px 12px;font-size:12px;color:var(--tx2);margin:6px 0;line-height:1.6;}
+/* メモタブ */
+.calwrap{background:var(--bgC);border-radius:10px;border:0.5px solid var(--bd);padding:12px;margin-bottom:12px;}
+.calhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.calmo{font-family:'Noto Serif JP',serif;font-size:15px;font-weight:700;color:var(--tx);}
+.calnav{width:26px;height:26px;border-radius:5px;border:0.5px solid var(--bd2);background:var(--bgC);cursor:pointer;font-size:14px;color:var(--tx3);display:flex;align-items:center;justify-content:center;}
+.calnav:hover{background:var(--bg2);}
+.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;font-size:11px;text-align:center;margin-top:6px;}
+.cdh{color:var(--tx3);padding:3px 0;font-size:10px;}
+.cd{padding:5px 2px;border-radius:5px;cursor:pointer;min-height:28px;}
+.cd:hover{background:var(--bg2);}
+.cd.today{background:var(--bgH);color:var(--hTx);font-weight:500;}
+.cd.emp{pointer-events:none;}
+.cnote-emoji{font-size:14px;line-height:1;text-align:center;margin:1px 0;}
+.cnote-dot{width:9px;height:9px;border-radius:50%;margin:2px auto 1px;}
+.evbar{height:14px;border-radius:3px;margin:1px 0;font-size:9px;padding:0 3px;display:flex;align-items:center;overflow:hidden;white-space:nowrap;cursor:pointer;color:#fff;}
+.molist{display:flex;flex-direction:column;gap:6px;}
+.memo-sec-ttl{font-size:11px;font-weight:600;color:var(--tx2);margin:4px 0 6px;padding-bottom:3px;border-bottom:0.5px solid var(--bd);}
+.memo-grp{margin-bottom:4px;}
+.memo-grp-hd{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--tx);padding:7px 10px;background:var(--bg2);border-radius:7px;cursor:pointer;user-select:none;}
+.memo-grp-hd:hover{background:var(--bg3);}
+.mg-arr{font-size:9px;color:var(--tx3);}
+.memo-grp-body{display:flex;flex-direction:column;gap:6px;padding:6px 0 4px;}
+.moitem{background:var(--bgC);border-radius:8px;padding:8px 12px;font-size:12px;border:0.5px solid var(--bd);border-left:2px solid var(--ac);}
+.modate{font-size:10px;color:var(--tx3);margin-bottom:2px;}
+/* 設定モーダル */
+.themegrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px;}
+.thopt{border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid transparent;}
+.thopt.sel{border-color:var(--ac);}
+.thpv{height:40px;}
+.thnm{font-size:9px;padding:3px;text-align:center;background:var(--bg2);color:var(--tx3);}
+/* 習合モーダル */
+.shlist{display:flex;flex-direction:column;gap:5px;max-height:280px;overflow-y:auto;margin-bottom:8px;}
+.shitem{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;border:0.5px solid var(--bd);cursor:pointer;background:var(--bgC);}
+.shitem:hover{background:var(--bg2);}
+.shitem.sel{border-color:var(--ac);background:var(--acBg);}
+.shitem input[type=checkbox]{accent-color:var(--ac);}
+/* 削除確認 */
+.delconf{text-align:center;padding:8px 0 4px;}
+.delconf p{font-size:13px;color:var(--tx);line-height:1.6;margin-bottom:12px;}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ヘッダー -->
+  <div class="header">
+    <svg class="hpat" viewBox="0 0 800 65" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs><pattern id="npat" x="0" y="0" width="18" height="18" patternUnits="userSpaceOnUse">
+        <ellipse cx="9" cy="4.5" rx="7" ry="4" fill="none" stroke="var(--hTx)" stroke-width="0.9" opacity="0.15"/>
+        <ellipse cx="0" cy="4.5" rx="7" ry="4" fill="none" stroke="var(--hTx)" stroke-width="0.9" opacity="0.15"/>
+        <ellipse cx="18" cy="4.5" rx="7" ry="4" fill="none" stroke="var(--hTx)" stroke-width="0.9" opacity="0.15"/>
+        <ellipse cx="4.5" cy="13.5" rx="7" ry="4" fill="none" stroke="var(--hTx)" stroke-width="0.9" opacity="0.15"/>
+        <ellipse cx="13.5" cy="13.5" rx="7" ry="4" fill="none" stroke="var(--hTx)" stroke-width="0.9" opacity="0.15"/>
+      </pattern></defs>
+      <rect width="800" height="65" fill="url(#npat)"/>
+    </svg>
+    <div class="hinner">
+      <div>
+        <div class="htitle">愛蔵の一ノ倉</div>
+        <div class="hsub">AIZO NO ICHINOKURA</div>
+      </div>
+      <div class="hbtns">
+        <button class="hbtn" onclick="openOv('ov-guide')">？ 使い方</button>
+        <button class="hbtn" id="layoutBtn" onclick="toggleLayout()">📱 スマホ</button>
+        <button class="hbtn" onclick="openSettings()">⚙ 設定</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PCタブ -->
+  <div class="tabbar" id="pctabs">
+    <div class="tab on" data-tab="frag" onclick="switchTab('frag',this)">断片管理</div>
+    <div class="tab" data-tab="treasure" onclick="switchTab('treasure',this)">宝物帳</div>
+    <div class="tab" data-tab="tosou" onclick="switchTab('tosou',this)">刀装</div>
+    <div class="tab" data-tab="uma" onclick="switchTab('uma',this)">馬</div>
+    <div class="tab" data-tab="memo" onclick="switchTab('memo',this)">暦メモ</div>
+  </div>
+
+  <!-- コンテンツ -->
+  <div class="content">
+
+    <!-- ── 断片管理タブ ── -->
+    <div class="tab-pane on" id="pane-frag">
+      <div class="smbar" id="frag-summary"></div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
+        <div class="vbtns" id="frag-viewbtns">
+          <div class="vb on" id="fv-table" onclick="setFragView('table')" title="テーブル">≡</div>
+          <div class="vb" id="fv-card" onclick="setFragView('card')" title="カード">▦</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;margin-bottom:10px;">
+        <div style="font-size:11px;color:var(--tx3);">💡 断片を使わず直接追加したい場合は「宝物帳」タブの <b style="color:var(--tx2);">＋ 個体を追加</b> からもできます</div>
+        <button class="btn btnp" onclick="openMakeTreasure()">＋ 宝物を作る</button>
+      </div>
+      <div class="card frag-table-wrap" style="overflow:hidden;margin-bottom:10px;">
+        <table class="ftbl" id="frag-table">
+          <thead><tr>
+            <th style="width:36px"></th>
+            <th>宝物名</th>
+            <th class="rc" style="width:50px">必要数</th>
+            <th class="rc" style="width:90px">所持断片数</th>
+            <th class="rc" style="width:80px">製作可能</th>
+            <th class="rc" style="width:80px">宝物目標数</th>
+            <th class="rc" style="width:90px">あと必要</th>
+          </tr></thead>
+          <tbody id="frag-tbody"></tbody>
+        </table>
+      </div>
+      <div class="frag-cards" id="frag-cards" style="margin-bottom:10px;"></div>
+    </div>
+
+    <!-- ── 宝物帳タブ ── -->
+    <div class="tab-pane" id="pane-treasure">
+      <div class="smbar" id="treasure-summary"></div>
+      <div class="tbar">
+        <div style="font-size:10px;color:var(--tx3);line-height:1.5;">💡 断片を消費して作るには<br>「断片管理」タブ → <b style="color:var(--tx2);">＋ 宝物を作る</b></div>
+        <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
+          <button class="btn" onclick="openAddTreasure()" style="display:flex;align-items:center;gap:4px;">＋ 個体を追加</button>
+          <button class="btn" id="expand-btn" onclick="toggleGridExpand()" title="名前を全表示して高さを揃える">📐 高さ揃え</button>
+          <div class="vbtns">
+            <div class="vb on" id="vb-grid" onclick="setView('grid')" title="グリッド">⊞</div>
+            <div class="vb" id="vb-list" onclick="setView('list')" title="リスト">≡</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftags" id="cat-tags">
+        <div class="ftag on" data-cat="all" onclick="setCat('all',this)">すべて</div>
+        <div class="ftag" data-cat="刀装具" onclick="setCat('刀装具',this)">刀装具</div>
+        <div class="ftag" data-cat="武具" onclick="setCat('武具',this)">武具</div>
+        <div class="ftag" data-cat="茶道具" onclick="setCat('茶道具',this)">茶道具</div>
+        <div class="ftag" data-cat="馬具" onclick="setCat('馬具',this)">馬具</div>
+        <div class="ftag" data-cat="絵画" onclick="setCat('絵画',this)">絵画</div>
+        <div class="ftag" data-cat="彫刻" onclick="setCat('彫刻',this)">彫刻</div>
+      </div>
+      <!-- 整列ボタン群 -->
+      <div class="sort-area" id="sort-area">
+        <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
+          <span class="sort-area-lbl">整列</span>
+          <div class="stags" id="sort-tags">
+            <div class="stag on" data-sort="bookorder" onclick="setSortBtn('bookorder',this)">宝物帳順</div>
+            <div class="stag" data-sort="rarity" onclick="setSortBtn('rarity',this)">レア度</div>
+            <div class="stag" data-sort="lv" onclick="setSortBtn('lv',this)">Lv</div>
+            <div class="stag" data-sort="aiyo" onclick="setSortBtn('aiyo',this)">愛用度</div>
+            <div class="stag" data-sort="atk" onclick="setSortBtn('atk',this)">打撃</div>
+            <div class="stag" data-sort="grd" onclick="setSortBtn('grd',this)">統率</div>
+            <div class="stag" data-sort="kid" onclick="setSortBtn('kid',this)">機動</div>
+            <div class="stag" data-sort="chg" onclick="setSortBtn('chg',this)">衝力</div>
+            <div class="stag" data-sort="sct" onclick="setSortBtn('sct',this)">偵察</div>
+            <div class="stag" data-sort="hid" onclick="setSortBtn('hid',this)">隠蔽</div>
+            <div class="stag" data-sort="crt" onclick="setSortBtn('crt',this)">必殺</div>
+            <div class="stag" data-sort="custom" onclick="setSortBtn('custom',this)">カスタム</div>
+          </div>
+          <button class="dirbtn" id="dirbtn" onclick="toggleDir()">▼ 降順</button>
+        </div>
+      </div>
+      <div id="treasure-grid" class="grid"></div>
+      <div id="treasure-list" style="display:none;">
+        <div class="lwrap">
+          <table class="ltbl" id="list-table">
+            <colgroup>
+              <col style="width:22px"><col style="width:130px"><col style="width:36px"><col style="width:24px">
+              <col style="width:106px">
+              <col style="width:30px"><col style="width:30px"><col style="width:30px">
+              <col style="width:30px"><col style="width:30px"><col style="width:30px">
+              <col style="width:30px"><col style="width:30px">
+              <col style="width:62px"><col style="width:26px">
+            </colgroup>
+            <thead><tr>
+              <th id="lth-bk" onclick="lsort('bk')" title="宝物帳番号"># <span class="larr" id="la-bk">↕</span></th>
+              <th class="nl" onclick="lsort('nm')">名称 <span class="larr" id="la-nm">↕</span></th>
+              <th onclick="lsort('lv')">Lv <span class="larr" id="la-lv">↕</span></th>
+              <th onclick="lsort('r')">R <span class="larr" id="la-r">↕</span></th>
+              <th class="nl">名前</th>
+              <th id="lth-atk" onclick="lsort('atk')">打 <span class="larr" id="la-atk">↕</span></th>
+              <th id="lth-grd" onclick="lsort('grd')">統 <span class="larr" id="la-grd">↕</span></th>
+              <th id="lth-kid" onclick="lsort('kid')">機 <span class="larr" id="la-kid">↕</span></th>
+              <th id="lth-chg" onclick="lsort('chg')">衝 <span class="larr" id="la-chg">↕</span></th>
+              <th id="lth-sct" onclick="lsort('sct')">偵 <span class="larr" id="la-sct">↕</span></th>
+              <th id="lth-hid" onclick="lsort('hid')">隠 <span class="larr" id="la-hid">↕</span></th>
+              <th id="lth-crt" onclick="lsort('crt')">必 <span class="larr" id="la-crt">↕</span></th>
+              <th id="lth-sur" onclick="lsort('sur')">生 <span class="larr" id="la-sur">↕</span></th>
+              <th id="lth-ai" onclick="lsort('ai')">愛用度 <span class="larr" id="la-ai">↕</span></th>
+              <th></th>
+            </tr></thead>
+            <tbody id="list-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 暦メモタブ ── -->
+    <div class="tab-pane" id="pane-memo">
+      <div class="calwrap">
+        <div class="calhd">
+          <button class="calnav" onclick="calNav(-1)">&#8249;</button>
+          <div class="calmo" id="cal-month"></div>
+          <button class="calnav" onclick="calNav(1)">&#8250;</button>
+        </div>
+        <div style="margin-bottom:6px;display:flex;gap:6px;justify-content:flex-end;">
+          <button class="btn" onclick="openAddEvent()">＋ 期間メモ</button>
+          <button class="btn" onclick="openAddNote()">＋ 日メモ</button>
+        </div>
+        <div class="calgrid" id="cal-grid"></div>
+      </div>
+      <div class="sttl">メモ一覧</div>
+      <div class="molist" id="memo-list"></div>
+    </div>
+
+    <!-- ── 刀装タブ ── -->
+    <div class="tab-pane" id="pane-tosou">
+      <div class="smbar" id="tosou-summary"></div>
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+        <span style="font-size:11px;color:var(--tx3);">グレード</span>
+        <div style="display:flex;gap:3px;" id="grade-btns">
+          <button class="grbtn" data-grade="並" onclick="setGrade('並',this)">並</button>
+          <button class="grbtn" data-grade="上" onclick="setGrade('上',this)">上</button>
+          <button class="grbtn on" data-grade="特上" onclick="setGrade('特上',this)">特上</button>
+        </div>
+        <button class="dirbtn" id="tosou-dirbtn" onclick="toggleTosouDir()" style="margin-left:4px;">▼ 降順</button>
+        <div class="vbtns" id="tosou-viewbtns" style="margin-left:auto;">
+          <div class="vb on" id="tv-table" onclick="setTosouView('table')" title="テーブル">≡</div>
+          <div class="vb" id="tv-card" onclick="setTosouView('card')" title="カード">▦</div>
+        </div>
+      </div>
+      <div class="ftags" id="tosou-equip-tags">
+        <div class="ftag on" data-eq="all" onclick="setTosouEquip('all',this)">すべて</div>
+        <div class="ftag" data-eq="短" onclick="setTosouEquip('短',this)">短刀</div>
+        <div class="ftag" data-eq="脇" onclick="setTosouEquip('脇',this)">脇差</div>
+        <div class="ftag" data-eq="打" onclick="setTosouEquip('打',this)">打刀</div>
+        <div class="ftag" data-eq="太" onclick="setTosouEquip('太',this)">太刀</div>
+        <div class="ftag" data-eq="大" onclick="setTosouEquip('大',this)">大太刀</div>
+        <div class="ftag" data-eq="槍" onclick="setTosouEquip('槍',this)">槍</div>
+        <div class="ftag" data-eq="薙" onclick="setTosouEquip('薙',this)">薙刀</div>
+        <div class="ftag" data-eq="剣" onclick="setTosouEquip('剣',this)">剣</div>
+        <div class="ftag" data-eq="event" onclick="setTosouEquip('event',this)">イベント限定</div>
+      </div>
+      <div class="stags" id="tosou-sort-tags" style="margin-bottom:9px;">
+        <div class="stag on" data-sort="default" onclick="setTosouSort('default',this)">デフォルト</div>
+        <div class="stag" data-sort="hp" onclick="setTosouSort('hp',this)">兵力</div>
+        <div class="stag" data-sort="atk" onclick="setTosouSort('atk',this)">打撃</div>
+        <div class="stag" data-sort="grd" onclick="setTosouSort('grd',this)">統率</div>
+        <div class="stag" data-sort="kid" onclick="setTosouSort('kid',this)">機動</div>
+        <div class="stag" data-sort="chg" onclick="setTosouSort('chg',this)">衝力</div>
+        <div class="stag" data-sort="sct" onclick="setTosouSort('sct',this)">偵察</div>
+        <div class="stag" data-sort="hid" onclick="setTosouSort('hid',this)">隠蔽</div>
+      </div>
+      <div class="lwrap tosou-table-wrap" id="tosou-list-wrap">
+        <table class="ltbl" id="tosou-table">
+          <colgroup>
+            <col style="width:84px"><col style="width:48px">
+            <col style="width:36px"><col style="width:36px"><col style="width:36px">
+            <col style="width:36px"><col style="width:36px"><col style="width:36px"><col style="width:36px">
+            <col style="width:auto">
+          </colgroup>
+          <thead><tr>
+            <th class="nl">刀装名</th>
+            <th>分類</th>
+            <th id="tth-hp" onclick="setTosouSort('hp',null)">兵力 <span id="ta-hp">↕</span></th>
+            <th id="tth-atk" onclick="setTosouSort('atk',null)">打撃 <span id="ta-atk">↕</span></th>
+            <th id="tth-grd" onclick="setTosouSort('grd',null)">統率 <span id="ta-grd">↕</span></th>
+            <th id="tth-kid" onclick="setTosouSort('kid',null)">機動 <span id="ta-kid">↕</span></th>
+            <th id="tth-chg" onclick="setTosouSort('chg',null)">衝力 <span id="ta-chg">↕</span></th>
+            <th id="tth-sct" onclick="setTosouSort('sct',null)">偵察 <span id="ta-sct">↕</span></th>
+            <th id="tth-hid" onclick="setTosouSort('hid',null)">隠蔽 <span id="ta-hid">↕</span></th>
+            <th class="nl">装備可能刀種</th>
+          </tr></thead>
+          <tbody id="tosou-tbody"></tbody>
+        </table>
+      </div>
+      <div class="tosou-cards" id="tosou-cards"></div>
+    </div>
+
+    <!-- ── 馬タブ ── -->
+    <div class="tab-pane" id="pane-uma">
+      <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:9px;">
+        <div class="stags" id="uma-sort-tags">
+          <div class="stag on" data-sort="default" onclick="setUmaSort('default',this)">デフォルト</div>
+          <div class="stag" data-sort="hp" onclick="setUmaSort('hp',this)">兵力</div>
+          <div class="stag" data-sort="atk" onclick="setUmaSort('atk',this)">打撃</div>
+          <div class="stag" data-sort="grd" onclick="setUmaSort('grd',this)">統率</div>
+          <div class="stag" data-sort="kid" onclick="setUmaSort('kid',this)">機動</div>
+          <div class="stag" data-sort="chg" onclick="setUmaSort('chg',this)">衝力</div>
+          <div class="stag" data-sort="sct" onclick="setUmaSort('sct',this)">偵察</div>
+          <div class="stag" data-sort="hid" onclick="setUmaSort('hid',this)">隠蔽</div>
+        </div>
+        <button class="dirbtn" id="uma-dirbtn" onclick="toggleUmaDir()">▼ 降順</button>
+      </div>
+      <div class="lwrap">
+        <table class="ltbl">
+          <colgroup>
+            <col style="width:90px">
+            <col style="width:36px"><col style="width:36px"><col style="width:36px">
+            <col style="width:36px"><col style="width:36px"><col style="width:36px"><col style="width:36px">
+          </colgroup>
+          <thead><tr>
+            <th class="nl">馬名</th>
+            <th id="uth-hp" onclick="setUmaSort('hp',null)">兵力 <span id="ua-hp">↕</span></th>
+            <th id="uth-atk" onclick="setUmaSort('atk',null)">打撃 <span id="ua-atk">↕</span></th>
+            <th id="uth-grd" onclick="setUmaSort('grd',null)">統率 <span id="ua-grd">↕</span></th>
+            <th id="uth-kid" onclick="setUmaSort('kid',null)">機動 <span id="ua-kid">↕</span></th>
+            <th id="uth-chg" onclick="setUmaSort('chg',null)">衝力 <span id="ua-chg">↕</span></th>
+            <th id="uth-sct" onclick="setUmaSort('sct',null)">偵察 <span id="ua-sct">↕</span></th>
+            <th id="uth-hid" onclick="setUmaSort('hid',null)">隠蔽 <span id="ua-hid">↕</span></th>
+          </tr></thead>
+          <tbody id="uma-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- スマホタブバー -->
+  <div class="mtabbar" id="mtabbar">
+    <div class="mtab-items">
+      <button class="mtab on" data-tab="frag" onclick="switchTab('frag',this)"><span class="mtab-icon">🔮</span>断片</button>
+      <button class="mtab" data-tab="treasure" onclick="switchTab('treasure',this)"><span class="mtab-icon">🏆</span>宝物</button>
+      <button class="mtab" data-tab="tosou" onclick="switchTab('tosou',this)"><span class="mtab-icon">⚔️</span>刀装</button>
+      <button class="mtab" data-tab="uma" onclick="switchTab('uma',this)"><span class="mtab-icon">🐎</span>馬</button>
+      <button class="mtab" data-tab="memo" onclick="switchTab('memo',this)"><span class="mtab-icon">📅</span>暦メモ</button>
+    </div>
+  </div>
+  <button id="toTop" onclick="scrollToTop()" title="上へ戻る" aria-label="上へ戻る">↑</button>
+</div>
+
+<!-- ── モーダル群 ── -->
+
+<!-- 初回ガイド -->
+<div class="ov" id="ov-guide">
+  <div class="modal" style="max-width:480px;">
+    <div class="mhd"><div class="mtitle">愛蔵の一ノ倉へようこそ</div><button class="mcls" onclick="closeGuide()">✕</button></div>
+    <div class="mbdy" style="line-height:1.8;font-size:13px;color:var(--tx2);">
+      <p style="margin-bottom:10px;">刀剣乱舞の<b>宝物・断片・刀装・馬</b>を管理するツールです。</p>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;">
+        <div style="background:var(--bg2);border-radius:7px;padding:8px 12px;">
+          <b style="color:var(--tx);">🔮 断片管理</b><br>
+          断片の所持数を入力して、宝物の製作計画を立てられます。<br>「＋ 宝物を作る」で断片を消費して宝物帳に登録できます。
+        </div>
+        <div style="background:var(--bg2);border-radius:7px;padding:8px 12px;">
+          <b style="color:var(--tx);">🏆 宝物帳</b><br>
+          所持している宝物を個体ごとに管理します。<br>レベル・愛用度・名前刻印を記録し、ステータスでソートできます。
+        </div>
+        <div style="background:var(--bg2);border-radius:7px;padding:8px 12px;">
+          <b style="color:var(--tx);">⚔️ 刀装 / 🐎 馬</b><br>
+          ステータス一覧をソートして装備選びに活用できます。
+        </div>
+        <div style="background:var(--bg2);border-radius:7px;padding:8px 12px;">
+          <b style="color:var(--tx);">📅 暦メモ</b><br>
+          イベント期間・日々のメモを記録できます。<br>同一ドメイン上の稽古録・資源帳とメモを共有します。
+        </div>
+      </div>
+      <p style="margin-top:12px;font-size:11px;color:var(--tx3);">
+        データはブラウザのlocalStorageに保存されます。<br>
+        設定からGoogle Driveへのクラウド同期・JSONエクスポートが可能です。
+      </p>
+    </div>
+    <div class="mft" style="justify-content:space-between;align-items:center;">
+      <label style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:5px;cursor:pointer;">
+        <input type="checkbox" id="guide-no-show"> 次回から表示しない
+      </label>
+      <button class="btn btnp" onclick="closeGuide()">はじめる</button>
+    </div>
+  </div>
+</div>
+
+<!-- 設定 -->
+<div class="ov" id="ov-settings">
+  <div class="modal" style="max-width:400px;">
+    <div class="mhd"><div class="mtitle">設定</div><button class="mcls" onclick="closeOv('ov-settings')">✕</button></div>
+    <div class="mbdy">
+      <div style="font-size:12px;color:var(--tx3);margin-bottom:8px;">テーマ</div>
+      <div class="themegrid" id="theme-grid"></div>
+      <div style="font-size:11px;color:var(--tx3);margin-top:12px;margin-bottom:6px;">クラウド同期（Google Drive）</div>
+      <div id="gd-status-box" style="font-size:12px;color:var(--tx2);background:var(--bg2);border-radius:7px;padding:8px 12px;margin-bottom:8px;border:0.5px solid var(--bd);">未ログイン</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;" id="gd-btns">
+        <button class="btn btnp" id="gd-login-btn" onclick="gdSignIn()">Googleでログイン</button>
+      </div>
+      <div style="font-size:11px;color:var(--tx3);margin-top:14px;margin-bottom:6px;">データ（JSONバックアップ）</div>
+      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
+        <button class="btn" onclick="exportData()">📤 JSONエクスポート</button>
+        <button class="btn" onclick="document.getElementById('import-file').click()">📥 JSONインポート</button>
+        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(this)">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 宝物を作る -->
+<div class="ov" id="ov-make">
+  <div class="modal">
+    <div class="mhd"><div class="mtitle">宝物を作る</div><button class="mcls" onclick="closeOv('ov-make')">✕</button></div>
+    <div class="mbdy">
+      <div class="frow"><div class="flbl">宝物の種類</div>
+        <select class="fsel" id="make-master" onchange="updateMakeCalc()"><option value="">-- 選択してください --</option></select>
+      </div>
+      <div class="frow"><div class="flbl">作る個数</div>
+        <input type="number" class="fin" id="make-count" value="1" min="1" max="99" oninput="updateMakeCalc()">
+      </div>
+      <div class="frow"><div class="flbl">レベル（最初はLv1）</div>
+        <select class="fsel" id="make-lv">
+          <option value="1">Lv 1</option>
+          <option value="2">Lv 2</option>
+          <option value="3">Lv 3</option>
+          <option value="4">Lv 4</option>
+          <option value="5">Lv 5</option>
+        </select>
+      </div>
+      <div class="calcbox" id="make-calc">宝物を選んでください</div>
+    </div>
+    <div class="mft">
+      <button class="btn" onclick="closeOv('ov-make')">キャンセル</button>
+      <button class="btn btnp" onclick="confirmMake()">作成する</button>
+    </div>
+  </div>
+</div>
+
+<!-- 個体追加・編集 -->
+<div class="ov" id="ov-edit">
+  <div class="modal">
+    <div class="mhd"><div class="mtitle" id="edit-title">個体を追加</div><button class="mcls" onclick="closeOv('ov-edit')">✕</button></div>
+    <div class="mbdy">
+      <input type="hidden" id="edit-id">
+      <div class="frow"><div class="flbl">宝物の種類</div>
+        <select class="fsel" id="edit-master"></select>
+      </div>
+      <div class="frow"><div class="flbl">レベル</div>
+        <select class="fsel" id="edit-lv">
+          <option value="1">Lv 1</option><option value="2">Lv 2</option>
+          <option value="3">Lv 3</option><option value="4">Lv 4</option><option value="5">Lv 5</option>
+        </select>
+      </div>
+      <div class="frow"><div class="flbl">筆頭男士名（愛用度が一番高い男士）</div>
+        <input type="text" class="fin" id="edit-name" placeholder="例：へし切長谷部">
+      </div>
+      <div class="frow"><div class="flbl">愛用度（0〜10000）</div>
+        <input type="number" class="fin" id="edit-aiyo" value="0" min="0" max="10000">
+      </div>
+      <div class="frow"><div class="flbl">メモ</div>
+        <textarea class="fta" id="edit-memo" placeholder="自由記述"></textarea>
+      </div>
+    </div>
+    <div class="mft">
+      <button class="btn" onclick="closeOv('ov-edit')">キャンセル</button>
+      <button class="btn btnp" onclick="saveTreasure()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 削除確認 -->
+<div class="ov" id="ov-delete">
+  <div class="modal" style="max-width:360px;">
+    <div class="mhd"><div class="mtitle">削除の確認</div><button class="mcls" onclick="closeOv('ov-delete')">✕</button></div>
+    <div class="mbdy">
+      <div class="delconf"><p id="del-msg">この宝物を削除しますか？</p></div>
+    </div>
+    <div class="mft">
+      <button class="btn" onclick="closeOv('ov-delete')">キャンセル</button>
+      <button class="btn btnd" onclick="confirmDelete()">削除する</button>
+    </div>
+  </div>
+</div>
+
+<!-- 習合 -->
+<div class="ov" id="ov-shugou">
+  <div class="modal">
+    <div class="mhd"><div class="mtitle" id="shugou-title">習合する</div><button class="mcls" onclick="closeOv('ov-shugou')">✕</button></div>
+    <div class="mbdy">
+      <div style="font-size:12px;color:var(--tx2);margin-bottom:8px;" id="shugou-desc"></div>
+      <div style="font-size:11px;color:var(--tx3);margin-bottom:6px;">素材にする個体を選んでください（複数可）</div>
+      <div class="shlist" id="shugou-list"></div>
+      <div class="calcbox" id="shugou-calc"></div>
+    </div>
+    <div class="mft">
+      <button class="btn" onclick="closeOv('ov-shugou')">キャンセル</button>
+      <button class="btn btnp" onclick="confirmShugou()">習合する</button>
+    </div>
+  </div>
+</div>
+
+<!-- 期間メモ追加 -->
+<div class="ov" id="ov-event">
+  <div class="modal">
+    <div class="mhd"><div class="mtitle" id="ev-modal-title">期間メモを追加</div><button class="mcls" onclick="closeOv('ov-event')">✕</button></div>
+    <div class="mbdy">
+      <div class="frow"><div class="flbl">メモ名</div><input type="text" class="fin" id="ev-name" placeholder="例：断片3倍キャンペーン"></div>
+      <div class="frow"><div class="flbl">開始日</div>
+        <input type="hidden" id="ev-start">
+        <button type="button" class="calpick-btn cal-pick-btn" id="ev-start-text" onclick="openCalPicker('ev-start',this)">日付を選択</button>
+      </div>
+      <div class="frow"><div class="flbl">終了日</div>
+        <input type="hidden" id="ev-end">
+        <button type="button" class="calpick-btn cal-pick-btn" id="ev-end-text" onclick="openCalPicker('ev-end',this)">日付を選択</button>
+      </div>
+      <div class="frow"><div class="flbl">色</div>
+        <input type="color" class="ncolor-in" id="ev-color" value="#c9a84c" style="width:60px;height:34px;">
+      </div>
+      <div class="frow"><div class="flbl">備考</div><textarea class="fta" id="ev-memo"></textarea></div>
+    </div>
+    <div class="mft">
+      <button class="btn" onclick="closeOv('ov-event')">キャンセル</button>
+      <button class="btn btnp" onclick="saveEvent()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 日メモ追加 -->
+<div class="ov" id="ov-note">
+  <div class="modal" style="max-width:360px;">
+    <div class="mhd"><div class="mtitle" id="note-modal-title">日メモを追加</div><button class="mcls" onclick="closeOv('ov-note')">✕</button></div>
+    <div class="mbdy">
+      <div class="frow"><div class="flbl">日付</div>
+        <input type="hidden" id="note-date">
+        <button type="button" class="calpick-btn cal-pick-btn" id="note-date-text" onclick="openCalPicker('note-date',this)">日付を選択</button>
+      </div>
+      <div class="frow"><div class="flbl">目印</div>
+        <div style="flex:1;">
+          <div class="nmark-tab">
+            <button id="nmark-emoji-tab" class="on" onclick="setNoteMarkType('emoji')">絵文字</button>
+            <button id="nmark-color-tab" onclick="setNoteMarkType('color')">色ドット</button>
+          </div>
+          <div id="nmark-emoji-box">
+            <div class="emoji-row" id="note-emoji-row"></div>
+          </div>
+          <div id="nmark-color-box" style="display:none;align-items:center;gap:8px;">
+            <input type="color" class="ncolor-in" id="note-color" value="#c9a84c">
+            <span style="font-size:11px;color:var(--tx3);">カレンダーに色ドットで表示されます</span>
+          </div>
+        </div>
+      </div>
+      <div class="frow"><div class="flbl">メモ内容</div><textarea class="fta" id="note-text" placeholder="例：断片祭りでたくさんドロップした"></textarea></div>
+    </div>
+    <div class="mft">
+      <button class="btn" onclick="closeOv('ov-note')">キャンセル</button>
+      <button class="btn btnp" onclick="saveNote()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 汎用カレンダーピッカー -->
+<div id="gen-cal-picker">
+  <div class="gcal-hd">
+    <button class="gcal-nav" onclick="shiftGenCalMonth(-1)">&#8249;</button>
+    <div class="gcal-mo" id="gen-cal-month"></div>
+    <button class="gcal-nav" onclick="shiftGenCalMonth(1)">&#8250;</button>
+  </div>
+  <div id="gen-cal-container"></div>
+</div>
+
+<script>
+// ── マスターデータ ──────────────────────────────────────
+// stats配列: [生存, 打撃, 統率, 機動, 衝力, 偵察, 隠蔽, 必殺]
+var MASTERS = [
+  {id:1, name:"曜変天目", yomi:"ようへんてんもく", cat:"茶道具", sub:"茶碗", r:3, fr:9,
+   s:{1:[0,3,10,1,4,1,0,1],2:[0,5,14,3,4,1,1,2],3:[0,7,18,5,4,2,2,2],4:[0,9,21,7,6,3,2,2],5:[0,11,25,9,7,4,2,2]}},
+  {id:2, name:"獅子螺鈿鞍", yomi:"ししらんでんくら", cat:"馬具", sub:"鞍", r:2, fr:6,
+   s:{1:[0,0,5,6,0,1,0,1],2:[0,0,7,8,0,1,0,1],3:[0,0,8,9,0,2,0,2],4:[0,0,10,11,0,2,0,2],5:[0,0,11,15,0,2,0,2]}},
+  {id:3, name:"南蛮胴具足", yomi:"なんばんどうぐそく", cat:"武具", sub:"甲冑", r:2, fr:6,
+   s:{1:[0,2,4,0,2,0,0,0],2:[0,2,7,0,3,0,0,0],3:[0,3,10,0,5,0,0,1],4:[0,3,12,0,7,0,0,4],5:[0,4,15,0,9,0,0,6]}},
+  {id:4, name:"鍔・月下梅樹透図", yomi:"つば・げっかばいじゅすかしず", cat:"刀装具", sub:"鍔", r:1, fr:3,
+   s:{1:[0,2,2,2,2,2,0,0],2:[0,2,3,2,2,2,1,0],3:[0,2,3,2,2,2,2,1],4:[0,2,3,3,3,2,2,1],5:[0,3,4,3,3,2,2,1]}},
+  {id:5, name:"鍔・双鶴図", yomi:"つば・そうかくず", cat:"刀装具", sub:"鍔", r:1, fr:3,
+   s:{1:[0,0,5,3,0,0,0,0],2:[0,0,6,3,1,0,0,0],3:[0,0,7,4,1,0,0,0],4:[0,0,8,5,1,0,0,0],5:[0,0,9,6,1,0,0,0]}},
+  {id:6, name:"三所物・菊", yomi:"みところもの・きく", cat:"刀装具", sub:"三所物", r:1, fr:3,
+   s:{1:[0,1,0,0,1,1,1,1],2:[0,2,0,0,2,1,1,1],3:[0,3,0,0,3,2,2,2],4:[0,4,0,0,4,2,2,2],5:[0,5,0,0,5,3,3,3]}},
+  {id:7, name:"三所物・獅子", yomi:"みところもの・しし", cat:"刀装具", sub:"三所物", r:1, fr:3,
+   s:{1:[0,1,0,0,1,0,0,1],2:[0,2,0,0,1,0,0,2],3:[0,3,0,0,2,0,1,3],4:[0,4,0,0,2,1,2,4],5:[0,5,0,0,3,1,2,7]}},
+  {id:8, name:"小桜韋威鎧兜", yomi:"こざくらかわおどしよろいかぶと", cat:"武具", sub:"甲冑", r:3, fr:9,
+   s:{1:[0,0,10,0,6,0,0,2],2:[0,0,15,0,9,0,0,4],3:[0,1,20,0,12,0,0,5],4:[0,1,25,0,15,0,0,6],5:[0,2,30,0,18,0,0,8]}},
+  {id:9, name:"風神雷神図屏風", yomi:"ふうじんらいじんずびょうぶ", cat:"絵画", sub:"屏風", r:3, fr:9,
+   s:{1:[0,7,1,1,2,2,2,4],2:[0,12,2,2,3,3,3,5],3:[0,16,3,3,3,3,4,7],4:[0,20,3,3,4,3,5,9],5:[0,23,4,4,4,4,7,11]}},
+  {id:10, name:"唐物肩衝茶入 銘初花", yomi:"からものかたつきちゃいれ めいはつはな", cat:"茶道具", sub:"茶入", r:2, fr:6,
+   s:{1:[0,2,2,1,0,0,1,0],2:[0,5,8,2,1,1,2,1],3:[0,6,9,3,2,2,2,2],4:[0,7,10,5,2,2,3,2],5:[0,7,11,5,2,2,4,2]}},
+  {id:11, name:"木彫りの狗児", yomi:"きぼりのくじ", cat:"彫刻", sub:"木像", r:2, fr:6,
+   s:{1:[0,2,0,2,0,1,0,0],2:[0,3,0,2,0,1,0,0],3:[0,4,0,3,0,2,0,0],4:[0,7,0,5,0,4,0,0],5:[0,14,0,9,0,6,0,0]}},
+  {id:12, name:"鍔・赤銅地勝虫図", yomi:"つば・しゃくどうじかつむしず", cat:"刀装具", sub:"鍔", r:1, fr:3,
+   s:{1:[0,3,0,0,1,0,0,2],2:[0,6,0,0,3,0,0,3],3:[0,7,0,0,5,0,0,4],4:[0,8,0,0,5,0,0,5],5:[0,8,0,0,5,0,0,6]}},
+  {id:13, name:"鍔・鳳凰透図", yomi:"つば・ほうおうすかしず", cat:"刀装具", sub:"鍔", r:1, fr:3,
+   s:{1:[0,0,1,0,0,0,1,1],2:[0,0,2,0,0,0,1,2],3:[0,0,3,0,0,0,2,3],4:[0,1,4,0,1,1,2,4],5:[0,1,6,1,2,2,3,7]}}
+];
+
+var STAT_NAMES = ["生存","打撃","統率","機動","衝力","偵察","隠蔽","必殺"];
+var STAT_KEYS  = ["sur","atk","grd","kid","chg","sct","hid","crt"];
+var TIER_NAMES = {1000:"千",2000:"二千",3000:"三千",4000:"四千",5000:"五千",
+                  6000:"六千",7000:"七千",8000:"八千",9000:"九千",10000:"一萬"};
+var THEMES = [
+  {id:"ai-light",     name:"藍蔵L",   hc:"#1a1a2e", ac:"#c9a84c"},
+  {id:"ai-dark",      name:"藍蔵D",   hc:"#0d0d1a", ac:"#c9a84c"},
+  {id:"keyaki-light", name:"欅L",     hc:"#4a2e12", ac:"#c8905a"},
+  {id:"keyaki-dark",  name:"欅D",     hc:"#0f0702", ac:"#c8905a"},
+  {id:"kawara-light", name:"灰瓦L",   hc:"#363a40", ac:"#7e8fa0"},
+  {id:"kawara-dark",  name:"灰瓦D",   hc:"#0e1014", ac:"#8a9aaa"},
+  {id:"shurushi-light",name:"朱漆L",  hc:"#2a0808", ac:"#c03828"},
+  {id:"shurushi-dark", name:"朱漆D",  hc:"#0f0202", ac:"#c03828"},
+  {id:"shikkui-light", name:"白漆喰L",hc:"#ddd8c8", ac:"#7a6840"},
+  {id:"shikkui-dark",  name:"白漆喰D",hc:"#0e0c08", ac:"#a09060"}
+];
+
+// ── データ ──────────────────────────────────────────────
+var SK = 'ichinokura_ud';
+var UD = {
+  fragments: {},   // masterID -> count
+  treasures: [],   // 個体配列
+  events: [],      // 期間メモ
+  notes: [],       // 日メモ
+  settings: { theme:'ai-light', view:'grid', layout:'pc',
+    sortKey:'bookorder', sortAsc:false,
+    tosouGrade:'特上', tosouEquip:'all', tosouSort:'default', tosouAsc:false,
+    umaSort:'default', umaAsc:false
+  }
+};
+
+function load() {
+  try {
+    var d = localStorage.getItem(SK);
+    if (d) UD = Object.assign(UD, JSON.parse(d));
+  } catch(e) {}
+  loadShared();
+}
+
+function save() {
+  try { localStorage.setItem(SK, JSON.stringify(UD)); } catch(e) {}
+  saveShared();
+}
+
+function saveShared() {
+  try {
+    /* キー関数：資源帳（start/end）と一ノ倉（startDate/endDate）どちらのフィールドも吸収 */
+    var evKF = function(ev) { return (ev.name||'')+'||'+(ev.startDate||ev.start||'')+'||'+(ev.endDate||ev.end||''); };
+    var ntKF = function(n) { return (n.date||'')+'||'+(n.text||''); };
+    var evMap = {};
+    var ntMap = {};
+    UD.events.forEach(function(ev) { evMap[evKF(ev)] = ev; });
+    UD.notes.forEach(function(n) { ntMap[ntKF(n)] = n; });
+    var se = localStorage.getItem('shared_events');
+    if (se) {
+      JSON.parse(se).forEach(function(ev) {
+        var k = evKF(ev);
+        if (!evMap[k] || (ev.updatedAt && (!evMap[k].updatedAt || ev.updatedAt > evMap[k].updatedAt))) {
+          evMap[k] = ev;
+        }
+      });
+    }
+    var sn = localStorage.getItem('shared_notes');
+    if (sn) {
+      JSON.parse(sn).forEach(function(n) {
+        var k = ntKF(n);
+        if (!ntMap[k] || (n.updatedAt && (!ntMap[k].updatedAt || n.updatedAt > ntMap[k].updatedAt))) {
+          ntMap[k] = n;
+        }
+      });
+    }
+    localStorage.setItem('shared_events', JSON.stringify(Object.values(evMap)));
+    localStorage.setItem('shared_notes', JSON.stringify(Object.values(ntMap)));
+  } catch(e) {}
+}
+
+function loadShared() {
+  try {
+    var evKF = function(ev) { return (ev.name||'')+'||'+(ev.startDate||ev.start||'')+'||'+(ev.endDate||ev.end||''); };
+    var ntKF = function(n) { return (n.date||'')+'||'+(n.text||''); };
+    var evMap = {};
+    UD.events.forEach(function(ev) { evMap[evKF(ev)] = ev; });
+    var se = localStorage.getItem('shared_events');
+    if (se) {
+      JSON.parse(se).forEach(function(ev) {
+        var k = evKF(ev);
+        if (!evMap[k] || (ev.updatedAt && (!evMap[k].updatedAt || ev.updatedAt > evMap[k].updatedAt))) {
+          evMap[k] = ev;
+        }
+      });
+    }
+    UD.events = Object.values(evMap).filter(function(ev) { return !ev.deleted; });
+    // id欠落のイベントに自動採番（資源帳由来などidなしイベント対策）
+    UD.events.forEach(function(ev, i) { if (!ev.id) ev.id = 'ev_imported_' + i + '_' + Date.now(); });
+
+    var ntMap = {};
+    UD.notes.forEach(function(n) { ntMap[ntKF(n)] = n; });
+    var sn = localStorage.getItem('shared_notes');
+    if (sn) {
+      JSON.parse(sn).forEach(function(n) {
+        var k = ntKF(n);
+        if (!ntMap[k] || (n.updatedAt && (!ntMap[k].updatedAt || n.updatedAt > ntMap[k].updatedAt))) {
+          ntMap[k] = n;
+        }
+      });
+    }
+    UD.notes = Object.values(ntMap).filter(function(n) { return !n.deleted; });
+  } catch(e) {}
+}
+
+// ── ユーティリティ ───────────────────────────────────────
+var _idCnt = 0;
+function genId() {
+  return 't_' + Date.now() + '_' + (++_idCnt);
+}
+
+function getMaster(id) {
+  return MASTERS.find(function(m) { return m.id === id; });
+}
+
+function getStats(masterID, lv) {
+  var m = getMaster(masterID);
+  if (!m) return [0,0,0,0,0,0,0,0];
+  return m.s[lv] || [0,0,0,0,0,0,0,0];
+}
+
+function getTierName(aiyo) {
+  var thresholds = [10000,9000,8000,7000,6000,5000,4000,3000,2000,1000];
+  for (var i = 0; i < thresholds.length; i++) {
+    if (aiyo >= thresholds[i]) return TIER_NAMES[thresholds[i]];
+  }
+  return null;
+}
+
+function getCarvedLabel(t) {
+  var tier = getTierName(t.aiyo);
+  var m = getMaster(t.masterID);
+  if (!m) return '';
+  if (tier && t.carvedName) {
+    return m.name + '［' + t.carvedName + '］' + tier;
+  }
+  return null;
+}
+
+function getRdotClass(r) {
+  if (r === 3) return 'r3c';
+  if (r === 2) return 'r2c';
+  return 'r1c';
+}
+
+function rarityStars(r, size) {
+  var n = r || 1;
+  var stars = '';
+  for (var i = 0; i < n; i++) stars += '★';
+  var st = size ? ' style="font-size:' + size + ';"' : '';
+  return '<span class="rstar rs-' + n + '"' + st + ' title="レア' + n + '">' + stars + '</span>';
+}
+
+function fmtNum(n) {
+  return Number(n).toLocaleString('ja-JP');
+}
+
+function todayStr() {
+  var d = new Date();
+  return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+}
+
+function pad(n) { return n < 10 ? '0'+n : ''+n; }
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── レイアウト・テーマ ────────────────────────────────────
+function toggleLayout() {
+  var app = document.getElementById('app');
+  var btn = document.getElementById('layoutBtn');
+  if (app.classList.contains('mobile')) {
+    app.classList.remove('mobile');
+    btn.textContent = '📱 スマホ';
+    UD.settings.layout = 'pc';
+  } else {
+    app.classList.add('mobile');
+    btn.textContent = '💻 PC';
+    UD.settings.layout = 'mobile';
+  }
+  save();
+  // スマホ化したら断片・刀装はカード固定（PCの好みは保存したまま）
+  if (UD.settings.layout === 'mobile') {
+    setFragView('card', true);
+    setTosouView('card', true);
+  } else {
+    setFragView(UD.settings.fragView || 'table');
+    setTosouView(UD.settings.tosouView || 'table');
+  }
+  renderFragment();
+  renderTosou();
+  if (UD.settings.view !== 'list') renderGrid();
+}
+
+function isMobile() {
+  var app = document.getElementById('app');
+  return app && app.classList.contains('mobile');
+}
+
+function applyTheme(themeId) {
+  document.documentElement.setAttribute('data-theme', themeId);
+  UD.settings.theme = themeId;
+  save();
+  renderThemeGrid();
+}
+
+function renderThemeGrid() {
+  var g = document.getElementById('theme-grid');
+  if (!g) return;
+  var html = '';
+  THEMES.forEach(function(t) {
+    var sel = UD.settings.theme === t.id ? ' sel' : '';
+    html += '<div class="thopt' + sel + '" onclick="applyTheme(\'' + t.id + '\')">';
+    html += '<div class="thpv" style="background:' + t.hc + ';position:relative;overflow:hidden;">';
+    html += '<div style="position:absolute;bottom:4px;left:4px;right:4px;height:4px;border-radius:2px;background:' + t.ac + ';opacity:0.9;"></div>';
+    html += '</div>';
+    html += '<div class="thnm">' + t.name + '</div>';
+    html += '</div>';
+  });
+  g.innerHTML = html;
+}
+
+// ── タブ切り替え ────────────────────────────────────────
+function switchTab(name, el) {
+  document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('on'); });
+  document.getElementById('pane-' + name).classList.add('on');
+  document.querySelectorAll('.tab, .mtab').forEach(function(t) { t.classList.remove('on'); });
+  document.querySelectorAll('[data-tab="' + name + '"]').forEach(function(t) { t.classList.add('on'); });
+  UD.settings.lastTab = name;
+  save();
+  if (name === 'frag') renderFragment();
+  if (name === 'treasure') renderTreasure();
+  if (name === 'tosou') renderTosou();
+  if (name === 'uma') renderUma();
+  if (name === 'memo') renderMemo();
+}
+
+// ── 断片タブ ────────────────────────────────────────────
+function getFragCount(masterID) {
+  return UD.fragments[masterID] || 0;
+}
+
+function getPlanCount(masterID) {
+  var el = document.getElementById('plan-' + masterID);
+  return el ? parseInt(el.value) || 0 : 0;
+}
+
+function renderFragment() {
+  var tbody = document.getElementById('frag-tbody');
+  if (!tbody) return;
+  var html = '';
+  MASTERS.forEach(function(m) {
+    var fc = getFragCount(m.id);
+    var canMake = Math.floor(fc / m.fr);
+    html += '<tr style="cursor:pointer;" onclick="toggleFragDetail(' + m.id + ')">';
+    html += '<td class="rc"><button class="frag-toggle" id="ftg-' + m.id + '" title="ステータスを見る">▶</button></td>';
+    html += '<td><span style="margin-right:5px;">' + rarityStars(m.r) + '</span>' + esc(m.name) + '</td>';
+    html += '<td class="rc">' + m.fr + '</td>';
+    html += '<td class="rc" onclick="event.stopPropagation()"><input type="number" class="ninput" id="frag-' + m.id + '" value="' + fc + '" min="0" max="99999" onchange="updateFrag(' + m.id + ',this.value)" oninput="refreshFragRow(' + m.id + ')"></td>';
+    html += '<td class="rc" id="can-' + m.id + '">' + canBadgeHtml(canMake) + '</td>';
+    html += '<td class="rc" onclick="event.stopPropagation()"><input type="number" class="ninput" id="plan-' + m.id + '" value="0" min="0" max="99" oninput="refreshFragRow(' + m.id + ')"></td>';
+    html += '<td class="rc" id="need-' + m.id + '">' + needBadgeHtml(fc, 0, m.fr) + '</td>';
+    html += '</tr>';
+    html += '<tr class="frag-detail" id="fd-' + m.id + '"><td colspan="7"></td></tr>';
+  });
+  tbody.innerHTML = html;
+  renderFragmentCards();
+  updateFragSummary();
+}
+
+function renderFragmentCards() {
+  var box = document.getElementById('frag-cards');
+  if (!box) return;
+  var html = '';
+  MASTERS.forEach(function(m) {
+    var fc = getFragCount(m.id);
+    var canMake = Math.floor(fc / m.fr);
+    html += '<div class="fcard">' +
+      '<div class="fcard-hd" onclick="toggleFragCardDetail(' + m.id + ')">' +
+        '<button class="frag-toggle" id="cftg-' + m.id + '">▶</button>' +
+        '<span>' + rarityStars(m.r) + '</span>' +
+        '<span class="fcard-nm">' + esc(m.name) + '</span>' +
+      '</div>' +
+      '<div class="fcard-rows">' +
+        '<div class="fcard-row"><span class="fcard-lbl">必要数</span><span>1つあたり <b>' + m.fr + '</b>個</span></div>' +
+        '<div class="fcard-row"><span class="fcard-lbl">所持断片</span><input type="number" class="ninput" id="cfrag-' + m.id + '" value="' + fc + '" min="0" max="99999" onchange="updateFragCard(' + m.id + ',this.value)" oninput="refreshFragCard(' + m.id + ')"><span>個</span></div>' +
+        '<div class="fcard-row"><span class="fcard-lbl">製作可能</span><span id="ccan-' + m.id + '">' + canBadgeHtml(canMake) + '</span></div>' +
+        '<div class="fcard-row"><span class="fcard-lbl">宝物目標</span><input type="number" class="ninput" id="cplan-' + m.id + '" value="0" min="0" max="99" oninput="refreshFragCard(' + m.id + ')"><span>個 →</span><span id="cneed-' + m.id + '">' + needBadgeHtml(fc, 0, m.fr) + '</span></div>' +
+      '</div>' +
+      '<div class="fcard-detail" id="cfd-' + m.id + '"></div>' +
+    '</div>';
+  });
+  box.innerHTML = html;
+}
+
+function getCardPlanCount(masterID) {
+  var el = document.getElementById('cplan-' + masterID);
+  return el ? parseInt(el.value) || 0 : 0;
+}
+
+function refreshFragCard(masterID) {
+  var m = getMaster(masterID);
+  if (!m) return;
+  var el = document.getElementById('cfrag-' + masterID);
+  var fc = parseInt(el ? el.value : 0) || 0;
+  var plan = getCardPlanCount(masterID);
+  var canMake = Math.floor(fc / m.fr);
+  var canEl = document.getElementById('ccan-' + masterID);
+  var needEl = document.getElementById('cneed-' + masterID);
+  if (canEl) canEl.innerHTML = canBadgeHtml(canMake);
+  if (needEl) needEl.innerHTML = needBadgeHtml(fc, plan, m.fr);
+  updateFragSummary();
+}
+
+function updateFragCard(masterID, val) {
+  UD.fragments[masterID] = Math.max(0, Math.min(99999, parseInt(val) || 0));
+  save();
+  refreshFragCard(masterID);
+  // テーブル側の値も同期
+  var tEl = document.getElementById('frag-' + masterID);
+  if (tEl) tEl.value = UD.fragments[masterID];
+  refreshFragRow(masterID);
+}
+
+function toggleFragCardDetail(id) {
+  var box = document.getElementById('cfd-' + id);
+  if (!box) return;
+  var btn = document.getElementById('cftg-' + id);
+  var open = box.classList.toggle('open');
+  if (btn) btn.textContent = open ? '▼' : '▶';
+  if (open && !box.dataset.built) {
+    box.dataset.built = '1';
+    var m = MASTERS.find(function(x){ return x.id === id; });
+    if (!m) return;
+    var sn = ['生存','打撃','統率','機動','衝力','偵察','隠蔽','必殺'];
+    var html = '<table class="fstat-tbl" style="width:100%;"><thead><tr><th>Lv</th>';
+    sn.forEach(function(n){ html += '<th>'+n+'</th>'; });
+    html += '</tr></thead><tbody>';
+    for (var lv = 1; lv <= 5; lv++) {
+      var s = m.s[lv];
+      html += '<tr><td style="font-weight:500;color:var(--acTx);">Lv'+lv+'</td>';
+      s.forEach(function(v){ html += '<td>'+(v>0?'<b>'+v+'</b>':'<span style="color:var(--bd2)">0</span>')+'</td>'; });
+      html += '</tr>';
+    }
+    html += '</tbody></table>';
+    box.innerHTML = html;
+  }
+}
+
+function canBadgeHtml(n) {
+  if (n > 0) return '<span class="cbadge can">' + n + '個</span>';
+  return '<span class="cbadge zero">0個</span>';
+}
+
+function needBadgeHtml(have, plan, fr) {
+  if (plan === 0) return '<span class="cbadge zero">—</span>';
+  var need = plan * fr - have;
+  if (need <= 0) return '<span class="cbadge can">達成！</span>';
+  return '<span class="cbadge need">あと' + need + '個</span>';
+}
+
+function refreshFragRow(masterID) {
+  var m = getMaster(masterID);
+  if (!m) return;
+  var el = document.getElementById('frag-' + masterID);
+  var fc = parseInt(el ? el.value : 0) || 0;
+  var plan = getPlanCount(masterID);
+  var canMake = Math.floor(fc / m.fr);
+  var canEl = document.getElementById('can-' + masterID);
+  var needEl = document.getElementById('need-' + masterID);
+  if (canEl) canEl.innerHTML = canBadgeHtml(canMake);
+  if (needEl) needEl.innerHTML = needBadgeHtml(fc, plan, m.fr);
+  updateFragSummary();
+}
+
+function updateFrag(masterID, val) {
+  UD.fragments[masterID] = Math.max(0, Math.min(99999, parseInt(val) || 0));
+  save();
+  refreshFragRow(masterID);
+  // カード側も同期
+  var cEl = document.getElementById('cfrag-' + masterID);
+  if (cEl) cEl.value = UD.fragments[masterID];
+  refreshFragCard(masterID);
+}
+
+var _fragView = 'table';
+function setFragView(v, noSave) {
+  _fragView = v;
+  if (!noSave) { UD.settings.fragView = v; save(); }
+  var pane = document.getElementById('pane-frag');
+  pane.classList.toggle('fv-card', v === 'card');
+  pane.classList.toggle('fv-table', v === 'table');
+  document.getElementById('fv-table').classList.toggle('on', v === 'table');
+  document.getElementById('fv-card').classList.toggle('on', v === 'card');
+}
+
+function updateFragSummary() {
+  var total = 0;
+  var totalCan = 0;
+  MASTERS.forEach(function(m) {
+    var fc = getFragCount(m.id);
+    total += fc;
+    totalCan += Math.floor(fc / m.fr);
+  });
+  var sm = document.getElementById('frag-summary');
+  if (sm) {
+    sm.innerHTML = '<div class="smcard"><b>' + total + '</b>断片 合計</div>' +
+      '<div class="smcard"><b>' + totalCan + '</b>製作可能数</div>' +
+      '<div class="smcard"><b>' + MASTERS.length + '</b>宝物の種類</div>';
+  }
+}
+
+// ── 宝物を作る ──────────────────────────────────────────
+function openMakeTreasure() {
+  var sel = document.getElementById('make-master');
+  if (sel && sel.options.length <= 1) {
+    MASTERS.forEach(function(m) {
+      var opt = document.createElement('option');
+      opt.value = m.id;
+      opt.textContent = m.name + '（断片' + m.fr + '個）';
+      sel.appendChild(opt);
+    });
+  }
+  updateMakeCalc();
+  openOv('ov-make');
+}
+
+function updateMakeCalc() {
+  var mid = parseInt(document.getElementById('make-master').value);
+  var cnt = parseInt(document.getElementById('make-count').value) || 1;
+  var box = document.getElementById('make-calc');
+  if (!mid || !box) return;
+  var m = getMaster(mid);
+  if (!m) return;
+  var need = m.fr * cnt;
+  var have = getFragCount(mid);
+  var after = have - need;
+  var ok = after >= 0;
+  var col = ok ? '#2d6a40' : '#8b5e1a';
+  box.innerHTML = '<span style="color:' + col + ';">' +
+    '必要断片数：' + need + '個<br>' +
+    '現在の所持：' + have + '個<br>' +
+    (ok ? '作成後：' + after + '個残り ✓' : '不足：' + Math.abs(after) + '個足りません') +
+    '</span>';
+}
+
+function confirmMake() {
+  var mid = parseInt(document.getElementById('make-master').value);
+  var cnt = parseInt(document.getElementById('make-count').value) || 1;
+  var lv  = parseInt(document.getElementById('make-lv').value) || 1;
+  if (!mid) { alert('宝物の種類を選んでください'); return; }
+  var m = getMaster(mid);
+  if (!m) return;
+  var need = m.fr * cnt;
+  var have = getFragCount(mid);
+  if (have < need) { alert('断片が' + (need - have) + '個不足しています'); return; }
+  UD.fragments[mid] = have - need;
+  for (var i = 0; i < cnt; i++) {
+    UD.treasures.push({
+      id: genId(), masterID: mid, level: lv, aiyo: 0, carvedName: '', memo: '',
+      createdAt: todayStr(), sortOrder: UD.treasures.length
+    });
+  }
+  save();
+  closeOv('ov-make');
+  renderFragment();
+  renderTreasure();
+  renderTreasureSummary();
+  alert(m.name + 'を' + cnt + '個作成しました！');
+}
+
+// ── 宝物帳 ───────────────────────────────────────────────
+var _catFilter = 'all';
+var _sortAsc = false;
+var _currentSortKey = 'bookorder';
+
+function setSortBtn(key, el) {
+  if (_currentSortKey === key) {
+    _sortAsc = !_sortAsc;
+  } else {
+    _currentSortKey = key;
+    _sortAsc = false;
+    if (key === 'custom') normalizeCustomSort();
+  }
+  UD.settings.sortKey = _currentSortKey;
+  UD.settings.sortAsc = _sortAsc;
+  save();
+  document.querySelectorAll('.stag').forEach(function(t) { t.classList.remove('on'); });
+  if (el) el.classList.add('on');
+  var dbtn = document.getElementById('dirbtn');
+  if (dbtn) dbtn.textContent = _sortAsc ? '▲ 昇順' : '▼ 降順';
+  renderTreasure();
+}
+
+function setCat(cat, el) {
+  _catFilter = cat;
+  document.querySelectorAll('.ftag').forEach(function(t) { t.classList.remove('on'); });
+  if (el) el.classList.add('on');
+  renderTreasure();
+}
+
+function toggleDir() {
+  _sortAsc = !_sortAsc;
+  UD.settings.sortAsc = _sortAsc;
+  save();
+  document.getElementById('dirbtn').textContent = _sortAsc ? '▲ 昇順' : '▼ 降順';
+  renderTreasure();
+}
+
+function setView(v) {
+  UD.settings.view = v;
+  save();
+  document.getElementById('vb-grid').classList.toggle('on', v === 'grid');
+  document.getElementById('vb-list').classList.toggle('on', v === 'list');
+  document.getElementById('treasure-grid').style.display = v === 'grid' ? 'grid' : 'none';
+  document.getElementById('treasure-list').style.display = v === 'list' ? '' : 'none';
+  if (v === 'list') renderList();
+  else renderGrid();
+}
+
+function getSortVal(t, key) {
+  var m = getMaster(t.masterID);
+  if (!key || key === 'bookorder') return m ? m.id : 99;
+  if (key === 'rarity') return m ? m.r : 0;
+  if (key === 'lv') return t.level || 1;
+  if (key === 'aiyo') return t.aiyo || 0;
+  if (key === 'custom') return t.sortOrder || 0;
+  var sidx = STAT_KEYS.indexOf(key);
+  if (sidx >= 0) {
+    var s = getStats(t.masterID, t.level || 1);
+    return s[sidx] || 0;
+  }
+  return 0;
+}
+
+function getFilteredSorted() {
+  var arr = UD.treasures.filter(function(t) {
+    if (_catFilter === 'all') return true;
+    var m = getMaster(t.masterID);
+    return m && m.cat === _catFilter;
+  });
+  arr.sort(function(a, b) {
+    var va = getSortVal(a, _currentSortKey);
+    var vb = getSortVal(b, _currentSortKey);
+    var d = (va > vb ? 1 : va < vb ? -1 : 0);
+    return _sortAsc ? d : -d;
+  });
+  return arr;
+}
+
+function renderTreasure() {
+  renderTreasureSummary();
+  if (UD.settings.view === 'list') {
+    document.getElementById('treasure-grid').style.display = 'none';
+    document.getElementById('treasure-list').style.display = '';
+    renderList();
+  } else {
+    document.getElementById('treasure-grid').style.display = 'grid';
+    document.getElementById('treasure-list').style.display = 'none';
+    renderGrid();
+  }
+  document.getElementById('vb-grid').classList.toggle('on', UD.settings.view === 'grid');
+  document.getElementById('vb-list').classList.toggle('on', UD.settings.view === 'list');
+}
+
+function renderTreasureSummary() {
+  var sm = document.getElementById('treasure-summary');
+  if (!sm) return;
+  var total = UD.treasures.length;
+  var carved = UD.treasures.filter(function(t) { return getTierName(t.aiyo) && t.carvedName; }).length;
+  var lv5 = UD.treasures.filter(function(t) { return t.level >= 5; }).length;
+  sm.innerHTML = '<div class="smcard"><b>' + total + '</b>所持個体</div>' +
+    '<div class="smcard"><b>' + carved + '</b>名前刻印済み</div>' +
+    '<div class="smcard"><b>' + lv5 + '</b>Lv 5</div>' +
+    '<div class="smcard"><b>' + (80 - total) + '</b>残り枠</div>';
+}
+
+function renderGrid() {
+  var arr = getFilteredSorted();
+  var g = document.getElementById('treasure-grid');
+  if (!g) return;
+  g.classList.toggle('expanded', _gridExpand);
+  if (arr.length === 0) {
+    g.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--tx3);font-size:13px;">宝物がまだありません。「個体を追加」または「断片管理」から作れます。</div>';
+    return;
+  }
+  var html = '';
+  arr.forEach(function(t) {
+    html += makeGridCard(t);
+  });
+  g.innerHTML = html;
+  equalizeCardHeights();
+}
+
+var _gridExpand = false;
+
+function toggleNameFull(el) {
+  el.classList.toggle('nm-full');
+}
+
+function toggleGridExpand() {
+  _gridExpand = !_gridExpand;
+  UD.settings.gridExpand = _gridExpand;
+  save();
+  var btn = document.getElementById('expand-btn');
+  if (btn) btn.classList.toggle('on', _gridExpand);
+  renderGrid();
+}
+
+function equalizeCardHeights() {
+  var g = document.getElementById('treasure-grid');
+  if (!g) return;
+  var cards = g.querySelectorAll('.gcard');
+  cards.forEach(function(c){ c.style.height = ''; });
+  if (!_gridExpand) return;
+  // 描画後に最大高さを測って揃える
+  requestAnimationFrame(function(){
+    var max = 0;
+    cards.forEach(function(c){ if (c.offsetHeight > max) max = c.offsetHeight; });
+    cards.forEach(function(c){ c.style.height = max + 'px'; });
+  });
+}
+
+function makeGridCard(t) {
+  var m = getMaster(t.masterID);
+  if (!m) return '';
+  var carved = getTierName(t.aiyo) && t.carvedName;
+  var cardCls = carved ? 'gcard cv' : 'gcard ucv';
+  // 刻印名・愛用度表示
+  var carvedFull, carvedCls;
+  if (carved) {
+    carvedFull = m.name + '［' + t.carvedName + '］' + getTierName(t.aiyo);
+    carvedCls = 'gcv cvy';
+  } else if (t.carvedName && t.aiyo > 0) {
+    carvedFull = '名前未刻（' + t.carvedName + '・' + t.aiyo + '）';
+    carvedCls = 'gcv cvn';
+  } else {
+    carvedFull = '名前未刻（愛用度 0）';
+    carvedCls = 'gcv cvn';
+  }
+  var aiyoMax = carved ? 10000 : 1000;
+  var aiyoPct = Math.min(100, Math.round(t.aiyo / aiyoMax * 100));
+  var fillColor = carved ? 'var(--r3)' : '#b0b0b0';
+  var memoHtml = t.memo ? '<div class="gmo">' + esc(t.memo) + '</div>' : '';
+  var menuId = 'dd-' + t.id;
+  var isCustom = _currentSortKey === 'custom';
+  var arr = isCustom ? getFilteredSorted() : [];
+  var tIdx = isCustom ? arr.findIndex(function(x){ return x.id === t.id; }) : -1;
+  var mvHtml = '';
+  if (isCustom) {
+    var disUp = tIdx <= 0 ? ' disabled' : '';
+    var disDown = tIdx >= arr.length-1 ? ' disabled' : '';
+    mvHtml = '<div class="mv-btns">' +
+      '<button class="mvbtn"'+disUp+' onclick="moveTreasure(\''+t.id+'\',-1)" title="上へ">▲</button>' +
+      '<button class="mvbtn"'+disDown+' onclick="moveTreasure(\''+t.id+'\',1)" title="下へ">▼</button>' +
+      '</div>';
+  }
+  return '<div class="' + cardCls + '" id="gc-' + t.id + '">' +
+    '<div class="gh">' +
+      '<div class="gtop">' +
+        '<div class="gnm" title="' + esc(m.name) + '" onclick="toggleNameFull(this)">' + esc(m.name) + '</div>' +
+        '<div style="display:flex;align-items:flex-start;gap:3px;flex-shrink:0;">' + mvHtml +
+          '<div class="mw">' +
+            '<div class="mb" onclick="toggleDD(\'' + menuId + '\')" id="mb-' + t.id + '">⋯</div>' +
+            '<div class="dd" id="' + menuId + '">' +
+              '<div class="di" onclick="closeDD(\'' + menuId + '\');openEditTreasure(\'' + t.id + '\')">✏ 編集</div>' +
+              '<div class="di" onclick="closeDD(\'' + menuId + '\');openShugou(\'' + t.id + '\')">⚔ 習合</div>' +
+              '<div class="dsep"></div>' +
+              '<div class="di dide" onclick="closeDD(\'' + menuId + '\');openDelete(\'' + t.id + '\')">🗑 削除</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="grl">' + rarityStars(m.r) +
+        '<span class="grl-r">レア' + m.r + '</span>' +
+        '<span class="glv">Lv ' + t.level + '</span>' +
+      '</div>' +
+      '<div class="' + carvedCls + '" title="' + esc(carvedFull) + '" onclick="toggleNameFull(this)">' + esc(carvedFull) + '</div>' +
+    '</div>' +
+    '<div class="gft">' +
+      '<div class="gaib"><div class="gaif" style="background:' + fillColor + ';width:' + aiyoPct + '%;"></div></div>' +
+      '<div class="gait">愛用度 ' + fmtNum(t.aiyo) + (carved ? ' / 10,000' : ' / 1,000') + '</div>' +
+      '<div class="gcat">' + esc(m.cat) + '（' + esc(m.sub) + '）</div>' +
+      memoHtml +
+    '</div>' +
+  '</div>';
+}
+
+var _lColKey = 'atk';
+
+var _lKeyToSort = {
+  nm:'bookorder', lv:'lv', bk:'bookorder', r:'rarity',
+  atk:'atk', grd:'grd', kid:'kid', chg:'chg',
+  sct:'sct', hid:'hid', crt:'crt', sur:'bookorder', ai:'aiyo'
+};
+
+function lsort(key) {
+  var sortKey = _lKeyToSort[key] || 'bookorder';
+  if (_currentSortKey === sortKey && _lColKey === key) {
+    _sortAsc = !_sortAsc;
+  } else {
+    _sortAsc = false;
+    _currentSortKey = sortKey;
+    // 整列ボタンの見た目も同期
+    document.querySelectorAll('.stag').forEach(function(t) {
+      t.classList.toggle('on', t.getAttribute('data-sort') === sortKey);
+    });
+  }
+  _lColKey = key;
+  var dbtn = document.getElementById('dirbtn');
+  if (dbtn) dbtn.textContent = _sortAsc ? '▲ 昇順' : '▼ 降順';
+  var keys = ['nm','lv','bk','r','atk','grd','kid','chg','sct','hid','crt','sur','ai'];
+  keys.forEach(function(k) {
+    var a = document.getElementById('la-' + k);
+    if (a) a.textContent = '↕';
+    var th = document.getElementById('lth-' + k);
+    if (th) th.classList.remove('srt');
+  });
+  var ae = document.getElementById('la-' + key);
+  if (ae) ae.textContent = _sortAsc ? '↑' : '↓';
+  var the = document.getElementById('lth-' + key);
+  if (the) the.classList.add('srt');
+  renderList();
+}
+
+function renderList() {
+  // getFilteredSorted() がドロップダウン＋_sortAsc で並び替え済み
+  var arr = getFilteredSorted();
+  var tbody = document.getElementById('list-tbody');
+  if (!tbody) return;
+  if (arr.length === 0) { tbody.innerHTML = '<tr><td colspan="15" style="text-align:center;padding:16px;color:var(--tx3);">宝物がありません</td></tr>'; return; }
+  var html = '';
+  arr.forEach(function(t) {
+    html += makeListRow(t);
+
+  });
+  tbody.innerHTML = html;
+}
+
+function makeListRow(t) {
+  var m = getMaster(t.masterID);
+  if (!m) return '';
+  var rdCls = getRdotClass(m.r);
+  var s = getStats(t.masterID, t.level || 1);
+  var carved = getTierName(t.aiyo) && t.carvedName;
+  var carvedTxt = carved ? '［' + t.carvedName + '］' + getTierName(t.aiyo) : (t.carvedName ? '未刻（' + t.carvedName + '・' + t.aiyo + '）' : '名前未刻');
+  var carvedColor = carved ? 'var(--cv)' : 'var(--tx3)';
+  var aiyoMax = carved ? 10000 : 1000;
+  var aiyoPct = Math.min(100, Math.round(t.aiyo / aiyoMax * 100));
+  var fillColor = carved ? 'var(--r3)' : '#b0b0b0';
+  var menuId = 'ldd-' + t.id;
+  var sv = function(v) { return v > 0 ? '<span class="sv">' + v + '</span>' : '<span class="s0">0</span>'; };
+  return '<tr>' +
+    '<td style="font-size:10px;color:var(--tx3);text-align:center;">' + m.id + '</td>' +
+    '<td class="nl"><div class="lnm">' + esc(m.name) + '</div><div class="lid">#' + t.id.slice(-6) + '</div></td>' +
+    '<td><span style="font-size:10px;padding:1px 5px;border-radius:6px;background:var(--acBg);color:var(--acTx);">Lv ' + t.level + '</span></td>' +
+    '<td>' + rarityStars(m.r, '9px') + '</td>' +
+    '<td class="nl"><div style="font-size:10px;color:' + carvedColor + ';font-weight:' + (carved?'500':'400') + ';">' + esc(carvedTxt) + '</div></td>' +
+    '<td>' + sv(s[1]) + '</td>' +
+    '<td>' + sv(s[2]) + '</td>' +
+    '<td>' + sv(s[3]) + '</td>' +
+    '<td>' + sv(s[4]) + '</td>' +
+    '<td>' + sv(s[5]) + '</td>' +
+    '<td>' + sv(s[6]) + '</td>' +
+    '<td>' + sv(s[7]) + '</td>' +
+    '<td>' + sv(s[0]) + '</td>' +
+    '<td><div style="font-size:10px;color:var(--tx3);">' + fmtNum(t.aiyo) + '</div><div class="aibg"><div class="aifl" style="background:' + fillColor + ';width:' + aiyoPct + '%;"></div></div></td>' +
+    '<td><div class="mw"><div class="mb" onclick="toggleDD(\'' + menuId + '\')">⋯</div><div class="dd" id="' + menuId + '">' +
+    '<div class="di" onclick="closeDD(\'' + menuId + '\');openEditTreasure(\'' + t.id + '\')">✏ 編集</div>' +
+    '<div class="di" onclick="closeDD(\'' + menuId + '\');openShugou(\'' + t.id + '\')">⚔ 習合</div>' +
+    '<div class="dsep"></div>' +
+    '<div class="di dide" onclick="closeDD(\'' + menuId + '\');openDelete(\'' + t.id + '\')">🗑 削除</div>' +
+    '</div></div></td>' +
+    '</tr>';
+}
+
+// ── CRUD ────────────────────────────────────────────────
+function openAddTreasure() {
+  document.getElementById('edit-title').textContent = '個体を追加';
+  document.getElementById('edit-id').value = '';
+  var sel = document.getElementById('edit-master');
+  sel.innerHTML = '';
+  MASTERS.forEach(function(m) {
+    var opt = document.createElement('option');
+    opt.value = m.id;
+    opt.textContent = m.name;
+    sel.appendChild(opt);
+  });
+  document.getElementById('edit-lv').value = '1';
+  document.getElementById('edit-name').value = '';
+  document.getElementById('edit-aiyo').value = '0';
+  document.getElementById('edit-memo').value = '';
+  openOv('ov-edit');
+}
+
+function openEditTreasure(id) {
+  var t = UD.treasures.find(function(x) { return x.id === id; });
+  if (!t) return;
+  document.getElementById('edit-title').textContent = '編集';
+  document.getElementById('edit-id').value = t.id;
+  var sel = document.getElementById('edit-master');
+  sel.innerHTML = '';
+  MASTERS.forEach(function(m) {
+    var opt = document.createElement('option');
+    opt.value = m.id;
+    opt.textContent = m.name;
+    sel.appendChild(opt);
+  });
+  sel.value = t.masterID;
+  document.getElementById('edit-lv').value = t.level || 1;
+  document.getElementById('edit-name').value = t.carvedName || '';
+  document.getElementById('edit-aiyo').value = t.aiyo || 0;
+  document.getElementById('edit-memo').value = t.memo || '';
+  openOv('ov-edit');
+}
+
+function saveTreasure() {
+  var id = document.getElementById('edit-id').value;
+  var mid = parseInt(document.getElementById('edit-master').value);
+  var lv = parseInt(document.getElementById('edit-lv').value) || 1;
+  var name = document.getElementById('edit-name').value.trim();
+  var aiyo = Math.min(10000, Math.max(0, parseInt(document.getElementById('edit-aiyo').value) || 0));
+  var memo = document.getElementById('edit-memo').value.trim();
+  if (!mid) { alert('宝物の種類を選んでください'); return; }
+  if (id) {
+    // 編集
+    var t = UD.treasures.find(function(x) { return x.id === id; });
+    if (t) { t.masterID = mid; t.level = lv; t.carvedName = name; t.aiyo = aiyo; t.memo = memo; }
+  } else {
+    // 新規追加
+    UD.treasures.push({ id:genId(), masterID:mid, level:lv, aiyo:aiyo, carvedName:name, memo:memo, createdAt:todayStr(), sortOrder:UD.treasures.length });
+  }
+  save();
+  closeOv('ov-edit');
+  renderTreasure();
+}
+
+var _deleteId = null;
+function openDelete(id) {
+  _deleteId = id;
+  var t = UD.treasures.find(function(x) { return x.id === id; });
+  var m = t ? getMaster(t.masterID) : null;
+  var msg = m ? '「' + m.name + ' #' + id.slice(-6) + '」を削除しますか？' : 'この宝物を削除しますか？';
+  document.getElementById('del-msg').textContent = msg;
+  openOv('ov-delete');
+}
+
+function confirmDelete() {
+  if (_deleteEvId) {
+    var ev = UD.events.find(function(e){ return e.id === _deleteEvId; });
+    if (ev) {
+      ev.deleted = true;
+      ev.updatedAt = new Date().toISOString();
+      saveShared(); /* deletedフラグをsharedに書き込んでから除去 */
+      UD.events = UD.events.filter(function(e){ return !e.deleted; });
+    }
+    _deleteEvId = null;
+    save(); closeOv('ov-delete'); renderMemo();
+  } else if (_deleteNoteDate) {
+    var n = UD.notes.find(function(n){ return n.date === _deleteNoteDate; });
+    if (n) {
+      n.deleted = true;
+      n.updatedAt = new Date().toISOString();
+      saveShared(); /* deletedフラグをsharedに書き込んでから除去 */
+      UD.notes = UD.notes.filter(function(n){ return !n.deleted; });
+    }
+    _deleteNoteDate = null;
+    save(); closeOv('ov-delete'); renderMemo();
+  } else if (_deleteId) {
+    UD.treasures = UD.treasures.filter(function(t) { return t.id !== _deleteId; });
+    _deleteId = null;
+    save(); closeOv('ov-delete'); renderTreasure(); renderTreasureSummary();
+  }
+}
+
+// ── 習合 ────────────────────────────────────────────────
+var _shugouTargetId = null;
+function openShugou(id) {
+  var target = UD.treasures.find(function(t) { return t.id === id; });
+  if (!target) return;
+  _shugouTargetId = id;
+  var m = getMaster(target.masterID);
+  document.getElementById('shugou-title').textContent = '習合 — ' + (m ? m.name : '') + ' Lv' + target.level;
+  document.getElementById('shugou-desc').textContent = 'この宝物（Lv' + target.level + '）に習合させてレベルを上げます。素材にした個体は消えます。';
+  var candidates = UD.treasures.filter(function(t) { return t.id !== id && t.masterID === target.masterID; });
+  var html = '';
+  if (candidates.length === 0) {
+    html = '<div style="font-size:12px;color:var(--tx3);padding:8px;">同じ種類の宝物が他にありません。</div>';
+  } else {
+    candidates.forEach(function(t) {
+      var carved = getTierName(t.aiyo) && t.carvedName;
+      var info = carved ? '［' + t.carvedName + '］' + getTierName(t.aiyo) : ('Lv' + t.level + ' / 愛用度' + t.aiyo);
+      html += '<label class="shitem"><input type="checkbox" value="' + t.id + '">' +
+        '<span style="font-size:12px;">' + esc(info) + '</span>' +
+        '<span style="font-size:10px;color:var(--tx3);margin-left:auto;">#' + t.id.slice(-6) + '</span>' +
+        '</label>';
+    });
+  }
+  document.getElementById('shugou-list').innerHTML = html;
+  document.getElementById('shugou-calc').textContent = '素材を選ぶと習合後のレベルが表示されます';
+  openOv('ov-shugou');
+}
+
+function confirmShugou() {
+  var target = UD.treasures.find(function(t) { return t.id === _shugouTargetId; });
+  if (!target) return;
+  var checked = Array.from(document.querySelectorAll('#shugou-list input[type=checkbox]:checked')).map(function(c) { return c.value; });
+  if (checked.length === 0) { alert('素材を選んでください'); return; }
+  var newLv = Math.min(5, target.level + checked.length);
+  target.level = newLv;
+  UD.treasures = UD.treasures.filter(function(t) { return !checked.includes(t.id); });
+  _shugouTargetId = null;
+  save();
+  closeOv('ov-shugou');
+  renderTreasure();
+  alert('習合完了！ Lv' + newLv + 'になりました。');
+}
+
+// ── メモタブ ────────────────────────────────────────────
+var _calYear, _calMonth;
+function renderMemo() {
+  var now = new Date();
+  if (!_calYear) _calYear = now.getFullYear();
+  if (!_calMonth) _calMonth = now.getMonth() + 1;
+  renderCalendar();
+  renderMemoList();
+}
+
+function calNav(d) {
+  _calMonth += d;
+  if (_calMonth > 12) { _calMonth = 1; _calYear++; }
+  if (_calMonth < 1)  { _calMonth = 12; _calYear--; }
+  renderCalendar();
+}
+
+// イベントの日付フィールドを正規化（稽古録はstart/end、一ノ倉はstartDate/endDate）
+function evStart(ev) { return ev.startDate || ev.start || ''; }
+function evEnd(ev)   { return ev.endDate   || ev.end   || ''; }
+
+function renderCalendar() {
+  var mo = document.getElementById('cal-month');
+  var gr = document.getElementById('cal-grid');
+  if (!mo || !gr) return;
+  mo.textContent = _calYear + '年 ' + _calMonth + '月';
+  var today = todayStr();
+  var firstDay = new Date(_calYear, _calMonth - 1, 1).getDay();
+  var daysInMonth = new Date(_calYear, _calMonth, 0).getDate();
+  var noteMap = {};
+  UD.notes.forEach(function(n) { if (n.date) noteMap[n.date] = n; });
+  var html = '';
+  var days = ['日','月','火','水','木','金','土'];
+  days.forEach(function(d) { html += '<div class="cdh">' + d + '</div>'; });
+  for (var i = 0; i < firstDay; i++) { html += '<div class="cd emp"></div>'; }
+  for (var day = 1; day <= daysInMonth; day++) {
+    var ds = _calYear + '-' + pad(_calMonth) + '-' + pad(day);
+    var cls = 'cd';
+    if (ds === today) cls += ' today';
+    var evBars = '';
+    UD.events.forEach(function(ev) {
+      if (ds >= evStart(ev) && ds <= evEnd(ev)) {
+        var isFirst = ds === evStart(ev);
+        evBars += '<div class="evbar" style="background:' + ev.color + ';opacity:0.85;" title="' + esc(ev.name) + '">' + (isFirst ? esc(ev.name.substring(0,8)) : '') + '</div>';
+      }
+    });
+    var noteMark = '';
+    var n = noteMap[ds];
+    if (n) {
+      if (n.emoji) {
+        noteMark = '<div class="cnote-emoji" title="' + esc(n.text||'') + '">' + n.emoji + '</div>';
+      } else {
+        var col = n.color || 'var(--ac)';
+        noteMark = '<div class="cnote-dot" style="background:' + col + ';" title="' + esc(n.text||'') + '"></div>';
+      }
+    }
+    html += '<div class="' + cls + '" onclick="clickDay(\'' + ds + '\')">' + day + noteMark + evBars + '</div>';
+  }
+  gr.innerHTML = html;
+}
+
+function clickDay(ds) {
+  var existing = UD.notes.find(function(n) { return n.date === ds; });
+  _editNoteDate = existing ? ds : null;
+  document.getElementById('note-modal-title').textContent = existing ? '日メモを編集' : '日メモを追加';
+  document.getElementById('note-date').value = ds;
+  document.getElementById('note-date-text').textContent = ds;
+  document.getElementById('note-text').value = existing ? existing.text : '';
+  if (existing && existing.color) {
+    _noteEmoji = '📝';
+    document.getElementById('note-color').value = existing.color;
+    setNoteMarkType('color');
+  } else {
+    _noteEmoji = (existing && existing.emoji) ? existing.emoji : '📝';
+    document.getElementById('note-color').value = '#c9a84c';
+    setNoteMarkType('emoji');
+  }
+  renderNoteEmojiRow();
+  openOv('ov-note');
+}
+
+function makeEventItemHtml(ev) {
+  var evColor = ev.color || 'var(--ac)';
+  var mid = 'mev-' + ev.id;
+  return '<div class="moitem" style="border-left-color:' + evColor + ';padding-right:36px;">' +
+    '<div class="modate">' + esc(evStart(ev) || '') + ' 〜 ' + esc(evEnd(ev) || '') + '　期間メモ</div>' +
+    '<div>' + esc(ev.name || '') + '</div>' +
+    (ev.memo ? '<div style="font-size:11px;color:var(--tx3);margin-top:3px;">' + esc(ev.memo) + '</div>' : '') +
+    '<div class="moitem-menu"><div class="mw">' +
+    '<div class="mb" onclick="toggleDD(\''+mid+'\')">⋯</div>' +
+    '<div class="dd" id="'+mid+'">' +
+    '<div class="di" onclick="closeDD(\''+mid+'\');openEditEvent(\''+ev.id+'\')">✏ 編集</div>' +
+    '<div class="dsep"></div>' +
+    '<div class="di dide" onclick="closeDD(\''+mid+'\');openDeleteEvent(\''+ev.id+'\')">🗑 削除</div>' +
+    '</div></div></div>' +
+    '</div>';
+}
+
+function makeNoteItemHtml(n) {
+  var mid2 = 'mno-' + (n.date||'').replace(/-/g,'');
+  var mark = '';
+  var nBorder = 'var(--bd)';
+  if (n.emoji) {
+    mark = '<span style="margin-right:5px;">' + n.emoji + '</span>';
+  } else if (n.color) {
+    mark = '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:' + n.color + ';margin-right:6px;vertical-align:middle;"></span>';
+    nBorder = n.color;
+  }
+  return '<div class="moitem" style="padding-right:36px;border-left-color:' + nBorder + ';">' +
+    '<div class="modate">' + esc(n.date || '') + '　日メモ</div>' +
+    '<div>' + mark + esc(n.text || '') + '</div>' +
+    '<div class="moitem-menu"><div class="mw">' +
+    '<div class="mb" onclick="toggleDD(\''+mid2+'\')">⋯</div>' +
+    '<div class="dd" id="'+mid2+'">' +
+    '<div class="di" onclick="closeDD(\''+mid2+'\');openEditNote(\''+n.date+'\')">✏ 編集</div>' +
+    '<div class="dsep"></div>' +
+    '<div class="di dide" onclick="closeDD(\''+mid2+'\');openDeleteNote(\''+n.date+'\')">🗑 削除</div>' +
+    '</div></div></div>' +
+    '</div>';
+}
+
+var _memoOpenGroups = {};
+function toggleMemoGroup(key) {
+  _memoOpenGroups[key] = !_memoOpenGroups[key];
+  var body = document.getElementById('mg-body-' + key);
+  var arr = document.getElementById('mg-arr-' + key);
+  if (body) body.style.display = _memoOpenGroups[key] ? 'block' : 'none';
+  if (arr) arr.textContent = _memoOpenGroups[key] ? '▼' : '▶';
+}
+
+function renderMemoList() {
+  var list = document.getElementById('memo-list');
+  if (!list) return;
+  var today = todayStr();
+
+  // 期間メモを進行中・予定 / 終了 に分類
+  var ongoing = [], ended = [];
+  UD.events.forEach(function(ev) {
+    if (evEnd(ev) >= today) ongoing.push(ev); else ended.push(ev);
+  });
+  ongoing.sort(function(a,b){ return evStart(a).localeCompare(evStart(b)); });
+  ended.sort(function(a,b){ return evEnd(b).localeCompare(evEnd(a)); });
+
+  // 日メモを月ごとにグループ化
+  var noteGroups = {};
+  UD.notes.forEach(function(n) {
+    if (!n.date) return;
+    var ym = n.date.slice(0, 7);
+    if (!noteGroups[ym]) noteGroups[ym] = [];
+    noteGroups[ym].push(n);
+  });
+  var months = Object.keys(noteGroups).sort().reverse();
+  // 最新月はデフォルトで開く
+  if (months.length && _memoOpenGroups['note-' + months[0]] === undefined) {
+    _memoOpenGroups['note-' + months[0]] = true;
+  }
+
+  if (UD.events.length === 0 && UD.notes.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:16px;color:var(--tx3);font-size:13px;">メモがまだありません</div>';
+    return;
+  }
+
+  var html = '';
+
+  // ① 進行中・予定の期間メモ
+  html += '<div class="memo-sec-ttl">進行中・予定の期間メモ</div>';
+  if (ongoing.length) {
+    ongoing.forEach(function(ev){ html += makeEventItemHtml(ev); });
+  } else {
+    html += '<div style="font-size:11px;color:var(--tx3);padding:4px 2px 8px;">進行中・予定の期間メモはありません</div>';
+  }
+
+  // ② 終了した期間メモ（アコーディオン）
+  if (ended.length) {
+    var ek = 'ended';
+    var eopen = _memoOpenGroups['ev-' + ek];
+    html += '<div class="memo-grp">' +
+      '<div class="memo-grp-hd" onclick="toggleMemoGroup(\'ev-' + ek + '\')">' +
+        '<span class="mg-arr" id="mg-arr-ev-' + ek + '">' + (eopen ? '▼' : '▶') + '</span>' +
+        '終了した期間メモ（' + ended.length + '）' +
+      '</div>' +
+      '<div class="memo-grp-body" id="mg-body-ev-' + ek + '" style="display:' + (eopen ? 'block' : 'none') + ';">';
+    ended.forEach(function(ev){ html += makeEventItemHtml(ev); });
+    html += '</div></div>';
+  }
+
+  // ③ 日メモ（月ごとアコーディオン）
+  if (months.length) {
+    html += '<div class="memo-sec-ttl" style="margin-top:14px;">日メモ</div>';
+    months.forEach(function(ym) {
+      var key = 'note-' + ym;
+      var open = _memoOpenGroups[key];
+      var label = ym.slice(0,4) + '年' + parseInt(ym.slice(5,7),10) + '月';
+      var notes = noteGroups[ym].slice().sort(function(a,b){ return b.date.localeCompare(a.date); });
+      html += '<div class="memo-grp">' +
+        '<div class="memo-grp-hd" onclick="toggleMemoGroup(\'' + key + '\')">' +
+          '<span class="mg-arr" id="mg-arr-' + key + '">' + (open ? '▼' : '▶') + '</span>' +
+          label + '（' + notes.length + '）' +
+        '</div>' +
+        '<div class="memo-grp-body" id="mg-body-' + key + '" style="display:' + (open ? 'block' : 'none') + ';">';
+      notes.forEach(function(n){ html += makeNoteItemHtml(n); });
+      html += '</div></div>';
+    });
+  }
+
+  list.innerHTML = html;
+}
+
+// ── 汎用カレンダーピッカー ───────────────────────────────
+var genCalTarget = null, genCalDate = new Date();
+function openCalPicker(targetId, anchorEl) {
+  document.removeEventListener('click', closeGenCalOut);
+  var picker = document.getElementById('gen-cal-picker');
+  if (picker.style.display === 'block' && genCalTarget === targetId) { closeGenCal(); return; }
+  genCalTarget = targetId;
+  var el = document.getElementById(targetId);
+  if (el && el.value) { var p = el.value.split('-'); genCalDate = new Date(+p[0], +p[1]-1, +p[2]); }
+  else { genCalDate = new Date(); }
+  renderGenCal();
+  picker.style.display = 'block';
+  var rect = anchorEl.getBoundingClientRect();
+  var pw = 280;
+  var left = Math.min(rect.left, window.innerWidth - pw - 8);
+  picker.style.left = Math.max(4, left) + 'px';
+  picker.style.top = (rect.bottom + 4) + 'px';
+  setTimeout(function(){ document.addEventListener('click', closeGenCalOut); }, 0);
+}
+function closeGenCalOut(e) {
+  var picker = document.getElementById('gen-cal-picker');
+  if (picker && !picker.contains(e.target) && !e.target.closest('.cal-pick-btn')) closeGenCal();
+}
+function closeGenCal() {
+  var picker = document.getElementById('gen-cal-picker');
+  if (picker) picker.style.display = 'none';
+  document.removeEventListener('click', closeGenCalOut);
+}
+function shiftGenCalMonth(d) { genCalDate.setMonth(genCalDate.getMonth() + d); renderGenCal(); }
+function selectGenDate(day) {
+  var d = new Date(genCalDate.getFullYear(), genCalDate.getMonth(), day);
+  var ds = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  var inp = document.getElementById(genCalTarget);
+  if (inp) inp.value = ds;
+  var txt = document.getElementById(genCalTarget + '-text');
+  if (txt) txt.textContent = ds;
+  closeGenCal();
+}
+function renderGenCal() {
+  var container = document.getElementById('gen-cal-container');
+  var monthEl = document.getElementById('gen-cal-month');
+  if (!container || !monthEl) return;
+  var y = genCalDate.getFullYear(), m = genCalDate.getMonth();
+  var mNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  monthEl.textContent = y + '年 ' + mNames[m];
+  var firstDay = new Date(y, m, 1);
+  var cur = new Date(firstDay);
+  cur.setDate(cur.getDate() - firstDay.getDay());
+  var inp = document.getElementById(genCalTarget);
+  var sel = inp && inp.value ? inp.value : '';
+  var today = todayStr();
+  var html = '<div class="calp-grid">';
+  ['日','月','火','水','木','金','土'].forEach(function(dow, i){
+    html += '<div class="calp-dow">' + dow + '</div>';
+  });
+  for (var i = 0; i < 42; i++) {
+    var ds = cur.getFullYear() + '-' + String(cur.getMonth()+1).padStart(2,'0') + '-' + String(cur.getDate()).padStart(2,'0');
+    var cls = 'calp-day' + (cur.getMonth() !== m ? ' other' : '') + (cur.getDay() === 6 ? ' sat' : cur.getDay() === 0 ? ' sun' : '') + (ds === today ? ' today' : '') + (ds === sel ? ' selected' : '');
+    html += '<button class="' + cls + '" onclick="selectGenDate(' + cur.getDate() + ')">' + cur.getDate() + '</button>';
+    cur.setDate(cur.getDate() + 1);
+  }
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+// ── 日メモの目印（絵文字/色）─────────────────────────────
+var NOTE_EMOJIS = ['📝','📌','⭐','❤️','🔥','🌸','🎉','✅','💧','⚔️','🍡','🐤'];
+var _noteMarkType = 'emoji';
+var _noteEmoji = '📝';
+
+function renderNoteEmojiRow() {
+  var row = document.getElementById('note-emoji-row');
+  if (!row) return;
+  row.innerHTML = NOTE_EMOJIS.map(function(e){
+    return '<button class="emoji-opt' + (e === _noteEmoji ? ' sel' : '') + '" onclick="selectNoteEmoji(\'' + e + '\')">' + e + '</button>';
+  }).join('');
+}
+function selectNoteEmoji(e) {
+  _noteEmoji = e;
+  renderNoteEmojiRow();
+}
+function setNoteMarkType(t) {
+  _noteMarkType = t;
+  document.getElementById('nmark-emoji-tab').classList.toggle('on', t === 'emoji');
+  document.getElementById('nmark-color-tab').classList.toggle('on', t === 'color');
+  document.getElementById('nmark-emoji-box').style.display = t === 'emoji' ? 'block' : 'none';
+  document.getElementById('nmark-color-box').style.display = t === 'color' ? 'flex' : 'none';
+}
+
+// ── 汎用カレンダーピッカー終了 ──────────────────────────
+function openAddEvent() {
+  _editEvId = null;
+  document.getElementById('ev-modal-title').textContent = '期間メモを追加';
+  document.getElementById('ev-name').value = '';
+  document.getElementById('ev-start').value = todayStr();
+  document.getElementById('ev-start-text').textContent = todayStr();
+  document.getElementById('ev-end').value = todayStr();
+  document.getElementById('ev-end-text').textContent = todayStr();
+  document.getElementById('ev-memo').value = '';
+  document.getElementById('ev-color').value = '#c9a84c';
+  openOv('ov-event');
+}
+
+function getSelEvColor() {
+  var el = document.getElementById('ev-color');
+  return el ? el.value : '#c9a84c';
+}
+
+function saveEvent() {
+  var name  = document.getElementById('ev-name').value.trim();
+  var start = document.getElementById('ev-start').value;
+  var end   = document.getElementById('ev-end').value;
+  var memo  = document.getElementById('ev-memo').value.trim();
+  if (!name || !start || !end) { alert('名前と日付を入力してください'); return; }
+  if (_editEvId) {
+    var idx = UD.events.findIndex(function(e){ return e.id === _editEvId; });
+    if (idx >= 0) {
+      UD.events[idx].name = name;
+      UD.events[idx].startDate = start;
+      UD.events[idx].endDate = end;
+      UD.events[idx].memo = memo;
+      UD.events[idx].color = getSelEvColor();
+      UD.events[idx].updatedAt = new Date().toISOString();
+    }
+    _editEvId = null;
+  } else {
+    UD.events.push({ id:'ev_' + Date.now(), name:name, startDate:start, endDate:end, color:getSelEvColor(), memo:memo, updatedAt:new Date().toISOString() });
+  }
+  save();
+  closeOv('ov-event');
+  renderMemo();
+}
+
+function openAddNote() {
+  _editNoteDate = null;
+  document.getElementById('note-modal-title').textContent = '日メモを追加';
+  document.getElementById('note-date').value = todayStr();
+  document.getElementById('note-date-text').textContent = todayStr();
+  document.getElementById('note-text').value = '';
+  _noteEmoji = '📝';
+  document.getElementById('note-color').value = '#c9a84c';
+  setNoteMarkType('emoji');
+  renderNoteEmojiRow();
+  openOv('ov-note');
+}
+
+function saveNote() {
+  var date = document.getElementById('note-date').value;
+  var text = document.getElementById('note-text').value.trim();
+  if (!date || !text) { alert('日付とメモを入力してください'); return; }
+  var noteObj = { date:date, text:text, updatedAt:new Date().toISOString() };
+  if (_noteMarkType === 'emoji') {
+    noteObj.emoji = _noteEmoji;
+  } else {
+    noteObj.color = document.getElementById('note-color').value;
+  }
+  var existing = UD.notes.findIndex(function(n) { return n.date === date; });
+  if (existing >= 0) { UD.notes[existing] = noteObj; } else { UD.notes.push(noteObj); }
+  save();
+  closeOv('ov-note');
+  renderMemo();
+}
+
+// ── データ入出力 ─────────────────────────────────────────
+function exportData() {
+  var blob = new Blob([JSON.stringify(UD, null, 2)], {type:'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'ichinokura_' + todayStr() + '.json';
+  a.click();
+}
+
+function importData(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var d = JSON.parse(e.target.result);
+      UD = Object.assign(UD, d);
+      save();
+      init();
+      alert('インポートしました');
+    } catch(ex) { alert('読み込みに失敗しました'); }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+// ── モーダル制御 ─────────────────────────────────────────
+function openOv(id) {
+  document.querySelectorAll('.ov').forEach(function(o) { o.classList.remove('op'); });
+  var el = document.getElementById(id);
+  if (el) el.classList.add('op');
+}
+
+function closeOv(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.remove('op');
+}
+
+function openSettings() {
+  renderThemeGrid();
+  openOv('ov-settings');
+}
+
+// ⋯ ドロップダウン
+function toggleDD(id) {
+  document.querySelectorAll('.dd').forEach(function(d) { if (d.id !== id) d.classList.remove('op'); });
+  var el = document.getElementById(id);
+  if (el) el.classList.toggle('op');
+}
+
+function closeDD(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.remove('op');
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.mw')) {
+    document.querySelectorAll('.dd').forEach(function(d) { d.classList.remove('op'); });
+  }
+});
+
+document.querySelectorAll('.ov').forEach(function(ov) {
+  ov.addEventListener('click', function(e) {
+    if (e.target === ov) closeOv(ov.id);
+  });
+});
+
+// ── 断片アコーディオン ───────────────────────────────────
+function toggleFragDetail(id) {
+  var row = document.getElementById('fd-' + id);
+  if (!row) return;
+  var btn = document.getElementById('ftg-' + id);
+  var open = row.classList.toggle('open');
+  if (btn) btn.textContent = open ? '▼' : '▶';
+  if (open && !row.dataset.built) {
+    row.dataset.built = '1';
+    var m = MASTERS.find(function(x){ return x.id === id; });
+    if (!m) return;
+    var sn = ['生存','打撃','統率','機動','衝力','偵察','隠蔽','必殺'];
+    var html = '<table class="fstat-tbl"><thead><tr><th>Lv</th>';
+    sn.forEach(function(n){ html += '<th>'+n+'</th>'; });
+    html += '</tr></thead><tbody>';
+    for (var lv = 1; lv <= 5; lv++) {
+      var s = m.s[lv];
+      html += '<tr><td style="font-weight:500;color:var(--acTx);">Lv'+lv+'</td>';
+      s.forEach(function(v){ html += '<td>'+(v>0?'<b>'+v+'</b>':'<span style="color:var(--bd2)">0</span>')+'</td>'; });
+      html += '</tr>';
+    }
+    html += '</tbody></table>';
+    row.querySelector('td').innerHTML = html;
+  }
+}
+
+// ── カスタムソート ───────────────────────────────────────
+function normalizeCustomSort() {
+  var arr = UD.treasures.slice().sort(function(a,b){ return (a.sortOrder||0)-(b.sortOrder||0); });
+  arr.forEach(function(t, i){ t.sortOrder = i; });
+}
+
+function moveTreasure(id, dir) {
+  var arr = getFilteredSorted();
+  var idx = arr.findIndex(function(t){ return t.id === id; });
+  var swapIdx = idx + dir;
+  if (swapIdx < 0 || swapIdx >= arr.length) return;
+  var tmp = arr[idx].sortOrder;
+  arr[idx].sortOrder = arr[swapIdx].sortOrder;
+  arr[swapIdx].sortOrder = tmp;
+  save();
+  renderTreasure();
+}
+
+// ── トースト ─────────────────────────────────────────────
+function toast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#f5e6c8;font-size:12px;padding:8px 16px;border-radius:20px;z-index:999;pointer-events:none;opacity:0;transition:opacity 0.3s;white-space:nowrap;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function() { t.style.opacity = '0'; }, 2500);
+}
+
+// ── Google Drive 同期 ─────────────────────────────────────
+var GD_CLIENT_ID = '1020015092975-eheh7mf0vjv55a7lufvbc1mi50ele8bv.apps.googleusercontent.com';
+var GD_SCOPE = 'https://www.googleapis.com/auth/drive.appdata';
+var GD_FILENAME = 'ichinokura_data.json';
+var _gdToken = null;
+var _gdFileId = null;
+
+/* 起動時にsessionStorageからトークンを復元 */
+(function(){
+  var t = sessionStorage.getItem('gd_token');
+  if (t) _gdToken = t;
+})();
+
+function gdSignIn() {
+  if (typeof google === 'undefined') { toast('Google認証が読み込まれていません'); return; }
+  var client = google.accounts.oauth2.initTokenClient({
+    client_id: GD_CLIENT_ID,
+    scope: GD_SCOPE,
+    callback: function(resp) {
+      if (resp.error) { toast('Googleログイン失敗'); return; }
+      _gdToken = resp.access_token;
+      sessionStorage.setItem('gd_token', _gdToken);
+      updateGdUI();
+      toast('Googleログインしました');
+    }
+  });
+  client.requestAccessToken();
+}
+
+function gdSignOut() {
+  if (_gdToken && typeof google !== 'undefined') {
+    google.accounts.oauth2.revoke(_gdToken, function() {});
+  }
+  _gdToken = null;
+  _gdFileId = null;
+  sessionStorage.removeItem('gd_token');
+  updateGdUI();
+  toast('Googleログアウトしました');
+}
+
+function updateGdUI() {
+  var box = document.getElementById('gd-status-box');
+  var btns = document.getElementById('gd-btns');
+  if (!box || !btns) return;
+  if (_gdToken) {
+    box.textContent = 'ログイン済み ✓';
+    box.style.color = '#2d6a40';
+    btns.innerHTML =
+      '<button class="btn" onclick="gdSyncDown()">↓ クラウドから読み込む</button>' +
+      '<button class="btn btnp" onclick="gdSyncUp()">↑ クラウドへ保存</button>' +
+      '<button class="btn" onclick="gdSignOut()">ログアウト</button>';
+  } else {
+    box.textContent = '未ログイン';
+    box.style.color = 'var(--tx3)';
+    btns.innerHTML = '<button class="btn btnp" id="gd-login-btn" onclick="gdSignIn()">Googleでログイン</button>';
+  }
+}
+
+async function gdFetch(url, opts, isRetry) {
+  var o = Object.assign({}, opts, {
+    headers: Object.assign({}, opts.headers, { 'Authorization': 'Bearer ' + _gdToken })
+  });
+  var res = await fetch(url, o);
+  if (res.status === 401 && !isRetry) {
+    _gdToken = null;
+    _gdFileId = null;
+    sessionStorage.removeItem('gd_token');
+    updateGdUI();
+    toast('セッションが切れました。再ログインしてください');
+    throw new Error('401 Unauthorized');
+  }
+  return res;
+}
+
+async function gdFindFile() {
+  var res = await gdFetch(
+    'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name%3D%27' + GD_FILENAME + '%27&fields=files(id,name)',
+    { headers: {} }
+  );
+  if (!res.ok) return null;
+  var d = await res.json();
+  return (d.files && d.files.length) ? d.files[0].id : null;
+}
+
+async function gdSyncDown() {
+  if (!_gdToken) { toast('先にGoogleログインしてください'); return; }
+  try {
+    toast('クラウドから読み込み中…');
+    var fid = await gdFindFile();
+    if (!fid) {
+      await gdSyncUp(true);
+      toast('クラウドに初回バックアップしました');
+      return;
+    }
+    _gdFileId = fid;
+    var res = await gdFetch(
+      'https://www.googleapis.com/drive/v3/files/' + fid + '?alt=media',
+      { headers: {} }
+    );
+    if (!res.ok) throw new Error('download failed');
+    var d = await res.json();
+    if (d.treasures !== undefined) {
+      UD = Object.assign(UD, d);
+      if (!UD.fragments) UD.fragments = {};
+      if (!UD.treasures) UD.treasures = [];
+      if (!UD.events) UD.events = [];
+      if (!UD.notes) UD.notes = [];
+      loadShared();
+      save();
+      renderFragment();
+      renderTreasure();
+      renderMemo();
+      toast('クラウドからデータを読み込みました ↓');
+    }
+  } catch(e) { toast('読み込み失敗：' + e.message); }
+}
+
+async function gdSyncUp(silent) {
+  if (!_gdToken) { toast('先にGoogleログインしてください'); return; }
+  try {
+    if (!silent) toast('クラウドへ保存中…');
+    var fid = _gdFileId || (await gdFindFile());
+    if (fid) {
+      await gdFetch(
+        'https://www.googleapis.com/upload/drive/v3/files/' + fid + '?uploadType=media',
+        { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(UD) }
+      );
+      _gdFileId = fid;
+    } else {
+      var meta = { name: GD_FILENAME, parents: ['appDataFolder'] };
+      var form = new FormData();
+      form.append('metadata', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
+      form.append('file', new Blob([JSON.stringify(UD)], { type: 'application/json' }));
+      var res = await gdFetch(
+        'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
+        { method: 'POST', headers: {}, body: form }
+      );
+      var rd = await res.json();
+      _gdFileId = rd.id;
+    }
+    if (!silent) toast('クラウドへ保存しました ↑');
+  } catch(e) { toast('保存失敗：' + e.message); }
+}
+
+
+// ── 刀装マスターデータ ──────────────────────────────────
+// stats: [兵力, 打撃, 統率, 機動, 衝力, 偵察, 隠蔽]
+var TOSOU = [
+  {id:1,name:'軽歩兵',cat:'通常',event:false,equip:['短','脇','打','太','大','槍','薙','剣'],
+   s:{並:[8,0,0,2,0,0,1],上:[9,0,0,2,0,0,2],特上:[10,0,0,5,0,0,3]}},
+  {id:2,name:'重歩兵',cat:'通常',event:false,equip:['短','脇','打','太','大','槍','薙','剣'],
+   s:{並:[10,1,2,0,0,0,0],上:[11,2,2,0,0,0,0],特上:[12,3,5,0,0,0,0]}},
+  {id:3,name:'精鋭兵',cat:'通常',event:false,equip:['大','剣'],
+   s:{並:[11,0,2,2,0,1,1],上:[12,0,3,3,0,2,2],特上:[13,0,5,5,0,3,3]}},
+  {id:4,name:'軽騎兵',cat:'通常',event:false,equip:['打','太','大'],
+   s:{並:[9,1,0,2,0,0,0],上:[10,2,1,3,0,0,0],特上:[12,3,3,5,0,0,0]}},
+  {id:5,name:'重騎兵',cat:'通常',event:false,equip:['太','大'],
+   s:{並:[11,1,3,0,1,0,0],上:[12,2,3,1,2,0,0],特上:[13,3,5,3,3,0,0]}},
+  {id:6,name:'投石兵',cat:'通常',event:false,equip:['短','脇','打'],
+   s:{並:[8,0,0,0,0,1,1],上:[9,0,0,0,0,2,2],特上:[10,0,0,0,0,3,3]}},
+  {id:7,name:'弓兵',cat:'通常',event:false,equip:['短','脇'],
+   s:{並:[6,0,0,0,0,0,2],上:[7,0,1,0,1,0,3],特上:[8,3,0,0,3,0,5]}},
+  {id:8,name:'銃兵',cat:'通常',event:false,equip:['剣'],
+   s:{並:[5,0,0,0,0,2,0],上:[6,1,0,0,1,3,0],特上:[6,3,0,0,3,5,0]}},
+  {id:9,name:'槍兵',cat:'通常',event:false,equip:['槍','薙'],
+   s:{並:[7,0,0,1,2,0,0],上:[7,0,0,2,3,0,0],特上:[8,0,0,3,5,0,0]}},
+  {id:10,name:'盾兵',cat:'通常',event:false,equip:['脇','打','太','大','剣'],
+   s:{並:[11,0,5,0,0,0,0],上:[13,0,7,0,0,0,0],特上:[15,0,10,0,0,0,0]}},
+  {id:11,name:'投豆兵',cat:'イベント限定',event:true,equip:['短','脇','打','太','大','槍','薙','剣'],
+   s:{並:[8,2,0,0,0,1,1],上:[9,3,0,0,0,2,2],特上:[12,6,0,0,0,3,3]}},
+  {id:12,name:'水砲兵',cat:'イベント限定',event:true,equip:['短','脇','打','太','大','槍','薙','剣'],
+   s:{並:[8,0,0,0,0,2,0],上:[9,1,0,0,1,3,0],特上:[10,3,0,0,3,5,0]}},
+  {id:13,name:'楽器兵',cat:'イベント限定',event:true,equip:['短','脇','打','太','大','槍','薙'],
+   s:{並:[8,1,0,2,0,0,0],上:[9,1,1,2,0,0,0],特上:[12,2,2,3,0,0,0]}}
+];
+var TOSOU_STAT_IDX = {hp:0,atk:1,grd:2,kid:3,chg:4,sct:5,hid:6};
+var _tosouGrade = '特上';
+var _tosouEquip = 'all';
+var _tosouSort  = 'default';
+var _tosouAsc   = false;
+
+function setGrade(g, el) {
+  _tosouGrade = g;
+  UD.settings.tosouGrade = g;
+  save();
+  document.querySelectorAll('.grbtn').forEach(function(b){b.classList.remove('on');});
+  if(el) el.classList.add('on');
+  renderTosou();
+}
+function setTosouEquip(eq, el) {
+  _tosouEquip = eq;
+  UD.settings.tosouEquip = eq;
+  save();
+  document.querySelectorAll('#tosou-equip-tags .ftag').forEach(function(t){t.classList.remove('on');});
+  if(el) el.classList.add('on');
+  renderTosou();
+}
+function setTosouSort(key, el) {
+  if(_tosouSort === key){ _tosouAsc = !_tosouAsc; } else { _tosouSort = key; _tosouAsc = false; }
+  UD.settings.tosouSort = _tosouSort;
+  UD.settings.tosouAsc = _tosouAsc;
+  save();
+  document.querySelectorAll('#tosou-sort-tags .stag').forEach(function(t){t.classList.remove('on');});
+  var tagEl = el || document.querySelector('#tosou-sort-tags [data-sort="'+key+'"]');
+  if(tagEl) tagEl.classList.add('on');
+  var db = document.getElementById('tosou-dirbtn');
+  if(db) db.textContent = _tosouAsc ? '▲ 昇順' : '▼ 降順';
+  var tkeys = ['hp','atk','grd','kid','chg','sct','hid'];
+  tkeys.forEach(function(k){
+    var a=document.getElementById('ta-'+k); if(a) a.textContent='↕';
+    var th=document.getElementById('tth-'+k); if(th) th.classList.remove('srt');
+  });
+  if(key !== 'default'){
+    var ae=document.getElementById('ta-'+key); if(ae) ae.textContent=_tosouAsc?'↑':'↓';
+    var the=document.getElementById('tth-'+key); if(the) the.classList.add('srt');
+  }
+  renderTosou();
+}
+function toggleTosouDir(){ _tosouAsc=!_tosouAsc; UD.settings.tosouAsc=_tosouAsc; save(); setTosouSort(_tosouSort,null); }
+
+function renderTosou() {
+  var arr = TOSOU.filter(function(t){
+    if(_tosouEquip === 'event') return t.event;
+    if(_tosouEquip !== 'all') return t.equip.indexOf(_tosouEquip) >= 0;
+    return true;
+  });
+  if(_tosouSort !== 'default'){
+    var si = TOSOU_STAT_IDX[_tosouSort];
+    arr.sort(function(a,b){
+      var va = a.s[_tosouGrade][si]; var vb = b.s[_tosouGrade][si];
+      return _tosouAsc ? va-vb : vb-va;
+    });
+  }
+  var sm = document.getElementById('tosou-summary');
+  if(sm) sm.innerHTML = '<div class="smcard"><b>'+arr.length+'</b>種表示中</div>' +
+    '<div class="smcard"><b>'+TOSOU.filter(function(t){return !t.event;}).length+'</b>通常刀装</div>' +
+    '<div class="smcard"><b>'+TOSOU.filter(function(t){return t.event;}).length+'</b>イベント限定</div>';
+  var tbody = document.getElementById('tosou-tbody');
+  if(!tbody) return;
+  var sv = function(v){ return v>0 ? '<span class="sv">'+v+'</span>' : '<span class="s0">0</span>'; };
+  var html = '';
+  arr.forEach(function(t){
+    var s = t.s[_tosouGrade];
+    var eqStr = t.equip.length >= 7 ? '全刀種' : t.equip.join('・');
+    html += '<tr' + (t.event ? ' style="background:var(--acBg);"' : '') + '>';
+    html += '<td class="nl"><div style="font-size:11px;font-weight:700;color:var(--tx);">'+esc(t.name)+'</div>';
+    if(t.event) html += '<div style="font-size:9px;color:var(--acTx);">イベント限定</div>';
+    html += '</td>';
+    html += '<td style="font-size:10px;color:var(--tx3);">'+esc(t.cat)+'</td>';
+    html += '<td>'+sv(s[0])+'</td><td>'+sv(s[1])+'</td><td>'+sv(s[2])+'</td>';
+    html += '<td>'+sv(s[3])+'</td><td>'+sv(s[4])+'</td><td>'+sv(s[5])+'</td><td>'+sv(s[6])+'</td>';
+    html += '<td class="nl" style="font-size:10px;color:var(--tx3);">'+esc(eqStr)+'</td>';
+    html += '</tr>';
+  });
+  tbody.innerHTML = html;
+  renderTosouCards(arr);
+}
+
+var _tosouView = 'table';
+function setTosouView(v, noSave) {
+  _tosouView = v;
+  if (!noSave) { UD.settings.tosouView = v; save(); }
+  var pane = document.getElementById('pane-tosou');
+  pane.classList.toggle('tv-card', v === 'card');
+  pane.classList.toggle('tv-table', v === 'table');
+  document.getElementById('tv-table').classList.toggle('on', v === 'table');
+  document.getElementById('tv-card').classList.toggle('on', v === 'card');
+}
+
+function renderTosouCards(arr) {
+  var box = document.getElementById('tosou-cards');
+  if (!box) return;
+  var sn = ['兵力','打撃','統率','機動','衝力','偵察','隠蔽'];
+  var html = '';
+  arr.forEach(function(t){
+    var s = t.s[_tosouGrade];
+    var eqStr = t.equip.length >= 7 ? '全刀種' : t.equip.join('・');
+    html += '<div class="tcard' + (t.event ? ' ev' : '') + '">' +
+      '<div class="tcard-hd">' +
+        '<div><span class="tcard-nm">' + esc(t.name) + '</span>' +
+        (t.event ? '<span class="tcard-cat"> ・イベント限定</span>' : '') + '</div>' +
+        '<span style="font-size:10px;padding:1px 7px;border-radius:6px;background:var(--acBg);color:var(--acTx);">' + _tosouGrade + '</span>' +
+      '</div>' +
+      '<div class="tcard-stats">';
+    for (var i = 0; i < 7; i++) {
+      var v = s[i];
+      html += '<div class="tcard-stat"><span class="l">' + sn[i] + '</span><span>' + (v>0?'<b>'+v+'</b>':'<span style="color:var(--bd2)">0</span>') + '</span></div>';
+    }
+    html += '</div>' +
+      '<div class="tcard-equip"><span class="l">装備可：</span>' + esc(eqStr) + '</div>' +
+    '</div>';
+  });
+  box.innerHTML = html;
+}
+// stats: [兵力, 打撃, 統率, 機動, 衝力, 偵察, 隠蔽]
+var UMA = [
+  {id:1, name:'王庭',   s:[0,3,0,7,0,0,0]},
+  {id:2, name:'三国黒', s:[0,0,3,10,3,0,0]},
+  {id:3, name:'松風',   s:[0,2,2,13,0,0,0]},
+  {id:4, name:'小雲雀', s:[0,0,2,17,0,2,2]},
+  {id:5, name:'高楯黒', s:[0,0,0,13,3,0,0]},
+  {id:6, name:'花柑子', s:[0,0,3,15,0,0,0]},
+  {id:7, name:'青海波', s:[0,0,0,13,0,3,2]},
+  {id:8, name:'望月',   s:[0,3,0,17,0,0,2]},
+  {id:9, name:'白毛',   s:[0,0,0,5,0,0,0]},
+  {id:10,name:'鹿毛',   s:[0,3,0,2,0,0,0]},
+  {id:11,name:'青毛',   s:[0,5,0,0,0,0,0]},
+  {id:12,name:'祝一号', s:[0,2,2,2,2,2,2]},
+  {id:13,name:'祝二号', s:[0,2,2,2,2,2,2]},
+  {id:14,name:'祝三号', s:[0,2,2,2,2,2,2]},
+  {id:15,name:'祝四号', s:[0,2,2,2,2,2,2]},
+  {id:16,name:'祝五号', s:[0,5,5,5,5,5,5]},
+  {id:17,name:'祝六号', s:[0,3,3,3,3,3,3]},
+  {id:18,name:'祝七号', s:[0,3,3,3,3,3,3]},
+  {id:19,name:'祝八号', s:[0,3,3,3,3,3,3]},
+  {id:20,name:'祝九号', s:[0,3,3,3,3,3,3]},
+  {id:21,name:'祝十号', s:[0,10,10,10,10,10,10]},
+  {id:22,name:'祝十一号',s:[0,5,5,5,5,5,5]},
+  {id:23,name:'午年号', s:[0,2,0,15,2,0,0]}
+];
+var UMA_STAT_IDX = {hp:0,atk:1,grd:2,kid:3,chg:4,sct:5,hid:6};
+var _umaSort = 'default';
+var _umaAsc  = false;
+
+function setUmaSort(key, el) {
+  if(_umaSort === key){ _umaAsc = !_umaAsc; } else { _umaSort = key; _umaAsc = false; }
+  UD.settings.umaSort = _umaSort;
+  UD.settings.umaAsc = _umaAsc;
+  save();
+  document.querySelectorAll('#uma-sort-tags .stag').forEach(function(t){t.classList.remove('on');});
+  var tagEl = el || document.querySelector('#uma-sort-tags [data-sort="'+key+'"]');
+  if(tagEl) tagEl.classList.add('on');
+  var db = document.getElementById('uma-dirbtn');
+  if(db) db.textContent = _umaAsc ? '▲ 昇順' : '▼ 降順';
+  var ukeys=['hp','atk','grd','kid','chg','sct','hid'];
+  ukeys.forEach(function(k){
+    var a=document.getElementById('ua-'+k); if(a) a.textContent='↕';
+    var th=document.getElementById('uth-'+k); if(th) th.classList.remove('srt');
+  });
+  if(key !== 'default'){
+    var ae=document.getElementById('ua-'+key); if(ae) ae.textContent=_umaAsc?'↑':'↓';
+    var the=document.getElementById('uth-'+key); if(the) the.classList.add('srt');
+  }
+  renderUma();
+}
+function toggleUmaDir(){ _umaAsc=!_umaAsc; UD.settings.umaAsc=_umaAsc; save(); setUmaSort(_umaSort,null); }
+
+function renderUma() {
+  var arr = UMA.slice();
+  if(_umaSort !== 'default'){
+    var si = UMA_STAT_IDX[_umaSort];
+    arr.sort(function(a,b){ return _umaAsc ? a.s[si]-b.s[si] : b.s[si]-a.s[si]; });
+  }
+  var tbody = document.getElementById('uma-tbody');
+  if(!tbody) return;
+  var sv = function(v){ return v>0 ? '<span class="sv">'+v+'</span>' : '<span class="s0">—</span>'; };
+  var html = '';
+  arr.forEach(function(u){
+    html += '<tr><td class="nl" style="font-size:12px;font-weight:700;color:var(--tx);">'+esc(u.name)+'</td>';
+    u.s.forEach(function(v){ html += '<td>'+sv(v)+'</td>'; });
+    html += '</tr>';
+  });
+  tbody.innerHTML = html;
+}
+
+// ── メモ 編集・削除 ─────────────────────────────────────
+var _editEvId = null;
+var _editNoteDate = null;
+var _deleteEvId = null;
+var _deleteNoteDate = null;
+
+function openEditEvent(id) {
+  var ev = UD.events.find(function(e){ return e.id === id; });
+  if(!ev) return;
+  _editEvId = id;
+  document.getElementById('ev-modal-title').textContent = '期間メモを編集';
+  document.getElementById('ev-name').value  = ev.name  || '';
+  document.getElementById('ev-start').value = evStart(ev) || '';
+  document.getElementById('ev-start-text').textContent = evStart(ev) || '日付を選択';
+  document.getElementById('ev-end').value   = evEnd(ev)   || '';
+  document.getElementById('ev-end-text').textContent = evEnd(ev) || '日付を選択';
+  document.getElementById('ev-memo').value  = ev.memo  || '';
+  document.getElementById('ev-color').value = ev.color || '#c9a84c';
+  openOv('ov-event');
+}
+
+function openDeleteEvent(id) {
+  _deleteEvId = id;
+  _deleteNoteDate = null;
+  var ev = UD.events.find(function(e){ return e.id === id; });
+  document.getElementById('del-msg').textContent = ev ? '「'+ev.name+'」を削除しますか？' : 'この期間メモを削除しますか？';
+  openOv('ov-delete');
+}
+
+function openEditNote(date) {
+  var n = UD.notes.find(function(x){ return x.date === date; });
+  _editNoteDate = date;
+  document.getElementById('note-modal-title').textContent = '日メモを編集';
+  document.getElementById('note-date').value = date;
+  document.getElementById('note-date-text').textContent = date;
+  document.getElementById('note-text').value = n ? n.text : '';
+  if (n && n.color) {
+    _noteEmoji = '📝';
+    document.getElementById('note-color').value = n.color;
+    setNoteMarkType('color');
+  } else {
+    _noteEmoji = (n && n.emoji) ? n.emoji : '📝';
+    document.getElementById('note-color').value = '#c9a84c';
+    setNoteMarkType('emoji');
+  }
+  renderNoteEmojiRow();
+  openOv('ov-note');
+}
+
+function openDeleteNote(date) {
+  _deleteNoteDate = date;
+  _deleteEvId = null;
+  document.getElementById('del-msg').textContent = date + ' の日メモを削除しますか？';
+  openOv('ov-delete');
+}
+
+function closeGuide() {
+  if (document.getElementById('guide-no-show').checked) {
+    UD.settings.guideShown = true;
+    save();
+  }
+  closeOv('ov-guide');
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+window.addEventListener('scroll', function() {
+  var btn = document.getElementById('toTop');
+  if (!btn) return;
+  btn.classList.toggle('show', window.scrollY > 300);
+});
+
+// ── 初期化 ──────────────────────────────────────────────
+function init() {
+  load();
+  applyTheme(UD.settings.theme || 'ai-light');
+  if (UD.settings.layout === 'mobile') {
+    document.getElementById('app').classList.add('mobile');
+    document.getElementById('layoutBtn').textContent = '💻 PC';
+  }
+  /* 宝物ソート設定を復元 */
+  var sk = UD.settings.sortKey || 'bookorder';
+  _currentSortKey = sk;
+  _sortAsc = UD.settings.sortAsc || false;
+  var stEl = document.querySelector('.stag[data-sort="'+sk+'"]');
+  if (stEl) { document.querySelectorAll('.stag').forEach(function(t){t.classList.remove('on');}); stEl.classList.add('on'); }
+  var db = document.getElementById('dirbtn');
+  if (db) db.textContent = _sortAsc ? '▲ 昇順' : '▼ 降順';
+  /* ビュー設定を復元 */
+  var v = UD.settings.view || 'grid';
+  if (v === 'list') { setView('list'); } else { setView('grid'); }
+  /* 刀装設定を復元 */
+  _tosouGrade = UD.settings.tosouGrade || '特上';
+  _tosouEquip = UD.settings.tosouEquip || 'all';
+  _tosouSort  = UD.settings.tosouSort  || 'default';
+  _tosouAsc   = UD.settings.tosouAsc   || false;
+  var grBtn = document.querySelector('.grbtn[data-grade="'+_tosouGrade+'"]');
+  if (grBtn) { document.querySelectorAll('.grbtn').forEach(function(b){b.classList.remove('on');}); grBtn.classList.add('on'); }
+  var teEl = document.querySelector('#tosou-equip-tags [data-eq="'+_tosouEquip+'"]');
+  if (teEl) { document.querySelectorAll('#tosou-equip-tags .ftag').forEach(function(t){t.classList.remove('on');}); teEl.classList.add('on'); }
+  /* 馬設定を復元 */
+  _umaSort = UD.settings.umaSort || 'default';
+  _umaAsc  = UD.settings.umaAsc  || false;
+  /* 高さ揃え設定を復元 */
+  _gridExpand = UD.settings.gridExpand || false;
+  var exBtn = document.getElementById('expand-btn');
+  if (exBtn) exBtn.classList.toggle('on', _gridExpand);
+  /* 断片・刀装のビュー設定を復元（スマホは常にカード固定） */
+  var mob = isMobile();
+  if (mob) {
+    setFragView('card', true);
+    setTosouView('card', true);
+  } else {
+    setFragView(UD.settings.fragView || 'table');
+    setTosouView(UD.settings.tosouView || 'table');
+  }
+  /* 各タブの描画 */
+  renderFragment();
+  renderTreasureSummary();
+  var now = new Date();
+  _calYear = now.getFullYear();
+  _calMonth = now.getMonth() + 1;
+  if (_gdToken) { updateGdUI(); }
+  /* メモ系の初期化 */
+  var ts = todayStr();
+  ['ev-start','ev-end','note-date'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.value = ts;
+    var txt = document.getElementById(id + '-text'); if (txt) txt.textContent = ts;
+  });
+  renderNoteEmojiRow();
+  /* 最後に開いたタブを復元 */
+  var lastTab = UD.settings.lastTab || 'frag';
+  switchTab(lastTab);
+  /* 初回ガイド */
+  if (!UD.settings.guideShown) {
+    setTimeout(function(){ openOv('ov-guide'); }, 300);
+  }
+}
+
+init();
+</script>
+</body>
+</html>

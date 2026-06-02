@@ -35,6 +35,7 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
     "wavebox wavebox"
     "twitter twitter"
     "mail mail"
+    "google google"
     "neko neko";
   min-height: 100vh;
 }
@@ -431,6 +432,42 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   opacity: 1;
 }
 
+/* すべての更新履歴リンク（PC更新パネル下部） */
+.tl-all-link {
+  display: block;
+  text-align: right;
+  margin-top: 10px;
+  font-size: 11px;
+  letter-spacing: .15em;
+  color: rgba(200,168,75,.7);
+  font-family: 'Noto Sans JP', sans-serif;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(200,168,75,.2);
+  padding-bottom: 1px;
+  transition: color .2s;
+  width: fit-content;
+  margin-left: auto;
+}
+.tl-all-link:hover { color: #c8a84b; }
+
+/* すべての更新履歴リンク（スマホバー下） */
+.sp-changelog-link {
+  display: none;
+  text-align: right;
+  padding: 4px 20px 8px;
+  grid-area: sp-changelog;
+  margin-top: -4px;
+}
+.sp-changelog-link a {
+  font-size: 11px;
+  letter-spacing: .12em;
+  color: rgba(200,168,75,.7);
+  font-family: 'Noto Sans JP', sans-serif;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(200,168,75,.2);
+  padding-bottom: 1px;
+}
+
 .mail-panel {
   grid-area: mail;
   margin: 0 44px 12px;
@@ -618,9 +655,9 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   white-space: nowrap;
 }
 
-.amazon-panel {
-  grid-area: amazon;
-  margin: 0 44px 28px;
+.google-panel {
+  grid-area: google;
+  margin: 0 44px 12px;
   background: rgba(255,255,255,.82);
   border: 1.5px solid rgba(180,120,80,.3);
   border-radius: 16px;
@@ -633,12 +670,12 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   color: inherit;
   transition: transform .22s, box-shadow .22s, background .22s;
 }
-.amazon-panel:hover {
+.google-panel:hover {
   transform: translateY(-2px);
   box-shadow: 4px 8px 22px rgba(0,0,0,.25);
   background: rgba(255,255,255,.93);
 }
-.amazon-icon-area {
+.google-icon-area {
   flex-shrink: 0;
   width: 56px; height: 56px;
   background: rgba(200,168,75,.1);
@@ -646,18 +683,18 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
 }
-.amazon-icon-area img {
+.google-icon-area img {
   width: 48px; height: 48px; object-fit: contain; border-radius: 8px;
 }
-.amazon-body { flex: 1; }
-.amazon-title {
+.google-body { flex: 1; }
+.google-title {
   font-size: 16px; font-weight: 700; letter-spacing: .12em; color: #2c1a10; margin-bottom: 5px;
 }
-.amazon-desc {
+.google-desc {
   font-size: 12px; line-height: 1.8; color: #4a3020;
   font-family: 'Noto Sans JP', sans-serif;
 }
-.amazon-link {
+.google-link {
   flex-shrink: 0;
   font-size: 12px; letter-spacing: .12em; color: #8b4513;
   border-bottom: 1px solid rgba(139,69,19,.35);
@@ -666,7 +703,6 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
 }
 
 footer {
-  position: relative; z-index: 1; text-align: center; padding: 18px;
   background: rgba(0,0,0,.4);
   font-size: 11px; color: rgba(240,220,190,.55); letter-spacing: .15em;
   font-family: 'Noto Sans JP', sans-serif;
@@ -678,10 +714,12 @@ footer {
     grid-template-areas:
       "apps"
       "sp-update"
+      "sp-changelog"
       "info"
       "wavebox"
       "twitter"
       "mail"
+      "google"
       "neko";
   }
   .col-left { padding: 28px 20px 16px; }
@@ -690,14 +728,24 @@ footer {
   .card-title { font-size: 18px; }
   .info-panel { padding: 20px 18px; }
   .mail-panel { margin: 0 20px 12px; padding: 16px 18px; }
+  .google-panel { margin: 0 20px 12px; padding: 16px 18px; }
   .wavebox-panel { margin: 0 20px 12px; padding: 16px 18px; }
   .twitter-panel { margin: 0 20px 12px; padding: 16px 18px; }
   .neko-panel { margin: 0 20px 28px; padding: 16px 18px; }
   .sp-update-bar { display: block; }
+  .sp-changelog-link { display: block; }
   .update-panel { display: none; }
 }
 </style>
 <meta name="google-site-verification" content="41PBQmId38sOlXSM_sEyzmUPCmkdAd6uwCU-YnOtzpA" />
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QM317D9ESN');
+</script>
 </head>
 <body>
 <div class="bg">
@@ -715,9 +763,7 @@ footer {
     <div class="card-body">
       <div class="card-title">資源帳</div>
       <div class="card-desc">
-        木炭・玉鋼・冷却材・砥石などの<br>
-        資源や道具を<br>
-        記録・管理するツールです。<br>
+        木炭・玉鋼・冷却材・砥石などの資源や道具を記録・管理するツールです。
         推移をグラフで確認できます。
       </div>
       <span class="card-link">道具を開く →</span>
@@ -731,10 +777,33 @@ footer {
     <div class="card-body">
       <div class="card-title">稽古録</div>
       <div class="card-desc">
-        刀剣男士の<br>
-        レベルと累積経験値を<br>
-        記録・管理するツールです。<br>
-        グラフで確認できます。
+        刀剣男士のレベルと累積経験値を記録・管理するツールです。
+      </div>
+      <span class="card-link">道具を開く →</span>
+    </div>
+  </a>
+
+  <a class="tool-card" href="ichinokura.html">
+    <div class="cat-area">
+      <img src="cat4.png" alt="猫" onerror="this.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-title">愛蔵の一ノ倉</div>
+      <div class="card-desc">
+        宝物・断片の所持数を記録・管理するツールです。資源帳・稽古録の記録をカレンダーで振り返ることもできます。刀装・馬のソート機能も備えています。
+      </div>
+      <span class="card-link">道具を開く →</span>
+    </div>
+  </a>
+
+  <a class="tool-card" href="shitakubeya.html">
+    <div class="cat-area">
+      <img src="cat5.png" alt="猫" onerror="this.style.display='none'" style="width:100px;">
+    </div>
+    <div class="card-body">
+      <div class="card-title">出陣支度部屋</div>
+      <div class="card-desc">
+        稽古録に登録した刀剣男士で部隊を編制し、装備を整えるツールです。※稽古録未登録の男士への対応は後日アップデート予定です。
       </div>
       <span class="card-link">道具を開く →</span>
     </div>
@@ -764,28 +833,59 @@ footer {
     </div>
     <span class="manual-link">開く →</span>
   </a>
+
+  <a class="manual-card" href="ichinokura_manual.html">
+    <span class="manual-icon">📖</span>
+    <div class="manual-body">
+      <div class="manual-title">愛蔵の一ノ倉マニュアル</div>
+      <div class="manual-desc">各機能の詳しい使い方・説明</div>
+    </div>
+    <span class="manual-link">開く →</span>
+  </a>
+
+  <a class="manual-card" href="shitakubeya_manual.html">
+    <span class="manual-icon">📖</span>
+    <div class="manual-body">
+      <div class="manual-title">出陣支度部屋マニュアル</div>
+      <div class="manual-desc">各機能の詳しい使い方・説明</div>
+    </div>
+    <span class="manual-link">開く →</span>
+  </a>
 </div>
 
 <!-- スマホ専用コンパクト更新バー -->
 <div class="sp-update-bar">
   <div class="sp-update-toggle" onclick="spUpdateToggle()" id="sp-update-btn">
     <span class="sp-update-label">最新更新</span>
-    <span class="sp-update-date">2026.05.05</span>
+    <span class="sp-update-date">2026.05.31</span>
     <span class="sp-update-badge">最新</span>
     <span class="sp-update-arrow">▼</span>
   </div>
   <div class="sp-update-body" id="sp-update-body">
     <div class="tl-content">
-      <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">資源帳</div>
+      <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
       <ul>
-        <li>内番タイマーを追加</li>
-        <li>松竹梅富士の札グラフを追加（ON/OFFボタンあり）</li>
+        <li>審神者レベルの記録に対応しました</li>
+      </ul>
+      <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">出陣支度部屋</div>
+      <ul>
+        <li>稽古録に未登録の男士も表示できるモードを追加しました</li>
+        <li>スマホ表示の編制画面に新しい表示形式を追加しました</li>
+      </ul>
+      <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">愛蔵の一ノ倉</div>
+      <ul>
+        <li>宝物帳：グリッドカードのレイアウトを刷新しました（縦積み・★レア度表示・列数自動調整など）</li>
+        <li>断片管理：スマホでカード表示に対応し、テーブル／カード切替ボタンを追加しました</li>
+        <li>刀装タブ：テーブル／カード切替ボタンを追加しました</li>
+        <li>暦メモ：カラーピッカー・カレンダーピッカーを導入し、メモ一覧の表示を刷新しました</li>
+        <li>最後に開いたタブを記憶するようにしました・その他UI改善</li>
       </ul>
     </div>
   </div>
 </div>
-
-<!-- 右カラム -->
+<div class="sp-changelog-link">
+  <a href="changelog.html">すべての更新履歴 →</a>
+</div>
 <div class="col-right">
   <div class="info-panel">
     <div class="info-heading">＊ 説 明 書 ＊</div>
@@ -876,16 +976,28 @@ footer {
       <!-- 1件目：最新・最初から開く -->
       <div class="tl-entry is-latest" id="tl-0">
         <div class="tl-header" onclick="tlToggle('tl-0')">
-          <span class="tl-date">2026.05.05</span>
+          <span class="tl-date">2026.05.31</span>
           <span class="tl-badge">最新</span>
           <span class="tl-arrow">▼</span>
         </div>
         <div class="tl-body">
           <div class="tl-content">
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">資源帳</div>
+            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
             <ul>
-              <li>内番タイマーを追加</li>
-              <li>松竹梅富士の札グラフを追加（ON/OFFボタンあり）</li>
+              <li>審神者レベルの記録に対応しました</li>
+            </ul>
+            <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">出陣支度部屋</div>
+            <ul>
+              <li>稽古録に未登録の男士も表示できるモードを追加しました</li>
+              <li>スマホ表示の編制画面に新しい表示形式を追加しました</li>
+            </ul>
+            <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">愛蔵の一ノ倉</div>
+            <ul>
+              <li>宝物帳：グリッドカードのレイアウトを刷新しました（縦積み・★レア度表示・列数自動調整など）</li>
+              <li>断片管理：スマホでカード表示に対応し、テーブル／カード切替ボタンを追加しました</li>
+              <li>刀装タブ：テーブル／カード切替ボタンを追加しました</li>
+              <li>暦メモ：カラーピッカー・カレンダーピッカーを導入し、メモ一覧の表示を刷新しました</li>
+              <li>最後に開いたタブを記憶するようにしました・その他UI改善</li>
             </ul>
           </div>
         </div>
@@ -894,15 +1006,15 @@ footer {
       <!-- 2件目：折りたたみ -->
       <div class="tl-entry" id="tl-1">
         <div class="tl-header" onclick="tlToggle('tl-1')">
-          <span class="tl-date">2026.05.02</span>
+          <span class="tl-date">2026.05.30</span>
           <span class="tl-arrow">▼</span>
         </div>
         <div class="tl-body">
           <div class="tl-content">
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
+            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">サイト</div>
             <ul>
-              <li>「選ぶ」と「グラフ線」にソート・絞込要素を追加</li>
-              <li>グラフの経験値・レベル線を個別にON/OFF可能に</li>
+              <li>愛蔵の一ノ倉を公開しました</li>
+              <li>出陣支度部屋を公開しました</li>
             </ul>
           </div>
         </div>
@@ -911,150 +1023,24 @@ footer {
       <!-- 3件目：折りたたみ -->
       <div class="tl-entry" id="tl-2">
         <div class="tl-header" onclick="tlToggle('tl-2')">
-          <span class="tl-date">2026.04.30</span>
+          <span class="tl-date">2026.05.29</span>
           <span class="tl-arrow">▼</span>
         </div>
         <div class="tl-body">
           <div class="tl-content">
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">資源帳</div>
+            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
             <ul>
-              <li>クラウドの保存・読込の挙動を変更しました</li>
-              <li>保存時：今まで通り（ローカルの全データをクラウドへ）</li>
-              <li>読込時：クラウドと手元のデータを合体し、日付ごとに新しい方を優先</li>
+              <li>起動時にクラウドとのデータ差分をチェックするようにしました（データの取り違え防止）</li>
+              <li>インポート時に確認ダイアログ・自動バックアップ・復元機能を追加しました</li>
+              <li>山鳥毛（極）のステータスデータを暫定追加しました</li>
+              <li>細かな不具合を修正しました</li>
             </ul>
-            <div class="tl-note">
-              ※同じ日付にスマホとPCで別々に入力した場合、後から保存した方を優先（タイムスタンプで判断）<br>
-              ※複数端末利用時、一方で期間メモを削除しても、もう一方から保存し直すと復活する場合があります<br>
-              ※不評であれば元の上書き方式に戻す予定です<br>
-              この機能は試運転中です。
-            </div>
           </div>
         </div>
       </div>
 
-      <!-- 過去の更新ボタン -->
-      <button class="tl-older-toggle" id="older-btn" onclick="tlOlderToggle()">
-        過去の更新を見る
-        <span class="tl-older-arrow">▼</span>
-      </button>
-
-      <!-- 4件目以降：ボタンで展開 -->
-      <div class="tl-older" id="tl-older">
-        <div style="height:4px;"></div>
-
-        <div class="tl-entry" id="tl-3">
-          <div class="tl-header" onclick="tlToggle('tl-3')">
-            <span class="tl-date">2026.04.26</span>
-            <span class="tl-arrow">▼</span>
-          </div>
-          <div class="tl-body">
-            <div class="tl-content">
-              <ul>
-                <li>連絡ツール（Wavebox）を追加</li>
-                <li>ボタン配置の調整</li>
-                <li>軽微なバグ修正</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="tl-entry" id="tl-4">
-          <div class="tl-header" onclick="tlToggle('tl-4')">
-            <span class="tl-date">2026.04.25</span>
-            <span class="tl-arrow">▼</span>
-          </div>
-          <div class="tl-body">
-            <div class="tl-content">
-              <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">資源帳</div>
-              <ul>
-                <li>期間メモをグラフで選択強調できるように</li>
-                <li>その他軽微な改修</li>
-              </ul>
-              <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
-              <ul>
-                <li>期間メモ・日メモのUI刷新</li>
-                <li>刀種複数選択に対応</li>
-                <li>PCヘッダー刷新（同期ボタン・ログアウト・最終同期時刻）</li>
-                <li>クラウド同期・グラフ操作の改修（試運転中）</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="tl-entry" id="tl-5">
-          <div class="tl-header" onclick="tlToggle('tl-5')">
-            <span class="tl-date">2026.04.24</span>
-            <span class="tl-arrow">▼</span>
-          </div>
-          <div class="tl-body">
-            <div class="tl-content">
-              <ul>
-                <li>「イベント・キャンペーン」→「期間メモ」に名称変更</li>
-                <li>「メモ」→「日メモ」に名称変更</li>
-                <li>グラフ表示を三種類から選べるようになりました（設定・グラフ内ボタンで切替）</li>
-                <li>グラフで期間メモを選択して強調できるようになりました</li>
-                <li>グラフの日付形式を切り替えできるようになりました</li>
-                <li>期間メモ・日メモのプリセット表示を改善しました</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="tl-entry" id="tl-6">
-          <div class="tl-header" onclick="tlToggle('tl-6')">
-            <span class="tl-date">2026.04.23</span>
-            <span class="tl-arrow">▼</span>
-          </div>
-          <div class="tl-body">
-            <div class="tl-content">
-              <ul>
-                <li>イベント機能の表現を「イベント・キャンペーン期間機能」に変更</li>
-                <li>キャンペーン名をプリセットに追加</li>
-                <li>推奨環境を説明書に追加</li>
-                <li>誤字を修正</li>
-              </ul>
-              <div class="tl-note">
-                現在、サイトの整備（説明書・案内の追加）を行っています。<br>
-                それに伴い、メールフォームは一時休止中です。再開は未定です。<br>
-                すべてのご連絡・ご要望にお応えできるわけではありませんのでご了承ください。
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="tl-entry" id="tl-7">
-          <div class="tl-header" onclick="tlToggle('tl-7')">
-            <span class="tl-date">2026.04.22</span>
-            <span class="tl-arrow">▼</span>
-          </div>
-          <div class="tl-body">
-            <div class="tl-content">
-              <ul>
-                <li>メールフォームを設置しました</li>
-                <li>資源帳の遠征データを同期対象に追加</li>
-                <li>稽古録でクラウド同期時に自動読み込みされる不具合を修正</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="tl-entry" id="tl-8">
-          <div class="tl-header" onclick="tlToggle('tl-8')">
-            <span class="tl-date">2026.04.21</span>
-            <span class="tl-arrow">▼</span>
-          </div>
-          <div class="tl-body">
-            <div class="tl-content">
-              <ul>
-                <li>稽古録に柏太刀のデータを追加</li>
-                <li>稽古録の同期まわりを確認中（警告は設定から有効・無効を切替可能）</li>
-                <li>近日メールフォームを追加予定</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- /tl-older -->
+      <!-- すべての更新履歴 -->
+      <a href="changelog.html" class="tl-all-link">すべての更新履歴 →</a>
 
     </div><!-- /timeline -->
   </div>
@@ -1102,7 +1088,21 @@ footer {
   </div>
   <span class="mail-link">開く →</span>
 </a>
-<!-- 猫の休憩所パネル -->
+<!-- Googleフォームパネル -->
+<a class="google-panel" href="https://docs.google.com/forms/d/e/1FAIpQLSffDZEvuzFvYQcAuFn5O3lSacRS2FAHpfbz_4xbZppf-ElOuw/viewform?usp=dialog" target="_blank" rel="noopener">
+  <div class="google-icon-area">
+    <!-- google_icon.png を同じフォルダに入れると表示されます -->
+    <img src="google_icon.png" alt="Googleフォーム" onerror="this.style.display='none'">
+  </div>
+  <div class="google-body">
+    <div class="google-title">Googleフォーム</div>
+    <div class="google-desc">
+      メールフォームと同じ内容をGoogleフォームからお送りいただけます。<br>
+      お好きな方をご利用ください。
+    </div>
+  </div>
+  <span class="google-link">開く →</span>
+</a>
 <a class="neko-panel" href="../index.html">
   <div class="neko-icon-area">
     <!-- necomomi.png を同じフォルダに入れると表示されます -->
@@ -1137,18 +1137,6 @@ function tlToggle(id) {
   const isLatest = entry.classList.contains('is-latest');
   if (isLatest) return; // 最新は常に開いたまま
   entry.classList.toggle('is-open');
-}
-
-function tlOlderToggle() {
-  const btn = document.getElementById('older-btn');
-  const older = document.getElementById('tl-older');
-  btn.classList.toggle('is-open');
-  older.classList.toggle('is-open');
-  // ラベル切替
-  const label = btn.childNodes[0];
-  label.textContent = older.classList.contains('is-open')
-    ? '過去の更新を閉じる '
-    : '過去の更新を見る ';
 }
 </script>
 </html>

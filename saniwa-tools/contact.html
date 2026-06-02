@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>お問い合わせ — 審神者の道具箱</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QM317D9ESN');
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -198,9 +206,7 @@ footer {
       管理人はいただいたお手紙すべてにお返事できるわけではありません。<br>
       返信が必要な内容の場合は、返信用メールアドレスをご記入ください。
     </p>
-    <div class="privacy-note">
-      ※ 以前のメールフォーム（撤去済み）に送信された方の情報は収集しておりませんので、ご安心ください。
-    </div>
+
   </div>
 
   <div class="panel" id="step-form">
@@ -220,7 +226,7 @@ footer {
           <div class="field-label">対象アプリ <span class="badge-req">必須</span></div>
           <select name="app" id="inp-app" onchange="onCategoryChange()">
             <option value="">選択してください</option>
-            <option value="資材帳">資材帳</option>
+            <option value="資源帳">資源帳</option>
             <option value="稽古録">稽古録</option>
             <option value="その他・全般">その他・全般</option>
           </select>
@@ -256,7 +262,7 @@ footer {
         <label class="check-item" data-mode="all">
           <input type="checkbox" class="confirm-check">
           <span>マニュアルと説明書を読みました
-            （<a href="Shizaichou_manual.html" target="_blank">資材帳</a> ／ <a href="keikoroku_manual.html" target="_blank">稽古録</a>）</span>
+            （<a href="Shizaichou_manual.html" target="_blank">資源帳</a> ／ <a href="keikoroku_manual.html" target="_blank">稽古録</a>）</span>
         </label>
         <div class="checklist-error">すべての項目にチェックを入れてください</div>
       </div>
@@ -358,6 +364,12 @@ const TEMPLATES = {
 
 【どんな場面で使いたいか】
 
+
+【端末】例：iPhone 17 Pro / Windows など
+
+【ブラウザ】例：Chrome / Safari / Firefox など
+
+【OS】例：iOS 26 / Windows 11 / Android 16 など
 
 【その他・補足】
 `

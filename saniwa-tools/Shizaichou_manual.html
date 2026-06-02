@@ -5,20 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>資源帳 説明書 — 審神者の道具箱</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QM317D9ESN');
+</script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   font-family: 'Noto Serif JP', serif;
   min-height: 100vh;
-  background: #5a1010;
+  background: #8b1a1a;
 }
 
 .bg {
   min-height: 100vh;
-  background:
-    radial-gradient(ellipse at 20% 0%, #6b2010 0%, #3a0e0e 35%, #1a0a08 65%, #0e0a06 100%);
   position: relative;
+}
+/* トップと同じ和紙背景（長いページでも安定するよう固定レイヤー方式） */
+.bg-fixed {
+  position: fixed; inset: 0;
+  z-index: -1;
+  background-color: #8b1a1a;
+  background-image:
+    linear-gradient(rgba(30,10,8,.28), rgba(20,8,6,.42)),
+    url('background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 .bg::before {
   content: '';
@@ -40,6 +58,10 @@ body {
 /* ── ヘッダー ── */
 .page-header {
   margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 18px;
 }
 .back-link {
   display: inline-flex;
@@ -51,7 +73,6 @@ body {
   text-decoration: none;
   letter-spacing: .1em;
   transition: color .2s;
-  margin-bottom: 16px;
 }
 .back-link:hover { color: #f0dcc0; }
 
@@ -257,9 +278,10 @@ body {
 /* フッター */
 footer {
   position: relative; z-index: 1; text-align: center; padding: 18px;
-  font-size: 11px; color: rgba(240,220,190,.45); letter-spacing: .15em;
+  font-size: 11px; color: rgba(240,220,190,.55); letter-spacing: .15em;
   font-family: 'Noto Sans JP', sans-serif;
   margin-top: 10px;
+  background: rgba(0,0,0,.4);
 }
 
 /* スクロールトップ */
@@ -288,16 +310,17 @@ footer {
 </head>
 <body>
 <div class="bg">
+<div class="bg-fixed"></div>
 <div class="wrapper">
 
 <!-- ヘッダー -->
 <div class="page-header">
   <a class="back-link" href="saniwa_top.html">← 審神者の道具箱へ戻る</a>
-    <div class="page-title-block">
-      <div class="page-title">
-        資源帳
-        <span class="page-title-sub">説明書</span>
-      </div>
+  <div class="page-title-block">
+    <div class="page-title">
+      資源帳
+      <span class="page-title-sub">説明書</span>
+    </div>
   </div>
 </div>
 
@@ -416,6 +439,20 @@ footer {
   <div class="divider"></div>
 
   <div class="sub-section">
+    <div class="sub-heading">お札グラフ</div>
+    <div class="text">
+      メインのグラフとは桁が大きく異なるため、お札（富士・松・竹・梅）は<em>専用のグラフ</em>としてメイングラフの下に表示されます。
+    </div>
+    <ul class="list">
+      <li>グラフ右上の<em>「お札 on/off」</em>ボタンで、お札グラフの表示・非表示を切り替えられます</li>
+      <li>お札グラフの凡例をタップすると、種類ごとに線を表示・非表示にできます</li>
+    </ul>
+    <div class="note">設定タブの「お札グラフ」からも表示・非表示を変更できます。</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
     <div class="sub-heading">期間メモの表示スタイル</div>
     <div class="text">
       グラフ上に期間メモを重ねて表示できます。表示スタイルは3種類から選べます。
@@ -459,7 +496,8 @@ footer {
   <div class="sub-section">
     <div class="sub-heading">日付の選択</div>
     <div class="text">
-      <em>今日</em>ボタンで本日の日付に切り替えられます。<em>←</em>・<em>→</em> で前後の日に移動できます。<br>
+      <em>📅 日付欄</em>をタップするとカレンダーが開き、記録したい日を選べます。<em>◀ ▶</em> で月を切り替えられます。<br>
+      <em>今日</em>ボタンで本日の日付に切り替え、<em>←</em>・<em>→</em> で前後の日に移動できます。<br>
       同じ日付のデータがすでにある場合は上書きされます。
     </div>
   </div>
@@ -502,6 +540,56 @@ footer {
       入力不要な項目は空白のままで構いません。入力した資源のみが記録されます。
     </div>
   </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">お札（富士・松・竹・梅）</div>
+    <div class="text">
+      連隊戦などで手に入るお札も、上記の資源とは<em>別グループ</em>として同じ日付にまとめて記録できます。グラフでは専用の「お札グラフ」に表示されます。
+    </div>
+    <div class="res-grid">
+      <div class="res-card">
+        <div class="res-name" style="color:#7898e8">富士の札</div>
+        <div class="res-cap">単位：枚</div>
+      </div>
+      <div class="res-card">
+        <div class="res-name" style="color:#52c878">松の札</div>
+        <div class="res-cap">単位：枚</div>
+      </div>
+      <div class="res-card">
+        <div class="res-name" style="color:#a8d060">竹の札</div>
+        <div class="res-cap">単位：枚</div>
+      </div>
+      <div class="res-card">
+        <div class="res-name" style="color:#e87878">梅の札</div>
+        <div class="res-cap">単位：枚</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">引き継ぎ・クリア</div>
+    <div class="text">
+      選択中の日付より前の<em>直近の記録</em>から、数値をワンタップでコピーできます。前回から変動の少ない資源を入力する手間を省けます。
+    </div>
+    <ul class="list">
+      <li><em>↩ 札を引き継ぐ</em>：富士・松・竹・梅の4種類だけを引き継ぎます</li>
+      <li><em>↩ 全資源を引き継ぐ</em>：すべての資源とお札を引き継ぎます</li>
+      <li><em>✕ クリア</em>：入力中の数値をすべて空にします</li>
+    </ul>
+    <div class="note">
+      引き継ぎ後の数値は手動で修正できます。過去の記録が1件もない場合、引き継ぎボタンは押せません。
+    </div>
+    <div class="hint">
+      <div class="hint-head">💡 お札だけ引き継げる理由</div>
+      <div class="hint-text">
+        お札は資源と比べて増減のタイミングが限られるため、前回の枚数をそのまま引き継いで、変わった分だけ直す使い方が便利です。
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- 期間・日別メモ -->
@@ -521,7 +609,8 @@ footer {
     </div>
     <ul class="list">
       <li><em>プリセット</em>から選択すると名前が自動入力されます（手動修正も可能）</li>
-      <li>開始日・終了日と表示色を設定して「追加する」を押します</li>
+      <li>開始日・終了日は<em>📅 ボタン</em>をタップしてカレンダーから選びます</li>
+      <li>表示色を設定して「追加する」を押します</li>
       <li>追加したメモはグラフ上に帯・ガントバー・ブラケットのいずれかで表示されます</li>
     </ul>
   </div>
@@ -531,7 +620,7 @@ footer {
   <div class="sub-section">
     <div class="sub-heading">日別メモ</div>
     <div class="text">
-      特定の日付に一言メモを残せます。グラフ上で<em>縦線と連動</em>して表示され、タップすると内容を確認できます。
+      特定の日付に一言メモを残せます。日付は<em>📅 ボタン</em>からカレンダーで選択します。グラフ上で<em>縦線と連動</em>して表示され、タップすると内容を確認できます。
     </div>
     <div class="hint">
       <div class="hint-head">💡 使い方の例</div>
@@ -690,6 +779,15 @@ footer {
   <div class="divider"></div>
 
   <div class="block">
+    <div class="sub-heading">お札グラフ</div>
+    <div class="text">
+      グラフタブにお札（富士・松・竹・梅）の在庫推移グラフを<em>表示 / 非表示</em>で切り替えます。お札を記録していない場合は非表示にしておくとすっきりします。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
     <div class="sub-heading">明暗モード</div>
     <ul class="list">
       <li><em>テーマに従う</em>：各テーマのデフォルト設定に従います</li>
@@ -717,9 +815,7 @@ footer {
       「許可を求める」ボタンからブラウザへの通知許可を設定できます。<br>
       許可後は「テスト通知を送る」で動作確認ができます。
     </div>
-    <div class="note">通知はページ内のバナーと効果音でもお知らせします。<br>
-      全ての端末で同じように動作するわけではありません。
-    </div>
+    <div class="note">通知はページ内のバナーと効果音でもお知らせします。</div>
   </div>
 
   <div class="divider"></div>
@@ -729,6 +825,9 @@ footer {
     <div class="text">
       Google アカウントでログインすると、データを Google ドライブへ保存・読み込みできます。<br>
       ヘッダーの <em>「↑ 保存」「↓ 読み込み」</em> ボタンから手動で同期します。
+    </div>
+    <div class="note">
+      一度ログインすると、<em>ページを再読み込みしてもログイン状態が維持</em>されます（タブを閉じるまで有効）。毎回ログインし直す必要はありません。
     </div>
     <div class="note">
       「クラウドが新しい場合に警告を表示する」のチェックを入れておくと、クラウドのデータの方が新しいときに上書き確認ダイアログが表示されます。

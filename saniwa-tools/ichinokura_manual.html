@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>愛蔵の一ノ倉 説明書 — 審神者の道具箱</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QM317D9ESN');
+</script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Serif JP', serif;
+  min-height: 100vh;
+  background: #8b1a1a;
+}
+
+.bg {
+  min-height: 100vh;
+  position: relative;
+}
+/* トップと同じ和紙背景（長いページでも安定するよう固定レイヤー方式） */
+.bg-fixed {
+  position: fixed; inset: 0;
+  z-index: -1;
+  background-color: #8b1a1a;
+  background-image:
+    linear-gradient(rgba(30,10,8,.28), rgba(20,8,6,.42)),
+    url('background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.bg::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    repeating-linear-gradient(45deg, rgba(0,0,0,.05) 0px, rgba(0,0,0,.05) 1px, transparent 1px, transparent 9px),
+    repeating-linear-gradient(-45deg, rgba(0,0,0,.04) 0px, rgba(0,0,0,.04) 1px, transparent 1px, transparent 9px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrapper {
+  position: relative; z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+/* ── ヘッダー ── */
+.page-header {
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 18px;
+}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-family: 'Noto Sans JP', sans-serif;
+  color: rgba(240,220,190,.55);
+  text-decoration: none;
+  letter-spacing: .1em;
+  transition: color .2s;
+}
+.back-link:hover { color: #f0dcc0; }
+
+.page-title-block {
+  background: rgba(255,255,255,.88);
+  border: 2px solid rgba(180,120,80,.4);
+  border-radius: 12px;
+  padding: 16px 28px;
+  display: inline-block;
+  box-shadow: 2px 3px 14px rgba(0,0,0,.22);
+}
+.page-title {
+  font-size: 24px; font-weight: 700; letter-spacing: .18em; color: #2c1a10;
+  display: flex; align-items: baseline; gap: 12px;
+}
+.page-title-sub {
+  font-size: 12px; font-weight: 400; color: #6a4428; letter-spacing: .12em;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* ── 目次 ── */
+.toc-panel {
+  background: rgba(0,0,0,.30);
+  border: 1px solid rgba(255,220,160,.16);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(3px);
+}
+.toc-heading {
+  font-size: 11px; font-weight: 500; letter-spacing: .28em; color: #e9d2ad;
+  margin-bottom: 12px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.toc-grid {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.toc-btn {
+  font-size: 12px;
+  font-family: 'Noto Sans JP', sans-serif;
+  color: #e8c878;
+  background: rgba(200,168,75,.08);
+  border: 1px solid rgba(200,168,75,.25);
+  border-radius: 20px;
+  padding: 5px 14px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .2s, color .2s;
+  display: inline-block;
+  letter-spacing: .05em;
+}
+.toc-btn:hover {
+  background: rgba(200,168,75,.2);
+  color: #f8e8a0;
+}
+
+/* ── セクションパネル ── */
+.section {
+  background: rgba(0,0,0,.34);
+  border: 1px solid rgba(255,220,160,.18);
+  border-radius: 12px;
+  padding: 24px 26px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(3px);
+  scroll-margin-top: 16px;
+}
+
+.section-heading {
+  font-size: 18px; font-weight: 700; letter-spacing: .14em; color: #f0dcc0;
+  margin-bottom: 16px; padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,220,160,.2);
+  display: flex; align-items: center; gap: 10px;
+}
+.section-icon { font-size: 17px; }
+
+/* ── ラベル・共通パーツ ── */
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px; font-weight: 600; letter-spacing: .18em;
+  color: #c8a84b;
+  background: rgba(200,168,75,.12);
+  border: 1px solid rgba(200,168,75,.25);
+  border-radius: 4px;
+  padding: 3px 10px;
+  margin-bottom: 8px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.text {
+  font-size: 13px; line-height: 2.1; color: #f0dcc0; text-align: justify;
+  font-family: 'Noto Sans JP', sans-serif; font-weight: 300;
+}
+.text em { font-style: normal; color: #f8eecc; font-weight: 500; }
+
+.note {
+  font-size: 12px; line-height: 1.9; color: #d4b898; margin-top: 8px;
+  padding-left: 12px; border-left: 2px solid rgba(255,200,120,.28);
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.note em { font-style: normal; color: #f0c870; font-weight: 500; }
+
+.divider {
+  height: 1px;
+  background: rgba(255,220,160,.1);
+  margin: 16px 0;
+}
+
+.block { margin-bottom: 14px; }
+.block:last-child { margin-bottom: 0; }
+
+/* リスト */
+.list {
+  list-style: none; padding: 0; margin: 0;
+}
+.list li {
+  font-size: 13px; line-height: 2.0; color: #f0dcc0;
+  font-family: 'Noto Sans JP', sans-serif; font-weight: 300;
+  padding-left: 14px; position: relative;
+}
+.list li::before {
+  content: '・';
+  position: absolute; left: 0;
+  color: #c8a84b; opacity: .7;
+}
+.list li em { font-style: normal; color: #f8eecc; font-weight: 500; }
+
+/* 手順リスト（番号付き） */
+.steps {
+  list-style: none; padding: 0; margin: 6px 0 0; counter-reset: step;
+}
+.steps li {
+  font-size: 13px; line-height: 1.85; color: #f0dcc0;
+  font-family: 'Noto Sans JP', sans-serif; font-weight: 300;
+  padding-left: 30px; position: relative; margin-bottom: 8px;
+}
+.steps li:last-child { margin-bottom: 0; }
+.steps li::before {
+  counter-increment: step;
+  content: counter(step);
+  position: absolute; left: 0; top: 2px;
+  width: 20px; height: 20px;
+  background: rgba(200,168,75,.18);
+  border: 1px solid rgba(200,168,75,.4);
+  border-radius: 50%;
+  color: #e8c878; font-size: 11px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+}
+.steps li em { font-style: normal; color: #f8eecc; font-weight: 500; }
+
+/* 警告ボックス */
+.warn {
+  background: rgba(200,120,50,.15);
+  border: 1px solid rgba(220,150,80,.25);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 8px;
+}
+.warn-head {
+  font-size: 11px; font-weight: 600; color: #e8b870;
+  letter-spacing: .1em; margin-bottom: 5px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.warn-text {
+  font-size: 12px; line-height: 1.9; color: #d4a870;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* ヒントボックス（青寄り） */
+.hint {
+  background: rgba(91,159,232,.1);
+  border: 1px solid rgba(91,159,232,.25);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 8px;
+}
+.hint-head {
+  font-size: 11px; font-weight: 600; color: #90c4f0;
+  letter-spacing: .1em; margin-bottom: 5px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.hint-text {
+  font-size: 12px; line-height: 1.9; color: #b8d8f8;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.hint-text em { font-style: normal; color: #d0e8ff; font-weight: 500; }
+
+/* カテゴリ・グレード等のチップ表示 */
+.chip-grid {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;
+}
+.chip {
+  font-size: 12px;
+  font-family: 'Noto Sans JP', sans-serif;
+  color: #e9d2ad;
+  background: rgba(0,0,0,.2);
+  border: 1px solid rgba(255,220,160,.16);
+  border-radius: 16px;
+  padding: 4px 12px;
+  letter-spacing: .04em;
+}
+
+/* ステータス並び表 */
+.stat-order {
+  display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;
+}
+.stat-order span {
+  font-size: 12px;
+  font-family: 'Noto Sans JP', sans-serif;
+  color: #f0dcc0;
+  background: rgba(200,168,75,.1);
+  border: 1px solid rgba(200,168,75,.22);
+  border-radius: 6px;
+  padding: 3px 10px;
+}
+
+/* タブ見出し */
+.sub-section { margin-top: 14px; }
+.sub-heading {
+  font-size: 13px; font-weight: 500; color: #e8c878;
+  letter-spacing: .08em; margin-bottom: 6px;
+  font-family: 'Noto Sans JP', sans-serif;
+  display: flex; align-items: center; gap: 6px;
+}
+.sub-heading::before {
+  content: '▸';
+  color: rgba(200,168,75,.6);
+  font-size: 10px;
+}
+
+/* フッター */
+footer {
+  position: relative; z-index: 1; text-align: center; padding: 18px;
+  font-size: 11px; color: rgba(240,220,190,.55); letter-spacing: .15em;
+  font-family: 'Noto Sans JP', sans-serif;
+  margin-top: 10px;
+  background: rgba(0,0,0,.4);
+}
+
+/* スクロールトップ */
+.scroll-top {
+  position: fixed; bottom: 24px; right: 20px; z-index: 50;
+  width: 40px; height: 40px;
+  background: rgba(200,168,75,.2);
+  border: 1px solid rgba(200,168,75,.4);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #c8a84b; font-size: 16px;
+  transition: all .2s;
+  text-decoration: none;
+  opacity: 0; pointer-events: none;
+}
+.scroll-top.visible { opacity: 1; pointer-events: auto; }
+.scroll-top:hover { background: rgba(200,168,75,.35); }
+
+@media (max-width: 600px) {
+  .wrapper { padding: 20px 14px 50px; }
+  .section { padding: 18px 16px; }
+  .page-title { font-size: 20px; }
+}
+</style>
+</head>
+<body>
+<div class="bg">
+<div class="bg-fixed"></div>
+<div class="wrapper">
+
+<!-- ヘッダー -->
+<div class="page-header">
+  <a class="back-link" href="saniwa_top.html">← 審神者の道具箱へ戻る</a>
+  <div class="page-title-block">
+    <div class="page-title">
+      愛蔵の一ノ倉
+      <span class="page-title-sub">説明書</span>
+    </div>
+  </div>
+</div>
+
+<!-- 目次 -->
+<nav class="toc-panel" id="top">
+  <div class="toc-heading">＊ 目 次 ＊</div>
+  <div class="toc-grid">
+    <a class="toc-btn" href="#about">このアプリについて</a>
+    <a class="toc-btn" href="#frag">断片管理</a>
+    <a class="toc-btn" href="#treasure">宝物帳</a>
+    <a class="toc-btn" href="#shugou">習合</a>
+    <a class="toc-btn" href="#tosou">刀装</a>
+    <a class="toc-btn" href="#uma">馬</a>
+    <a class="toc-btn" href="#memo">暦メモ</a>
+    <a class="toc-btn" href="#settings">設定・テーマ</a>
+    <a class="toc-btn" href="#backup">バックアップ</a>
+    <a class="toc-btn" href="#faq">よくある質問</a>
+  </div>
+</nav>
+
+<!-- このアプリについて -->
+<section class="section" id="about">
+  <div class="section-heading"><span class="section-icon">📖</span>このアプリについて</div>
+
+  <div class="block">
+    <div class="label">概要</div>
+    <div class="text">
+      <em>愛蔵の一ノ倉</em>は、刀剣乱舞の<em>宝物・断片・刀装・馬</em>を管理するツールです。<br>
+      手に入れた宝物を個体ごとに記録し、レベル・愛用度・刻名を残したり、ステータスで並べ替えて装備の検討に使えます。<br>
+      ゲーム内のデータを自動取得することはありません。<em>すべて審神者本人の手入力</em>によって記録していくツールです。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">📑 5つのタブ</div>
+    <ul class="list">
+      <li><em>断片管理</em>：断片の所持数を記録し、宝物の製作計画を立てる</li>
+      <li><em>宝物帳</em>：所持している宝物を個体ごとに管理する</li>
+      <li><em>刀装</em>：刀装のステータス一覧を閲覧・並べ替える</li>
+      <li><em>馬</em>：馬のステータス一覧を閲覧・並べ替える</li>
+      <li><em>暦メモ</em>：イベント期間や日々のメモをカレンダーに記録する</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">💾 データの保存</div>
+    <div class="text">
+      データはお使いの端末のブラウザ内（ローカルストレージ）にのみ保存されます。<br>
+      管理人がデータを確認・アクセスすることは<em>一切ありません</em>。
+    </div>
+    <div class="note">
+      Google ドライブ同期・JSON エクスポートはバックアップの一つとしてご利用ください。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">🔄 稽古録・資源帳との連携</div>
+    <div class="text">
+      <em>暦メモ（期間メモ・日メモ）</em>は、同じサイト上の<em>稽古録・資源帳</em>と自動で共有されます。<br>
+      一ノ倉で登録したイベントは稽古録・資源帳のカレンダーにも反映され、逆も同じです。同じ予定を何度も入力する必要はありません。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">🌐 推奨ブラウザ</div>
+    <ul class="list">
+      <li>PC：Chrome / Edge / Firefox</li>
+      <li>スマートフォン：Chrome / Firefox / Safari</li>
+    </ul>
+    <div class="warn" style="margin-top:10px">
+      <div class="warn-head">⚠ アプリ内ブラウザ（WebView）をお使いの方へ</div>
+      <div class="warn-text">
+        SNS アプリなどのアプリ内ブラウザでは、Google ドライブとの同期が動作しません。<br>
+        （Google のセキュリティポリシーによる制限です）<br>
+        同期を使う場合は推奨ブラウザからアクセスしてください。<br>
+        同期の代わりに設定の JSON インポート・エクスポートもご活用ください。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 断片管理 -->
+<section class="section" id="frag">
+  <div class="section-heading"><span class="section-icon">🔮</span>断片管理タブ</div>
+
+  <div class="block">
+    <div class="text">
+      宝物の<em>断片</em>の所持数を記録し、あと何個集めれば目標の宝物を作れるかを確認できるタブです。
+    </div>
+  </div>
+
+  <div class="sub-section">
+    <div class="sub-heading">表の見方</div>
+    <ul class="list">
+      <li><em>必要数</em>：その宝物を 1 つ作るのに必要な断片の数</li>
+      <li><em>所持断片数</em>：今持っている断片の数（ここに直接入力します）</li>
+      <li><em>製作可能</em>：今の断片で作れる宝物の数</li>
+      <li><em>宝物目標数</em>：作りたい数の目標を入力できます</li>
+      <li><em>あと必要</em>：目標まであと何個の断片が要るか</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">＋ 宝物を作る</div>
+    <div class="text">
+      断片を消費して宝物を作り、そのまま宝物帳に登録できます。
+    </div>
+    <ol class="steps">
+      <li><em>＋ 宝物を作る</em> を押す</li>
+      <li>宝物の種類・作る個数・最初のレベルを選ぶ（最初は通常 Lv1）</li>
+      <li>消費する断片の数が表示されるので確認して <em>作成する</em></li>
+    </ol>
+    <div class="hint">
+      <div class="hint-head">💡 ヒント</div>
+      <div class="hint-text">
+        すでに持っている宝物を断片を使わずに登録したいときは、<em>宝物帳タブの「＋ 個体を追加」</em> からどうぞ。こちらは断片を消費しません。
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">表示の切り替え</div>
+    <div class="text">
+      右上のボタンで<em>テーブル表示</em>と<em>カード表示</em>を切り替えられます。スマホレイアウトのときはカード表示に固定されます。
+    </div>
+  </div>
+</section>
+
+<!-- 宝物帳 -->
+<section class="section" id="treasure">
+  <div class="section-heading"><span class="section-icon">🏆</span>宝物帳タブ</div>
+
+  <div class="block">
+    <div class="text">
+      所持している宝物を<em>1個体ずつ</em>管理するタブです。同じ種類の宝物を複数持っていても、それぞれ別の個体として記録できます。
+    </div>
+  </div>
+
+  <div class="sub-section">
+    <div class="sub-heading">個体に記録できること</div>
+    <ul class="list">
+      <li><em>レベル</em>（Lv1〜5）</li>
+      <li><em>愛用度</em>（0〜10000）と<em>刻名</em>（筆頭男士の名前）</li>
+      <li><em>メモ</em>（自由記述）</li>
+    </ul>
+    <div class="note">
+      愛用度が 1000 に達するごとに「千・二千・三千…一萬」の称号がつきます。<br>
+      刻名を入れて愛用度が称号に届くと、<em>宝物名［刻名］称号</em> の形で正式に表示されます。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">追加・編集・削除</div>
+    <ul class="list">
+      <li><em>＋ 個体を追加</em>：断片を使わずに宝物を直接登録します</li>
+      <li>各カードの <em>⋯ メニュー</em> から編集・習合・削除ができます</li>
+      <li>削除は確認ダイアログが出るので、誤操作の心配はありません</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">カテゴリで絞り込む</div>
+    <div class="text">宝物のカテゴリで表示を絞り込めます。</div>
+    <div class="chip-grid">
+      <span class="chip">すべて</span>
+      <span class="chip">刀装具</span>
+      <span class="chip">武具</span>
+      <span class="chip">茶道具</span>
+      <span class="chip">馬具</span>
+      <span class="chip">絵画</span>
+      <span class="chip">彫刻</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">整列（並べ替え）</div>
+    <div class="text">
+      宝物帳順・レア度・Lv・愛用度のほか、<em>ステータスごと</em>に並べ替えられます。装備の検討に便利です。
+    </div>
+    <div class="stat-order">
+      <span>打撃</span><span>統率</span><span>機動</span><span>衝力</span>
+      <span>偵察</span><span>隠蔽</span><span>必殺</span>
+    </div>
+    <ul class="list" style="margin-top:10px">
+      <li><em>▼ 降順 / ▲ 昇順</em>ボタンで並び順を反転できます</li>
+      <li><em>カスタム</em>を選ぶと、各カードの ▲▼ ボタンで好きな順に並べ替えられます</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">表示の切り替え</div>
+    <ul class="list">
+      <li><em>⊞ グリッド</em>：カードを並べて一覧。見た目重視</li>
+      <li><em>≡ リスト</em>：表形式で全ステータスを一度に確認。列の見出しを押すとその項目で並べ替え</li>
+      <li><em>📐 高さ揃え</em>：長い名前も省略せず全表示し、カードの高さを揃えます</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 習合 -->
+<section class="section" id="shugou">
+  <div class="section-heading"><span class="section-icon">⚔</span>習合（レベル上げ）</div>
+
+  <div class="block">
+    <div class="text">
+      <em>習合</em>は、同じ種類の宝物を素材にしてレベルを上げる機能です。宝物帳のカードの <em>⋯ メニュー → 習合</em> から行えます。
+    </div>
+    <ol class="steps">
+      <li>レベルを上げたい宝物の <em>⋯ → 習合</em> を選ぶ</li>
+      <li>素材にする同じ種類の個体をチェックする（複数選べます）</li>
+      <li>習合後のレベルを確認して <em>習合する</em></li>
+    </ol>
+  </div>
+
+  <div class="hint">
+    <div class="hint-head">💡 仕組み</div>
+    <div class="hint-text">
+      素材<em>1個につきレベルが1上がり</em>、最大 Lv5 まで上がります。<br>
+      素材にした個体は習合すると<em>なくなります</em>のでご注意ください。
+    </div>
+  </div>
+</section>
+
+<!-- 刀装 -->
+<section class="section" id="tosou">
+  <div class="section-heading"><span class="section-icon">🛡️</span>刀装タブ</div>
+
+  <div class="block">
+    <div class="text">
+      刀装のステータス一覧を確認できる<em>資料用のタブ</em>です。どの刀装を付けるか検討するときに役立ちます。
+    </div>
+  </div>
+
+  <div class="sub-section">
+    <div class="sub-heading">グレードの切り替え</div>
+    <div class="chip-grid">
+      <span class="chip">並</span>
+      <span class="chip">上</span>
+      <span class="chip">特上</span>
+    </div>
+    <div class="text" style="margin-top:8px">選んだグレードのステータスで一覧が表示されます。</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">装備できる刀種で絞り込む</div>
+    <div class="chip-grid">
+      <span class="chip">短刀</span>
+      <span class="chip">脇差</span>
+      <span class="chip">打刀</span>
+      <span class="chip">太刀</span>
+      <span class="chip">大太刀</span>
+      <span class="chip">槍</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">並べ替え・表示</div>
+    <ul class="list">
+      <li>兵力・打撃・統率・機動・衝力・偵察・隠蔽の各ステータスで並べ替えできます</li>
+      <li><em>▼ 降順 / ▲ 昇順</em>で順序を反転</li>
+      <li><em>≡ テーブル / ▦ カード</em>で表示を切り替え（スマホはカード固定）</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 馬 -->
+<section class="section" id="uma">
+  <div class="section-heading"><span class="section-icon">🐎</span>馬タブ</div>
+
+  <div class="block">
+    <div class="text">
+      馬のステータス一覧を確認できる<em>資料用のタブ</em>です。各ステータスで並べ替えて、付けたい馬を探せます。
+    </div>
+    <ul class="list" style="margin-top:8px">
+      <li>兵力・打撃・統率・機動・衝力・偵察・隠蔽で並べ替え</li>
+      <li><em>▼ 降順 / ▲ 昇順</em>で順序を反転</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 暦メモ -->
+<section class="section" id="memo">
+  <div class="section-heading"><span class="section-icon">📅</span>暦メモタブ</div>
+
+  <div class="block">
+    <div class="text">
+      イベント期間や日々のできごとをカレンダーに記録できるタブです。記録したメモは<em>稽古録・資源帳と共有</em>されます。
+    </div>
+  </div>
+
+  <div class="sub-section">
+    <div class="sub-heading">＋ 期間メモ</div>
+    <div class="text">
+      イベントやキャンペーンなど、<em>期間のある予定</em>を登録します。開始日・終了日・色・備考を設定でき、カレンダー上に横長の帯で表示されます。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">＋ 日メモ</div>
+    <div class="text">
+      特定の<em>1日</em>のできごとを記録します。目印として<em>絵文字</em>または<em>色ドット</em>を選べ、カレンダーのその日に表示されます。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">メモの編集・削除</div>
+    <div class="text">
+      カレンダー下の「メモ一覧」から、登録済みのメモを編集・削除できます。
+    </div>
+  </div>
+
+  <div class="hint">
+    <div class="hint-head">🔄 稽古録・資源帳と自動共有</div>
+    <div class="hint-text">
+      同じサイト上に置かれた稽古録・資源帳とメモを<em>自動で共有</em>します。<br>
+      どれか1つのアプリでイベントを登録すれば、ほかのアプリのカレンダーにも反映されます。
+    </div>
+  </div>
+</section>
+
+<!-- 設定・テーマ -->
+<section class="section" id="settings">
+  <div class="section-heading"><span class="section-icon">⚙️</span>設定・テーマ</div>
+
+  <div class="block">
+    <div class="text">
+      ヘッダー右上のボタンから設定を開けます。
+    </div>
+  </div>
+
+  <div class="sub-section">
+    <div class="sub-heading">テーマ（全10色）</div>
+    <div class="text">
+      5種類の色合い × ライト / ダークの合計10テーマから選べます。初期設定は<em>藍蔵ライト</em>です。
+    </div>
+    <div class="chip-grid">
+      <span class="chip">藍蔵</span>
+      <span class="chip">欅</span>
+      <span class="chip">灰瓦</span>
+      <span class="chip">朱漆</span>
+      <span class="chip">白漆喰</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">レイアウト切り替え（PC / スマホ）</div>
+    <div class="text">
+      ヘッダーのレイアウトボタンで、<em>スマホ向けの表示</em>に切り替えられます。PC からでもスマホでの見え方を確認できます。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">クラウド同期（Google ドライブ）</div>
+    <div class="text">
+      Google アカウントでログインすると、データをクラウドにバックアップできます。
+    </div>
+    <ul class="list" style="margin-top:8px">
+      <li><em>↑ クラウドへ保存</em>：今のデータをクラウドに書き込みます</li>
+      <li><em>↓ クラウドから読み込む</em>：クラウドのデータを取り込みます</li>
+    </ul>
+    <div class="note">
+      保存先は Google ドライブの非表示領域で、ほかのファイルと混ざりません。<br>
+      複数の端末で使うときは、新しい端末で先に <em>↓ 読み込み</em> をしてください。
+    </div>
+  </div>
+</section>
+
+<!-- バックアップ -->
+<section class="section" id="backup">
+  <div class="section-heading"><span class="section-icon">💾</span>バックアップ</div>
+
+  <div class="block">
+    <div class="text">
+      データはお使いの端末のブラウザにだけ保存されます。<em>キャッシュやサイトデータを消すとデータも消えます。</em>大切な記録は定期的にバックアップしておくと安心です。
+    </div>
+  </div>
+
+  <div class="sub-section">
+    <div class="sub-heading">JSON バックアップ</div>
+    <ul class="list">
+      <li>設定 → <em>📤 JSON エクスポート</em>でファイルとして保存</li>
+      <li>設定 → <em>📥 JSON インポート</em>で保存したファイルを読み込み</li>
+    </ul>
+    <div class="warn" style="margin-top:8px">
+      <div class="warn-head">⚠ ご注意</div>
+      <div class="warn-text">
+        インポートすると現在のデータが読み込んだ内容で<em>置き換わります</em>。<br>
+        機種変更やブラウザの変更の前には、エクスポートでバックアップを取っておいてください。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- よくある質問 -->
+<section class="section" id="faq">
+  <div class="section-heading"><span class="section-icon">❓</span>よくある質問</div>
+
+  <div class="block">
+    <div class="label">Q. データが消えてしまった</div>
+    <div class="text">
+      ブラウザのキャッシュ・サイトデータを削除するとデータが消えます。<br>
+      JSON エクスポートまたは Google ドライブ同期でバックアップを取っておいてください。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">Q. 同じ宝物を2個持っている。どうやって登録する？</div>
+    <div class="text">
+      一ノ倉は<em>個体ごとの管理</em>なので、それぞれ別々に登録できます。同じ種類でもレベルや愛用度・刻名を個別に記録できます。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">Q. 習合で素材にした宝物が消えた</div>
+    <div class="text">
+      習合では素材にした個体は<em>なくなる仕様</em>です。これはゲーム内の習合と同じ挙動です。間違えそうなときは、習合前に JSON エクスポートでバックアップを取っておくと安心です。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">Q. スマートフォンで文字が小さい・使いにくい</div>
+    <div class="text">
+      ヘッダーのレイアウトボタンから <em>スマホ表示</em> に切り替えると、モバイル向けの表示になります。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">Q. Google ドライブにログインできない</div>
+    <div class="text">
+      X（Twitter）・LINE などの<em>アプリ内ブラウザ</em>では、Google のセキュリティポリシーにより動作しません。<br>
+      Chrome・Safari・Firefox などの外部ブラウザでアクセスしてください。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">Q. 暦メモが稽古録・資源帳にも出てくる</div>
+    <div class="text">
+      仕様です。3つのアプリで<em>メモを共有</em>しているため、どれか1つで登録した予定はほかのアプリにも反映されます。重複入力の手間が省けます。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="block">
+    <div class="label">Q. 刀装や馬の所持数は記録できる？</div>
+    <div class="text">
+      現在の刀装・馬タブは<em>ステータスを見るための資料</em>です。所持数の管理は今後のアップデートで対応を検討しています。
+    </div>
+  </div>
+</section>
+
+</div><!-- /wrapper -->
+</div><!-- /bg -->
+
+<footer>
+  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。
+</footer>
+
+<a class="scroll-top" id="scroll-top" href="#top" title="トップへ戻る">▲</a>
+
+<script>
+// スクロールトップボタンの表示制御
+const scrollBtn = document.getElementById('scroll-top');
+window.addEventListener('scroll', () => {
+  scrollBtn.classList.toggle('visible', window.scrollY > 300);
+}, { passive: true });
+</script>
+</body>
+</html>
