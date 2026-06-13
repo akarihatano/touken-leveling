@@ -159,7 +159,7 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   border: 1px solid rgba(255,220,160,.12); border-top: none;
   border-radius: 0 0 10px 10px; padding: 0 14px;
 }
-.sp-update-body.is-open { max-height: 500px; opacity: 1; padding: 10px 14px 12px; }
+.sp-update-body.is-open { max-height: 3000px; opacity: 1; padding: 10px 14px 12px; }
 
 /* 右カラム */
 .col-right { grid-area: info; padding: 36px 44px 24px 24px; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
@@ -360,7 +360,7 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
 }
 .tl-entry.is-open .tl-body,
 .tl-entry.is-latest .tl-body {
-  max-height: 600px;
+  max-height: 3000px;
   opacity: 1;
 }
 .tl-content {
@@ -809,6 +809,20 @@ footer {
     </div>
   </a>
 
+  <a class="tool-card" href="kaikouroku.html">
+    <div class="cat-area">
+      <!-- cat6.png を同じフォルダに入れると表示されます -->
+      <img src="cat6.png" alt="猫" onerror="this.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-title">邂逅録</div>
+      <div class="card-desc">
+        ドロップした刀剣男士を記録・集計するツールです。大阪城のボスドロップや小判、目玉男士のドロップ率を分析できます。※通常マップ・連隊戦は順次対応予定です。
+      </div>
+      <span class="card-link">道具を開く →</span>
+    </div>
+  </a>
+
   <!-- マニュアルリンク -->
   <div class="manual-divider">
     <div class="manual-divider-line"></div>
@@ -857,28 +871,52 @@ footer {
 <div class="sp-update-bar">
   <div class="sp-update-toggle" onclick="spUpdateToggle()" id="sp-update-btn">
     <span class="sp-update-label">最新更新</span>
-    <span class="sp-update-date">2026.05.31</span>
+    <span class="sp-update-date">2026.06.12</span>
     <span class="sp-update-badge">最新</span>
     <span class="sp-update-arrow">▼</span>
   </div>
   <div class="sp-update-body" id="sp-update-body">
     <div class="tl-content">
-      <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
+      <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">資源帳</div>
       <ul>
-        <li>審神者レベルの記録に対応しました</li>
+        <li>お札（富士・松・竹・梅）の記録に対応しました</li>
+        <li>使い方ガイド（「？」ボタン）を追加しました</li>
+        <li>インポート・エクスポートを刷新しました（JSON・CSV・Excelに対応、日付単位のマージ）</li>
+        <li>カレンダーの日付ズレを修正し、年・月のドロップダウンを追加しました</li>
+        <li>期間メモ・日メモを折りたたみ表示できるようにしました</li>
+        <li>グラフのメモ凡例に折りたたみを追加しました（終了済み期間メモ・日メモの月別集計・縦横切替）</li>
+        <li>クラウドログイン時に通知メールが届く問題に対処しました</li>
+      </ul>
+      <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
+      <ul>
+        <li>使い方ガイド（「？」ボタン）を追加しました。起動時に初回のみ案内を自動表示します</li>
+        <li>顕現日（入手日）の記録に対応しました</li>
+        <li>入手順ソートを追加しました（同日の手動並べ替えにも対応）</li>
+        <li>絵文字マークでの絞り込みに対応しました（複数選択・OR条件）</li>
+        <li>Lv・経験値・乱舞Lv・入手順のソートをひとつのボタンで昇順⇄降順に切り替えられるようにしました</li>
+        <li>乱舞Lvでのソートを追加しました</li>
+        <li>顕現日の入力UIを装飾カレンダーに統一し、クリアボタンも追加しました</li>
+        <li>日付入力方法（装飾カレンダー／標準）を設定から切り替えられるようにしました</li>
+        <li>カレンダーの日付ズレを修正し、年・月のドロップダウンを追加しました</li>
+        <li>期間メモ・日メモを折りたたみ表示できるようにしました</li>
+        <li>日メモ強調時のグラフのちらつきを修正しました</li>
+        <li>カレンダーが画面外クリックで閉じない不具合を修正しました</li>
+        <li>柏太刀（No.256）の最大生存ステータスを修正しました</li>
       </ul>
       <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">出陣支度部屋</div>
       <ul>
-        <li>稽古録に未登録の男士も表示できるモードを追加しました</li>
-        <li>スマホ表示の編制画面に新しい表示形式を追加しました</li>
+        <li>説明書（マニュアル）を公開しました。トップページからアクセスできます</li>
+        <li>使い方ガイド（「？」ボタン）を追加しました</li>
+        <li>稽古録連携モードで顕現日順・乱舞Lv順ソートと絵文字マーク絞り込みに対応しました</li>
+        <li>テーマ設定時のちらつきを修正しました</li>
+        <li>柏太刀（No.256）の最大生存ステータスを修正しました</li>
       </ul>
       <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">愛蔵の一ノ倉</div>
       <ul>
-        <li>宝物帳：グリッドカードのレイアウトを刷新しました（縦積み・★レア度表示・列数自動調整など）</li>
-        <li>断片管理：スマホでカード表示に対応し、テーブル／カード切替ボタンを追加しました</li>
-        <li>刀装タブ：テーブル／カード切替ボタンを追加しました</li>
-        <li>暦メモ：カラーピッカー・カレンダーピッカーを導入し、メモ一覧の表示を刷新しました</li>
-        <li>最後に開いたタブを記憶するようにしました・その他UI改善</li>
+        <li>説明書（マニュアル）を公開しました。トップページからアクセスできます</li>
+        <li>暦メモのカレンダーの日付ズレを修正しました</li>
+        <li>愛用度欄で日本語入力ができなくなる不具合を修正しました</li>
+        <li>カレンダーに年・月のドロップダウンを追加しました</li>
       </ul>
     </div>
   </div>
@@ -976,8 +1014,65 @@ footer {
       <!-- 1件目：最新・最初から開く -->
       <div class="tl-entry is-latest" id="tl-0">
         <div class="tl-header" onclick="tlToggle('tl-0')">
-          <span class="tl-date">2026.05.31</span>
+          <span class="tl-date">2026.06.12</span>
           <span class="tl-badge">最新</span>
+          <span class="tl-arrow">▼</span>
+        </div>
+        <div class="tl-body">
+          <div class="tl-content">
+            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">邂逅録</div>
+            <ul>
+              <li>邂逅録を公開しました。ドロップした刀剣男士を記録・集計できます（大阪城に対応、通常マップ・連隊戦は順次対応予定）</li>
+            </ul>
+            <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">資源帳</div>
+            <ul>
+              <li>お札（富士・松・竹・梅）の記録に対応しました</li>
+              <li>使い方ガイド（「？」ボタン）を追加しました</li>
+              <li>インポート・エクスポートを刷新しました（JSON・CSV・Excelに対応、日付単位のマージ）</li>
+              <li>カレンダーの日付ズレを修正し、年・月のドロップダウンを追加しました</li>
+              <li>期間メモ・日メモを折りたたみ表示できるようにしました</li>
+              <li>グラフのメモ凡例に折りたたみを追加しました（終了済み期間メモ・日メモの月別集計・縦横切替）</li>
+              <li>クラウドログイン時に通知メールが届く問題に対処しました</li>
+            </ul>
+            <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
+            <ul>
+              <li>使い方ガイド（「？」ボタン）を追加しました。起動時に初回のみ案内を自動表示します</li>
+              <li>顕現日（入手日）の記録に対応しました</li>
+              <li>入手順ソートを追加しました（同日の手動並べ替えにも対応）</li>
+              <li>絵文字マークでの絞り込みに対応しました（複数選択・OR条件）</li>
+              <li>Lv・経験値・乱舞Lv・入手順のソートをひとつのボタンで昇順⇄降順に切り替えられるようにしました</li>
+              <li>乱舞Lvでのソートを追加しました</li>
+              <li>顕現日の入力UIを装飾カレンダーに統一し、クリアボタンも追加しました</li>
+              <li>日付入力方法（装飾カレンダー／標準）を設定から切り替えられるようにしました</li>
+              <li>カレンダーの日付ズレを修正し、年・月のドロップダウンを追加しました</li>
+              <li>期間メモ・日メモを折りたたみ表示できるようにしました</li>
+              <li>日メモ強調時のグラフのちらつきを修正しました</li>
+              <li>カレンダーが画面外クリックで閉じない不具合を修正しました</li>
+              <li>柏太刀（No.256）の最大生存ステータスを修正しました</li>
+            </ul>
+            <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">出陣支度部屋</div>
+            <ul>
+              <li>説明書（マニュアル）を公開しました。トップページからアクセスできます</li>
+              <li>使い方ガイド（「？」ボタン）を追加しました</li>
+              <li>稽古録連携モードで顕現日順・乱舞Lv順ソートと絵文字マーク絞り込みに対応しました</li>
+              <li>テーマ設定時のちらつきを修正しました</li>
+              <li>柏太刀（No.256）の最大生存ステータスを修正しました</li>
+            </ul>
+            <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">愛蔵の一ノ倉</div>
+            <ul>
+              <li>説明書（マニュアル）を公開しました。トップページからアクセスできます</li>
+              <li>暦メモのカレンダーの日付ズレを修正しました</li>
+              <li>愛用度欄で日本語入力ができなくなる不具合を修正しました</li>
+              <li>カレンダーに年・月のドロップダウンを追加しました</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2件目：折りたたみ -->
+      <div class="tl-entry" id="tl-1">
+        <div class="tl-header" onclick="tlToggle('tl-1')">
+          <span class="tl-date">2026.05.31</span>
           <span class="tl-arrow">▼</span>
         </div>
         <div class="tl-body">
@@ -1003,9 +1098,9 @@ footer {
         </div>
       </div>
 
-      <!-- 2件目：折りたたみ -->
-      <div class="tl-entry" id="tl-1">
-        <div class="tl-header" onclick="tlToggle('tl-1')">
+      <!-- 3件目：折りたたみ -->
+      <div class="tl-entry" id="tl-2">
+        <div class="tl-header" onclick="tlToggle('tl-2')">
           <span class="tl-date">2026.05.30</span>
           <span class="tl-arrow">▼</span>
         </div>
@@ -1015,25 +1110,6 @@ footer {
             <ul>
               <li>愛蔵の一ノ倉を公開しました</li>
               <li>出陣支度部屋を公開しました</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <!-- 3件目：折りたたみ -->
-      <div class="tl-entry" id="tl-2">
-        <div class="tl-header" onclick="tlToggle('tl-2')">
-          <span class="tl-date">2026.05.29</span>
-          <span class="tl-arrow">▼</span>
-        </div>
-        <div class="tl-body">
-          <div class="tl-content">
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
-            <ul>
-              <li>起動時にクラウドとのデータ差分をチェックするようにしました（データの取り違え防止）</li>
-              <li>インポート時に確認ダイアログ・自動バックアップ・復元機能を追加しました</li>
-              <li>山鳥毛（極）のステータスデータを暫定追加しました</li>
-              <li>細かな不具合を修正しました</li>
             </ul>
           </div>
         </div>

@@ -97,7 +97,7 @@ body.show-mobile .mode-bar{max-width:430px;margin:0 auto;}
 
 /* ===== PC LAYOUT ===== */
 .pc-wrap{
-  display:grid;grid-template-columns:160px minmax(320px,560px) 400px;
+  display:grid;grid-template-columns:185px minmax(320px,560px) 400px;
   max-width:1280px;margin:0 auto;
   align-items:start;
 }
@@ -134,6 +134,8 @@ body.show-mobile .mode-bar{max-width:430px;margin:0 auto;}
 .chip{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:2px 8px;font-size:10px;color:var(--text2);cursor:pointer;transition:all .12s;font-family:inherit;}
 .chip:hover{background:var(--bg3);}
 .chip.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+.emoji-chips .chip,.emoji-chips .bs-chip{font-size:14px;line-height:1;padding-top:3px;padding-bottom:3px;}
+.emoji-chips .chip[data-val="__none__"],.emoji-chips .bs-chip[data-val="__none__"]{font-size:10px;}
 
 /* List header */
 .list-hd{display:flex;align-items:center;justify-content:space-between;padding:2px 2px 6px;border-bottom:1px solid var(--border2);margin-bottom:2px;}
@@ -685,6 +687,8 @@ body.show-mobile .pc-wrap{display:none;}
         <button class="sort-btn" data-stat="no" onclick="handleSort(this)">刀帳No <span class="sort-dir">↓高い順</span></button>
         <button class="sort-btn" data-stat="level" onclick="handleSort(this)">Lv <span class="sort-dir">↓高い順</span></button>
         <button class="sort-btn" data-stat="exp" onclick="handleSort(this)">Exp <span class="sort-dir">↓高い順</span></button>
+        <button class="sort-btn kei-only" data-stat="genday" onclick="handleSort(this)">入手順 <span class="sort-dir">↓新しい順</span></button>
+        <button class="sort-btn kei-only" data-stat="ranbu" onclick="handleSort(this)">乱舞Lv <span class="sort-dir">↓高い順</span></button>
         <button class="sort-btn" data-stat="0" onclick="handleSort(this)">生存 <span class="sort-dir">↓高い順</span></button>
         <button class="sort-btn" data-stat="1" onclick="handleSort(this)">打撃 <span class="sort-dir">↓高い順</span></button>
         <button class="sort-btn" data-stat="2" onclick="handleSort(this)">統率 <span class="sort-dir">↓高い順</span></button>
@@ -717,6 +721,28 @@ body.show-mobile .pc-wrap{display:none;}
         <span class="chip on" data-val="">全て</span>
         <span class="chip" data-val="kiwame">極のみ</span>
         <span class="chip" data-val="normal">初のみ</span>
+      </div>
+    </div>
+
+    <div class="kei-only" id="filter-emoji-sec">
+      <div class="sec-label">絵文字マーク <span style="font-weight:400;color:var(--text3)">（複数選択可）</span></div>
+      <div class="chips emoji-chips" id="filter-emoji">
+        <span class="chip" data-val="__none__">なし</span>
+        <span class="chip" data-val="⭐">⭐</span>
+        <span class="chip" data-val="🌙">🌙</span>
+        <span class="chip" data-val="🌸">🌸</span>
+        <span class="chip" data-val="🔥">🔥</span>
+        <span class="chip" data-val="❄️">❄️</span>
+        <span class="chip" data-val="⚡">⚡</span>
+        <span class="chip" data-val="💎">💎</span>
+        <span class="chip" data-val="🏆">🏆</span>
+        <span class="chip" data-val="🎯">🎯</span>
+        <span class="chip" data-val="👑">👑</span>
+        <span class="chip" data-val="🍀">🍀</span>
+        <span class="chip" data-val="🌺">🌺</span>
+        <span class="chip" data-val="🦋">🦋</span>
+        <span class="chip" data-val="🗡️">🗡️</span>
+        <span class="chip" data-val="🛡️">🛡️</span>
       </div>
     </div>
   </div>
@@ -793,6 +819,8 @@ body.show-mobile .pc-wrap{display:none;}
       <span class="m-chip" data-stat="no">No↓</span>
       <span class="m-chip" data-stat="level">Lv↓</span>
       <span class="m-chip" data-stat="exp">Exp↓</span>
+      <span class="m-chip kei-only" data-stat="genday">入手↓</span>
+      <span class="m-chip kei-only" data-stat="ranbu">乱舞↓</span>
       <span class="m-chip" data-stat="0">生存↓</span>
       <span class="m-chip" data-stat="1">打撃↓</span>
       <span class="m-chip" data-stat="2">統率↓</span>
@@ -876,6 +904,27 @@ body.show-mobile .pc-wrap{display:none;}
         <span class="bs-chip on" data-val="">全て</span>
         <span class="bs-chip" data-val="kiwame">極のみ</span>
         <span class="bs-chip" data-val="normal">初のみ</span>
+      </div>
+    </div>
+    <div class="bs-sec kei-only" id="bs-emoji-sec">
+      <div class="bs-label">絵文字マーク（複数選択可）</div>
+      <div class="bs-chips emoji-chips" id="bs-emoji">
+        <span class="bs-chip" data-val="__none__">なし</span>
+        <span class="bs-chip" data-val="⭐">⭐</span>
+        <span class="bs-chip" data-val="🌙">🌙</span>
+        <span class="bs-chip" data-val="🌸">🌸</span>
+        <span class="bs-chip" data-val="🔥">🔥</span>
+        <span class="bs-chip" data-val="❄️">❄️</span>
+        <span class="bs-chip" data-val="⚡">⚡</span>
+        <span class="bs-chip" data-val="💎">💎</span>
+        <span class="bs-chip" data-val="🏆">🏆</span>
+        <span class="bs-chip" data-val="🎯">🎯</span>
+        <span class="bs-chip" data-val="👑">👑</span>
+        <span class="bs-chip" data-val="🍀">🍀</span>
+        <span class="bs-chip" data-val="🌺">🌺</span>
+        <span class="bs-chip" data-val="🦋">🦋</span>
+        <span class="bs-chip" data-val="🗡️">🗡️</span>
+        <span class="bs-chip" data-val="🛡️">🛡️</span>
       </div>
     </div>
   </div>
@@ -1479,8 +1528,8 @@ const STAT={
   159:[65,103,94,65,78,88,81,66,0,2],   // 山姥切長義 極
   161:[70,107,103,69,73,84,66,88,0,2],  // 豊前江 極
   163:[101,150,115,45,89,43,49,81,1,3], // 祢々切丸 極
-  165:[null,101,144,50,61,null,76,61,0,3],  // 白山吉光 極（生存・偵察未確定）
-  167:[72,108,103,60,66,null,80,72,0,2],    // 南海太郎朝尊 極（偵察未確定）
+  165:[120,101,144,50,61,null,76,61,0,3],  // 白山吉光 極（偵察未確定）
+  167:[72,108,103,60,66,91,80,72,0,2],    // 南海太郎朝尊 極
   169:[73,100,85,74,54,null,137,69,0,2],    // 肥前忠広 極（偵察未確定）
   171:[60,80,79,133,37,116,117,56,0,2], // 北谷菜切 極
   173:[70,111,109,57,70,89,79,74,0,2],  // 桑名江 極
@@ -1591,6 +1640,8 @@ function applyTheme(){
 
 const STAT_NAMES=['生存','打撃','統率','機動','衝力','偵察','隠蔽','必殺'];
 const RANGE_LABELS=['単','複','全','貫'];
+// 絵文字マーク候補（稽古録と共通・15種）
+const PE=['⭐','🌙','🌸','🔥','❄️','⚡','💎','🏆','🎯','👑','🍀','🌺','🦋','🗡️','🛡️'];
 const OMAMORI=[
   {id:'kiwame',name:'お守り極',color:'#c8a830',img:'omamori_kiwame.png'},
   {id:'normal',name:'お守り',  color:'#4a90c4',img:'omamori_normal.png'},
@@ -1678,6 +1729,7 @@ let UD={
     pslotAllStats:false,
     mSlotExpanded:false,
     guideShown:false,
+    filterEmojis:[],
     sortChipWrap:'wrap',
     tosoFilter:true,
     tosoDisplay:'text',
@@ -1775,7 +1827,7 @@ function switchDataSource(mode){
   const st=UD.stash[mode]||defaultWorkingSet();
   UD.parties=st.parties;UD.activePartyId=st.activePartyId;UD.equipments=st.equipments;UD.conditions=st.conditions;
   if(mode==='local'&&UD.settings.statMode==='base')UD.settings.statMode='ranbu';
-  if(mode==='local'&&UD.settings.sortStat==='level')UD.settings.sortStat='no';
+  if(mode==='local'&&['level','exp','genday','ranbu'].includes(UD.settings.sortStat))UD.settings.sortStat='no';
   saveUD();
   applyDataSourceUI();
   applySortUI();
@@ -1788,7 +1840,7 @@ function applyDataSourceUI(){
   const local=UD.dataSource==='local';
   document.body.classList.toggle('ds-local',local);
   if(local&&UD.settings.statMode==='base')UD.settings.statMode='ranbu';
-  if(local&&UD.settings.sortStat==='level')UD.settings.sortStat='no';
+  if(local&&['level','exp','genday','ranbu'].includes(UD.settings.sortStat))UD.settings.sortStat='no';
   applyStatModeUI();
   const b=document.getElementById('ds-btn');
   if(b){
@@ -1920,6 +1972,7 @@ function getSortVal(inst,stat,eqOverride){
   if(stat==='level')return inst.level||0;
   if(stat==='no')return inst.masterBaseNo??9999;
   if(stat==='exp')return inst.cumExp||0;
+  if(stat==='ranbu')return inst.ranbuLv||0;
   const s=getDisplayStat(inst,eqOverride);
   if(!s)return-1;
   return s[parseInt(stat)]??-1;
@@ -1928,27 +1981,48 @@ function getSortVal(inst,stat,eqOverride){
 // ======================================================
 // ソート・フィルタ
 // ======================================================
+// 絵文字絞り込み判定（なし＝__none__ ／ 複数選択OR）
+function instMatchesEmoji(i,list){
+  if(!list||!list.length)return true;
+  return (list.includes('__none__')&&!i.emoji)||(!!i.emoji&&list.includes(i.emoji));
+}
 function applyFilter(){
-  const {filterType,filterKiwame}=UD.settings;
+  const {filterType,filterKiwame,filterEmojis}=UD.settings;
+  const emojiOn=UD.dataSource!=='local'&&filterEmojis&&filterEmojis.length;
   filtered=instances.filter(inst=>{
     const info=BM[inst.masterBaseNo];
     if(!info)return false;
     if(filterType&&info.type!==filterType)return false;
     if(filterKiwame==='kiwame'&&!inst.isKiwame)return false;
     if(filterKiwame==='normal'&&inst.isKiwame)return false;
+    if(emojiOn&&!instMatchesEmoji(inst,filterEmojis))return false;
     return true;
   });
 }
 
 function applySort(){
   const {sortStat,sortDir}=UD.settings;
+  const desc=sortDir==='desc';
+  // 顕現日順（文字列比較・未入力は末尾・同日はNo順）
+  if(sortStat==='genday'){
+    filtered.sort((a,b)=>{
+      const av=a.genday||null, bv=b.genday||null;
+      const noA=a.masterBaseNo??9999, noB=b.masterBaseNo??9999;
+      if(av===null&&bv===null)return noA-noB;
+      if(av===null)return 1;
+      if(bv===null)return -1;
+      const cmp=av.localeCompare(bv);
+      return (desc?-cmp:cmp)||(noA-noB);
+    });
+    return;
+  }
   filtered.sort((a,b)=>{
     const av=getSortVal(a,sortStat);
     const bv=getSortVal(b,sortStat);
     if(av==null&&bv==null)return 0;
     if(av==null)return 1;
     if(bv==null)return -1;
-    return sortDir==='desc'?bv-av:av-bv;
+    return desc?bv-av:av-bv;
   });
 }
 
@@ -2375,8 +2449,8 @@ function renderPartySlots(){
     const name=inst.nickname||info?.name||'不明';
     const sortStat=UD.settings.sortStat;
     const sortVal=getSortVal(inst,sortStat);
-    const sortName=sortStat==='level'?'Lv':sortStat==='no'?'No':sortStat==='exp'?'Exp':STAT_NAMES[parseInt(sortStat)];
-    const hideSort=sortStat==='level'||sortStat==='no'||sortStat==='exp';
+    const sortName=sortStat==='level'?'Lv':sortStat==='no'?'No':sortStat==='exp'?'Exp':sortStat==='ranbu'?'乱舞':STAT_NAMES[parseInt(sortStat)];
+    const hideSort=['level','no','exp','genday'].includes(sortStat);
     const hasPartyEq=hasPartyEquipment(inst.id,party.id);
     const eq=getEffectiveEquipment(inst.id,party.id);
     const pSlotCount=getInstStat(inst)?.[9]??0;
@@ -2875,19 +2949,14 @@ function closeThrEditorOutside(e){
 // ======================================================
 function handleSort(btn){
   const stat=btn.dataset.stat;
-  const dir=btn.querySelector('.sort-dir');
   if(UD.settings.sortStat===stat){
-    const newDir=UD.settings.sortDir==='desc'?'asc':'desc';
-    UD.settings.sortDir=newDir;
-    dir.textContent=newDir==='desc'?'↓高い順':'↑低い順';
+    UD.settings.sortDir=UD.settings.sortDir==='desc'?'asc':'desc';
   }else{
-    document.querySelectorAll('.sort-btn').forEach(b=>{b.classList.remove('on');b.querySelector('.sort-dir').textContent='↓高い順';});
     UD.settings.sortStat=stat;
-    UD.settings.sortDir='desc';
-    dir.textContent='↓高い順';
+    UD.settings.sortDir=(stat==='genday')?'asc':'desc'; // 入手順は古い順から
   }
-  btn.classList.add('on');
   saveUD();
+  applySortUI();
   renderList();
   renderMobileList();
   renderPartySlots();
@@ -2895,27 +2964,46 @@ function handleSort(btn){
 
 function applySortUI(){
   const {sortStat,sortDir}=UD.settings;
+  const dirText=(stat)=>{
+    const d=sortDir==='desc';
+    if(stat==='genday')return d?'↓新しい順':'↑古い順';
+    return d?'↓高い順':'↑低い順';
+  };
   document.querySelectorAll('.sort-btn').forEach(b=>{
     const on=b.dataset.stat===sortStat;
     b.classList.toggle('on',on);
-    if(on)b.querySelector('.sort-dir').textContent=sortDir==='desc'?'↓高い順':'↑低い順';
-    else b.querySelector('.sort-dir').textContent='↓高い順';
+    const dirEl=b.querySelector('.sort-dir');
+    if(dirEl)dirEl.textContent=on?dirText(b.dataset.stat):(b.dataset.stat==='genday'?'↓新しい順':'↓高い順');
   });
   // モバイル
   document.querySelectorAll('.m-chip').forEach(c=>{
     const on=c.dataset.stat===sortStat;
     c.classList.toggle('on',on);
     const stat=c.dataset.stat;
-    const base=stat==='level'?'Lv':stat==='no'?'No':stat==='exp'?'Exp':STAT_NAMES[parseInt(stat)]||stat;
+    const base=stat==='level'?'Lv':stat==='no'?'No':stat==='exp'?'Exp':stat==='genday'?'入手':stat==='ranbu'?'乱舞':STAT_NAMES[parseInt(stat)]||stat;
     const arrow=sortDir==='desc'?'↓':'↑';
     c.textContent=on?base+arrow:base+'↓';
   });
 }
 
 function applyFilterUI(){
-  const {filterType,filterKiwame}=UD.settings;
+  const {filterType,filterKiwame,filterEmojis}=UD.settings;
   document.querySelectorAll('#filter-type .chip').forEach(c=>c.classList.toggle('on',c.dataset.val===filterType));
   document.querySelectorAll('#filter-kiwame .chip').forEach(c=>c.classList.toggle('on',c.dataset.val===filterKiwame));
+  const em=filterEmojis||[];
+  document.querySelectorAll('#filter-emoji .chip, #bs-emoji .bs-chip').forEach(c=>c.classList.toggle('on',em.includes(c.dataset.val)));
+}
+// 絵文字フィルタのトグル（複数選択）
+function toggleEmojiFilter(val){
+  let arr=(UD.settings.filterEmojis||[]).slice();
+  if(arr.includes(val))arr=arr.filter(x=>x!==val);
+  else arr.push(val);
+  UD.settings.filterEmojis=arr;
+  saveUD();
+  applyFilterUI();
+  renderFilterBtn();
+  renderList();
+  renderMobileList();
 }
 
 // フィルターチップ
@@ -2932,6 +3020,14 @@ document.getElementById('filter-kiwame').addEventListener('click',e=>{
   saveUD();
   document.querySelectorAll('#filter-kiwame .chip').forEach(c=>c.classList.toggle('on',c.dataset.val===chip.dataset.val));
   renderList();
+});
+// 絵文字フィルタ（PC・ボトムシート共通／複数選択）
+['filter-emoji','bs-emoji'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('click',e=>{
+    const chip=e.target.closest('[data-val]');if(!chip)return;
+    toggleEmojiFilter(chip.dataset.val);
+  });
 });
 
 // モバイルソート
@@ -3793,6 +3889,10 @@ function renderFilterBtn(){
   if(type)parts.push(type);
   if(kiwame==='kiwame')parts.push('極');
   else if(kiwame==='normal')parts.push('初');
+  const em=UD.settings.filterEmojis||[];
+  if(UD.dataSource!=='local'&&em.length){
+    parts.push(em.length===1?(em[0]==='__none__'?'絵文字なし':em[0]):'絵文字'+em.length);
+  }
   const isActive=parts.length>0;
   const label=isActive?parts.join('・'):'全て';
   if(valEl)valEl.textContent=label;

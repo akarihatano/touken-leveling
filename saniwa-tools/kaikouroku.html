@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="tetsu-light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>邂逅録 ― 大阪城ドロップ集計</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QM317D9ESN');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--font:'Noto Sans JP',sans-serif;--font-s:'Noto Serif JP',serif;--r:6px;--r2:10px}
+
+[data-theme="washi-light"]{--bg:#f5f3ee;--bg2:#ede9e1;--bg3:#e3ddd3;--surface:#faf8f4;--border:rgba(100,85,60,.15);--border2:rgba(100,85,60,.28);--text:#2c2520;--text2:#7a6a58;--text3:#b0a090;--accent:#6b4c2a;--accent2:#8b6340;--gold:#c8a84b;--shadow:0 1px 4px rgba(0,0,0,.08);--shadow2:0 2px 12px rgba(0,0,0,.12)}
+[data-theme="washi-dark"]{--bg:#1a1714;--bg2:#221f1b;--bg3:#2a2620;--surface:#252018;--border:rgba(200,170,120,.12);--border2:rgba(200,170,120,.22);--text:#e8e0d0;--text2:#a09070;--text3:#605040;--accent:#c8a878;--accent2:#dab888;--gold:#c8a84b;--shadow:0 1px 4px rgba(0,0,0,.3);--shadow2:0 2px 12px rgba(0,0,0,.4)}
+[data-theme="sakura-light"]{--bg:#fdf5f7;--bg2:#f8e8ed;--bg3:#f0d8e0;--surface:#fffafb;--border:rgba(180,80,110,.14);--border2:rgba(180,80,110,.26);--text:#2c1520;--text2:#8a5060;--text3:#c090a0;--accent:#a03060;--accent2:#c04878;--gold:#c8a84b;--shadow:0 1px 4px rgba(0,0,0,.08);--shadow2:0 2px 12px rgba(0,0,0,.12)}
+[data-theme="sakura-dark"]{--bg:#1a1014;--bg2:#231520;--bg3:#2c1d2a;--surface:#20121b;--border:rgba(220,120,160,.12);--border2:rgba(220,120,160,.22);--text:#f0d8e4;--text2:#c090a8;--text3:#705060;--accent:#e080a8;--accent2:#f0a0c0;--gold:#c8a84b;--shadow:0 1px 4px rgba(0,0,0,.35);--shadow2:0 2px 12px rgba(0,0,0,.5)}
+[data-theme="midori-light"]{--bg:#f2f8f4;--bg2:#e4f0e8;--bg3:#d4e8da;--surface:#f8fcf9;--border:rgba(40,100,60,.14);--border2:rgba(40,100,60,.26);--text:#152518;--text2:#446854;--text3:#80a888;--accent:#2a6640;--accent2:#3a8858;--gold:#c8a84b;--shadow:0 1px 4px rgba(0,0,0,.08);--shadow2:0 2px 12px rgba(0,0,0,.12)}
+[data-theme="midori-dark"]{--bg:#101a12;--bg2:#162019;--bg3:#1e2a20;--surface:#12181a;--border:rgba(60,160,90,.12);--border2:rgba(60,160,90,.22);--text:#d0ead5;--text2:#7aa880;--text3:#406050;--accent:#5aba70;--accent2:#7ad890;--gold:#c8a84b;--shadow:0 1px 4px rgba(0,0,0,.35);--shadow2:0 2px 12px rgba(0,0,0,.5)}
+[data-theme="tetsu-light"]{--bg:#f0f4f8;--bg2:#e2e9f0;--bg3:#d4dfe8;--surface:#f8fafc;--border:rgba(50,90,140,.14);--border2:rgba(50,90,140,.26);--text:#1a2535;--text2:#506080;--text3:#90a8c0;--accent:#2855a0;--accent2:#3a6cc0;--gold:#c8a84b;--shadow:0 1px 4px rgba(0,0,0,.08);--shadow2:0 2px 12px rgba(0,0,0,.12)}
+[data-theme="tetsu-dark"]{--bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--surface:#0d1117;--border:rgba(100,160,240,.12);--border2:rgba(100,160,240,.22);--text:#e6edf3;--text2:#8b949e;--text3:#484f58;--accent:#58a6ff;--accent2:#79c0ff;--gold:#e3b341;--shadow:0 1px 4px rgba(0,0,0,.4);--shadow2:0 2px 12px rgba(0,0,0,.6)}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.6}
+.mock-banner{background:var(--bg3);color:var(--text2);text-align:center;padding:6px;font-size:11px;letter-spacing:1px;border-bottom:1px solid var(--border)}
+header{background:var(--surface);border-bottom:1px solid var(--border)}
+.header-inner{max-width:600px;margin:0 auto;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.h-titlewrap{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.h-title{font-family:var(--font-s);font-size:18px;font-weight:600;color:var(--accent);letter-spacing:.1em}
+.h-sub{font-size:12px;color:var(--text2)}
+.theme-row{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.theme-btn{font-size:10px;padding:4px 8px;border:1px solid var(--border2);border-radius:99px;background:var(--bg);color:var(--text2);cursor:pointer}
+.theme-btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tabs{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20}
+.tabs-inner{display:flex;max-width:600px;margin:0 auto;padding:0 14px}
+.tab{flex:1;padding:13px 6px;text-align:center;cursor:pointer;font-size:13px;letter-spacing:.05em;color:var(--text2);border-bottom:2.5px solid transparent;transition:.2s;font-family:var(--font-s)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);background:var(--bg2)}
+.wrap{max-width:600px;margin:0 auto;padding:16px 14px 70px}
+.screen{display:none}
+.screen.active{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:16px;margin-bottom:13px;box-shadow:var(--shadow)}
+.card-h{font-family:var(--font-s);font-size:14px;color:var(--accent);font-weight:600;margin:0 0 4px;letter-spacing:.05em;display:flex;align-items:center;gap:6px}
+.card-sub{font-size:11px;color:var(--text2);margin-bottom:10px}
+label.fl{display:block;font-size:11px;color:var(--text3);margin:12px 0 4px;letter-spacing:.05em;font-weight:500}
+input[type=text],select{width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:15px;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:var(--accent)}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.btn{padding:11px 14px;background:var(--accent);color:#fff;border:none;border-radius:var(--r);font-weight:600;cursor:pointer;font-size:14px;font-family:inherit;letter-spacing:.05em}
+.btn:active{transform:scale(.98)}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--accent)}
+.btn-sm{padding:6px 11px;font-size:12px}
+.note{font-size:11px;color:var(--text2);line-height:1.6;margin-top:8px;padding:8px 10px;background:var(--bg2);border-radius:var(--r)}
+.note b{color:var(--accent)}
+
+/* マス種別トグル */
+.mass-toggle{display:flex;gap:6px;margin:6px 0}
+.mode-switch{display:flex;gap:6px;background:var(--bg2);border-radius:var(--r);padding:4px;margin-bottom:14px}
+.mode-switch .ms{flex:1;text-align:center;padding:10px 6px;border-radius:var(--r);cursor:pointer;font-size:13px;color:var(--text2);font-family:var(--font-s)}
+.mode-switch .ms.on{background:var(--accent);color:#fff;font-weight:600}
+.mode-switch .ms .ms-sub{display:block;font-size:9px;opacity:.85;font-family:var(--font);font-weight:400;margin-top:1px}
+.prog-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.prog-chip{font-size:15px;padding:7px 13px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg);cursor:pointer;transition:.12s}
+.prog-chip:hover{border-color:var(--accent2)}
+.prog-chip.on{background:var(--accent);border-color:var(--accent);color:#fff;transform:scale(1.04)}
+.mass-btn{flex:1;padding:13px 6px;border:1.5px solid var(--border2);border-radius:var(--r);background:var(--bg);color:var(--text2);cursor:pointer;font-size:14px;font-family:inherit;text-align:center;transition:.15s;position:relative}
+.mass-btn .mb-icon{display:block;font-size:18px;margin-bottom:2px}
+.mass-btn.on{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+.mass-btn.disabled{opacity:.4;cursor:not-allowed}
+
+/* カウンター */
+.counter-wrap{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}
+.cnt-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--border2);background:var(--bg);color:var(--accent);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700}
+.cnt-btn:active{background:var(--accent);color:#fff}
+.cnt-input{width:80px;text-align:center;font-size:22px;font-weight:700;padding:6px}
+.cnt-mini{width:26px;height:26px;border-radius:50%;border:1px solid var(--border2);background:var(--bg);color:var(--accent);font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-weight:700}
+.cnt-mini:active{background:var(--accent);color:#fff}
+
+/* 男士選択 */
+.step-label{font-size:11px;color:var(--text3);margin:14px 0 6px;letter-spacing:.05em;font-weight:500;display:flex;align-items:center;gap:6px}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--accent);color:#fff;font-size:10px;font-weight:700}
+.filter-group{margin:6px 0}
+.filter-cap{font-size:10px;color:var(--text3);margin-bottom:3px}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chip{font-size:12px;padding:5px 10px;border:1px solid var(--border2);border-radius:99px;background:var(--bg);color:var(--text2);cursor:pointer;transition:.12s;white-space:nowrap}
+.chip:hover{border-color:var(--accent2);color:var(--accent)}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:500}
+.quick-row{display:flex;flex-wrap:wrap;gap:5px}
+.q-chip{font-size:13px;padding:7px 12px;border:1px solid var(--accent2);border-radius:var(--r);background:var(--bg);color:var(--accent);cursor:pointer;font-weight:500;display:flex;align-items:center;gap:5px}
+.q-chip:hover{background:var(--bg3)}
+.q-chip.star{border-color:var(--gold);color:var(--gold)}
+.sword-list{max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--r);background:var(--bg)}
+.sword-item{padding:8px 12px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;gap:9px;transition:.1s}
+.sword-item:hover{background:var(--bg3)}
+.sword-item:last-child{border-bottom:none}
+.sw-no{font-size:10px;color:var(--text3);min-width:38px;font-variant-numeric:tabular-nums}
+.sw-type{font-size:10px;padding:2px 7px;border-radius:4px;background:var(--bg3);color:var(--accent);white-space:nowrap}
+.sw-school{font-size:9px;padding:2px 6px;border-radius:4px;background:var(--bg2);color:var(--text2);white-space:nowrap}
+.sw-namewrap{flex:1;line-height:1.25;min-width:0}
+.sw-name{font-size:14px;color:var(--text)}
+.sw-yomi{font-size:10px;color:var(--text3);display:block}
+.sw-star{color:var(--gold);font-size:12px}
+.list-count{font-size:10px;color:var(--text3);text-align:right;margin:5px 2px 0}
+.nodrop-btn{width:100%;padding:12px;background:var(--bg2);border:1px dashed var(--border2);border-radius:var(--r);color:var(--text2);font-size:13px;cursor:pointer;margin-top:12px;font-family:inherit}
+.nodrop-btn:hover{background:var(--bg3)}
+
+/* 選択中リスト */
+.selected-box{margin-top:4px}
+.selected-sword{background:var(--bg3);border:1px solid var(--accent);border-radius:var(--r);padding:10px 13px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;animation:pop .2s}
+@keyframes pop{from{transform:scale(.97);opacity:0}to{transform:none;opacity:1}}
+.ss-name{font-size:14px;color:var(--accent);font-weight:500}
+.ss-name .y{font-size:10px;color:var(--text2);font-weight:400}
+.ss-mass{font-size:9px;padding:1px 6px;border-radius:3px;background:var(--bg2);color:var(--text2);margin-right:6px}
+.ss-cnt{display:flex;align-items:center;gap:7px}
+.cnt-val{min-width:22px;text-align:center;font-size:14px;font-weight:700}
+.del-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:15px;padding:2px 4px}
+.del-btn:hover{color:#c0392b}
+.empty-sel{font-size:12px;color:var(--text3);text-align:center;padding:14px;font-style:italic}
+.floor-info{font-size:11px;color:var(--text2);margin-top:4px}
+.floor-info b{color:var(--accent)}
+
+/* 集計 */
+.toggle-bar{display:flex;background:var(--bg2);border-radius:var(--r);padding:4px;gap:4px;margin:10px 0}
+.toggle-bar .tg{flex:1;text-align:center;padding:9px;border-radius:var(--r);cursor:pointer;font-size:13px;color:var(--text2)}
+.toggle-bar .tg.on{background:var(--accent);color:#fff;font-weight:600}
+.help-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:11px 13px;font-size:12px;color:var(--text2);line-height:1.7}
+.help-box b{color:var(--accent)}
+.featured{background:linear-gradient(135deg,var(--bg3),var(--surface));border:1.5px solid var(--gold);border-radius:var(--r2);padding:14px;margin-bottom:13px;position:relative}
+.featured::after{content:"★ 目玉";position:absolute;top:9px;right:11px;font-size:10px;color:var(--gold);letter-spacing:1px;font-weight:600}
+.feat-name{font-size:17px;color:var(--accent);margin-bottom:2px;font-family:var(--font-s)}
+.feat-rate{font-size:32px;font-weight:700;color:var(--gold)}
+.feat-sub{font-size:11px;color:var(--text2)}
+.rank-row{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid var(--border)}
+.rank-row:last-child{border-bottom:none}
+.rank-no{font-size:13px;color:var(--text3);min-width:22px;text-align:center}
+.rank-bar-wrap{flex:1;min-width:0}
+.rank-name{font-size:14px;margin-bottom:3px}
+.rank-bar{height:6px;background:var(--bg2);border-radius:4px;overflow:hidden}
+.rank-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:4px}
+.rank-val{font-size:14px;color:var(--accent);min-width:64px;text-align:right;font-weight:700}
+.rank-cnt{font-size:10px;color:var(--text3);font-weight:400}
+.koban-card{background:linear-gradient(135deg,var(--bg3),var(--surface));border:1px solid var(--gold);border-radius:var(--r2);padding:16px}
+.stat-grid{display:flex;gap:9px;margin-top:10px}
+.stat-box{flex:1;background:var(--bg);border-radius:var(--r);padding:10px;text-align:center}
+.stat-box .v{font-size:19px;color:var(--accent);font-weight:700}
+.stat-box .l{font-size:10px;color:var(--text2);margin-top:2px}
+
+/* プリセット */
+.preset-item{display:flex;align-items:center;gap:8px;padding:11px 12px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--r);margin-bottom:8px}
+.preset-item .pn{flex:1;font-size:14px}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;background:var(--accent);color:#fff;margin-left:6px;letter-spacing:.05em}
+.tag.soon{background:var(--bg3);color:var(--text2)}
+.mini-note{font-size:11px;color:var(--text2);font-style:italic}
+
+/* 最近の記録 */
+.rec-row{display:flex;align-items:center;gap:8px;padding:9px 11px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);margin-bottom:6px;font-size:13px}
+.rec-row .rmass{font-size:9px;padding:2px 6px;border-radius:3px;background:var(--bg3);color:var(--text2);white-space:nowrap}
+.rec-row .rname{flex:1}
+.rec-row .rmeta{font-size:10px;color:var(--text3)}
+.edit-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px 3px}
+.edit-btn:hover{color:var(--accent)}
+.btn.editing{background:var(--gold);color:#2c2520}
+.edit-cancel{text-align:center;margin-top:8px}
+.edit-cancel a{font-size:12px;color:var(--text2);cursor:pointer;text-decoration:underline}
+.edit-cancel a:hover{color:var(--accent)}
+.danger-zone{margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+/* 記録画面：小判を別枠に */
+.koban-card-rec{border:1.5px solid var(--gold);background:linear-gradient(135deg,var(--bg3),var(--surface))}
+.rec-koban-tag{font-size:10px;font-weight:400;color:var(--text2);margin-left:6px;font-family:var(--font)}
+/* 最近の記録：周回まとまり＋インライン編集 */
+.session{border:1px solid var(--border2);border-radius:var(--r2);margin-bottom:12px;overflow:hidden}
+.session-head{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.session-head .sh-title{flex:1;font-size:13px;font-weight:600;color:var(--accent);font-family:var(--font-s)}
+.session-head .sh-meta{font-size:11px;color:var(--text2)}
+.session-edit{background:none;border:1px solid var(--border2);border-radius:var(--r);color:var(--text2);cursor:pointer;font-size:11px;padding:4px 9px;white-space:nowrap}
+.session-edit:hover{border-color:var(--accent);color:var(--accent)}
+.session-body{padding:6px 12px 12px}
+.srow{display:flex;align-items:center;gap:8px;padding:8px 2px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.srow:last-child{border-bottom:none}
+.srow .rname{flex:1;font-size:14px;min-width:90px}
+.srow .rname .star{color:var(--gold)}
+.srow .rname .y{font-size:10px;color:var(--text3)}
+.mass-sel{font-size:10px;padding:3px 6px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg);color:var(--text2);font-family:inherit;cursor:pointer}
+.srow.koban-row{background:rgba(200,168,75,.07)}
+.srow .rmass-k{font-size:9px;padding:2px 6px;border-radius:3px;background:var(--gold);color:#2c2520;white-space:nowrap}
+.inline-cnt{display:flex;align-items:center;gap:6px}
+.add-sword{width:100%;margin-top:8px;padding:9px;background:transparent;border:1px dashed var(--border2);border-radius:var(--r);color:var(--accent);font-size:13px;cursor:pointer;font-family:inherit}
+.add-sword:hover{background:var(--bg2)}
+.add-pick{margin-top:8px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);max-height:200px;overflow-y:auto;display:none}
+.add-pick.show{display:block}
+.add-pick input{width:100%;padding:9px 11px;border:none;border-bottom:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;font-family:inherit}
+.add-pick input:focus{outline:none}
+.pick-item{padding:8px 12px;border-bottom:1px solid var(--border);cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px}
+.pick-item:hover{background:var(--bg3)}
+.pick-item:last-child{border-bottom:none}
+.btn-danger{width:100%;background:transparent;border:1px solid #c0392b;color:#c0392b;font-weight:600}
+.btn-danger:hover{background:rgba(192,57,43,.08)}
+
+/* 目玉指定エリアのレイアウト修正 */
+.feat-search{margin-bottom:8px}
+.feat-chips-area{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:4px}
+.feat-current{background:var(--bg2);border:1px solid var(--gold);border-radius:var(--r);padding:10px 12px;margin-bottom:10px}
+.feat-current-title{font-size:11px;color:var(--text3);margin-bottom:6px}
+.feat-current .chips{gap:5px}
+.feat-tag{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:5px 8px 5px 11px;border:1px solid var(--gold);border-radius:var(--r);background:var(--bg);color:var(--gold);font-weight:500}
+.feat-tag .x{cursor:pointer;font-size:14px;color:var(--text3);width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center}
+.feat-tag .x:hover{color:#c0392b}
+.feat-add-list{max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);margin-top:6px}
+.dm-label{font-size:11px;color:var(--text3);margin-bottom:6px;letter-spacing:.05em;font-weight:500}
+.dm-btns{display:flex;flex-wrap:wrap;gap:6px}
+.dm-radio{display:flex;flex-direction:column;gap:6px;margin:4px 0}
+.dm-radio label{font-size:13px;color:var(--text);display:flex;align-items:center;gap:7px;cursor:pointer}
+.dm-radio input{width:auto}
+.imp-report{margin-top:12px;padding:11px 13px;border-radius:var(--r);font-size:12px;line-height:1.6}
+.imp-report.ok{background:var(--bg2);border:1px solid var(--accent)}
+.imp-report.warn{background:rgba(200,140,40,.12);border:1px solid var(--gold)}
+.imp-report b{color:var(--accent)}
+.imp-report .err-line{color:var(--text2);font-size:11px;margin-top:4px}
+.sync-status{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg2);border-radius:var(--r);font-size:12px;color:var(--text2);margin-bottom:10px}
+.sync-status .dot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0}
+.sync-status.on .dot{background:#3b8c5a}
+.sync-status .spin{display:inline-block;width:12px;height:12px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sync-opt{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.sync-check{font-size:13px;color:var(--text);display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:4px}
+.sync-check input{width:auto}
+.sync-btns{display:flex;gap:6px;flex-wrap:wrap}
+
+/* トースト */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:11px 20px;border-radius:99px;font-size:13px;box-shadow:var(--shadow2);z-index:200;opacity:0;transition:.25s;pointer-events:none}
+.toast.show{opacity:1;bottom:32px}
+
+/* モーダル */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:center;justify-content:center;padding:16px}
+.modal-bg.show{display:flex}
+.modal{background:var(--surface);border-radius:var(--r2);padding:20px;max-width:440px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow2)}
+.modal-title{font-family:var(--font-s);font-size:16px;font-weight:600;color:var(--accent);margin-bottom:14px}
+.modal-actions{display:flex;gap:8px;margin-top:16px}
+.modal-actions .btn{flex:1}
+
+/* 空状態 */
+.empty-state{text-align:center;padding:30px 16px;color:var(--text3)}
+.empty-state .es-icon{font-size:32px;margin-bottom:8px;opacity:.5}
+.empty-state .es-text{font-size:13px}
+
+/* 確認ダイアログ */
+.cf-msg{font-size:14px;color:var(--text);margin-bottom:8px;line-height:1.6}
+
+</style>
+</head>
+<body>
+<div class="mock-banner" id="topBanner">邂逅録 ― 大阪城（ローカル版・このブラウザに保存されます）</div>
+<header>
+ <div class="header-inner">
+  <div class="h-titlewrap">
+    <div class="h-title">邂逅録</div>
+    <div class="h-sub" id="hSub">― 大阪城 ドロップ集計 ―</div>
+  </div>
+  <div class="theme-row" id="themeRow"></div>
+ </div>
+</header>
+<div class="tabs">
+ <div class="tabs-inner">
+  <div class="tab active" onclick="showScreen('rec',this)">記録する</div>
+  <div class="tab" onclick="showScreen('agg',this)">集計を見る</div>
+  <div class="tab" onclick="showScreen('preset',this)">設定・プリセット</div>
+ </div>
+</div>
+<div class="wrap">
+
+<!-- ===== 記録 ===== -->
+<div id="rec" class="screen active">
+  <div class="mode-switch">
+    <div class="ms on" id="ms-easy" onclick="setRecMode('easy')">かんたん記録<span class="ms-sub">出たものを選ぶだけ</span></div>
+    <div class="ms" id="ms-detail" onclick="setRecMode('detail')">詳しく記録<span class="ms-sub">マスごとに記録</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">📍 周回の設定</div>
+    <label class="fl">場所</label>
+    <select id="recPlace" onchange="onRecPlaceChange()"></select>
+    <div id="recFloorWrap">
+      <label class="fl">階数</label>
+      <select id="recFloor" onchange="onRecFloorChange()"></select>
+      <div class="floor-info" id="floorInfo"></div>
+    </div>
+  </div>
+
+  <div class="card detail-only" id="massCard">
+    <div class="card-h">🗺 どのマス？</div>
+    <div class="card-sub">記録するマスを選びます。マスによって男士の候補が変わります</div>
+    <div class="mass-toggle">
+      <div class="mass-btn on" id="mass-boss" onclick="setMass('boss')"><span class="mb-icon">🔴</span>ボスマス</div>
+      <div class="mass-btn" id="mass-normal" onclick="setMass('normal')"><span class="mb-icon">🟣</span>通常マス</div>
+      <div class="mass-btn disabled" title="資源機能の追加時に対応"><span class="mb-icon">🟢</span>資源マス<br><span style="font-size:9px">（後日）</span></div>
+    </div>
+    <div class="note" id="featuredHint" style="display:none">※ 通常マスでは目玉男士は出ないため、候補から自動で外しています（誤記録防止）。</div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">⚔ <span id="swCardTitle">出た男士</span></div>
+    <div class="card-sub" id="swCardSub">周回中に確認できたドロップを、出たぶんだけ選びます</div>
+    <div class="step-label"><span class="step-num">1</span>よく出る・目玉の候補</div>
+    <div class="quick-row" id="quickCands"></div>
+    <div class="step-label"><span class="step-num">2</span>名前で検索（漢字でも読み仮名でも）</div>
+    <input type="text" id="swSearch" placeholder="例：おに / 鬼丸 / つるまる…" oninput="renderList()">
+    <div id="filterArea">
+      <div class="step-label"><span class="step-num">3</span>絞り込んで選ぶ</div>
+      <div class="filter-group"><div class="filter-cap">刀種</div><div class="chips" id="typeFilter"></div></div>
+      <div class="filter-group"><div class="filter-cap">刀派</div><div class="chips" id="schoolFilter"></div></div>
+    </div>
+    <div class="sword-list" id="swordList"></div>
+    <div class="list-count" id="listCount"></div>
+    <button class="nodrop-btn detail-only" onclick="pickNoDrop()">― ドロップ無し（空振り）として記録 ―</button>
+    <div class="note detail-only">※「ドロップ無し」を記録すると <b>B方式（実ドロップ率）</b> が出せます。Aだけ見る日は記録しなくてOK。</div>
+    <div class="note" id="easyHint">※ かんたん記録では<b>目玉男士はボスのドロップ</b>として自動で記録します。それ以外はマスを問わず記録します。細かくマス分けしたいときは「詳しく記録」へ。</div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">📋 選んだ男士</div>
+    <div class="card-sub" id="selSub">＋ / − で件数調整、🗑 で削除できます</div>
+    <div class="selected-box" id="selectedBox"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">🔁 何周した？</div>
+    <div class="counter-wrap">
+      <button class="cnt-btn" onclick="chgKill(-1)">−</button>
+      <input type="text" inputmode="numeric" class="cnt-input" id="killInput" onchange="killInputChg()">
+      <button class="cnt-btn" onclick="chgKill(1)">＋</button>
+    </div>
+    <div class="note">＋/− のボタンでも、数字を直接タップして入力してもOK。1周＝ボス1体です。<b>1</b> なら1周ごと、まとめて <b>23</b> 等にすればセッションごとの記録になります。</div>
+  </div>
+
+  <div class="card koban-card-rec">
+    <div class="card-h">💰 小判 <span class="rec-koban-tag">男士とは別の記録です</span></div>
+    <label class="fl">博多藤四郎の状態（小判ブースト）</label>
+    <div class="chips">
+      <span class="chip on" onclick="setHakata(this,'なし')">なし ×1.0</span>
+      <span class="chip" onclick="setHakata(this,'初')">初 ×1.5</span>
+      <span class="chip" onclick="setHakata(this,'極')">極 ×2.0</span>
+    </div>
+    <label class="fl">拾った小判の合計枚数（見たままの実数）</label>
+    <input type="text" inputmode="numeric" id="kobanInput" placeholder="例：1240" oninput="kobanChg()">
+    <div class="note">※ 倍率は設定で変更できます。集計画面で「博多込み／抜き」を切り替えて見られます。小判は通常マス・ボスマス両方で拾えます。</div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">📅 今日の周回</div>
+    <div class="card-sub">記録ついでに、今日やれたかをマークできます（任意・集計には影響しません）</div>
+    <div class="prog-row" id="progRow"></div>
+  </div>
+
+  <button class="btn" id="saveBtn" style="width:100%;padding:15px;font-size:16px;" onclick="saveRecord()">この周回を記録する</button>
+
+  <div class="card" style="margin-top:13px">
+    <div class="card-h">🕐 最近の記録</div>
+    <div class="card-sub">過去の記録を後から削除できます</div>
+    <div id="recentList"></div>
+  </div>
+</div>
+
+<!-- ===== 集計 ===== -->
+<div id="agg" class="screen">
+  <div class="card">
+    <div class="card-h">🔍 集計する条件</div>
+    <label class="fl">場所</label><select id="aggPlace" onchange="onAggPlace()"></select>
+    <div id="aggFloorWrap"><label class="fl">階数</label><select id="aggFloor" onchange="onAggFloor()"></select></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">🗺 どのマスの集計？</div>
+    <div class="toggle-bar" id="aggMassBar">
+      <div class="tg on" data-m="all" onclick="setAggMass(this)">すべて</div>
+      <div class="tg" data-m="boss" onclick="setAggMass(this)">🔴 ボス</div>
+      <div class="tg" data-m="normal" onclick="setAggMass(this)">🟣 通常マス</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">📊 ドロップ率の見方</div>
+    <div class="toggle-bar" id="aggModeBar">
+      <div class="tg on" data-m="A" onclick="setAggMode(this)">A：構成比</div>
+      <div class="tg" data-m="B" onclick="setAggMode(this)">B：実ドロップ率</div>
+    </div>
+    <div class="help-box" id="modeHelp"></div>
+  </div>
+
+  <div id="featBlock"></div>
+
+  <div class="card">
+    <div class="card-h">⚔ ドロップした男士一覧</div>
+    <div class="mini-note" style="margin-bottom:8px;">目玉も含め、全員ここに表示されます</div>
+    <div id="rankList"></div>
+  </div>
+
+  <div class="koban-card">
+    <div class="card-h" style="border:none">💰 小判</div>
+    <div class="toggle-bar">
+      <div class="tg on" onclick="setKoban(this,'in')">博多込み（実数）</div>
+      <div class="tg" onclick="setKoban(this,'out')">博多抜き（素の値）</div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="v" id="kobanTotal">0</div><div class="l">合計枚数</div></div>
+      <div class="stat-box"><div class="v" id="kobanAvg">0</div><div class="l">1周あたり平均</div></div>
+      <div class="stat-box"><div class="v" id="kobanKills">0</div><div class="l">総ボス撃破</div></div>
+    </div>
+    <div class="note">※「博多込み」は実際に拾った枚数。「抜き」は博多補正を割り戻した素の枚数（目安）。</div>
+  </div>
+</div>
+
+<!-- ===== プリセット ===== -->
+<div id="preset" class="screen">
+  <div class="card">
+    <div class="card-h">🏯 場所プリセット</div>
+    <div class="mini-note" style="margin-bottom:10px;">通常マップ・連隊戦は今後のアップデートで追加されます</div>
+    <div id="placeList"></div>
+  </div>
+  <div class="card">
+    <div class="card-h">⚙ 大阪城の設定</div>
+    <label class="fl">最大階数（回によって変わるため可変）</label>
+    <input type="text" inputmode="numeric" id="setMaxFloor">
+    <label class="fl">記録できる階数（カンマ区切り・周回する階だけでOK）</label>
+    <input type="text" id="setFloors">
+    <div class="note">※ 50階や特定階を周回する人向け。ここに入れた階が記録画面のプルダウンに出ます。</div>
+  </div>
+  <div class="card">
+    <div class="card-h">💰 博多藤四郎の小判倍率</div>
+    <div class="row">
+      <div><label class="fl">初</label><input type="text" inputmode="decimal" id="setHakataHatsu"></div>
+      <div><label class="fl">極</label><input type="text" inputmode="decimal" id="setHakataKiwame"></div>
+    </div>
+    <div class="note">※ 通常は固定ですが、宝物ドロップ倍増の回などに備えて変更できます。</div>
+    <button class="btn" style="width:100%;margin-top:10px" onclick="saveOsakaSettings()">設定を保存</button>
+  </div>
+  <div class="card">
+    <div class="card-h">★ 目玉男士の指定</div>
+    <div class="mini-note" style="margin-bottom:8px;">指定すると集計画面で特別枠にハイライト表示されます（指定しなくてもOK・一覧には全員出ます。目玉はボスマスでのみ候補に出ます）</div>
+    <div class="feat-current" id="featCurrent"></div>
+    <input type="text" class="feat-search" id="featSearch" placeholder="名前で検索して目玉に追加（漢字・読み仮名）" oninput="onFeatSearch()">
+    <div class="feat-add-list" id="featAddList"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">☁ クラウド同期（Google Drive）</div>
+    <div class="mini-note" style="margin-bottom:10px">複数の端末から同じ記録を使えます。記録は端末ごとに統合（マージ）されるので、別々の端末で記録しても消えません。使わなくても邂逅録はこのブラウザだけで完結します。</div>
+    <div id="syncStatus"></div>
+    <div id="syncControls"></div>
+    <div class="sync-opt" id="syncOptWrap" style="display:none">
+      <label class="sync-check"><input type="checkbox" id="periodicChk" onchange="togglePeriodic()"> 開いている間も定期的に同期する（5分ごと）</label>
+      <div class="mini-note">長時間開いて記録し続けるとき、他の端末の更新を自動で取り込みます。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">💾 データの保存・読み込み</div>
+    <div class="mini-note" style="margin-bottom:10px">記録をファイルに書き出したり、ファイルから取り込めます。スプレッドシートで開ける形式（CSV・Excel）にも対応しています。</div>
+
+    <div class="dm-label">書き出す（エクスポート）</div>
+    <div class="dm-btns">
+      <button class="btn btn-ghost btn-sm" onclick="exportJSON()">JSON（完全バックアップ）</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportCSV()">CSV</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportXLSX()">Excel (.xlsx)</button>
+    </div>
+
+    <div class="dm-label" style="margin-top:14px">テンプレートを書き出す</div>
+    <div class="mini-note" style="margin-bottom:6px">記入例つきの空ファイル。これに沿って書けば取り込めます。</div>
+    <div class="dm-btns">
+      <button class="btn btn-ghost btn-sm" onclick="exportTemplate('csv')">CSVテンプレート</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportTemplate('xlsx')">Excelテンプレート</button>
+    </div>
+
+    <div class="dm-label" style="margin-top:14px">読み込む（インポート）</div>
+    <div class="mini-note" style="margin-bottom:6px">JSON・CSV・Excelを取り込めます。男士名や階数の表記揺れは自動で吸収します。</div>
+    <div class="dm-radio">
+      <label><input type="radio" name="impMode" value="merge" checked> 追加（今のデータに足す）</label>
+      <label><input type="radio" name="impMode" value="replace"> 置き換え（全部入れ替える）</label>
+    </div>
+    <button class="btn" style="width:100%;margin-top:8px" onclick="document.getElementById('importFile').click()">ファイルを選んで読み込む</button>
+    <input type="file" id="importFile" accept=".json,.csv,.xlsx,.xls" style="display:none" onchange="onImportFile(event)">
+    <div id="importResult"></div>
+
+    <div class="danger-zone">
+      <div class="dm-label" style="color:#c0392b">すべての記録を削除</div>
+      <div class="mini-note" style="margin-bottom:8px">記録・小判をすべて消します。元に戻せないので、心配な方は先に上の「書き出す」でバックアップを取ってください。</div>
+      <button class="btn btn-danger" onclick="confirmDeleteAll()">すべての記録を削除する</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- トースト -->
+<div class="toast" id="toast"></div>
+
+<!-- 確認モーダル -->
+<div class="modal-bg" id="confirmModal">
+  <div class="modal">
+    <div class="cf-msg" id="cfMsg"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cfCancel">キャンセル</button>
+      <button class="btn" id="cfOk">OK</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="sessionModal">
+  <div class="modal">
+    <div class="modal-title">この周回を編集</div>
+    <div id="seFloorWrap"><label class="fl">階数</label><select id="seFloor"></select></div>
+    <label class="fl">周回数（ボス撃破回数）</label>
+    <input type="text" inputmode="numeric" id="seKills">
+    <label class="fl">小判の枚数</label>
+    <input type="text" inputmode="numeric" id="seKoban">
+    <label class="fl">博多藤四郎の状態</label>
+    <div class="chips" id="seHakata">
+      <span class="chip" data-v="なし" onclick="setSeHakata(this)">なし</span>
+      <span class="chip" data-v="初" onclick="setSeHakata(this)">初</span>
+      <span class="chip" data-v="極" onclick="setSeHakata(this)">極</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeSessionEdit()">キャンセル</button>
+      <button class="btn" onclick="saveSessionEdit()">更新する</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const MR=[
+[3,"三日月宗近","みかづきむねちか","太刀","三条"],
+[5,"小狐丸","こぎつねまる","太刀","三条"],
+[7,"石切丸","いしきりまる","大太刀","三条"],
+[9,"岩融","いわとおし","薙刀","三条"],
+[11,"今剣","いまのつるぎ","短刀","三条"],
+[13,"大典太光世","おおでんたみつよ","太刀","三池"],
+[15,"ソハヤノツルキ","そはやのつるぎ","太刀","三池"],
+[17,"数珠丸恒次","じゅずまるつねつぐ","太刀","青江"],
+[19,"にっかり青江","にっかりあおえ","脇差","青江"],
+[21,"鬼丸国綱","おにまるくにつな","太刀","粟田口"],
+[23,"鳴狐","なきぎつね","打刀","粟田口"],
+[25,"一期一振","いちごひとふり","太刀","粟田口"],
+[27,"鯰尾藤四郎","なまずおとうしろう","脇差","粟田口"],
+[29,"骨喰藤四郎","ほねばみとうしろう","脇差","粟田口"],
+[31,"平野藤四郎","ひらのとうしろう","短刀","粟田口"],
+[33,"厚藤四郎","あつしとうしろう","短刀","粟田口"],
+[35,"後藤藤四郎","ごとうとうしろう","短刀","粟田口"],
+[37,"信濃藤四郎","しなのとうしろう","短刀","粟田口"],
+[39,"前田藤四郎","まえだとうしろう","短刀","粟田口"],
+[41,"秋田藤四郎","あきたとうしろう","短刀","粟田口"],
+[43,"博多藤四郎","はかたとうしろう","短刀","粟田口"],
+[45,"乱藤四郎","みだれとうしろう","短刀","粟田口"],
+[47,"五虎退","ごこたい","短刀","粟田口"],
+[49,"薬研藤四郎","やげんとうしろう","短刀","粟田口"],
+[51,"包丁藤四郎","ほうちょうとうしろう","短刀","粟田口"],
+[53,"大包平","おおかねひら","太刀","古備前"],
+[55,"鶯丸","うぐいすまる","太刀","古備前"],
+[57,"明石国行","あかしくにゆき","太刀","来"],
+[59,"蛍丸","ほたるまる","大太刀","来"],
+[61,"愛染国俊","あいぜんくにとし","短刀","来"],
+[63,"千子村正","せんごむらまさ","打刀","村正"],
+[65,"蜻蛉切","とんぼきり","槍","村正"],
+[67,"物吉貞宗","ものよしさだむね","脇差","貞宗"],
+[69,"太鼓鐘貞宗","たいこがねさだむね","短刀","貞宗"],
+[71,"亀甲貞宗","きっこうさだむね","打刀","貞宗"],
+[73,"燭台切光忠","しょくだいきりみつただ","太刀","長船"],
+[75,"大般若長光","だいはんにゃながみつ","太刀","長船"],
+[77,"小竜景光","こりゅうかげみつ","太刀","長船"],
+[79,"江雪左文字","こうせつさもんじ","太刀","左文字"],
+[81,"宗三左文字","そうざさもんじ","打刀","左文字"],
+[83,"小夜左文字","さよさもんじ","短刀","左文字"],
+[85,"加州清光","かしゅうきよみつ","打刀","なし"],
+[87,"大和守安定","やまとのかみやすさだ","打刀","なし"],
+[89,"歌仙兼定","かせんかねさだ","打刀","兼定"],
+[91,"和泉守兼定","いずみのかみかねさだ","打刀","兼定"],
+[93,"陸奥守吉行","むつのかみよしゆき","打刀","なし"],
+[95,"山姥切国広","やまんばぎりくにひろ","打刀","堀川"],
+[97,"山伏国広","やまぶしくにひろ","太刀","堀川"],
+[99,"堀川国広","ほりかわくにひろ","脇差","堀川"],
+[101,"蜂須賀虎徹","はちすかこてつ","打刀","虎徹"],
+[103,"浦島虎徹","うらしまこてつ","脇差","虎徹"],
+[105,"長曽祢虎徹","ながそねこてつ","打刀","虎徹…？"],
+[107,"髭切","ひげきり","太刀","なし"],
+[112,"膝丸","ひざまる","太刀","なし"],
+[116,"大倶利伽羅","おおくりから","打刀","広光"],
+[118,"へし切長谷部","へしきりはせべ","打刀","なし"],
+[120,"不動行光","ふどうゆきみつ","短刀","なし"],
+[122,"獅子王","ししおう","太刀","なし"],
+[124,"小烏丸","こがらすまる","太刀","なし"],
+[126,"抜丸","ぬけまる","太刀","なし"],
+[128,"同田貫正国","どうだぬきまさくに","打刀","なし"],
+[130,"鶴丸国永","つるまるくになが","太刀","なし"],
+[132,"太郎太刀","たろうたち","大太刀","なし"],
+[134,"次郎太刀","じろうたち","大太刀","なし"],
+[136,"日本号","にほんごう","槍","なし"],
+[138,"御手杵","おてぎね","槍","なし"],
+[140,"巴形薙刀","ともえがたなぎなた","薙刀","なし"],
+[142,"毛利藤四郎","もうりとうしろう","短刀","粟田口"],
+[144,"篭手切江","こてぎりごう","脇差","江"],
+[146,"謙信景光","けんしんかげみつ","短刀","長船"],
+[148,"小豆長光","あずきながみつ","太刀","長船"],
+[150,"日向正宗","ひゅうがまさむね","短刀","正宗"],
+[152,"静形薙刀","しずかがたなぎなた","薙刀","なし"],
+[154,"南泉一文字","なんせんいちもんじ","打刀","福岡一文字"],
+[156,"千代金丸","ちよがねまる","太刀","なし"],
+[158,"山姥切長義","やまんばぎりちょうぎ","打刀","なし"],
+[160,"豊前江","ぶぜんごう","打刀","江"],
+[162,"祢々切丸","ねねきりまる","大太刀","なし"],
+[164,"白山吉光","はくさんよしみつ","剣","粟田口"],
+[166,"南海太郎朝尊","なんかいたろうちょうそん","打刀","なし"],
+[168,"肥前忠広","ひぜんただひろ","脇差","なし"],
+[170,"北谷菜切","ちゃたんなきり","短刀","なし"],
+[172,"桑名江","くわなごう","打刀","江"],
+[174,"水心子正秀","すいしんしまさひで","打刀","なし"],
+[176,"源清麿","みなもときよまろ","打刀","なし"],
+[178,"松井江","まついごう","打刀","江"],
+[180,"山鳥毛","さんちょうもう","太刀","福岡一文字"],
+[182,"古今伝授の太刀","こきんでんじゅのたち","太刀","豊後国行平"],
+[184,"地蔵行平","じぞうゆきひら","打刀","豊後国行平"],
+[186,"治金丸","ちがねまる","脇差","なし"],
+[188,"日光一文字","にっこういちもんじ","太刀","福岡一文字"],
+[190,"太閤左文字","たいこうさもんじ","短刀","左文字"],
+[192,"五月雨江","さみだれごう","打刀","江"],
+[194,"大千鳥十文字槍","おおちどりじゅうもんじやり","槍","なし"],
+[196,"泛塵","はんじん","脇差","なし"],
+[198,"一文字則宗","いちもんじのりむね","太刀","福岡一文字"],
+[200,"村雲江","むらくもごう","打刀","江"],
+[202,"姫鶴一文字","ひめつるいちもんじ","太刀","福岡一文字"],
+[204,"福島光忠","ふくしまみつただ","太刀","長船"],
+[206,"七星剣","しちせいけん","剣","なし"],
+[208,"丙子椒林剣","へいししょうりんけん","剣","なし"],
+[210,"稲葉江","いなばごう","打刀","江"],
+[212,"笹貫","ささぬき","太刀","なし"],
+[214,"人間無骨","にんげんむこつ","槍","兼定"],
+[216,"八丁念仏","はっちょうねんぶつ","太刀","古備前"],
+[218,"石田正宗","いしだまさむね","打刀","正宗"],
+[220,"実休光忠","じっきゅうみつただ","太刀","長船"],
+[222,"京極正宗","きょうごくまさむね","短刀","正宗"],
+[224,"孫六兼元","まごろくかねもと","打刀","なし"],
+[226,"後家兼光","ごけかねみつ","打刀","長船"],
+[228,"火車切","かしゃぎり","脇差","広光"],
+[230,"富田江","とみたごう","打刀","江"],
+[232,"大慶直胤","たいけいなおたね","打刀","なし"],
+[234,"九鬼正宗","くきまさむね","短刀","正宗"],
+[236,"雲生","うんしょう","太刀","鵜飼"],
+[238,"道誉一文字","どうよいちもんじ","太刀","福岡一文字"],
+[240,"雲次","うんじ","太刀","鵜飼"],
+[242,"面影","おもかげ","太刀","来"],
+[244,"古備前信房","こびぜんのぶふさ","太刀","古備前"],
+[246,"倶利伽羅江","くりからごう","短刀","江"],
+[248,"三郎国宗","さぶろうくにむね","太刀","なし"],
+[250,"安宅切","あたぎぎり","打刀","長船"],
+[252,"二筋樋貞宗","ふたすじひさだむね","打刀","貞宗"],
+[254,"雲重","うんじゅう","打刀","鵜飼"],
+[256,"柏太刀","かしわだち","大太刀","なし"]
+];
+/* ============================================================
+   邂逅録 Kaikouroku — ローカル実装 v1
+   データ層は稽古録方式に準拠（UD/ST分離・updatedAt・soft-delete）
+   ============================================================ */
+
+// ── 定数 ──
+const TYPES=["短刀","脇差","打刀","太刀","大太刀","薙刀","槍","剣"];
+const SCHOOLS=["粟田口","長船","江","福岡一文字","三条","古備前","来","貞宗","左文字","正宗","兼定","堀川","鵜飼","三池","青江","村正","虎徹","広光","豊後国行平","なし"];
+const THEMES=[["washi","和紙"],["sakura","桜"],["midori","緑"],["tetsu","鉄"]];
+const NODROP='__nodrop__';
+const MASS_LABEL={boss:'ボス',normal:'通常マス',resource:'資源',unknown:'マス不明'};
+const MASS_ICON={boss:'🔴',normal:'🟣',resource:'🟢',unknown:'⚪'};
+// 進行マーク（ここに足せば増やせる）
+const PROG_MARKS=[['done','⭕ やれた'],['lots','🔥 たくさん'],['little','😪 少しだけ'],['rest','💤 お休み']];
+
+// ── localStorage キー ──
+const SK='kk_data_v1', SS='kk_set_v1';
+
+// ── データ ──
+let UD={records:[],places:[],featured:[],updatedAt:0};
+let ST={palette:'tetsu',mode:'light',aggMode:'A',guideShown:false,periodicSync:false,lastSync:0};
+let _appReady=false;
+
+// デフォルト場所プリセット（大阪城）
+function defaultOsaka(){
+  return {
+    id:'osaka', name:'大阪城（地下に眠る千両箱）', type:'osaka',
+    floors:[10,20,30,40,50,51,90,95,99], maxFloor:99,
+    hakataRate:{'初':1.5,'極':2.0}, order:0, updatedAt:Date.now(), deleted:false
+  };
+}
+
+function load(){
+  try{const d=localStorage.getItem(SK);if(d)UD=JSON.parse(d);}catch(e){}
+  try{const s=localStorage.getItem(SS);if(s)ST={...ST,...JSON.parse(s)};}catch(e){}
+  if(!UD.records)UD.records=[];
+  if(!UD.places)UD.places=[];
+  if(!UD.featured)UD.featured=[];
+  // 初回は大阪城プリセットとデフォルト目玉を入れておく
+  if(UD.places.filter(p=>!p.deleted).length===0){
+    UD.places.push(defaultOsaka());
+    if(UD.featured.length===0)UD.featured=['鬼丸国綱','白山吉光'];
+  }
+}
+function save(){if(_appReady){UD.updatedAt=Date.now();if(typeof scheduleAutoSync==='function')scheduleAutoSync();}try{localStorage.setItem(SK,JSON.stringify(UD));}catch(e){}}
+function saveST(){try{localStorage.setItem(SS,JSON.stringify(ST));}catch(e){}}
+
+// ── アクティブ抽出（soft-delete除外） ──
+function activeRecords(){return UD.records.filter(r=>!r.deleted);}
+function activePlaces(){return UD.places.filter(p=>!p.deleted).sort((a,b)=>(a.order||0)-(b.order||0));}
+function placeById(id){return UD.places.find(p=>p.id===id&&!p.deleted);}
+function uid(p){return p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+// 端末のタイムゾーンに関係なく日本時間(JST=UTC+9)で年月日を出す
+function jstDate(d){return new Date((d?d.getTime():Date.now())+9*3600*1000);}
+function todayStr(){const d=jstDate();return d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0')+'-'+String(d.getUTCDate()).padStart(2,'0');}
+// 表示用：YYYY-MM-DD → YYYY.MM.DD
+function fmtDateDot(s){return (s||'').replace(/-/g,'.');}
+function swInfo(name){return MR.find(s=>s[1]===name);}
+
+// ── テーマ ──
+function applyTheme(){document.documentElement.setAttribute('data-theme',ST.palette+'-'+ST.mode);}
+function buildTheme(){
+  document.getElementById('themeRow').innerHTML=
+    THEMES.map(([k,n])=>`<span class="theme-btn ${k===ST.palette?'on':''}" onclick="setPalette('${k}')">${n}</span>`).join('')
+    +`<span class="theme-btn" onclick="toggleMode()">${ST.mode==='light'?'☀ 明':'☾ 暗'}</span>`;
+}
+function setPalette(p){ST.palette=p;saveST();applyTheme();buildTheme();}
+function toggleMode(){ST.mode=ST.mode==='light'?'dark':'light';saveST();applyTheme();buildTheme();}
+
+// ── タブ ──
+function showScreen(id,el){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');window.scrollTo(0,0);
+  if(id==='agg'){renderAggControls();renderAgg();}
+  if(id==='preset')renderPreset();
+  if(id==='rec')renderRecent();
+}
+
+// ── トースト ──
+let _toastT=null;
+function toast(msg){
+  let t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(_toastT);_toastT=setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+// ── 確認ダイアログ ──
+function confirmDialog(msg,okLabel,onOk){
+  const bg=document.getElementById('confirmModal');
+  document.getElementById('cfMsg').textContent=msg;
+  const okBtn=document.getElementById('cfOk');
+  okBtn.style.display='';
+  okBtn.textContent=okLabel||'OK';
+  okBtn.classList.remove('btn-danger');
+  const bk=document.getElementById('cfBackup');if(bk)bk.remove();
+  okBtn.onclick=()=>{bg.classList.remove('show');onOk();};
+  document.getElementById('cfCancel').textContent='キャンセル';
+  document.getElementById('cfCancel').onclick=()=>bg.classList.remove('show');
+  bg.classList.add('show');
+}
+
+/* ============================================================
+   記録画面
+   ============================================================ */
+let recState={
+  placeId:'osaka', floor:99, mass:'boss',
+  swords:{}, // key=name@mass → {name,mass,count}
+  kills:1, koban:0, hakata:'なし',
+  recMode:'easy', prog:null
+};
+let recFilter={type:'すべて',school:'すべて',q:''};
+
+function initRecState(){
+  const places=activePlaces();
+  if(places.length){recState.placeId=places[0].id;}
+  const p=placeById(recState.placeId);
+  if(p&&p.type==='osaka'&&p.floors.length){recState.floor=p.floors[p.floors.length-1];}
+}
+
+function renderRecPlace(){
+  const sel=document.getElementById('recPlace');
+  sel.innerHTML=activePlaces().map(p=>`<option value="${p.id}" ${p.id===recState.placeId?'selected':''}>${p.name}</option>`).join('');
+}
+function updateHeaderSub(){
+  const p=placeById(recState.placeId);
+  const name=p?p.name.replace(/（.*）/,''):'';
+  document.getElementById('hSub').textContent='― '+(name||'')+' ドロップ集計 ―';
+}
+function onRecPlaceChange(){
+  recState.placeId=document.getElementById('recPlace').value;
+  const p=placeById(recState.placeId);
+  if(p&&p.type==='osaka'&&p.floors.length){recState.floor=p.floors[p.floors.length-1];}
+  renderRecFloor();buildQuick();updateHeaderSub();
+}
+function renderRecFloor(){
+  const p=placeById(recState.placeId);
+  const wrap=document.getElementById('recFloorWrap');
+  if(p&&p.type==='osaka'){
+    wrap.style.display='block';
+    const sel=document.getElementById('recFloor');
+    sel.innerHTML=(p.floors||[]).slice().sort((a,b)=>b-a).map(f=>`<option value="${f}" ${f===recState.floor?'selected':''}>${f}階</option>`).join('');
+    document.getElementById('floorInfo').innerHTML='※ 記録できる階は<b>設定・プリセット</b>で増やせます（50階・特定階の周回にも対応）';
+  }else{
+    wrap.style.display='none';
+  }
+}
+function onRecFloorChange(){recState.floor=parseInt(document.getElementById('recFloor').value);buildQuick();}
+
+// 記録モード切替（かんたん / 詳しく）
+function setRecMode(m){
+  recState.recMode=m;
+  document.getElementById('ms-easy').classList.toggle('on',m==='easy');
+  document.getElementById('ms-detail').classList.toggle('on',m==='detail');
+  document.querySelectorAll('#rec .detail-only').forEach(e=>e.style.display=(m==='detail')?'':'none');
+  document.getElementById('filterArea').style.display=(m==='detail')?'block':'none';
+  document.getElementById('easyHint').style.display=(m==='easy')?'block':'none';
+  document.getElementById('swCardTitle').textContent=(m==='easy')?'出た男士':'ドロップした男士';
+  document.getElementById('swCardSub').textContent=(m==='easy')?'周回中に確認できたドロップを、出たぶんだけ選びます':'このマスで出た男士を選びます（複数ぶん追加できます）';
+  buildQuick();renderList();
+}
+
+// 進行マーク
+function renderProg(){
+  const row=document.getElementById('progRow');
+  if(!row)return;
+  row.innerHTML=PROG_MARKS.map(([k,label])=>`<span class="prog-chip ${recState.prog===k?'on':''}" onclick="setProg('${k}')">${label}</span>`).join('');
+}
+function setProg(k){recState.prog=(recState.prog===k)?null:k;renderProg();}
+
+// 男士を選ぶときの実効マス：詳しく=選択中のマス、かんたん=目玉ならboss・他はunknown
+function effMass(name){
+  if(recState.recMode==='detail')return recState.mass;
+  return UD.featured.includes(name)?'boss':'unknown';
+}
+
+// マス種別（詳しくモードのみ）
+function setMass(m){
+  recState.mass=m;
+  document.querySelectorAll('.mass-btn').forEach(b=>b.classList.remove('on'));
+  const btn=document.getElementById('mass-'+m);if(btn)btn.classList.add('on');
+  document.getElementById('featuredHint').style.display=(m==='normal')?'block':'none';
+  buildQuick();renderList();
+}
+
+// よく使う候補（この階で過去に記録した男士＋目玉）
+function buildQuick(){
+  const box=document.getElementById('quickCands');
+  const easy=recState.recMode==='easy';
+  const recs=activeRecords().filter(r=>r.placeId===recState.placeId
+    &&(placeById(recState.placeId)?.type!=='osaka'||r.floor===recState.floor));
+  // 頻度集計（詳しくモードは選択中マスのみ、かんたんは全マス）
+  const freq={};
+  recs.forEach(r=>r.swords.forEach(s=>{
+    if(s.name===NODROP)return;
+    if(!easy&&s.mass!==recState.mass)return;
+    freq[s.name]=(freq[s.name]||0)+s.count;
+  }));
+  let names=Object.keys(freq).sort((a,b)=>freq[b]-freq[a]).slice(0,8);
+  // 目玉を先頭に足す（かんたん、または詳しくのボスマス）。詳しくの通常マスでは目玉を出さない
+  const showStar=easy||recState.mass==='boss';
+  if(showStar){UD.featured.forEach(f=>{if(!names.includes(f))names.unshift(f);});}
+  else{names=names.filter(n=>!UD.featured.includes(n));}
+  names=names.slice(0,10);
+  if(names.length===0){box.innerHTML='<span style="font-size:11px;color:var(--text3)">記録すると、この階でよく出る男士がここに並びます</span>';return;}
+  box.innerHTML=names.map(n=>{
+    const isStar=UD.featured.includes(n)&&showStar;
+    return `<span class="q-chip ${isStar?'star':''}" onclick="addSword('${esc(n)}')">${isStar?'★ ':''}${n}</span>`;
+  }).join('');
+}
+function esc(s){return s.replace(/'/g,"\\'");}
+
+// フィルタUI
+function buildTypeFilter(){
+  document.getElementById('typeFilter').innerHTML=
+    `<span class="chip on" onclick="setType(this,'すべて')">すべて</span>`+
+    TYPES.map(t=>`<span class="chip" onclick="setType(this,'${t}')">${t}</span>`).join('');
+}
+function buildSchoolFilter(){
+  document.getElementById('schoolFilter').innerHTML=
+    `<span class="chip on" onclick="setSchool(this,'すべて')">すべて</span>`+
+    SCHOOLS.map(s=>`<span class="chip" onclick="setSchool(this,'${s}')">${s}</span>`).join('');
+}
+function setType(el,t){document.querySelectorAll('#typeFilter .chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');recFilter.type=t;renderList();}
+function setSchool(el,s){document.querySelectorAll('#schoolFilter .chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');recFilter.school=s;renderList();}
+
+function renderList(){
+  recFilter.q=document.getElementById('swSearch').value.trim().toLowerCase();
+  const detailNormal=(recState.recMode==='detail'&&recState.mass==='normal');
+  let items=MR.filter(s=>{
+    if(detailNormal&&UD.featured.includes(s[1]))return false; // 詳しく×通常マスは目玉除外
+    if(recFilter.type!=="すべて"&&s[3]!==recFilter.type)return false;
+    if(recFilter.school!=="すべて"&&s[4]!==recFilter.school)return false;
+    if(recFilter.q&&!s[1].toLowerCase().includes(recFilter.q)&&!s[2].toLowerCase().includes(recFilter.q))return false;
+    return true;
+  });
+  const showStar=(recState.recMode==='easy'||recState.mass==='boss');
+  const list=document.getElementById('swordList');
+  document.getElementById('listCount').textContent=`${items.length} 振り`;
+  if(items.length===0){list.innerHTML='<div style="padding:18px;text-align:center;color:var(--text3);font-size:13px">該当なし</div>';return;}
+  list.innerHTML=items.map(s=>{
+    const star=(UD.featured.includes(s[1])&&showStar)?'<span class="sw-star">★</span> ':'';
+    const sch=s[4]==="なし"?'':`<span class="sw-school">${s[4]}</span>`;
+    return `<div class="sword-item" onclick="addSword('${esc(s[1])}')">
+      <span class="sw-no">No.${s[0]}</span><span class="sw-type">${s[3]}</span>${sch}
+      <span class="sw-namewrap"><span class="sw-name">${star}${s[1]}</span><span class="sw-yomi">${s[2]}</span></span>
+    </div>`;
+  }).join('');
+}
+
+// 選択中（マス別キー）
+function selKey(name,mass){return name+'@'+mass;}
+function addSword(name){
+  const m=effMass(name);
+  const k=selKey(name,m);
+  if(!recState.swords[k])recState.swords[k]={name,mass:m,count:0};
+  recState.swords[k].count++;renderSelected();
+}
+function pickNoDrop(){
+  const m=recState.mass; // ドロップ無しは詳しくモードのみ
+  const k=selKey(NODROP,m);
+  if(!recState.swords[k])recState.swords[k]={name:NODROP,mass:m,count:0};
+  recState.swords[k].count++;renderSelected();
+}
+function chgSel(k,d){recState.swords[k].count+=d;if(recState.swords[k].count<=0)delete recState.swords[k];renderSelected();}
+function delSel(k){delete recState.swords[k];renderSelected();}
+function renderSelected(){
+  const box=document.getElementById('selectedBox');
+  const keys=Object.keys(recState.swords);
+  if(keys.length===0){box.innerHTML='<div class="empty-sel">まだ選んでいません</div>';return;}
+  box.innerHTML=keys.map(k=>{
+    const it=recState.swords[k];let label;
+    if(it.name===NODROP){label='<span style="color:var(--text2)">ドロップ無し（空振り）</span>';}
+    else{
+      const sw=swInfo(it.name);
+      const star=(UD.featured.includes(it.name)&&it.mass==='boss')?'<span class="sw-star">★</span> ':'';
+      label=`${star}${it.name} <span class="y">${sw?sw[2]:''}</span>`;
+    }
+    return `<div class="selected-sword">
+      <span class="ss-name"><span class="ss-mass">${MASS_LABEL[it.mass]}</span>${label}</span>
+      <span class="ss-cnt">
+        <button class="cnt-mini" onclick="chgSel('${k}',-1)">−</button>
+        <span class="cnt-val">${it.count}</span>
+        <button class="cnt-mini" onclick="chgSel('${k}',1)">＋</button>
+        <button class="del-btn" onclick="delSel('${k}')">🗑</button>
+      </span></div>`;
+  }).join('');
+}
+
+// 撃破回数カウンター
+function chgKill(d){recState.kills=Math.max(1,recState.kills+d);document.getElementById('killInput').value=recState.kills;}
+function killInputChg(){let v=parseInt(document.getElementById('killInput').value)||1;recState.kills=Math.max(1,v);document.getElementById('killInput').value=recState.kills;}
+
+// 小判
+function setHakata(el,v){el.parentNode.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');recState.hakata=v;}
+function kobanChg(){recState.koban=Math.max(0,parseInt(document.getElementById('kobanInput').value)||0);}
+
+// 記録の保存
+function saveRecord(){
+  const keys=Object.keys(recState.swords);
+  if(keys.length===0&&recState.koban===0){toast('男士か小判を入力してください');return;}
+  const p=placeById(recState.placeId);
+  const swords=keys.map(k=>({name:recState.swords[k].name,count:recState.swords[k].count,mass:recState.swords[k].mass}));
+  const floor=(p&&p.type==='osaka')?recState.floor:null;
+  const rec={
+    id:uid('r'), placeId:recState.placeId, floor,
+    swords, kills:recState.kills, koban:recState.koban, hakata:recState.hakata,
+    prog:recState.prog||null,
+    date:todayStr(), updatedAt:Date.now(), deleted:false
+  };
+  UD.records.push(rec);save();
+  resetRecForm();renderRecent();buildQuick();
+  toast('記録しました');
+}
+function resetRecForm(){
+  recState.swords={};recState.kills=1;recState.koban=0;recState.hakata='なし';recState.prog=null;
+  document.getElementById('killInput').value=1;
+  document.getElementById('kobanInput').value='';
+  const hakCard=[...document.querySelectorAll('#rec .card')].find(c=>c.textContent.includes('博多藤四郎の状態'));
+  if(hakCard){const chips=hakCard.querySelectorAll('.chip');chips.forEach(c=>c.classList.remove('on'));if(chips[0])chips[0].classList.add('on');}
+  renderSelected();renderProg();
+}
+
+// 最近の記録
+function renderRecent(){
+  const box=document.getElementById('recentList');
+  const recs=activeRecords().slice();
+  if(recs.length===0){box.innerHTML='<div class="empty-state"><div class="es-icon">📜</div><div class="es-text">まだ記録がありません</div></div>';return;}
+  // 同じ 日付・階・場所 でグループ化
+  const groups={};
+  recs.forEach(r=>{
+    const gk=[r.date,r.placeId,r.floor==null?'-':r.floor].join('|');
+    if(!groups[gk])groups[gk]={date:r.date,placeId:r.placeId,floor:r.floor,records:[]};
+    groups[gk].records.push(r);
+  });
+  // 並び：日付の新しい順（同日は階の降順で安定）。編集してもupdatedAtで動かない
+  let glist=Object.values(groups).sort((a,b)=>{
+    if(a.date!==b.date)return a.date<b.date?1:-1;
+    return (b.floor||0)-(a.floor||0);
+  }).slice(0,20);
+
+  box.innerHTML=glist.map(g=>{
+    const p=placeById(g.placeId);
+    const head=g.floor?(g.floor+'階'):(p?p.name.replace(/（.*）/,''):'');
+    const totalKills=g.records.reduce((s,r)=>s+(r.kills||0),0);
+    const totalKoban=g.records.reduce((s,r)=>s+(r.koban||0),0);
+    const gid=[g.date,g.placeId,g.floor==null?'-':g.floor].join('~');
+    // 男士を (name,mass) で合算。各合算行は寄与した {recId,idx} を保持
+    const agg={}; // key=name@mass → {name,mass,count,refs:[{recId,idx}]}
+    g.records.forEach(r=>{
+      (r.swords||[]).forEach((s,idx)=>{
+        const k=s.name+'@'+s.mass;
+        if(!agg[k])agg[k]={name:s.name,mass:s.mass,count:0,refs:[]};
+        agg[k].count+=s.count;agg[k].refs.push({recId:r.id,idx});
+      });
+    });
+    const swRows=Object.keys(agg).map(k=>{
+      const a=agg[k];
+      const isND=a.name===NODROP;
+      const star=(UD.featured.includes(a.name))?'<span class="star">★</span> ':'';
+      const nm=isND?'<span style="color:var(--text2)">ドロップ無し</span>':`${star}${a.name}`;
+      const sw=swInfo(a.name);
+      const yomi=(!isND&&sw)?`<span class="y">${sw[2]}</span>`:'';
+      const refsAttr=encodeURIComponent(JSON.stringify(a.refs));
+      const massSel=isND?`<span class="rmass-k" style="background:var(--bg3);color:var(--text2)">${MASS_LABEL[a.mass]}</span>`:
+        `<select class="mass-sel" onchange="changeAggMass('${refsAttr}','${a.mass}',this.value)">
+          <option value="boss" ${a.mass==='boss'?'selected':''}>ボス</option>
+          <option value="normal" ${a.mass==='normal'?'selected':''}>通常</option>
+          <option value="unknown" ${a.mass==='unknown'?'selected':''}>不明</option>
+        </select>`;
+      return `<div class="srow">
+        <span class="rname">${nm} ${yomi}</span>
+        ${massSel}
+        <span class="inline-cnt">
+          <button class="cnt-mini" onclick="aggChgCnt('${refsAttr}',-1)">−</button>
+          <span class="cnt-val">${a.count}</span>
+          <button class="cnt-mini" onclick="aggChgCnt('${refsAttr}',1)">＋</button>
+          <button class="del-btn" onclick="aggDelSword('${refsAttr}')" title="削除">🗑</button>
+        </span></div>`;
+    }).join('');
+    const kobanRow=(totalKoban>0)?`<div class="srow koban-row">
+      <span class="rmass-k">小判</span>
+      <span class="rname">${totalKoban.toLocaleString()}枚</span>
+      <span class="inline-cnt"><button class="del-btn" onclick="aggDelKoban('${gid}')" title="削除">🗑</button></span></div>`:'';
+    // 周回編集：グループ内に複数レコードがあれば選択、1つなら直接
+    const editBtn=g.records.length>1
+      ? `<button class="session-edit" onclick="openGroupEdit('${gid}')">✏ この周回（${g.records.length}件）</button>`
+      : `<button class="session-edit" onclick="openSessionEdit('${g.records[0].id}')">✏ この周回</button>`;
+    return `<div class="session">
+      <div class="session-head">
+        <span class="sh-title">${head}</span>
+        <span class="sh-meta">${totalKills}周 ・ ${fmtDateDot(g.date)}</span>
+        ${editBtn}
+      </div>
+      <div class="session-body">
+        ${swRows}${kobanRow}
+        <div class="add-pick" id="pick-${gid}"></div>
+        <button class="add-sword" onclick="toggleAddPick('${gid}')">＋ 男士を追加（周回数はそのまま）</button>
+      </div></div>`;
+  }).join('');
+}
+
+// 合算行の操作：refs（[{recId,idx}]）をまたいで処理
+function parseRefs(enc){try{return JSON.parse(decodeURIComponent(enc));}catch(e){return [];}}
+function aggChgCnt(enc,d){
+  const refs=parseRefs(enc);if(!refs.length)return;
+  if(d>0){
+    // 増やすのは先頭レコードの該当男士
+    const r=UD.records.find(x=>x.id===refs[0].recId);
+    if(r&&r.swords[refs[0].idx]){r.swords[refs[0].idx].count++;r.updatedAt=Date.now();}
+  }else{
+    // 減らすのは末尾の寄与から（1つずつ）
+    const ref=refs[refs.length-1];
+    const r=UD.records.find(x=>x.id===ref.recId);
+    if(r&&r.swords[ref.idx]){
+      r.swords[ref.idx].count--;
+      if(r.swords[ref.idx].count<=0)r.swords.splice(ref.idx,1);
+      pruneIfEmpty(r);r.updatedAt=Date.now();
+    }
+  }
+  save();renderRecent();buildQuick();
+}
+function aggDelSword(enc){
+  const refs=parseRefs(enc);
+  // refsはidxを含むので、各レコードで大きいidxから消す
+  const byRec={};
+  refs.forEach(ref=>{(byRec[ref.recId]=byRec[ref.recId]||[]).push(ref.idx);});
+  Object.keys(byRec).forEach(recId=>{
+    const r=UD.records.find(x=>x.id===recId);if(!r)return;
+    byRec[recId].sort((a,b)=>b-a).forEach(idx=>{if(r.swords[idx])r.swords.splice(idx,1);});
+    pruneIfEmpty(r);r.updatedAt=Date.now();
+  });
+  save();renderRecent();buildQuick();toast('削除しました');
+}
+function changeAggMass(enc,oldMass,newMass){
+  if(oldMass===newMass)return;
+  const refs=parseRefs(enc);
+  refs.forEach(ref=>{
+    const r=UD.records.find(x=>x.id===ref.recId);if(!r||!r.swords[ref.idx])return;
+    const name=r.swords[ref.idx].name;
+    const dup=r.swords.findIndex((s,i)=>i!==ref.idx&&s.name===name&&s.mass===newMass);
+    r.swords[ref.idx].mass=newMass;
+    if(dup>=0){r.swords[dup].count+=r.swords[ref.idx].count;r.swords.splice(ref.idx,1);}
+    r.updatedAt=Date.now();
+  });
+  save();renderRecent();buildQuick();toast('マスを変更しました');
+}
+function aggDelKoban(gid){
+  const [date,placeId,floorRaw]=gid.split('~');
+  const floor=floorRaw==='-'?null:parseInt(floorRaw);
+  activeRecords().forEach(r=>{
+    if(r.date===date&&r.placeId===placeId&&(r.floor==null?'-':r.floor)==(floor==null?'-':floor)){
+      if(r.koban>0){r.koban=0;pruneIfEmpty(r);r.updatedAt=Date.now();}
+    }
+  });
+  save();renderRecent();toast('削除しました');
+}
+
+// グループに複数レコードがあるとき、どれを編集するか選ぶ
+function openGroupEdit(gid){
+  const [date,placeId,floorRaw]=gid.split('~');
+  const floor=floorRaw==='-'?null:parseInt(floorRaw);
+  const recs=activeRecords().filter(r=>r.date===date&&r.placeId===placeId&&(r.floor==null?'-':r.floor)==(floor==null?'-':floor));
+  const box=document.getElementById('importResult'); // 流用しない。専用モーダルへ
+  // 簡易：選択モーダルを confirmModal で
+  const bg=document.getElementById('confirmModal');
+  document.getElementById('cfMsg').innerHTML='この日の周回が'+recs.length+'件あります。編集する周回を選んでください：<br><br>'+
+    recs.map((r,i)=>`<button class="btn btn-ghost" style="width:100%;margin-bottom:6px" onclick="(function(){document.getElementById('confirmModal').classList.remove('show');openSessionEdit('${r.id}');})()">${r.kills||1}周 ・ 小判${(r.koban||0).toLocaleString()}枚 ・ 博多${r.hakata||'なし'}</button>`).join('');
+  const okBtn=document.getElementById('cfOk');okBtn.style.display='none';
+  document.getElementById('cfCancel').textContent='閉じる';
+  document.getElementById('cfCancel').onclick=()=>{bg.classList.remove('show');okBtn.style.display='';};
+  bg.classList.add('show');
+}
+
+// レコードが空になったらソフト削除
+function pruneIfEmpty(r){
+  if((r.swords||[]).length===0&&(r.koban||0)===0)r.deleted=true;
+}
+// 行：件数を増減
+function recChgCnt(id,idx,d){
+  const r=UD.records.find(x=>x.id===id);
+  if(!r||!r.swords[idx])return;
+  r.swords[idx].count+=d;
+  if(r.swords[idx].count<=0)r.swords.splice(idx,1);
+  pruneIfEmpty(r);r.updatedAt=Date.now();save();
+  renderRecent();buildQuick();
+}
+// 行：マスを変更
+function changeRowMass(id,idx,m){
+  const r=UD.records.find(x=>x.id===id);
+  if(!r||!r.swords[idx])return;
+  // 同レコード内に同名＆同マスが既にあれば統合
+  const name=r.swords[idx].name;
+  const dup=r.swords.findIndex((s,i)=>i!==idx&&s.name===name&&s.mass===m);
+  r.swords[idx].mass=m;
+  if(dup>=0){r.swords[dup].count+=r.swords[idx].count;r.swords.splice(idx,1);}
+  r.updatedAt=Date.now();save();
+  renderRecent();buildQuick();toast('マスを変更しました');
+}
+// 男士1行削除
+function delSwordRow(id,idx){
+  const r=UD.records.find(x=>x.id===id);
+  if(!r||!r.swords||!r.swords[idx])return;
+  r.swords.splice(idx,1);pruneIfEmpty(r);
+  r.updatedAt=Date.now();save();
+  renderRecent();buildQuick();toast('削除しました');
+}
+// 小判削除
+function delKobanRow(id){
+  const r=UD.records.find(x=>x.id===id);
+  if(!r)return;
+  r.koban=0;pruneIfEmpty(r);
+  r.updatedAt=Date.now();save();
+  renderRecent();toast('削除しました');
+}
+
+// 男士追加（その周回グループに・周回数そのまま）
+let _addPickOpen=null;
+function groupFirstRecord(gid){
+  const [date,placeId,floorRaw]=gid.split('~');
+  const floor=floorRaw==='-'?null:parseInt(floorRaw);
+  const recs=activeRecords().filter(r=>r.date===date&&r.placeId===placeId&&(r.floor==null?'-':r.floor)==(floor==null?'-':floor));
+  return recs[0]||null;
+}
+function toggleAddPick(gid){
+  const el=document.getElementById('pick-'+gid);
+  if(_addPickOpen&&_addPickOpen!==gid){const prev=document.getElementById('pick-'+_addPickOpen);if(prev)prev.classList.remove('show');}
+  const willOpen=!el.classList.contains('show');
+  el.classList.toggle('show');
+  _addPickOpen=willOpen?gid:null;
+  if(willOpen)renderAddPick(gid,'');
+}
+function renderAddPick(gid,q){
+  const el=document.getElementById('pick-'+gid);
+  q=(q||'').trim().toLowerCase();
+  let items=MR.filter(s=>!q||s[1].toLowerCase().includes(q)||s[2].toLowerCase().includes(q)).slice(0,30);
+  const list=items.map(s=>{
+    const star=UD.featured.includes(s[1])?'<span class="star" style="color:var(--gold)">★</span> ':'';
+    return `<div class="pick-item" onclick="addSwordToGroup('${gid}','${esc(s[1])}')"><span class="sw-type">${s[3]}</span>${star}${s[1]} <span style="font-size:10px;color:var(--text3)">${s[2]}</span></div>`;
+  }).join('');
+  el.innerHTML=`<input type="text" placeholder="名前で検索（漢字・読み仮名）" oninput="renderAddPick('${gid}',this.value)" autofocus>${list||'<div style="padding:12px;text-align:center;color:var(--text3);font-size:12px">該当なし</div>'}`;
+}
+function addSwordToGroup(gid,name){
+  const r=groupFirstRecord(gid);
+  if(!r)return;
+  const m=UD.featured.includes(name)?'boss':'unknown';
+  const dup=(r.swords||[]).find(s=>s.name===name&&s.mass===m);
+  if(dup)dup.count++;
+  else{if(!r.swords)r.swords=[];r.swords.push({name,mass:m,count:1});}
+  r.updatedAt=Date.now();save();
+  const el=document.getElementById('pick-'+gid);if(el)el.classList.remove('show');_addPickOpen=null;
+  renderRecent();buildQuick();toast(name+' を追加しました');
+}
+function addSwordToRec(id,name){
+  const r=UD.records.find(x=>x.id===id);
+  if(!r)return;
+  // かんたん判定と同じ：目玉ならboss、他はunknown（行で後から変えられる）
+  const m=UD.featured.includes(name)?'boss':'unknown';
+  const dup=(r.swords||[]).find(s=>s.name===name&&s.mass===m);
+  if(dup)dup.count++;
+  else{if(!r.swords)r.swords=[];r.swords.push({name,mass:m,count:1});}
+  r.updatedAt=Date.now();save();
+  const el=document.getElementById('pick-'+id);if(el)el.classList.remove('show');_addPickOpen=null;
+  renderRecent();buildQuick();toast(name+' を追加しました');
+}
+
+// ✏ この周回：階・周回数・小判・博多をモーダルで編集
+let _editSessionId=null;
+function openSessionEdit(id){
+  const r=UD.records.find(x=>x.id===id);
+  if(!r)return;
+  _editSessionId=id;
+  const p=placeById(r.placeId);
+  const isOsaka=p&&p.type==='osaka';
+  document.getElementById('seFloorWrap').style.display=isOsaka?'block':'none';
+  if(isOsaka){
+    const sel=document.getElementById('seFloor');
+    sel.innerHTML=(p.floors||[]).slice().sort((a,b)=>b-a).map(f=>`<option value="${f}" ${f===r.floor?'selected':''}>${f}階</option>`).join('');
+  }
+  document.getElementById('seKills').value=r.kills||1;
+  document.getElementById('seKoban').value=r.koban||0;
+  const seHak=document.getElementById('seHakata');
+  seHak.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.v===(r.hakata||'なし')));
+  document.getElementById('sessionModal').classList.add('show');
+}
+function setSeHakata(el){el.parentNode.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');}
+function closeSessionEdit(){document.getElementById('sessionModal').classList.remove('show');_editSessionId=null;}
+function saveSessionEdit(){
+  const r=UD.records.find(x=>x.id===_editSessionId);
+  if(!r){closeSessionEdit();return;}
+  const p=placeById(r.placeId);
+  if(p&&p.type==='osaka'){const f=parseInt(document.getElementById('seFloor').value);if(f)r.floor=f;}
+  r.kills=Math.max(1,parseInt(document.getElementById('seKills').value)||1);
+  r.koban=Math.max(0,parseInt(document.getElementById('seKoban').value)||0);
+  const hk=document.getElementById('seHakata').querySelector('.chip.on');
+  if(hk)r.hakata=hk.dataset.v;
+  r.updatedAt=Date.now();save();
+  closeSessionEdit();renderRecent();buildQuick();toast('周回情報を更新しました');
+}
+
+/* ============================================================
+   集計画面
+   ============================================================ */
+let aggState={placeId:'osaka',floor:'all',mass:'all',mode:'A'};
+
+function renderAggControls(){
+  document.getElementById('aggPlace').innerHTML=activePlaces().map(p=>`<option value="${p.id}" ${p.id===aggState.placeId?'selected':''}>${p.name}</option>`).join('');
+  const p=placeById(aggState.placeId);
+  const fw=document.getElementById('aggFloorWrap');
+  if(p&&p.type==='osaka'){
+    fw.style.display='block';
+    document.getElementById('aggFloor').innerHTML='<option value="all">すべての階</option>'+
+      (p.floors||[]).slice().sort((a,b)=>b-a).map(f=>`<option value="${f}" ${String(f)===String(aggState.floor)?'selected':''}>${f}階</option>`).join('');
+  }else{fw.style.display='none';}
+  // モードトグル初期反映
+  document.querySelectorAll('#aggModeBar .tg').forEach(t=>t.classList.toggle('on',t.dataset.m===aggState.mode));
+  document.querySelectorAll('#aggMassBar .tg').forEach(t=>t.classList.toggle('on',t.dataset.m===aggState.mass));
+}
+function onAggPlace(){aggState.placeId=document.getElementById('aggPlace').value;aggState.floor='all';renderAggControls();renderAgg();}
+function onAggFloor(){aggState.floor=document.getElementById('aggFloor').value;renderAgg();}
+function setAggMass(el){el.parentNode.querySelectorAll('.tg').forEach(t=>t.classList.remove('on'));el.classList.add('on');aggState.mass=el.dataset.m;renderAgg();}
+function setAggMode(el){el.parentNode.querySelectorAll('.tg').forEach(t=>t.classList.remove('on'));el.classList.add('on');aggState.mode=el.dataset.m;renderAgg();}
+
+// 集計対象レコード抽出
+function aggRecords(){
+  return activeRecords().filter(r=>{
+    if(r.placeId!==aggState.placeId)return false;
+    if(aggState.floor!=='all'&&String(r.floor)!==String(aggState.floor))return false;
+    return true;
+  });
+}
+
+function renderAgg(){
+  renderAggModeHelp();
+  const recs=aggRecords();
+  const isAll=aggState.mass==='all';
+  const counts={}; // name → count
+  let dropTotal=0;  // ドロップ有り合計（A分母）
+  let killTotal=0;  // 周回数合計（B分母・boss/all）
+  let massVisit=0;  // 通常マス踏破合計（B分母・normal、空振り含む）
+  recs.forEach(r=>{
+    if(isAll||aggState.mass==='boss')killTotal+=r.kills||0;
+    r.swords.forEach(s=>{
+      if(!isAll&&s.mass!==aggState.mass)return;
+      if(aggState.mass==='normal')massVisit+=s.count;
+      if(s.name===NODROP)return;
+      counts[s.name]=(counts[s.name]||0)+s.count;
+      dropTotal+=s.count;
+    });
+  });
+  // ランキング生成
+  let rank=Object.keys(counts).map(n=>{
+    const sw=swInfo(n);
+    let rate;
+    if(aggState.mode==='A'){rate=dropTotal?counts[n]/dropTotal*100:0;}
+    else{
+      const denom=(isAll||aggState.mass==='boss')?killTotal:massVisit;
+      rate=denom?counts[n]/denom*100:0;
+    }
+    return {name:n,type:sw?sw[3]:'',count:counts[n],rate,star:UD.featured.includes(n)};
+  }).sort((a,b)=>b.count-a.count);
+
+  // 目玉ハイライト（ボス または すべて、で表示。目玉はボス由来なので率は周回数基準）
+  const featBlock=document.getElementById('featBlock');
+  if((aggState.mass==='boss'||isAll)&&UD.featured.length){
+    const feats=rank.filter(r=>r.star);
+    if(feats.length){
+      featBlock.style.display='block';
+      featBlock.innerHTML=feats.map(f=>{
+        const denomTxt=aggState.mode==='A'?`全ドロップ${dropTotal}回中`:`周回${killTotal}回中`;
+        return `<div class="featured">
+          <div class="feat-name">${f.name} <span class="sw-type">${f.type}</span></div>
+          <div class="feat-rate">${f.rate.toFixed(1)}<span style="font-size:16px;">%</span></div>
+          <div class="feat-sub">ドロップ${f.count}回 ／ ${denomTxt}</div></div>`;
+      }).join('');
+    }else{featBlock.style.display='none';}
+  }else{featBlock.style.display='none';}
+
+  // 一覧
+  const list=document.getElementById('rankList');
+  if(rank.length===0){
+    list.innerHTML='<div class="empty-state"><div class="es-icon">⚔</div><div class="es-text">この条件の記録はまだありません</div></div>';
+  }else{
+    const max=Math.max(...rank.map(r=>r.rate),0.01);
+    list.innerHTML=rank.map((r,i)=>{
+      const star=r.star?' <span class="sw-star">★</span>':'';
+      return `<div class="rank-row"><span class="rank-no">${i+1}</span>
+        <div class="rank-bar-wrap"><div class="rank-name">${r.name} <span class="sw-type">${r.type}</span>${star}</div>
+        <div class="rank-bar"><div class="rank-bar-fill" style="width:${r.rate/max*100}%"></div></div></div>
+        <div class="rank-val">${r.rate.toFixed(1)}%<div class="rank-cnt">${r.count}回</div></div></div>`;
+    }).join('');
+  }
+
+  // 小判
+  renderKoban(recs);
+}
+
+function renderAggModeHelp(){
+  const help=document.getElementById('modeHelp');
+  if(aggState.mode==='A'){
+    help.innerHTML='<b>A：構成比</b>　「落ちた男士の中で、それぞれが何割か」。分母は<b>ドロップがあった回数</b>。レアが落ちた時だけ記録する人向けで、空振りを記録しなくても出せます。';
+  }else{
+    const d=(aggState.mass==='normal')?'通常マスを踏んだ総回数（空振り含む）':'周回（ボス撃破）の総回数';
+    help.innerHTML=`<b>B：実ドロップ率</b>　「1回ごとに何%で落ちるか」。分母は<b>${d}</b>。大阪城の「まれに入手」の実際の確率です。`;
+  }
+}
+
+// 小判集計
+let kobanMode='in';
+function renderKoban(recs){
+  // ボスマス集計のときのみ撃破回数を分母に。小判は記録単位で集計
+  let totalIn=0, totalOut=0, kills=0;
+  recs.forEach(r=>{
+    kills+=r.kills||0;
+    const k=r.koban||0;
+    totalIn+=k;
+    const rate=r.hakata==='初'?1.5:r.hakata==='極'?2.0:1.0;
+    totalOut+=Math.round(k/rate);
+  });
+  const total=kobanMode==='in'?totalIn:totalOut;
+  const avg=kills?Math.round(total/kills):0;
+  document.getElementById('kobanTotal').textContent=total.toLocaleString();
+  document.getElementById('kobanAvg').textContent=avg.toLocaleString();
+  document.getElementById('kobanKills').textContent=kills.toLocaleString();
+}
+function setKoban(el,k){el.parentNode.querySelectorAll('.tg').forEach(t=>t.classList.remove('on'));el.classList.add('on');kobanMode=k;renderKoban(aggRecords());}
+
+/* ============================================================
+   設定・プリセット画面
+   ============================================================ */
+function renderPreset(){
+  renderPlaceList();renderOsakaSettings();renderFeaturedSettings();
+  if(typeof renderSyncUI==='function')renderSyncUI();
+}
+function renderPlaceList(){
+  const box=document.getElementById('placeList');
+  box.innerHTML=activePlaces().map(p=>{
+    const badge=p.type==='osaka'?'<span class="tag">開催中</span>':'';
+    return `<div class="preset-item"><span class="pn">${p.name}${badge}</span>
+      <button class="btn btn-ghost btn-sm" onclick="editPlace('${p.id}')">編集</button></div>`;
+  }).join('')+
+  '<div class="preset-item" style="opacity:.6"><span class="pn">通常マップ<span class="tag soon">準備中</span></span></div>'+
+  '<div class="preset-item" style="opacity:.6"><span class="pn">連隊戦（夏）<span class="tag soon">準備中</span></span></div>';
+}
+function editPlace(id){toast('プリセット編集（実装中）');}
+
+function renderOsakaSettings(){
+  const p=placeById('osaka')||activePlaces().find(x=>x.type==='osaka');
+  if(!p)return;
+  document.getElementById('setMaxFloor').value=p.maxFloor;
+  document.getElementById('setFloors').value=(p.floors||[]).join(',');
+  document.getElementById('setHakataHatsu').value=p.hakataRate['初'];
+  document.getElementById('setHakataKiwame').value=p.hakataRate['極'];
+}
+function saveOsakaSettings(){
+  const p=placeById('osaka')||activePlaces().find(x=>x.type==='osaka');
+  if(!p)return;
+  p.maxFloor=parseInt(document.getElementById('setMaxFloor').value)||99;
+  const floors=document.getElementById('setFloors').value.split(',').map(x=>parseInt(x.trim())).filter(x=>!isNaN(x)&&x>0);
+  if(floors.length)p.floors=Array.from(new Set(floors)).sort((a,b)=>a-b);
+  p.hakataRate['初']=parseFloat(document.getElementById('setHakataHatsu').value)||1.5;
+  p.hakataRate['極']=parseFloat(document.getElementById('setHakataKiwame').value)||2.0;
+  p.updatedAt=Date.now();save();
+  // 記録画面の階プルダウンに反映
+  if(recState.placeId===p.id&&!p.floors.includes(recState.floor))recState.floor=p.floors[p.floors.length-1];
+  renderRecFloor();
+  toast('設定を保存しました');
+}
+
+// 目玉指定
+let featSearch='';
+function renderFeaturedSettings(){
+  // 現在の目玉
+  const cur=document.getElementById('featCurrent');
+  if(UD.featured.length===0){
+    cur.innerHTML='<div class="feat-current-title">現在の目玉</div><div style="font-size:12px;color:var(--text3)">まだ指定していません</div>';
+  }else{
+    cur.innerHTML='<div class="feat-current-title">現在の目玉（'+UD.featured.length+'振り）</div>'+
+      '<div class="chips">'+UD.featured.map(n=>`<span class="feat-tag">★ ${n}<span class="x" onclick="removeFeat('${esc(n)}')">✕</span></span>`).join('')+'</div>';
+  }
+  renderFeatAddList();
+}
+function onFeatSearch(){featSearch=document.getElementById('featSearch').value.trim().toLowerCase();renderFeatAddList();}
+function renderFeatAddList(){
+  const list=document.getElementById('featAddList');
+  if(!featSearch){list.innerHTML='<div style="padding:14px;text-align:center;color:var(--text3);font-size:12px">名前で検索して目玉に追加（漢字・読み仮名）</div>';return;}
+  let items=MR.filter(s=>!UD.featured.includes(s[1])&&(s[1].toLowerCase().includes(featSearch)||s[2].toLowerCase().includes(featSearch))).slice(0,20);
+  if(items.length===0){list.innerHTML='<div style="padding:14px;text-align:center;color:var(--text3);font-size:12px">該当なし</div>';return;}
+  list.innerHTML=items.map(s=>`<div class="sword-item" onclick="addFeat('${esc(s[1])}')">
+    <span class="sw-no">No.${s[0]}</span><span class="sw-type">${s[3]}</span>
+    <span class="sw-namewrap"><span class="sw-name">${s[1]}</span><span class="sw-yomi">${s[2]}</span></span>
+    <span style="color:var(--gold);font-size:13px">＋★</span></div>`).join('');
+}
+function addFeat(n){if(!UD.featured.includes(n))UD.featured.push(n);save();document.getElementById('featSearch').value='';featSearch='';renderFeaturedSettings();buildQuick();renderList();toast(n+' を目玉に追加');}
+function removeFeat(n){UD.featured=UD.featured.filter(x=>x!==n);save();renderFeaturedSettings();buildQuick();renderList();toast('目玉から外しました');}
+
+/* ============================================================
+   データの保存・読み込み（JSON / CSV / Excel）
+   ============================================================ */
+const IMPORT_COLS=['日付','場所','階数','マス(ボス/通常)','男士','件数','撃破回数','小判','博多(なし/初/極)'];
+
+function downloadBlob(blob,filename){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=filename;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function dateStamp(){const d=new Date();return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');}
+
+// レコードを行（1男士=1行）に展開
+function recordsToRows(){
+  const rows=[];
+  activeRecords().forEach(r=>{
+    const p=placeById(r.placeId);
+    const placeName=p?p.name:r.placeId;
+    const massJp=m=>m==='boss'?'ボス':m==='normal'?'通常':m==='resource'?'資源':m==='unknown'?'不明':'';
+    if(r.swords&&r.swords.length){
+      r.swords.forEach(s=>{
+        rows.push({
+          '日付':r.date,'場所':placeName,'階数':r.floor||'',
+          'マス(ボス/通常)':massJp(s.mass),
+          '男士':s.name===NODROP?'ドロップ無し':s.name,'件数':s.count,
+          '撃破回数':r.kills||'','小判':r.koban||0,'博多(なし/初/極)':r.hakata||'なし'
+        });
+      });
+    }else{
+      // 小判のみの記録
+      rows.push({'日付':r.date,'場所':placeName,'階数':r.floor||'','マス(ボス/通常)':'',
+        '男士':'','件数':'','撃破回数':r.kills||'','小判':r.koban||0,'博多(なし/初/極)':r.hakata||'なし'});
+    }
+  });
+  return rows;
+}
+
+function exportJSON(){
+  const data={app:'kaikouroku',version:1,exportedAt:new Date().toISOString(),UD};
+  downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),'邂逅録_'+dateStamp()+'.json');
+  toast('JSONを書き出しました');
+}
+function exportCSV(){
+  const rows=recordsToRows();
+  if(rows.length===0){toast('記録がありません');return;}
+  const ws=XLSX.utils.json_to_sheet(rows,{header:IMPORT_COLS});
+  const csv=XLSX.utils.sheet_to_csv(ws);
+  downloadBlob(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),'邂逅録_'+dateStamp()+'.csv');
+  toast('CSVを書き出しました');
+}
+function exportXLSX(){
+  const rows=recordsToRows();
+  if(rows.length===0){toast('記録がありません');return;}
+  const ws=XLSX.utils.json_to_sheet(rows,{header:IMPORT_COLS});
+  ws['!cols']=[{wch:12},{wch:26},{wch:8},{wch:14},{wch:14},{wch:7},{wch:9},{wch:9},{wch:14}];
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'邂逅録');
+  XLSX.writeFile(wb,'邂逅録_'+dateStamp()+'.xlsx');
+  toast('Excelを書き出しました');
+}
+function exportTemplate(fmt){
+  const example=[
+    {'日付':'2026-06-09','場所':'大阪城','階数':99,'マス(ボス/通常)':'ボス','男士':'鬼丸国綱','件数':1,'撃破回数':23,'小判':1240,'博多(なし/初/極)':'極'},
+    {'日付':'2026-06-09','場所':'大阪城','階数':99,'マス(ボス/通常)':'通常','男士':'秋田藤四郎','件数':1,'撃破回数':23,'小判':0,'博多(なし/初/極)':'なし'},
+    {'日付':'2026-06-09','場所':'大阪城','階数':99,'マス(ボス/通常)':'ボス','男士':'ドロップ無し','件数':1,'撃破回数':23,'小判':0,'博多(なし/初/極)':'なし'}
+  ];
+  const ws=XLSX.utils.json_to_sheet(example,{header:IMPORT_COLS});
+  ws['!cols']=[{wch:12},{wch:26},{wch:8},{wch:14},{wch:14},{wch:7},{wch:9},{wch:9},{wch:14}];
+  if(fmt==='csv'){
+    const csv=XLSX.utils.sheet_to_csv(ws);
+    downloadBlob(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),'邂逅録_テンプレート.csv');
+  }else{
+    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'記入例');
+    XLSX.writeFile(wb,'邂逅録_テンプレート.xlsx');
+  }
+  toast('テンプレートを書き出しました');
+}
+
+// ── 取り込み ──
+function normStr(s){return String(s==null?'':s).trim().replace(/\u3000/g,'').replace(/[Ａ-Ｚａ-ｚ０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0));}
+function normMass(s){
+  const v=normStr(s);
+  if(/ボス|boss|赤/i.test(v))return 'boss';
+  if(/通常|normal|紫|道中/i.test(v))return 'normal';
+  if(/資源|緑/i.test(v))return 'resource';
+  if(/不明|unknown/i.test(v))return 'unknown';
+  return 'unknown'; // 空欄・不明は「マス不明」（目玉ならインポート側でboss補正）
+}
+function normHakata(s){const v=normStr(s);if(/極/.test(v))return '極';if(/初/.test(v))return '初';return 'なし';}
+// 男士名を表記揺れ込みで解決
+function resolveSword(name){
+  const v=normStr(name);
+  if(!v)return null;
+  if(/ドロップ無|空振|なし|無し|none/i.test(v))return NODROP;
+  // 完全一致
+  let hit=MR.find(s=>s[1]===v);if(hit)return hit[1];
+  // 読み仮名一致
+  hit=MR.find(s=>s[2]===v);if(hit)return hit[1];
+  // 部分一致（名前 or 読み）
+  hit=MR.find(s=>s[1].includes(v)||v.includes(s[1]));if(hit)return hit[1];
+  hit=MR.find(s=>s[2].includes(v));if(hit)return hit[1];
+  return undefined; // 見つからない
+}
+// 場所名を解決（プリセットになければ大阪城に寄せる、なお無ければ最初の場所）
+function resolvePlace(name){
+  const v=normStr(name);
+  const places=activePlaces();
+  let hit=places.find(p=>p.name===v||p.name.replace(/（.*）/,'')===v||p.name.includes(v)||(v&&v.includes(p.name.replace(/（.*）/,''))));
+  if(hit)return hit.id;
+  if(/大阪城|大坂城/.test(v)){const o=places.find(p=>p.type==='osaka')||places[0];if(o)return o.id;}
+  if(places[0])return places[0].id;
+  // プリセットが空：大阪城プリセットを復活させて受け皿にする
+  const def=defaultOsaka();UD.places.push(def);return def.id;
+}
+
+function onImportFile(ev){
+  const file=ev.target.files[0];if(!file)return;
+  const mode=document.querySelector('input[name="impMode"]:checked').value;
+  const ext=file.name.toLowerCase().split('.').pop();
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      if(ext==='json'){importJSON(e.target.result,mode);}
+      else{importTable(e.target.result,ext,mode);}
+    }catch(err){showImportReport({error:'ファイルの読み込みに失敗しました：'+err.message});}
+    ev.target.value='';
+  };
+  if(ext==='json'||ext==='csv')reader.readAsText(file);
+  else reader.readAsArrayBuffer(file);
+}
+
+function importJSON(text,mode){
+  const data=JSON.parse(text);
+  const inUD=data.UD||data;
+  if(!inUD.records){showImportReport({error:'邂逅録のJSONではないようです'});return;}
+  if(mode==='replace'){UD.records=[];UD.places=inUD.places||UD.places;UD.featured=inUD.featured||UD.featured;}
+  const before=UD.records.length;
+  (inUD.records||[]).forEach(r=>{if(!UD.records.find(x=>x.id===r.id))UD.records.push(r);});
+  if(inUD.featured&&mode!=='replace')inUD.featured.forEach(f=>{if(!UD.featured.includes(f))UD.featured.push(f);});
+  save();afterImport();
+  showImportReport({added:UD.records.length-before,total:UD.records.length,fmt:'JSON'});
+}
+
+function importTable(raw,ext,mode){
+  let wb;
+  if(ext==='csv'){wb=XLSX.read(raw,{type:'string'});}
+  else{wb=XLSX.read(raw,{type:'array'});}
+  const ws=wb.Sheets[wb.SheetNames[0]];
+  const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+  if(rows.length===0){showImportReport({error:'データ行が見つかりませんでした'});return;}
+  // 列名のゆらぎを吸収するマッパー
+  const pick=(row,keys)=>{for(const k of Object.keys(row)){const nk=normStr(k);for(const want of keys){if(nk.includes(want))return row[k];}}return '';};
+  // 同一周回（日付+場所+階+撃破+小判+博多）でグルーピング
+  const groups={};const errors=[];let lineNo=1;
+  rows.forEach(row=>{
+    lineNo++;
+    const date=normStr(pick(row,['日付','date']))||todayStr();
+    const placeRaw=pick(row,['場所','place']);
+    const floorRaw=normStr(pick(row,['階数','階','floor']));
+    const massRaw=pick(row,['マス','mass']);
+    const swRaw=pick(row,['男士','刀','sword','name']);
+    const cntRaw=normStr(pick(row,['件数','count','個数']));
+    const killRaw=normStr(pick(row,['撃破','周回','kill']));
+    const kobanRaw=normStr(pick(row,['小判','koban']));
+    const hakataRaw=pick(row,['博多','hakata']);
+    const placeId=resolvePlace(placeRaw);
+    const floor=parseInt(floorRaw.replace(/[^0-9]/g,''))||null;
+    const mass=normMass(massRaw);
+    const kills=parseInt(killRaw.replace(/[^0-9]/g,''))||1;
+    const koban=parseInt(kobanRaw.replace(/[^0-9]/g,''))||0;
+    const hakata=normHakata(hakataRaw);
+    // 男士解決
+    let swName=null;
+    if(normStr(swRaw)){
+      swName=resolveSword(swRaw);
+      if(swName===undefined){errors.push(`${lineNo}行目：男士「${normStr(swRaw)}」が見つかりませんでした`);return;}
+    }
+    // マス不明でも目玉男士ならボス由来とみなす（かんたん記録と同じ判定）
+    let useMass=mass;
+    if(useMass==='unknown'&&swName&&swName!==NODROP&&UD.featured.includes(swName))useMass='boss';
+    const gkey=[date,placeId,floor,kills,koban,hakata].join('|');
+    if(!groups[gkey])groups[gkey]={date,placeId,floor,kills,koban,hakata,swords:{}};
+    if(swName){
+      const sk=swName+'@'+useMass;
+      if(!groups[gkey].swords[sk])groups[gkey].swords[sk]={name:swName,mass:useMass,count:0};
+      groups[gkey].swords[sk].count+=parseInt(cntRaw.replace(/[^0-9]/g,''))||1;
+    }
+  });
+  if(mode==='replace')UD.records=[];
+  const before=UD.records.length;let added=0;
+  Object.values(groups).forEach(g=>{
+    const swords=Object.values(g.swords);
+    if(swords.length===0&&g.koban===0)return;
+    UD.records.push({id:uid('r'),placeId:g.placeId,floor:g.floor,swords,kills:g.kills,koban:g.koban,hakata:g.hakata,date:g.date,updatedAt:Date.now(),deleted:false});
+    added++;
+  });
+  save();afterImport();
+  showImportReport({added,total:UD.records.length,errors,fmt:ext.toUpperCase(),rowCount:rows.length});
+}
+
+function afterImport(){
+  initRecState();renderRecPlace();renderRecFloor();updateHeaderSub();
+  buildQuick();renderList();renderRecent();renderFeaturedSettings();renderOsakaSettings();renderPlaceList();
+}
+function showImportReport(r){
+  const box=document.getElementById('importResult');
+  if(r.error){box.innerHTML=`<div class="imp-report warn"><b>読み込めませんでした</b><br>${r.error}</div>`;return;}
+  let cls=(r.errors&&r.errors.length)?'warn':'ok';
+  let html=`<div class="imp-report ${cls}"><b>${r.added}件</b> を読み込みました（${r.fmt}）。現在の記録は合計 ${r.total} 件です。`;
+  if(r.errors&&r.errors.length){
+    html+=`<br>読み込めなかった行が ${r.errors.length} 件あります：`;
+    r.errors.slice(0,8).forEach(e=>html+=`<div class="err-line">・${e}</div>`);
+    if(r.errors.length>8)html+=`<div class="err-line">…ほか ${r.errors.length-8} 件</div>`;
+  }
+  html+='</div>';box.innerHTML=html;
+  toast(r.added+'件を読み込みました');
+}
+
+// すべての記録を削除（2段階・バックアップ導線つき）
+function confirmDeleteAll(){
+  const n=activeRecords().length;
+  if(n===0){toast('削除する記録がありません');return;}
+  showDeleteAllModal(n);
+}
+function showDeleteAllModal(n){
+  const bg=document.getElementById('confirmModal');
+  document.getElementById('cfMsg').innerHTML=
+    `<b style="color:#c0392b">すべての記録（${n}件）を削除します。</b><br>この操作は元に戻せません。<br><br>心配な方は、先にバックアップを取ってください。`;
+  const okBtn=document.getElementById('cfOk');
+  const cancelBtn=document.getElementById('cfCancel');
+  okBtn.style.display='';
+  // ボタンを3択に：バックアップ / 削除 / キャンセル
+  okBtn.textContent='削除する';okBtn.classList.add('btn-danger');
+  okBtn.onclick=()=>{bg.classList.remove('show');okBtn.classList.remove('btn-danger');doDeleteAll();};
+  cancelBtn.textContent='キャンセル';
+  cancelBtn.onclick=()=>{bg.classList.remove('show');okBtn.classList.remove('btn-danger');};
+  // バックアップ用の追加ボタンを差し込む
+  let bk=document.getElementById('cfBackup');
+  if(!bk){bk=document.createElement('button');bk.id='cfBackup';bk.className='btn btn-ghost';bk.style.flex='1';cancelBtn.parentNode.insertBefore(bk,cancelBtn);}
+  bk.textContent='先に書き出す';
+  bk.onclick=()=>{exportJSON();};
+  bg.classList.add('show');
+}
+function doDeleteAll(){
+  activeRecords().forEach(r=>{r.deleted=true;r.updatedAt=Date.now();});
+  save();
+  // バックアップボタンを片付ける
+  const bk=document.getElementById('cfBackup');if(bk)bk.remove();
+  afterImport();renderRecent();
+  toast('すべての記録を削除しました');
+}
+
+/* ============================================================
+   Google Drive 同期（稽古録方式 + レコード単位マージ）
+   ============================================================ */
+const GD_CLIENT_ID='1020015092975-eheh7mf0vjv55a7lufvbc1mi50ele8bv.apps.googleusercontent.com';
+const GD_SCOPE='https://www.googleapis.com/auth/drive.appdata';
+const GD_FILENAME='kaikouroku_data.json';
+let _gdToken=null,_gdFileId=null,_gdBusy=false,_periodicTimer=null;
+(function(){var t=sessionStorage.getItem('kk_gd_token');if(t)_gdToken=t;})();
+
+async function waitForGoogleAccounts(maxWaitMs=5000){
+  const t0=Date.now();
+  while(!window.google||!window.google.accounts||!window.google.accounts.oauth2){
+    if(Date.now()-t0>maxWaitMs)throw new Error('Google Sign-In library timeout');
+    await new Promise(r=>setTimeout(r,100));
+  }
+}
+
+function gdSignIn(){
+  if(!window.google||!window.google.accounts||!window.google.accounts.oauth2){
+    toast('Googleライブラリを読み込み中…');
+    waitForGoogleAccounts().then(()=>gdSignIn()).catch(()=>toast('Googleライブラリの読み込みに失敗しました'));
+    return;
+  }
+  const client=google.accounts.oauth2.initTokenClient({
+    client_id:GD_CLIENT_ID,scope:GD_SCOPE,
+    callback:(resp)=>{
+      if(resp.error){toast('ログインに失敗しました');return;}
+      _gdToken=resp.access_token;
+      sessionStorage.setItem('kk_gd_token',_gdToken);
+      renderSyncUI();
+      gdSync(false);
+      startPeriodic();
+    }
+  });
+  client.requestAccessToken();
+}
+function gdSignOut(){
+  // ローカルのみ：revokeすると他アプリ（稽古録等）のセッションにも影響しうるため、トークン破棄のみ
+  _gdToken=null;_gdFileId=null;
+  sessionStorage.removeItem('kk_gd_token');
+  stopPeriodic();renderSyncUI();
+  toast('ログアウトしました');
+}
+function gdSilentRefresh(){
+  return new Promise((resolve,reject)=>{
+    if(!window.google||!window.google.accounts||!window.google.accounts.oauth2){reject(new Error('lib'));return;}
+    let done=false;
+    const timer=setTimeout(()=>{if(!done){done=true;reject(new Error('timeout'));}},3000);
+    try{
+      const client=google.accounts.oauth2.initTokenClient({
+        client_id:GD_CLIENT_ID,scope:GD_SCOPE,
+        callback:(resp)=>{if(done)return;done=true;clearTimeout(timer);
+          if(resp.error){reject(new Error(resp.error));return;}
+          _gdToken=resp.access_token;sessionStorage.setItem('kk_gd_token',_gdToken);resolve();},
+        error_callback:(err)=>{if(done)return;done=true;clearTimeout(timer);reject(new Error((err&&err.type)||'silent_failed'));}
+      });
+      client.requestAccessToken({prompt:''});
+    }catch(e){if(done)return;done=true;clearTimeout(timer);reject(e);}
+  });
+}
+async function gdFetch(url,opts,isRetry){
+  const o=Object.assign({},opts,{headers:Object.assign({},opts.headers,{'Authorization':'Bearer '+_gdToken})});
+  const res=await fetch(url,o);
+  if(res.status===401&&!isRetry){
+    try{await gdSilentRefresh();renderSyncUI();return gdFetch(url,opts,true);}
+    catch(e){
+      _gdToken=null;sessionStorage.removeItem('kk_gd_token');stopPeriodic();renderSyncUI();
+      toast('セッションが切れました。再ログインしてください');
+      throw new Error('401');
+    }
+  }
+  return res;
+}
+async function gdFindFile(){
+  const res=await gdFetch(`https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name='${GD_FILENAME}'&fields=files(id,name)`,{headers:{}});
+  if(!res.ok)return null;
+  const d=await res.json();
+  return d.files&&d.files.length?d.files[0].id:null;
+}
+async function gdDownload(fid){
+  const res=await gdFetch(`https://www.googleapis.com/drive/v3/files/${fid}?alt=media`,{headers:{}});
+  if(!res.ok)throw new Error('download failed: '+res.status);
+  return await res.json();
+}
+async function gdUpload(){
+  const fid=_gdFileId||await gdFindFile();
+  if(fid){
+    const up=await gdFetch(`https://www.googleapis.com/upload/drive/v3/files/${fid}?uploadType=media`,{
+      method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(UD)});
+    if(!up.ok)throw new Error('upload failed: '+up.status);
+    _gdFileId=fid;
+  }else{
+    const meta={name:GD_FILENAME,parents:['appDataFolder']};
+    const form=new FormData();
+    form.append('metadata',new Blob([JSON.stringify(meta)],{type:'application/json'}));
+    form.append('file',new Blob([JSON.stringify(UD)],{type:'application/json'}));
+    const res=await gdFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{},body:form});
+    if(!res.ok)throw new Error('create failed: '+res.status);
+    const d=await res.json();
+    if(!d||!d.id)throw new Error('create failed: no id');
+    _gdFileId=d.id;
+  }
+}
+
+// ── レコード単位マージ ──
+// records/places: idで突き合わせ、updatedAtが新しい方を採用（deletedもtombstoneとして同期）
+// featured: 和集合
+function mergeById(localArr,cloudArr){
+  const map={};
+  (localArr||[]).forEach(x=>{if(x&&x.id)map[x.id]=x;});
+  (cloudArr||[]).forEach(x=>{
+    if(!x||!x.id)return;
+    const cur=map[x.id];
+    if(!cur||(x.updatedAt||0)>(cur.updatedAt||0))map[x.id]=x;
+  });
+  return Object.values(map);
+}
+function mergeCloud(cloud){
+  if(!cloud)return false;
+  const beforeJson=JSON.stringify({r:UD.records,p:UD.places,f:UD.featured});
+  UD.records=mergeById(UD.records,cloud.records);
+  UD.places=mergeById(UD.places,cloud.places);
+  const fset=new Set([...(UD.featured||[]),...(cloud.featured||[])]);
+  UD.featured=Array.from(fset);
+  const changed=beforeJson!==JSON.stringify({r:UD.records,p:UD.places,f:UD.featured});
+  if(changed){
+    // マージ結果をローカルへ（updatedAtはいじらず直接保存）
+    localStorage.setItem(SK,JSON.stringify(UD));
+  }
+  return changed;
+}
+
+// ── 同期本体：DLしてマージ→ULする（双方向） ──
+async function gdSync(silent){
+  if(!_gdToken||_gdBusy)return;
+  _gdBusy=true;renderSyncUI();
+  try{
+    const fid=await gdFindFile();
+    let changed=false;
+    if(fid){
+      _gdFileId=fid;
+      const cloud=await gdDownload(fid);
+      changed=mergeCloud(cloud);
+    }
+    await gdUpload();
+    ST.lastSync=Date.now();saveST();
+    if(changed){afterImport();renderAgg&&renderAgg();}
+    if(!silent)toast('同期しました ☁');
+  }catch(e){
+    console.error('[gdSync]',e);
+    if(!silent)toast('同期に失敗：'+e.message);
+  }finally{
+    _gdBusy=false;renderSyncUI();
+  }
+}
+
+// 記録の変更後に静かにアップロード同期（編集起点）
+let _autoSyncT=null;
+function scheduleAutoSync(){
+  if(!_gdToken)return;
+  clearTimeout(_autoSyncT);
+  _autoSyncT=setTimeout(()=>gdSync(true),2500);
+}
+
+// ── 定期チェック（設定でON/OFF・5分ごと） ──
+function startPeriodic(){
+  stopPeriodic();
+  if(ST.periodicSync&&_gdToken){_periodicTimer=setInterval(()=>gdSync(true),5*60*1000);}
+}
+function stopPeriodic(){if(_periodicTimer){clearInterval(_periodicTimer);_periodicTimer=null;}}
+function togglePeriodic(){
+  ST.periodicSync=document.getElementById('periodicChk').checked;
+  saveST();startPeriodic();
+  toast(ST.periodicSync?'定期同期をONにしました':'定期同期をOFFにしました');
+}
+
+// ── 同期UI ──
+function fmtSyncTime(t){
+  if(!t)return 'まだ同期していません';
+  const d=new Date(t);
+  return '最終同期：'+(d.getMonth()+1)+'/'+d.getDate()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+function renderSyncUI(){
+  const st=document.getElementById('syncStatus');
+  const ctl=document.getElementById('syncControls');
+  const opt=document.getElementById('syncOptWrap');
+  if(!st)return;
+  if(_gdToken){
+    st.innerHTML=`<div class="sync-status on">${_gdBusy?'<span class="spin"></span> 同期中…':'<span class="dot"></span> ログイン中 ・ '+fmtSyncTime(ST.lastSync)}</div>`;
+    ctl.innerHTML=`<div class="sync-btns">
+      <button class="btn btn-sm" onclick="gdSync(false)" ${_gdBusy?'disabled':''}>今すぐ同期</button>
+      <button class="btn btn-ghost btn-sm" onclick="gdSignOut()">ログアウト</button></div>`;
+    opt.style.display='block';
+    const chk=document.getElementById('periodicChk');
+    if(chk)chk.checked=!!ST.periodicSync;
+  }else{
+    st.innerHTML='<div class="sync-status"><span class="dot"></span> 未接続（この端末だけに保存されています）</div>';
+    ctl.innerHTML='<button class="btn" style="width:100%" onclick="gdSignIn()">Googleでログインして同期</button>';
+    opt.style.display='none';
+  }
+}
+
+/* ============================================================
+   初期化
+   ============================================================ */
+function init(){
+  load();
+  applyTheme();buildTheme();
+  initRecState();
+  renderRecPlace();renderRecFloor();updateHeaderSub();
+  buildTypeFilter();buildSchoolFilter();
+  setMass('boss');
+  setRecMode('easy');
+  renderProg();
+  document.getElementById('killInput').value=recState.kills;
+  renderSelected();renderRecent();
+  // 集計モードのデフォルト
+  aggState.mode=ST.aggMode||'A';
+  _appReady=true;
+  // 起動時同期：セッション復元済みならクラウドと照合してマージ
+  if(_gdToken){
+    waitForGoogleAccounts(8000).then(()=>{gdSync(true);startPeriodic();}).catch(()=>{gdSync(true);startPeriodic();});
+  }
+}
+init();
+
+</script>
+</body>
+</html>
