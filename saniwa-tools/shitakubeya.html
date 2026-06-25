@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>出陣支度部屋</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
 <script>
@@ -94,6 +96,21 @@ body.show-mobile .mode-bar{max-width:430px;margin:0 auto;}
 .mode-toggle button{background:transparent;border:none;border-radius:16px;padding:3px 14px;font-size:11px;cursor:pointer;color:var(--text2);font-family:inherit;transition:all .15s;white-space:nowrap;}
 .mode-toggle button.on{background:var(--accent);color:#fff;font-weight:500;}
 .mode-note{font-size:10px;color:var(--text3);}
+/* 表示列をヘッダー内へ（PC設定A/B/C） */
+body.mode-in-header .mode-bar{position:static;height:auto;min-width:0;background:none;border:none;padding:0;overflow:visible;gap:7px;}
+body.mode-in-header:not(.mode-pos-right) .mode-bar{margin-left:10px;}
+body.mode-in-header #mode-bar-label{display:none;}
+body.mode-in-header #mode-note{order:-1;font-weight:400;}
+body.mode-in-header.mode-note-right #mode-note{order:1;}
+body.mode-in-header:not(.mode-show-note) #mode-note{display:none;}
+body.mode-in-header.mode-show-note #mode-note{max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+body.mode-in-header .mode-toggle button{padding:3px 11px;}
+body.mode-in-header .col-sort,
+body.mode-in-header .col-party{top:var(--header-h);height:calc(100vh - var(--header-h));}
+/* 描画前ちらつき防止：ヘッダー配置時はJSで移すまでバーを隠し、列も先に高さ調整 */
+html.mbar-hide .mode-bar{display:none;}
+html.mbar-hide .col-sort,
+html.mbar-hide .col-party{top:var(--header-h);height:calc(100vh - var(--header-h));}
 
 /* ===== PC LAYOUT ===== */
 .pc-wrap{
@@ -119,6 +136,15 @@ body.show-mobile .mode-bar{max-width:430px;margin:0 auto;}
 
 /* Sort & filter */
 .sec-label{font-size:10px;color:var(--text3);font-weight:500;margin-bottom:3px;}
+.fold-sec{display:flex;flex-direction:column;}
+.fold-hdr{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;padding:3px 2px;border-radius:5px;}
+.fold-hdr:hover{background:var(--bg2);}
+.fold-title{font-size:11px;color:var(--text2);font-weight:600;flex-shrink:0;}
+.fold-sum{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;color:var(--accent);text-align:right;}
+.fold-chev{flex-shrink:0;font-size:10px;color:var(--text3);width:12px;text-align:center;}
+.fold-body{padding-top:5px;}
+.fold-sec.folded .fold-body{display:none;}
+.fold-note{font-size:9px;color:var(--text3);margin-bottom:5px;line-height:1.4;}
 .sort-group{display:flex;flex-direction:column;gap:2px;}
 .sort-btn{
   background:var(--bg2);border:1px solid var(--border2);border-radius:5px;
@@ -135,6 +161,8 @@ body.show-mobile .mode-bar{max-width:430px;margin:0 auto;}
 .chip:hover{background:var(--bg3);}
 .chip.on{background:var(--accent);color:#fff;border-color:var(--accent);}
 .emoji-chips .chip,.emoji-chips .bs-chip{font-size:14px;line-height:1;padding-top:3px;padding-bottom:3px;}
+.chip.no{background:var(--red);color:#fff;border-color:var(--red);}
+.bs-chip.no{background:var(--red);color:#fff;border-color:var(--red);}
 .emoji-chips .chip[data-val="__none__"],.emoji-chips .bs-chip[data-val="__none__"]{font-size:10px;}
 
 /* List header */
@@ -611,9 +639,10 @@ body.show-mobile .pc-wrap{display:none;}
 // 描画前に保存済みテーマを適用（テーマのちらつき防止）
 (function(){
   try{
-    var p='washi', m='theme';
+    var s={};
     var d=localStorage.getItem('shitakubeya_ud');
-    if(d){var s=(JSON.parse(d)||{}).settings||{};p=s.palette||'washi';m=s.themeMode||'theme';}
+    if(d)s=(JSON.parse(d)||{}).settings||{};
+    var p=s.palette||'washi', m=s.themeMode||'theme';
     var darkDefault={washi:false,sakura:false,midori:false,tetsu:false};
     var dark;
     if(m==='light')dark=false;
@@ -621,6 +650,11 @@ body.show-mobile .pc-wrap{display:none;}
     else if(m==='system')dark=!!(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
     else dark=!!darkDefault[p];
     document.documentElement.setAttribute('data-theme',(p||'washi')+'-'+(dark?'dark':'light'));
+    // モードバーがヘッダー配置のときは、JSで移すまで一瞬下に出ないよう先に隠す（PC幅のみ）
+    var mp=s.modeBarPos||'below';
+    if((mp==='header-left'||mp==='header-right')&&window.innerWidth>=768){
+      document.documentElement.classList.add('mbar-hide');
+    }
   }catch(e){
     document.documentElement.setAttribute('data-theme','washi-light');
   }
@@ -655,8 +689,9 @@ body.show-mobile .pc-wrap{display:none;}
 </div>
 
 <!-- STAT MODE BAR -->
-<div class="mode-bar">
-  <span style="font-size:11px;color:var(--text2)">表示：</span>
+<div id="mode-bar-anchor" style="display:none"></div>
+<div class="mode-bar" id="mode-bar">
+  <span id="mode-bar-label" style="font-size:11px;color:var(--text2)">表示：</span>
   <div class="mode-toggle">
     <button id="mode-base" class="on" onclick="setStatMode('base')">素</button>
     <button id="mode-ranbu" onclick="setStatMode('ranbu')">乱舞込み</button>
@@ -672,18 +707,22 @@ body.show-mobile .pc-wrap{display:none;}
   <div class="col-sort">
     <div class="col-title">🗂 並び替え・絞り込み</div>
 
-    <div class="local-only ds-bulk">
-      <div class="sec-label">初/極の一括設定</div>
-      <div style="display:flex;gap:6px">
-        <button class="thr-add-btn" style="flex:1;margin:0" onclick="setAllKiwame(false)">全部「初」</button>
-        <button class="thr-add-btn" style="flex:1;margin:0" onclick="setAllKiwame(true)">全部「極」</button>
+    <div class="fold-sec local-only ds-bulk" data-fold="bulk">
+      <div class="fold-hdr" onclick="toggleSec('bulk')"><span class="fold-title">初/極の一括設定</span><span class="fold-sum"></span><span class="fold-chev">▾</span></div>
+      <div class="fold-body">
+        <div style="display:flex;gap:6px">
+          <button class="thr-add-btn" style="flex:1;margin:0" onclick="setAllKiwame(false)">全部「初」</button>
+          <button class="thr-add-btn" style="flex:1;margin:0" onclick="setAllKiwame(true)">全部「極」</button>
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-top:4px;line-height:1.4">乱舞Lv10想定の最大値で表示しています（各カードで初/極を切替可）。</div>
       </div>
-      <div style="font-size:10px;color:var(--text3);margin-top:4px;line-height:1.4">乱舞Lv10想定の最大値で表示しています（各カードで初/極を切替可）。</div>
     </div>
 
-    <div>
-      <div class="sec-label">並び替え（再クリックで高低切替）</div>
-      <div class="sort-group" id="sort-btns">
+    <div class="fold-sec" data-fold="sort">
+      <div class="fold-hdr" onclick="toggleSec('sort')"><span class="fold-title">並び替え</span><span class="fold-sum"></span><span class="fold-chev">▾</span></div>
+      <div class="fold-body">
+        <div class="fold-note">再クリックで高い順／低い順を切替</div>
+        <div class="sort-group" id="sort-btns">
         <button class="sort-btn" data-stat="no" onclick="handleSort(this)">刀帳No <span class="sort-dir">↓高い順</span></button>
         <button class="sort-btn" data-stat="level" onclick="handleSort(this)">Lv <span class="sort-dir">↓高い順</span></button>
         <button class="sort-btn" data-stat="exp" onclick="handleSort(this)">Exp <span class="sort-dir">↓高い順</span></button>
@@ -697,12 +736,14 @@ body.show-mobile .pc-wrap{display:none;}
         <button class="sort-btn" data-stat="5" onclick="handleSort(this)">偵察 <span class="sort-dir">↓高い順</span></button>
         <button class="sort-btn" data-stat="6" onclick="handleSort(this)">隠蔽 <span class="sort-dir">↓高い順</span></button>
         <button class="sort-btn" data-stat="7" onclick="handleSort(this)">必殺 <span class="sort-dir">↓高い順</span></button>
+        </div>
       </div>
     </div>
 
-    <div>
-      <div class="sec-label">刀種</div>
-      <div class="chips" id="filter-type">
+    <div class="fold-sec" data-fold="type">
+      <div class="fold-hdr" onclick="toggleSec('type')"><span class="fold-title">刀種</span><span class="fold-sum"></span><span class="fold-chev">▾</span></div>
+      <div class="fold-body">
+        <div class="chips" id="filter-type">
         <span class="chip on" data-val="">全て</span>
         <span class="chip" data-val="短刀">短刀</span>
         <span class="chip" data-val="脇差">脇差</span>
@@ -712,21 +753,26 @@ body.show-mobile .pc-wrap{display:none;}
         <span class="chip" data-val="槍">槍</span>
         <span class="chip" data-val="薙刀">薙刀</span>
         <span class="chip" data-val="剣">剣</span>
+        </div>
       </div>
     </div>
 
-    <div>
-      <div class="sec-label">状態</div>
-      <div class="chips" id="filter-kiwame">
+    <div class="fold-sec" data-fold="kiwame">
+      <div class="fold-hdr" onclick="toggleSec('kiwame')"><span class="fold-title">状態</span><span class="fold-sum"></span><span class="fold-chev">▾</span></div>
+      <div class="fold-body">
+        <div class="chips" id="filter-kiwame">
         <span class="chip on" data-val="">全て</span>
         <span class="chip" data-val="kiwame">極のみ</span>
         <span class="chip" data-val="normal">初のみ</span>
+        </div>
       </div>
     </div>
 
-    <div class="kei-only" id="filter-emoji-sec">
-      <div class="sec-label">絵文字マーク <span style="font-weight:400;color:var(--text3)">（複数選択可）</span></div>
-      <div class="chips emoji-chips" id="filter-emoji">
+    <div class="fold-sec kei-only" data-fold="emoji" id="filter-emoji-sec">
+      <div class="fold-hdr" onclick="toggleSec('emoji')"><span class="fold-title">絵文字マーク</span><span class="fold-sum"></span><span class="fold-chev">▾</span></div>
+      <div class="fold-body">
+        <div class="fold-note">複数選択できます</div>
+        <div class="chips emoji-chips" id="filter-emoji">
         <span class="chip" data-val="__none__">なし</span>
         <span class="chip" data-val="⭐">⭐</span>
         <span class="chip" data-val="🌙">🌙</span>
@@ -743,6 +789,20 @@ body.show-mobile .pc-wrap{display:none;}
         <span class="chip" data-val="🦋">🦋</span>
         <span class="chip" data-val="🗡️">🗡️</span>
         <span class="chip" data-val="🛡️">🛡️</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="fold-sec" data-fold="equip" id="filter-equip-sec">
+      <div class="fold-hdr" onclick="toggleSec('equip')"><span class="fold-title">各種装備絞込</span><span class="fold-sum"></span><span class="fold-chev">▾</span></div>
+      <div class="fold-body">
+        <div class="fold-note">タップで あり → なし → 解除</div>
+        <div class="chips equip-chips" id="filter-equip">
+        <span class="chip" data-equip="toso">刀装</span>
+        <span class="chip" data-equip="horse">馬</span>
+        <span class="chip" data-equip="omamori">お守り</span>
+        <span class="chip" data-equip="treasure">宝物</span>
+        </div>
       </div>
     </div>
   </div>
@@ -927,6 +987,15 @@ body.show-mobile .pc-wrap{display:none;}
         <span class="bs-chip" data-val="🛡️">🛡️</span>
       </div>
     </div>
+    <div class="bs-sec" id="bs-equip-sec">
+      <div class="bs-label">各種装備絞込（タップで あり/なし）</div>
+      <div class="bs-chips equip-chips" id="bs-equip">
+        <span class="bs-chip" data-equip="toso">刀装</span>
+        <span class="bs-chip" data-equip="horse">馬</span>
+        <span class="bs-chip" data-equip="omamori">お守り</span>
+        <span class="bs-chip" data-equip="treasure">宝物</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1032,9 +1101,18 @@ body.show-mobile .pc-wrap{display:none;}
   <div class="thr-editor">
     <div class="thr-editor-title">📏 閾値の詳細設定</div>
     <div class="thr-ed-row">
+      <div class="thr-ed-label">プリセット</div>
+      <select class="thr-ed-input" id="thr-ed-preset" onchange="onThrPresetChange(this.value,true)">
+        <option value="">カスタム（自由設定）</option>
+        <option value="osaka_spear">大阪城・高速槍先制（機動）</option>
+      </select>
+    </div>
+    <div id="thr-ed-preset-note" style="display:none;font-size:11px;line-height:1.6;color:var(--text2);background:var(--bg2);border-radius:8px;padding:9px 11px;margin-bottom:10px"></div>
+    <div class="thr-ed-row">
       <div class="thr-ed-label">名前（任意）</div>
       <input class="thr-ed-input" id="thr-ed-name" type="text" placeholder="例：大阪城高速槍">
     </div>
+    <div id="thr-ed-custom-top">
     <div class="thr-ed-row">
       <div class="thr-ed-label">対象ステータス</div>
       <select class="thr-ed-input" id="thr-ed-stat">
@@ -1056,8 +1134,9 @@ body.show-mobile .pc-wrap{display:none;}
         <button class="thr-type-btn" data-val="total" onclick="setThrType(this,'total')">合計（6人の合計値）</button>
       </div>
     </div>
+    </div>
     <div class="thr-ed-row" id="thr-ed-simple">
-      <div class="thr-ed-label">閾値</div>
+      <div class="thr-ed-label" id="thr-ed-val-label">閾値</div>
       <input class="thr-ed-input" id="thr-ed-val" type="number" placeholder="例：160">
     </div>
     <div class="thr-ed-row" id="thr-ed-ranges" style="display:none">
@@ -1113,6 +1192,18 @@ body.show-mobile .pc-wrap{display:none;}
         <label class="radio-row"><input type="radio" name="theme-mode" value="light"  onchange="UD.settings.themeMode=this.value;applyTheme();saveUD()"> ライト固定</label>
         <label class="radio-row"><input type="radio" name="theme-mode" value="dark"   onchange="UD.settings.themeMode=this.value;applyTheme();saveUD()"> ダーク固定</label>
         <label class="radio-row"><input type="radio" name="theme-mode" value="system" onchange="UD.settings.themeMode=this.value;applyTheme();saveUD()"> システム連動</label>
+      </div>
+    </div>
+    <div class="settings-sec">
+      <div class="settings-label">表示列（モードバー）の位置 <span style="font-weight:400;color:var(--text3);font-size:10px">※PC表示のみ</span></div>
+      <div class="radio-group">
+        <label class="radio-row"><input type="radio" name="mode-bar-pos" value="below" checked onchange="saveSetting('modeBarPos',this.value);applyModeBarPos()"> ヘッダー下のバー（従来）</label>
+        <label class="radio-row"><input type="radio" name="mode-bar-pos" value="header-left" onchange="saveSetting('modeBarPos',this.value);applyModeBarPos()"> ヘッダー内・タイトル横</label>
+        <label class="radio-row"><input type="radio" name="mode-bar-pos" value="header-right" onchange="saveSetting('modeBarPos',this.value);applyModeBarPos()"> ヘッダー右側に配置</label>
+        <div style="margin-top:6px;font-size:11px;color:var(--text3)">ヘッダー内のときの注記</div>
+        <label class="radio-row"><input type="radio" name="mode-bar-note" value="none" checked onchange="saveSetting('modeBarNote',this.value);applyModeBarPos()"> 表示しない</label>
+        <label class="radio-row"><input type="radio" name="mode-bar-note" value="left" onchange="saveSetting('modeBarNote',this.value);applyModeBarPos()"> トグルの左に表示</label>
+        <label class="radio-row"><input type="radio" name="mode-bar-note" value="right" onchange="saveSetting('modeBarNote',this.value);applyModeBarPos()"> トグルの右に表示</label>
       </div>
     </div>
     <div class="settings-sec">
@@ -1713,7 +1804,7 @@ function getInstStat(inst){
 // ======================================================
 const SK_SB='shitakubeya_ud';
 let UD={
-  parties:[{id:'p1',name:'部隊1',members:[null,null,null,null,null,null]}],
+  parties:[{id:'p1',name:'部隊1',members:[null,null,null,null,null,null],conditions:[]}],
   activePartyId:'p1',
   equipments:{},   // instId -> {omamori,horse,treasure,treasureLv}
   conditions:[],   // 閾値条件
@@ -1730,6 +1821,10 @@ let UD={
     mSlotExpanded:false,
     guideShown:false,
     filterEmojis:[],
+    filterEquip:{toso:0,horse:0,omamori:0,treasure:0}, // 0=問わない 1=あり 2=なし
+    foldSec:{}, // 左カラム各セクションの開閉（未設定=開）
+    modeBarPos:'below', // 表示列の位置（PCのみ）below/header-left/header-right
+    modeBarNote:'none',  // ヘッダー内の注記 none/left/right
     sortChipWrap:'wrap',
     tosoFilter:true,
     tosoDisplay:'text',
@@ -1782,7 +1877,7 @@ function loadUD(){
 // モードごとの空の編成セット
 function defaultWorkingSet(){
   const pid='p'+Date.now()+Math.floor(Math.random()*1000);
-  return {parties:[{id:pid,name:'第1部隊',members:[null,null,null,null,null,null],equipments:{}}],activePartyId:pid,equipments:{},conditions:[]};
+  return {parties:[{id:pid,name:'第1部隊',members:[null,null,null,null,null,null],equipments:{},conditions:[]}],activePartyId:pid,equipments:{},conditions:[]};
 }
 
 function saveUD(){
@@ -1826,6 +1921,7 @@ function switchDataSource(mode){
   // 新モードの編成を読み込み
   const st=UD.stash[mode]||defaultWorkingSet();
   UD.parties=st.parties;UD.activePartyId=st.activePartyId;UD.equipments=st.equipments;UD.conditions=st.conditions;
+  migrateConditions();
   if(mode==='local'&&UD.settings.statMode==='base')UD.settings.statMode='ranbu';
   if(mode==='local'&&['level','exp','genday','ranbu'].includes(UD.settings.sortStat))UD.settings.sortStat='no';
   saveUD();
@@ -1987,8 +2083,10 @@ function instMatchesEmoji(i,list){
   return (list.includes('__none__')&&!i.emoji)||(!!i.emoji&&list.includes(i.emoji));
 }
 function applyFilter(){
-  const {filterType,filterKiwame,filterEmojis}=UD.settings;
+  const {filterType,filterKiwame,filterEmojis,filterEquip}=UD.settings;
   const emojiOn=UD.dataSource!=='local'&&filterEmojis&&filterEmojis.length;
+  const fe=filterEquip||{};
+  const equipOn=fe.toso||fe.horse||fe.omamori||fe.treasure;
   filtered=instances.filter(inst=>{
     const info=BM[inst.masterBaseNo];
     if(!info)return false;
@@ -1996,6 +2094,19 @@ function applyFilter(){
     if(filterKiwame==='kiwame'&&!inst.isKiwame)return false;
     if(filterKiwame==='normal'&&inst.isKiwame)return false;
     if(emojiOn&&!instMatchesEmoji(inst,filterEmojis))return false;
+    if(equipOn){
+      const eq=UD.equipments[inst.id]||{};
+      const has={
+        toso:(eq.tosoSlots||[]).some(s=>s),
+        horse:!!eq.horse,
+        omamori:!!eq.omamori,
+        treasure:!!eq.treasure
+      };
+      for(const k of ['toso','horse','omamori','treasure']){
+        if(fe[k]===1&&!has[k])return false; // あり
+        if(fe[k]===2&&has[k])return false;  // なし
+      }
+    }
     return true;
   });
 }
@@ -2245,6 +2356,23 @@ function renderMobileList(){
 function activeParty(){
   return UD.parties.find(p=>p.id===UD.activePartyId)||UD.parties[0];
 }
+// 閾値はアクティブ部隊ごとに保持
+function activeConditions(){
+  const p=activeParty();
+  if(!p)return [];
+  if(!Array.isArray(p.conditions))p.conditions=[];
+  return p.conditions;
+}
+// 旧：全体共有conditions → アクティブ部隊へ移行（他部隊は空。部隊別管理に）
+function migrateConditions(){
+  if(!Array.isArray(UD.parties))return;
+  UD.parties.forEach(p=>{ if(!Array.isArray(p.conditions))p.conditions=[]; });
+  if(Array.isArray(UD.conditions)&&UD.conditions.length){
+    const ap=UD.parties.find(p=>p.id===UD.activePartyId)||UD.parties[0];
+    if(ap&&!ap.conditions.length)ap.conditions=UD.conditions.map(c=>({...c}));
+    UD.conditions=[];
+  }
+}
 
 function renderPartyTabs(){
   const el=document.getElementById('party-tabs');
@@ -2352,7 +2480,7 @@ function selectParty(id){
 function addParty(){
   const id='p'+Date.now();
   const n=UD.parties.length+1;
-  UD.parties.push({id,name:`第${n}部隊`,members:[null,null,null,null,null,null],equipments:{}});
+  UD.parties.push({id,name:`第${n}部隊`,members:[null,null,null,null,null,null],equipments:{},conditions:[]});
   UD.activePartyId=id;
   _targetSlot=null;
   saveUD();
@@ -2762,7 +2890,7 @@ function importFromSB(id){
   if(!src)return;
   // 新しいタブを作ってコピー
   const newId='p'+Date.now();
-  UD.parties.push({id:newId,name:src.name+' (コピー)',members:[...src.members]});
+  UD.parties.push({id:newId,name:src.name+' (コピー)',members:[...src.members],conditions:(src.conditions||[]).map(c=>({...c}))});
   UD.activePartyId=newId;
   _targetSlot=null;
   saveUD();
@@ -2793,9 +2921,9 @@ function renderPartySum(){
 // 閾値
 // ======================================================
 function renderThresholds(){
-  const html=UD.conditions.map((c,i)=>`
+  const html=activeConditions().map((c,i)=>`
     <div class="thr-row" style="margin-bottom:3px">
-      <span class="thr-type">${c.type==='total'?'合計':'個人'}</span>
+      <span class="thr-type">${c.type==='preset'?'式':c.type==='total'?'合計':'個人'}</span>
       <span style="font-size:11px;color:var(--text2);flex:1">${esc(c.name||statLabel(c.stat))}</span>
       <span class="thr-result ${getThrClass(c)}">${getThrLabel(c)}</span>
       <button class="thr-edit" onclick="openThrEditor(${i})" title="編集">✏</button>
@@ -2810,10 +2938,39 @@ function statLabel(stat){
   return STAT_NAMES[parseInt(stat)]||stat;
 }
 
+// 閾値プリセット定義
+const THR_PRESETS={
+  osaka_spear:{
+    name:'大阪城・高速槍先制',
+    value:798.5,
+    note:'各刀の<b>実力（装備込み）の機動</b>×（Lv×0.04＋1）を切り上げた値が、必要値以上かを判定します。全員がクリアすると大阪城の高速槍に先制されにくくなります。Lvを使うため<b>稽古録連携モード向け</b>です。'
+  }
+};
+// 表示モードに関係なく「実力（乱舞＋装備込み）」の機動を取得
+function realKidoVal(inst,party){
+  const eq=getEffectiveEquipment(inst.id,party.id);
+  const save=UD.settings.statMode;
+  UD.settings.statMode='real';
+  const st=getDisplayStat(inst,eq);
+  UD.settings.statMode=save;
+  return st?st[3]:null; // 機動=index3
+}
+// 大阪城・高速槍先制の判定値：ceil(機動×(Lv×0.04+1))
+function osakaSpearVal(inst,party){
+  const k=realKidoVal(inst,party);
+  if(k==null)return null;
+  return Math.ceil(k*((inst.level||0)*0.04+1));
+}
 function getThrClass(c){
   const party=activeParty();
   const filled=party.members.filter(Boolean).map(id=>instances.find(x=>x.id===id)).filter(Boolean);
   if(!filled.length)return'thr-na';
+  if(c.type==='preset'&&c.preset==='osaka_spear'){
+    const need=c.value||798.5;
+    const vals=filled.map(inst=>osakaSpearVal(inst,party)).filter(v=>v!=null);
+    if(!vals.length)return'thr-na';
+    return vals.every(v=>v>=need)?'thr-ok':'thr-ng';
+  }
   const getVal=inst=>getSortVal(inst,c.stat,getEffectiveEquipment(inst.id,party.id));
   if(c.type==='individual'){
     const ok=filled.every(inst=>getVal(inst)>=c.value);
@@ -2836,6 +2993,13 @@ function getThrLabel(c){
   const party=activeParty();
   const filled=party.members.filter(Boolean).map(id=>instances.find(x=>x.id===id)).filter(Boolean);
   if(!filled.length)return'—';
+  if(c.type==='preset'&&c.preset==='osaka_spear'){
+    const need=c.value||798.5;
+    const vals=filled.map(inst=>osakaSpearVal(inst,party)).filter(v=>v!=null);
+    if(!vals.length)return'—';
+    const min=Math.min(...vals);
+    return `最低${min}/必要${need}${vals.every(v=>v>=need)?' ✓':' ✗'}`;
+  }
   const getVal=inst=>getSortVal(inst,c.stat,getEffectiveEquipment(inst.id,party.id));
   if(c.type==='individual'){
     const vals=filled.map(getVal);
@@ -2856,15 +3020,16 @@ function getThrLabel(c){
 }
 
 function addThrRow(){
-  UD.conditions.push({id:'t'+Date.now(),name:'',stat:'3',type:'individual',value:0,ranges:[]});
+  const conds=activeConditions();
+  conds.push({id:'t'+Date.now(),name:'',stat:'3',type:'individual',value:0,ranges:[]});
   saveUD();
   renderThresholds();
-  _thrNewIdx=UD.conditions.length-1;
-  openThrEditor(UD.conditions.length-1);
+  _thrNewIdx=conds.length-1;
+  openThrEditor(conds.length-1);
 }
 
 function removeThr(i){
-  UD.conditions.splice(i,1);
+  activeConditions().splice(i,1);
   saveUD();
   renderThresholds();
 }
@@ -2872,21 +3037,27 @@ function removeThr(i){
 // 閾値エディタ
 function openThrEditor(i){
   _editingThrIdx=i;
-  const c=UD.conditions[i];
+  const c=activeConditions()[i];
   document.getElementById('thr-ed-name').value=c.name||'';
-  document.getElementById('thr-ed-stat').value=c.stat;
-  document.getElementById('thr-ed-val').value=c.value||0;
-  // タイプ
-  document.querySelectorAll('.thr-type-btn').forEach(b=>b.classList.toggle('on',b.dataset.val===c.type));
-  toggleThrEditorType(c.type);
-  // 範囲
-  const rr=document.getElementById('thr-ed-range-rows');
-  rr.innerHTML=(c.ranges||[]).map(r=>`
-    <div class="range-row">
-      <input class="range-num-input" type="number" value="${r.min}" placeholder="以上の値">
-      <input class="range-label-input" type="text" value="${esc(r.label)}" placeholder="ラベル">
-      <button style="background:none;border:none;cursor:pointer;color:var(--text3)" onclick="this.closest('.range-row').remove()">×</button>
-    </div>`).join('');
+  const presetSel=document.getElementById('thr-ed-preset');
+  presetSel.value=c.preset||'';
+  if(c.type==='preset'&&c.preset){
+    onThrPresetChange(c.preset,false);
+    document.getElementById('thr-ed-val').value=c.value;
+  }else{
+    document.getElementById('thr-ed-stat').value=c.stat||'level';
+    document.getElementById('thr-ed-val').value=c.value||0;
+    document.querySelectorAll('.thr-type-btn').forEach(b=>b.classList.toggle('on',b.dataset.val===c.type));
+    onThrPresetChange('',false);
+    toggleThrEditorType(c.type||'individual');
+    const rr=document.getElementById('thr-ed-range-rows');
+    rr.innerHTML=(c.ranges||[]).map(r=>`
+      <div class="range-row">
+        <input class="range-num-input" type="number" value="${r.min}" placeholder="以上の値">
+        <input class="range-label-input" type="text" value="${esc(r.label)}" placeholder="ラベル">
+        <button style="background:none;border:none;cursor:pointer;color:var(--text3)" onclick="this.closest('.range-row').remove()">×</button>
+      </div>`).join('');
+  }
   openModal('thr-editor');
 }
 
@@ -2901,6 +3072,28 @@ function toggleThrEditorType(type){
   document.getElementById('thr-ed-simple').style.display=type==='individual'?'':'none';
   document.getElementById('thr-ed-ranges').style.display=type==='total'?'':'none';
 }
+// プリセット選択でエディタの表示を切替（applyDefaults:ユーザー操作時のみ値・名前を補完）
+function onThrPresetChange(pid,applyDefaults){
+  const P=pid&&THR_PRESETS[pid];
+  document.getElementById('thr-ed-custom-top').style.display=P?'none':'';
+  const note=document.getElementById('thr-ed-preset-note');
+  const valLabel=document.getElementById('thr-ed-val-label');
+  if(P){
+    document.getElementById('thr-ed-ranges').style.display='none';
+    document.getElementById('thr-ed-simple').style.display='';
+    valLabel.textContent='必要値';
+    note.style.display=''; note.innerHTML=P.note;
+    if(applyDefaults){
+      document.getElementById('thr-ed-val').value=P.value;
+      document.getElementById('thr-ed-name').value=P.name;
+    }
+  }else{
+    note.style.display='none';
+    valLabel.textContent='閾値';
+    const typeBtn=document.querySelector('.thr-type-btn.on');
+    toggleThrEditorType(typeBtn?.dataset.val||'individual');
+  }
+}
 
 function addRangeRow(){
   const rr=document.getElementById('thr-ed-range-rows');
@@ -2912,18 +3105,27 @@ function addRangeRow(){
 
 function saveThrEditor(){
   if(_editingThrIdx==null)return;
-  const c=UD.conditions[_editingThrIdx];
+  const c=activeConditions()[_editingThrIdx];
+  const preset=document.getElementById('thr-ed-preset').value;
   c.name=document.getElementById('thr-ed-name').value;
-  c.stat=document.getElementById('thr-ed-stat').value;
-  c.value=parseInt(document.getElementById('thr-ed-val').value)||0;
-  const typeBtn=document.querySelector('.thr-type-btn.on');
-  c.type=typeBtn?.dataset.val||'individual';
-  // 範囲
-  const rows=document.querySelectorAll('#thr-ed-range-rows .range-row');
-  c.ranges=Array.from(rows).map(r=>{
-    const inputs=r.querySelectorAll('input');
-    return{min:parseInt(inputs[0].value)||0,label:inputs[1].value||''};
-  }).filter(r=>r.label);
+  if(preset&&THR_PRESETS[preset]){
+    c.type='preset';
+    c.preset=preset;
+    c.value=parseFloat(document.getElementById('thr-ed-val').value)||THR_PRESETS[preset].value;
+    if(!c.name)c.name=THR_PRESETS[preset].name;
+    delete c.stat; delete c.ranges;
+  }else{
+    c.preset='';
+    c.stat=document.getElementById('thr-ed-stat').value;
+    c.value=parseInt(document.getElementById('thr-ed-val').value)||0;
+    const typeBtn=document.querySelector('.thr-type-btn.on');
+    c.type=typeBtn?.dataset.val||'individual';
+    const rows=document.querySelectorAll('#thr-ed-range-rows .range-row');
+    c.ranges=Array.from(rows).map(r=>{
+      const inputs=r.querySelectorAll('input');
+      return{min:parseInt(inputs[0].value)||0,label:inputs[1].value||''};
+    }).filter(r=>r.label);
+  }
   saveUD();
   renderThresholds();
   closeModal('thr-editor');
@@ -2933,7 +3135,7 @@ function saveThrEditor(){
 // 閾値エディタのキャンセル（addThrRow直後の未保存分はゴミとして削除）
 function cancelThrEditor(){
   if(_thrNewIdx!=null&&_thrNewIdx===_editingThrIdx){
-    UD.conditions.splice(_thrNewIdx,1);
+    activeConditions().splice(_thrNewIdx,1);
     _thrNewIdx=null;
     saveUD();
     renderThresholds();
@@ -2984,6 +3186,7 @@ function applySortUI(){
     const arrow=sortDir==='desc'?'↓':'↑';
     c.textContent=on?base+arrow:base+'↓';
   });
+  if(typeof updateFoldUI==='function')updateFoldUI();
 }
 
 function applyFilterUI(){
@@ -2992,6 +3195,69 @@ function applyFilterUI(){
   document.querySelectorAll('#filter-kiwame .chip').forEach(c=>c.classList.toggle('on',c.dataset.val===filterKiwame));
   const em=filterEmojis||[];
   document.querySelectorAll('#filter-emoji .chip, #bs-emoji .bs-chip').forEach(c=>c.classList.toggle('on',em.includes(c.dataset.val)));
+  // 各種装備絞込（0問わない/1あり/2なし）
+  const fe=UD.settings.filterEquip||{};
+  const EQL={toso:'刀装',horse:'馬',omamori:'お守り',treasure:'宝物'};
+  document.querySelectorAll('#filter-equip [data-equip], #bs-equip [data-equip]').forEach(c=>{
+    const st=fe[c.dataset.equip]||0;
+    c.textContent=EQL[c.dataset.equip]+(st===1?' ✓':st===2?' ✗':'');
+    c.classList.toggle('on',st===1);
+    c.classList.toggle('no',st===2);
+  });
+  if(typeof updateFoldUI==='function')updateFoldUI();
+}
+// 各種装備絞込のトグル（問わない→あり→なし）
+function toggleEquipFilter(key){
+  if(!UD.settings.filterEquip)UD.settings.filterEquip={toso:0,horse:0,omamori:0,treasure:0};
+  const fe=UD.settings.filterEquip;
+  fe[key]=((fe[key]||0)+1)%3;
+  saveUD();
+  applyFilterUI();
+  renderFilterBtn();
+  renderList();
+  renderMobileList();
+}
+// 左カラムの折りたたみ
+function toggleSec(key){
+  if(!UD.settings.foldSec)UD.settings.foldSec={};
+  const open=UD.settings.foldSec[key]!==false;
+  UD.settings.foldSec[key]=!open;
+  saveUD();
+  updateFoldUI();
+}
+function updateFoldUI(){
+  document.querySelectorAll('.fold-sec').forEach(sec=>{
+    const key=sec.dataset.fold;
+    const open=(UD.settings.foldSec||{})[key]!==false;
+    sec.classList.toggle('folded',!open);
+    const chev=sec.querySelector('.fold-chev');
+    if(chev)chev.textContent=open?'▾':'▸';
+    const sum=sec.querySelector('.fold-sum');
+    if(sum)sum.textContent=open?'':foldSummary(key); // 畳んだ時だけ現在の選択を表示
+  });
+}
+function foldSummary(key){
+  const s=UD.settings;
+  if(key==='sort'){
+    const stat=s.sortStat,dir=s.sortDir;
+    const name=stat==='level'?'Lv':stat==='no'?'No':stat==='exp'?'Exp':stat==='genday'?'入手順':stat==='ranbu'?'乱舞Lv':STAT_NAMES[parseInt(stat)]||'';
+    if(!name)return'';
+    const ar=stat==='genday'?(dir==='desc'?'新しい順':'古い順'):(dir==='desc'?'高い順':'低い順');
+    return name+'・'+ar;
+  }
+  if(key==='type')return s.filterType||'';
+  if(key==='kiwame')return s.filterKiwame==='kiwame'?'極のみ':s.filterKiwame==='normal'?'初のみ':'';
+  if(key==='emoji'){
+    const em=s.filterEmojis||[];
+    if(UD.dataSource==='local'||!em.length)return'';
+    return em.length===1?(em[0]==='__none__'?'なし':em[0]):em.length+'種';
+  }
+  if(key==='equip'){
+    const fe=s.filterEquip||{},L={toso:'刀装',horse:'馬',omamori:'お守り',treasure:'宝物'},a=[];
+    ['toso','horse','omamori','treasure'].forEach(k=>{if(fe[k]===1)a.push(L[k]+'有');else if(fe[k]===2)a.push(L[k]+'無');});
+    return a.join('・');
+  }
+  return'';
 }
 // 絵文字フィルタのトグル（複数選択）
 function toggleEmojiFilter(val){
@@ -3029,6 +3295,14 @@ document.getElementById('filter-kiwame').addEventListener('click',e=>{
     toggleEmojiFilter(chip.dataset.val);
   });
 });
+// 各種装備絞込（PC・ボトムシート共通／3状態トグル）
+['filter-equip','bs-equip'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('click',e=>{
+    const chip=e.target.closest('[data-equip]');if(!chip)return;
+    toggleEquipFilter(chip.dataset.equip);
+  });
+});
 
 // モバイルソート
 document.getElementById('m-sort-chips').addEventListener('click',e=>{
@@ -3057,6 +3331,32 @@ function setView(mode){
   document.getElementById('v-mobile').classList.toggle('on',mode==='mobile');
   applyFilterUI();
   renderFilterBtn();
+  applyModeBarPos();
+}
+// 表示列（モードバー）の位置をPC設定に応じて切替（スマホ時は常に従来バー）
+function applyModeBarPos(){
+  const bar=document.getElementById('mode-bar');
+  if(!bar)return;
+  const mobile=document.body.classList.contains('show-mobile');
+  let setPos=UD.settings.modeBarPos||'below';
+  if(setPos==='header-left-note')setPos='header-left'; // 旧値の正規化
+  const pos=mobile?'below':setPos;
+  const inHeader=(pos==='header-left'||pos==='header-right');
+  const title=document.querySelector('.h-title');
+  const hright=document.querySelector('.h-right');
+  const anchor=document.getElementById('mode-bar-anchor');
+  if(pos==='header-right'){ if(hright)hright.insertBefore(bar,hright.firstChild); }
+  else if(pos==='header-left'){ if(title)title.appendChild(bar); } // タイトル内に入れて左寄せ
+  else { if(anchor)anchor.after(bar); }
+  document.body.classList.toggle('mode-in-header',inHeader);
+  document.body.classList.toggle('mode-pos-right',pos==='header-right');
+  let noteMode=UD.settings.modeBarNote;
+  if(noteMode===true)noteMode='left'; else if(!noteMode)noteMode='none'; // 旧boolean値の正規化
+  document.body.classList.toggle('mode-show-note',inHeader&&noteMode!=='none');
+  document.body.classList.toggle('mode-note-right',inHeader&&noteMode==='right');
+  document.querySelectorAll('[name=mode-bar-pos]').forEach(r=>r.checked=r.value===setPos);
+  document.querySelectorAll('[name=mode-bar-note]').forEach(r=>r.checked=r.value===noteMode);
+  document.documentElement.classList.remove('mbar-hide'); // 配置完了→先行非表示を解除
 }
 
 function applyBsPosition(pos){
@@ -3893,6 +4193,12 @@ function renderFilterBtn(){
   if(UD.dataSource!=='local'&&em.length){
     parts.push(em.length===1?(em[0]==='__none__'?'絵文字なし':em[0]):'絵文字'+em.length);
   }
+  const fe=UD.settings.filterEquip||{};
+  const EQL={toso:'刀装',horse:'馬',omamori:'お守り',treasure:'宝物'};
+  ['toso','horse','omamori','treasure'].forEach(k=>{
+    if(fe[k]===1)parts.push(EQL[k]+'有');
+    else if(fe[k]===2)parts.push(EQL[k]+'無');
+  });
   const isActive=parts.length>0;
   const label=isActive?parts.join('・'):'全て';
   if(valEl)valEl.textContent=label;
@@ -4088,6 +4394,7 @@ async function gdLoad(){
       if(cloudData.equipments)UD.equipments=cloudData.equipments;
       if(cloudData.conditions)UD.conditions=cloudData.conditions;
       if(cloudData.settings)Object.assign(UD.settings,cloudData.settings);
+      migrateConditions();
       saveUD();renderAll();
     }
   }catch(e){console.warn('GD load error',e);}
@@ -4135,6 +4442,7 @@ function esc(s){
 // ======================================================
 window.addEventListener('load',()=>{
   loadUD();
+  migrateConditions();
   applyDataSourceUI();
   refreshInstances();
   applySortUI();
@@ -4143,6 +4451,7 @@ window.addEventListener('load',()=>{
   applySortChipMode(UD.settings.sortChipWrap||'wrap');
   renderFilterBtn();
   if(window.innerWidth<768)setView('mobile');
+  applyModeBarPos();
   if(!UD.settings.guideShown)setTimeout(()=>openModal('guide-modal'),300);
   // GD初期化（スクリプトロード後）
   const tryGdInit=()=>{if(typeof google!=='undefined'&&google.accounts)gdInit();else setTimeout(tryGdInit,500);};

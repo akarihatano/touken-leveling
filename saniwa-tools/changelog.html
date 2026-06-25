@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>更新履歴 — 審神者の道具箱</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
 <script>
@@ -270,15 +272,103 @@ footer {
     <div class="month-header">
       <span class="month-label">2026年6月</span>
       <span class="month-line"></span>
-      <span class="month-count">1件</span>
+      <span class="month-count">5件</span>
     </div>
     <div class="cl-panel">
       <div class="timeline">
 
+        <div class="tl-entry" id="tl-new12">
+          <div class="tl-header" onclick="tlToggle('tl-new12')">
+            <span class="tl-date">2026.06.16</span>
+            <span class="tl-badge">最新</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="app-label">邂逅録</div>
+              <ul>
+                <li>「選んだ男士」を自由に並べ替えられるようにしました。▲▼で手動入れ替えができるほか、記録順／名前順／種類順／No順／件数順でのソートにも対応しています。並べた順番を覚えておく「カスタム順」も使えます</li>
+                <li>同じ名前の男士を、自動でまとめて表示するようにしました（設定で切り替えられます）</li>
+                <li>件数の数字をタップして、直接入力できるようにしました。±ボタンでは記録が消えないように変更したので、消したいときはゴミ箱から行ってください</li>
+                <li>「お迎え男士（🌸）」を登録できるようにしました。欲しい子に目印を付けられます</li>
+                <li>集計の表示名を分かりやすく整え、切り替えバーの初期表示なども改善しました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new11">
+          <div class="tl-header" onclick="tlToggle('tl-new11')">
+            <span class="tl-date">2026.06.15</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="app-label">出陣支度部屋</div>
+              <ul>
+                <li>通常装備リストを、装備の有無で絞り込めるようにしました。刀装・馬・お守り・宝物それぞれをタップすると「装備あり→なし→解除」の3段階で切り替えられます</li>
+                <li>左側の「並び替え・絞り込み」を折りたためるようにしました。並び替え／刀種／状態／絵文字マーク／装備の各見出しをクリックで開閉でき、畳んだときは見出しに今の選択（例：「太刀」「極のみ」）が表示されます</li>
+                <li>表示列（モードバー）の位置を設定で選べるようにしました（PCのみ）。「ヘッダー下のバー（従来）／ヘッダー内のタイトル横／ヘッダー右側」から選べ、ヘッダー内に置くときは注記の位置（表示しない／トグルの左／トグルの右）も選べます</li>
+                <li>白山吉光（極）・南海太郎朝尊（極）のマスターデータを追加しました（白山吉光の生存120、南海太郎朝尊の偵察91）</li>
+                <li>閾値チェックにプリセットを追加しました。閾値エディタ上部のプルダウンから「大阪城・高速槍先制（機動）」を選べます</li>
+                <li>閾値チェックを部隊ごとに登録・管理できるようにしました（これまでは全部隊で共通表示でした）</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new10">
+          <div class="tl-header" onclick="tlToggle('tl-new10')">
+            <span class="tl-date">2026.06.14</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="app-label">邂逅録</div>
+              <ul>
+                <li>集計に「1時間あたり」の表示を追加しました。周回にかけた時間（分）を記録すると、資源も小判も「1時間でどれだけ拾えるか」が見られるようになりました（時間を入れなければ今まで通り合計と1周あたりだけ表示します）</li>
+                <li>木炭・玉鋼・冷却材・砥石の資源を記録できるようにしました。集計では資源ごとに「合計・1周あたり・1時間あたり」を表示し、小判（金枠）と資源（緑枠）が色で区別されるようになりました。インポート・エクスポートも資源に対応しています</li>
+                <li>ボス小判のドロップ率を表示するようにしました。「詳しく記録」のときにボスマスで小判が出た回数を入力すると、大阪城のボスがどれくらいの確率で小判を落とすかが分かります</li>
+                <li>博多藤四郎の小判倍率の選択を覚えておくようにしました。最初から極（×2.0）が選ばれた状態になり、前回選んだ状態も記憶するので、毎回選び直す手間がなくなりました</li>
+                <li>「かんたん記録」を改善しました。見出しを「ドロップした男士」に統一し、刀種・刀派での絞り込みもかんたん記録で使えるようにしました</li>
+                <li>「最近の記録」に男士の並べ替えを追加しました（目玉優先・マス順・種類順・No順・件数順、昇順／降順の切替つき）。男士の行を2段にして、名前とゴミ箱・マスと件数を見やすく配置しました</li>
+                <li>「かんたん／詳しく」の切り替えバーを画面上部に固定するかどうか、設定で選べるようにしました（初期設定はオフ）</li>
+                <li>タブの名前を「記録／集計／設定」に短くして、スマホで見やすくしました。「何周した？」の説明文も分かりやすくしました</li>
+              </ul>
+              <div class="app-label">サイト全体</div>
+              <ul>
+                <li>ファビコン（ブラウザのタブやスマホのホーム画面に表示される小さなアイコン）を追加しました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new9">
+          <div class="tl-header" onclick="tlToggle('tl-new9')">
+            <span class="tl-date">2026.06.13</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="app-label">邂逅録</div>
+              <ul>
+                <li>「かんたん記録」モードを追加しました。出た男士を選ぶだけで記録でき、目玉男士は自動でボスドロップとして扱われます</li>
+                <li>集計に「すべて」表示を追加し、マスを問わず集計できるようにしました</li>
+                <li>「最近の記録」を、同じ日・同じ階・同じ場所ごとにまとめて表示するようにしました</li>
+                <li>記録の編集を、その場で直接できるようにしました（件数の増減・マスの変更・男士の追加や削除・周回情報の修正）</li>
+                <li>小判の入力欄を男士とは別枠にして、分かりやすくしました</li>
+                <li>今日の周回をマークできる進行記録を追加しました</li>
+                <li>すべての記録を削除するボタンを追加しました（バックアップの案内つき）</li>
+                <li>日付を日本時間で記録し、西暦つきで表示するようにしました</li>
+                <li>集計画面の絞り込みや、記録時のいくつかの不具合を修正しました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
         <div class="tl-entry" id="tl-new8">
           <div class="tl-header" onclick="tlToggle('tl-new8')">
             <span class="tl-date">2026.06.12</span>
-            <span class="tl-badge">最新</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">

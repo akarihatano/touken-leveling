@@ -10,6 +10,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>資源帳 — 刀剣乱舞 資源管理</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QM317D9ESN');</script>
 <style>
@@ -371,6 +373,8 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
     <div class="fld"><label class="lbl" style="color:#dba820">小判</label><div class="num-wrap"><input type="text" inputmode="numeric" id="i-ko" placeholder="0" oninput="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)"></div></div>
     <div class="fld"><label class="lbl" style="color:#c0804a">依頼札</label><div class="num-wrap"><input type="text" inputmode="numeric" id="i-r" placeholder="0" oninput="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)"></div></div>
     <div class="fld"><label class="lbl" style="color:#52c878">手伝い札</label><div class="num-wrap"><input type="text" inputmode="numeric" id="i-h" placeholder="0" oninput="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)"></div></div>
+    <div class="fld"><label class="lbl" style="color:#e87fb0">金平糖・並</label><div class="num-wrap"><input type="text" inputmode="numeric" id="i-kn" placeholder="0" oninput="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)"></div></div>
+    <div class="fld"><label class="lbl" style="color:#c89be8">金平糖・上</label><div class="num-wrap"><input type="text" inputmode="numeric" id="i-kj" placeholder="0" oninput="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)"></div></div>
   </div>
   <div class="row" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--bd1)">
     <div class="fld"><label class="lbl" style="color:#7898e8">富士の札</label><div class="num-wrap"><input type="text" inputmode="numeric" id="i-ff" placeholder="0" oninput="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)"></div></div>
@@ -378,10 +382,11 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
     <div class="fld"><label class="lbl" style="color:#a8d060">竹の札</label><div class="num-wrap"><input type="text" inputmode="numeric" id="i-tf" placeholder="0" oninput="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)"></div></div>
     <div class="fld"><label class="lbl" style="color:#e87878">梅の札</label><div class="num-wrap"><input type="text" inputmode="numeric" id="i-uf" placeholder="0" oninput="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)"></div></div>
   </div>
-  <div style="display:flex;gap:6px;margin-top:8px">
-    <button id="btn-inherit-fuda" class="io-btn" style="flex:1;padding:7px 6px;font-size:12px" onclick="inheritPrev(false)">↩ 札を引き継ぐ</button>
-    <button id="btn-inherit-all"  class="io-btn" style="flex:1;padding:7px 6px;font-size:12px" onclick="inheritPrev(true)">↩ 全資源を引き継ぐ</button>
-    <button class="io-btn" style="padding:7px 10px;font-size:12px;color:#d87070;border-color:rgba(216,112,112,0.3)" onclick="clearInputs()">✕ クリア</button>
+  <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+    <button id="btn-inherit-fuda"     class="io-btn" style="flex:1 1 calc(50% - 3px);padding:7px 6px;font-size:12px" onclick="inheritPrev('fuda')">↩ 札を引き継ぐ</button>
+    <button id="btn-inherit-konpeito" class="io-btn" style="flex:1 1 calc(50% - 3px);padding:7px 6px;font-size:12px" onclick="inheritPrev('konpeito')">↩ 金平糖を引き継ぐ</button>
+    <button id="btn-inherit-all"      class="io-btn" style="flex:1 1 calc(50% - 3px);padding:7px 6px;font-size:12px" onclick="inheritPrev('all')">↩ 全資源を引き継ぐ</button>
+    <button class="io-btn" style="flex:1 1 calc(50% - 3px);padding:7px 10px;font-size:12px;color:#d87070;border-color:rgba(216,112,112,0.3)" onclick="clearInputs()">✕ クリア</button>
   </div>
   <button onclick="addRes()" style="margin-top:10px">追加する</button>
   <p class="msg" id="rmsg"></p>
@@ -619,7 +624,7 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
     </div>
     <div class="set-row">
       <div><div class="set-lbl">バージョン</div><div class="set-sub">資源帳 — 刀剣乱舞 資源管理ツール</div></div>
-      <div style="font-size:14px;font-weight:600;color:var(--t1)">v1.0021</div>
+      <div style="font-size:14px;font-weight:600;color:var(--t1)">v1.0023</div>
     </div>
     <div class="set-row">
       <div><div class="set-lbl">通知の許可</div><div class="set-sub">遠征・手入れ・鍛刀の終了時に通知</div></div>
@@ -656,7 +661,7 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
     <div style="margin-top:20px;font-size:12px;color:var(--t4);line-height:1.9;background:var(--bg1);border:1px solid var(--bd1);border-radius:8px;padding:14px">
       <strong style="color:var(--t3);font-size:13px">Excel 読み込みについて</strong><br>
       • 1行目はヘッダー行（日付列は「日付」「date」または空欄で自動検出）<br>
-      • 列名：木炭 / 玉鋼 / 冷却材（冷却水でも可）/ 砥石 / 小判 / 依頼札 / 手伝い札<br>
+      • 列名：木炭 / 玉鋼 / 冷却材（冷却水でも可）/ 砥石 / 小判 / 依頼札 / 手伝い札 / 金平糖・並 / 金平糖・上<br>
       • 日付フォーマット：2025/11/12 または 2025-11-12<br>
       • 文字列列はメモとして自動取り込み
     </div>
@@ -1017,12 +1022,12 @@ var evSort={field:'start',dir:1};  /* field: start/end/name, dir: 1=昇順/-1=�
 var ntSort={dir:1};                /* dir: 1=昇順/-1=降順 */
 var BANS=[],BLOG=[];
 var RCNT={repair:0,forge:0};
-var KS=['c','s','l','w','ko','r','h'];
-var KL={c:'木炭',s:'玉鋼',l:'冷却材',w:'砥石',ko:'小判',r:'依頼札',h:'手伝い札'};
-var KC={c:'#e8864a',s:'#5b9fe8',l:'#3dc8d4',w:'#9b6cd8',ko:'#dba820',r:'#c0804a',h:'#52c878'};
-var KD={c:[],s:[6,3],l:[3,3],w:[8,4],ko:[5,2,2,2],r:[4,4,2,4],h:[2,2]};
-var YAX={c:'y',s:'y',l:'y',w:'y',ko:'y',r:'y2',h:'y2'};
-var VIS={c:1,s:1,l:1,w:1,ko:1,r:1,h:1};
+var KS=['c','s','l','w','ko','r','h','kn','kj'];
+var KL={c:'木炭',s:'玉鋼',l:'冷却材',w:'砥石',ko:'小判',r:'依頼札',h:'手伝い札',kn:'金平糖・並',kj:'金平糖・上'};
+var KC={c:'#e8864a',s:'#5b9fe8',l:'#3dc8d4',w:'#9b6cd8',ko:'#dba820',r:'#c0804a',h:'#52c878',kn:'#e87fb0',kj:'#c89be8'};
+var KD={c:[],s:[6,3],l:[3,3],w:[8,4],ko:[5,2,2,2],r:[4,4,2,4],h:[2,2],kn:[5,3],kj:[2,3,8,3]};
+var YAX={c:'y',s:'y',l:'y',w:'y',ko:'y',r:'y2',h:'y2',kn:'y2',kj:'y2'};
+var VIS={c:1,s:1,l:1,w:1,ko:1,r:1,h:1,kn:1,kj:1};
 var KFS=['ff','mf','tf','uf'];
 var KFL={mf:'松の札',tf:'竹の札',uf:'梅の札',ff:'富士の札'};
 var KFC={mf:'#52c878',tf:'#a8d060',uf:'#e87878',ff:'#7898e8'};
@@ -1217,7 +1222,7 @@ function gCV(n){return getComputedStyle(document.documentElement).getPropertyVal
 function RC(){
   renderLeg();renderEvLeg();renderNLeg();
   var fd=getFD(),wd=diffOn?getDiff(fd):fd,labs=wd.map(function(r){return r.date;});
-  var y2v=KS.some(function(k){return (k==='r'||k==='h')&&VIS[k];});
+  var y2v=KS.some(function(k){return (k==='r'||k==='h'||k==='kn'||k==='kj')&&VIS[k];});
   var t4=gCV('--t4'),bd1=gCV('--bd1'),bg1=gCV('--bg1'),t2=gCV('--t2'),t3=gCV('--t3');
   var ds=KS.map(function(k){return{label:KL[k],data:wd.map(function(r){return r[k];}),borderColor:KC[k],backgroundColor:KC[k]+'10',borderWidth:2,borderDash:KD[k],pointRadius:labs.length>60?1:3,pointHoverRadius:5,tension:0.3,fill:false,spanGaps:true,yAxisID:YAX[k],hidden:!VIS[k]};});
   var fY=function(v){return v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?(v/1000).toFixed(0)+'K':Math.round(v).toLocaleString();};
@@ -1338,7 +1343,7 @@ function fmtN(el){if(isBrave)return;requestAnimationFrame(function(){var pos=el.
 function fmtNBlur(el){var raw=el.value.replace(/[^\d]/g,'');el.dataset.val=raw;if(!raw){el.value='';return;}el.value=parseInt(raw).toLocaleString('ja-JP');}
 function fmtNFocus(el){var raw=el.dataset.val||el.value.replace(/[^\d]/g,'');el.dataset.val=raw;el.value=raw||'';}
 function getN(id){var el=document.getElementById(id);if(!el)return null;var raw=el.value.replace(/[^\d]/g,'');if(raw==='')raw=(el.dataset&&el.dataset.val!=null&&el.dataset.val!=='')?el.dataset.val:'';return raw===''?null:parseInt(raw);}
-function clearInputs(){['i-c','i-s','i-l','i-w','i-ko','i-r','i-h','i-mf','i-tf','i-uf','i-ff'].forEach(function(id){var el=document.getElementById(id);if(el){el.value='';el.dataset.val='';}});}
+function clearInputs(){['i-c','i-s','i-l','i-w','i-ko','i-r','i-h','i-kn','i-kj','i-mf','i-tf','i-uf','i-ff'].forEach(function(id){var el=document.getElementById(id);if(el){el.value='';el.dataset.val='';}});}
 
 /* ─── Resource input ─── */
 function localDateStr(d){
@@ -1366,20 +1371,21 @@ function shiftDate(d){
 function updInheritBtns(){
   var d=document.getElementById('i-date').value;
   var prev=d?RES.filter(function(r){return r.date<d;}).sort(function(a,b){return b.date.localeCompare(a.date);})[0]:null;
-  var fb=document.getElementById('btn-inherit-fuda');
-  var ab=document.getElementById('btn-inherit-all');
-  if(fb)fb.disabled=!prev;
-  if(ab)ab.disabled=!prev;
+  ['btn-inherit-fuda','btn-inherit-konpeito','btn-inherit-all'].forEach(function(id){var b=document.getElementById(id);if(b)b.disabled=!prev;});
 }
-function inheritPrev(all){
+function inheritPrev(mode){
   var d=document.getElementById('i-date').value;
   if(!d)return;
   var prev=RES.filter(function(r){return r.date<d;}).sort(function(a,b){return b.date.localeCompare(a.date);})[0];
   if(!prev){SM('引き継ぐデータがありません');setTimeout(function(){SM('');},2000);return;}
   var fudaKeys=['ff','mf','tf','uf'];
-  var allKeys=['c','s','l','w','ko','r','h','ff','mf','tf','uf'];
-  var keys=all?allKeys:fudaKeys;
-  var idMap={c:'i-c',s:'i-s',l:'i-l',w:'i-w',ko:'i-ko',r:'i-r',h:'i-h',ff:'i-ff',mf:'i-mf',tf:'i-tf',uf:'i-uf'};
+  var konpeitoKeys=['kn','kj'];
+  var allKeys=['c','s','l','w','ko','r','h','kn','kj','ff','mf','tf','uf'];
+  var keys,label;
+  if(mode===true||mode==='all'){keys=allKeys;label='全資源';}
+  else if(mode==='konpeito'){keys=konpeitoKeys;label='金平糖';}
+  else{keys=fudaKeys;label='富士・松・竹・梅の札';}
+  var idMap={c:'i-c',s:'i-s',l:'i-l',w:'i-w',ko:'i-ko',r:'i-r',h:'i-h',kn:'i-kn',kj:'i-kj',ff:'i-ff',mf:'i-mf',tf:'i-tf',uf:'i-uf'};
   keys.forEach(function(k){
     var el=document.getElementById(idMap[k]);
     if(!el)return;
@@ -1387,10 +1393,10 @@ function inheritPrev(all){
     el.dataset.val=v!=null?String(v):'';
     el.value=v!=null?v.toLocaleString('ja-JP'):'';
   });
-  SM((all?'全資源':'富士・松・竹・梅の札')+'を引き継ぎました');
+  SM(label+'を引き継ぎました');
   setTimeout(function(){SM('');},2000);
 }
-async function addRes(){var d=document.getElementById('i-date').value;if(!d){SM('日付を入力してください');return;}var row={date:d,_ts:Date.now()};var ids=['i-c','i-s','i-l','i-w','i-ko','i-r','i-h'];KS.forEach(function(k,i){var el=document.getElementById(ids[i]);var v=el?el.value.replace(/[^\d]/g,''):'';row[k]=v===''?null:parseInt(v);});var fids=['i-ff','i-mf','i-tf','i-uf'];KFS.forEach(function(k,i){var el=document.getElementById(fids[i]);var v=el?el.value.replace(/[^\d]/g,''):'';row[k]=v===''?null:parseInt(v);});var ei=RES.findIndex(function(r){return r.date===d;});if(ei>=0&&!overwriteWarnDisabled){var ok=await showOverwriteDialog(d);if(!ok)return;}if(ei>=0)RES[ei]=row;else RES.push(row);RES.sort(function(a,b){return a.date.localeCompare(b.date);});clearInputs();save();SM('追加しました ✓');setTimeout(function(){SM('');},2000);if(chart)RC();}
+async function addRes(){var d=document.getElementById('i-date').value;if(!d){SM('日付を入力してください');return;}var row={date:d,_ts:Date.now()};var ids=['i-c','i-s','i-l','i-w','i-ko','i-r','i-h','i-kn','i-kj'];KS.forEach(function(k,i){var el=document.getElementById(ids[i]);var v=el?el.value.replace(/[^\d]/g,''):'';row[k]=v===''?null:parseInt(v);});var fids=['i-ff','i-mf','i-tf','i-uf'];KFS.forEach(function(k,i){var el=document.getElementById(fids[i]);var v=el?el.value.replace(/[^\d]/g,''):'';row[k]=v===''?null:parseInt(v);});var ei=RES.findIndex(function(r){return r.date===d;});if(ei>=0&&!overwriteWarnDisabled){var ok=await showOverwriteDialog(d);if(!ok)return;}if(ei>=0)RES[ei]=row;else RES.push(row);RES.sort(function(a,b){return a.date.localeCompare(b.date);});clearInputs();save();SM('追加しました ✓');setTimeout(function(){SM('');},2000);if(chart)RC();}
 function SM(m){document.getElementById('rmsg').textContent=m;}
 
 /* ─── Event/Note ─── */
@@ -1487,7 +1493,7 @@ function showConflictDialog(){
     bg.onclick=function(e){if(e.target===bg)done('cancel');};
   });
 }
-function editResModal(d){var r=RES.find(function(x){return x.date===d;});if(!r)return;_mType='res';_mDate=d;document.getElementById('edit-modal-h').textContent='資源データを編集';var ids=['m-c','m-s','m-l','m-w','m-ko','m-r','m-h'];document.getElementById('edit-modal-body').innerHTML='<div class="row" style="grid-template-columns:1fr;max-width:200px;margin-bottom:10px"><div class="fld"><label class="lbl">日付</label><input type="date" id="m-date" value="'+r.date+'"></div></div><div class="row">'+KS.map(function(k,i){var v=r[k]!=null?r[k].toLocaleString('ja-JP'):'';return '<div class="fld"><label class="lbl" style="color:'+KC[k]+'">'+KL[k]+'</label><div class="num-wrap"><input type="text" inputmode="numeric" id="'+ids[i]+'" value="'+v+'" data-val="'+(r[k]!=null?r[k]:'')+'" oninput="fmtN(this)" placeholder="0"></div></div>';}).join('')+'</div>'+'<div class="row" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--bd1)">'+KFS.map(function(k){var fids={mf:'m-mf',tf:'m-tf',uf:'m-uf',ff:'m-ff'};var v=r[k]!=null?r[k].toLocaleString('ja-JP'):'';return '<div class="fld"><label class="lbl" style="color:'+KFC[k]+'">'+KFL[k]+'</label><div class="num-wrap"><input type="text" inputmode="numeric" id="'+fids[k]+'" value="'+v+'" data-val="'+(r[k]!=null?r[k]:'')+'" oninput="fmtN(this)" placeholder="0"></div></div>';}).join('')+'</div>';openModal();}
+function editResModal(d){var r=RES.find(function(x){return x.date===d;});if(!r)return;_mType='res';_mDate=d;document.getElementById('edit-modal-h').textContent='資源データを編集';var ids=['m-c','m-s','m-l','m-w','m-ko','m-r','m-h','m-kn','m-kj'];document.getElementById('edit-modal-body').innerHTML='<div class="row" style="grid-template-columns:1fr;max-width:200px;margin-bottom:10px"><div class="fld"><label class="lbl">日付</label><input type="date" id="m-date" value="'+r.date+'"></div></div><div class="row">'+KS.map(function(k,i){var v=r[k]!=null?r[k].toLocaleString('ja-JP'):'';return '<div class="fld"><label class="lbl" style="color:'+KC[k]+'">'+KL[k]+'</label><div class="num-wrap"><input type="text" inputmode="numeric" id="'+ids[i]+'" value="'+v+'" data-val="'+(r[k]!=null?r[k]:'')+'" oninput="fmtN(this)" placeholder="0"></div></div>';}).join('')+'</div>'+'<div class="row" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--bd1)">'+KFS.map(function(k){var fids={mf:'m-mf',tf:'m-tf',uf:'m-uf',ff:'m-ff'};var v=r[k]!=null?r[k].toLocaleString('ja-JP'):'';return '<div class="fld"><label class="lbl" style="color:'+KFC[k]+'">'+KFL[k]+'</label><div class="num-wrap"><input type="text" inputmode="numeric" id="'+fids[k]+'" value="'+v+'" data-val="'+(r[k]!=null?r[k]:'')+'" oninput="fmtN(this)" placeholder="0"></div></div>';}).join('')+'</div>';openModal();}
 function editEvModal(i){var ev=EVS[i];if(!ev)return;_mType='ev';_mIdx=i;document.getElementById('edit-modal-h').textContent='期間メモを編集';document.getElementById('edit-modal-body').innerHTML='<div class="row"><div class="fld" style="grid-column:span 2"><label class="lbl">期間メモ名</label><input type="text" id="m-ename" value="'+esc(ev.name)+'"></div><div class="fld"><label class="lbl">開始日</label><input type="date" id="m-es" value="'+ev.start+'"></div><div class="fld"><label class="lbl">終了日</label><input type="date" id="m-ee" value="'+ev.end+'"></div><div class="fld"><label class="lbl">色</label><input type="color" id="m-ecol" value="'+ev.color+'" style="height:36px;width:100%"></div></div>';openModal();}
 function editNModal(i){var n=NTS[i];if(!n)return;_mType='note';_mIdx=i;document.getElementById('edit-modal-h').textContent='メモを編集';document.getElementById('edit-modal-body').innerHTML='<div class="row"><div class="fld"><label class="lbl">日付</label><input type="date" id="m-nd" value="'+n.date+'"></div><div class="fld" style="grid-column:span 2"><label class="lbl">内容</label><input type="text" id="m-nt" value="'+esc(n.text)+'"></div></div>';openModal();}
 /* Room edit modal */
@@ -1519,7 +1525,7 @@ function adjAdd(v){
   el.value=(parseInt(el.value)||0)+v;
 }
 function saveModal(){
-  if(_mType==='res'){var nd=document.getElementById('m-date').value;if(!nd){alert('日付を入力してください');return;}var mids=['m-c','m-s','m-l','m-w','m-ko','m-r','m-h'];var nr={date:nd,_ts:Date.now()};KS.forEach(function(k,i){nr[k]=getN(mids[i]);});var fmids={mf:'m-mf',tf:'m-tf',uf:'m-uf',ff:'m-ff'};KFS.forEach(function(k){nr[k]=getN(fmids[k]);});var oi=RES.findIndex(function(r){return r.date===_mDate;});if(oi>=0)RES.splice(oi,1);var ei=RES.findIndex(function(r){return r.date===nd;});if(ei>=0)RES[ei]=nr;else RES.push(nr);RES.sort(function(a,b){return a.date.localeCompare(b.date);});save();renderDT();if(chart)RC();}
+  if(_mType==='res'){var nd=document.getElementById('m-date').value;if(!nd){alert('日付を入力してください');return;}var mids=['m-c','m-s','m-l','m-w','m-ko','m-r','m-h','m-kn','m-kj'];var nr={date:nd,_ts:Date.now()};KS.forEach(function(k,i){nr[k]=getN(mids[i]);});var fmids={mf:'m-mf',tf:'m-tf',uf:'m-uf',ff:'m-ff'};KFS.forEach(function(k){nr[k]=getN(fmids[k]);});var oi=RES.findIndex(function(r){return r.date===_mDate;});if(oi>=0)RES.splice(oi,1);var ei=RES.findIndex(function(r){return r.date===nd;});if(ei>=0)RES[ei]=nr;else RES.push(nr);RES.sort(function(a,b){return a.date.localeCompare(b.date);});save();renderDT();if(chart)RC();}
   else if(_mType==='ev'){var nm=document.getElementById('m-ename').value.trim(),s=document.getElementById('m-es').value,e=document.getElementById('m-ee').value;if(!nm||!s||!e){alert('全て入力してください');return;}if(s>e){alert('開始日が終了日より後です');return;}var old=EVS[_mIdx]||{};EVS[_mIdx]={name:nm,start:s,end:e,color:document.getElementById('m-ecol').value,updatedAt:Date.now(),deleted:false,source:old.source||'shizai'};save();renderEvList();RC();}
   else if(_mType==='note'){var d=document.getElementById('m-nd').value,t=document.getElementById('m-nt').value.trim();if(!d||!t){alert('日付と内容を入力してください');return;}var old2=NTS[_mIdx]||{};NTS[_mIdx]={date:d,text:t,updatedAt:Date.now(),deleted:false,source:old2.source||'shizai'};NTS.sort(function(a,b){return a.date.localeCompare(b.date);});save();renderNList();RC();}
   else if(_mType==='room'){

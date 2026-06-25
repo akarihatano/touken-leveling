@@ -12,6 +12,8 @@
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>刀剣乱舞 レベリング管理</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async></script>
@@ -168,7 +170,8 @@ body.mobile .graph-overlay{padding:0}
 .graph-title{font-family:var(--font-s);font-size:15px;font-weight:600;color:var(--accent);flex:1;min-width:120px}
 .graph-body{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:12px}
 .graph-chart-wrap{position:relative;background:var(--bg2);border-radius:var(--r);padding:10px;height:420px}
-.saniwa-chart-wrap{position:relative;background:var(--bg2);border-radius:var(--r);padding:10px;height:520px}
+.saniwa-chart-wrap{position:relative;background:var(--bg2);border-radius:var(--r);padding:10px;height:calc(100vh - 280px);min-height:480px;flex-shrink:0}
+.saniwa-chart-wrap canvas{width:100%!important;height:100%!important}
 body.mobile .saniwa-chart-wrap{height:calc(100vh - 200px);min-height:420px}
 body.mobile .graph-chart-wrap{height:calc(100vh - 180px);min-height:360px}
 .graph-chart-wrap canvas{width:100%!important;height:100%!important}
@@ -871,7 +874,7 @@ const STAT={
   250:[50,60,55,52,53,45,40,29,0,2], // 安宅切
   252:[54,63,54,51,57,42,34,31,0,2], // 二筋樋貞宗
   254:[53,61,48,47,52,44,36,36,0,2], // 雲重
-  256:[null,81,62,30,57,16,21,36,1,2], // 柏太刀（生存未確定）
+  256:[75,81,62,30,57,16,21,36,1,2], // 柏太刀
   // ── 極 ──
   4:[101,129,130,67,89,66,69,69,0,3],   // 三日月宗近 極
   6:[102,125,120,69,86,70,56,72,0,3],   // 小狐丸 極
@@ -1828,7 +1831,37 @@ function onLv(id,val,expKey,kiMinLv){
   if(kiSec&&hasK)kiSec.innerHTML=renderKiSec(id,name,_pendingKi,hasK,kiMin,lv,isNew,type);
 }
 
+// 上書き確認ヘルパー（過去日・既存あり・値が変わる時だけ確認）
+function needsOverwriteConfirm(existing,date,newExp,newLv){
+  if(!existing)return false;            // 既存レコードなし→確認不要
+  if(date===todayStr())return false;    // 今日→同日上書きは想定内なので確認不要
+  if(existing.cumExp===newExp&&(existing.level||1)===(newLv||1))return false; // 同値→確認不要
+  return true;
+}
+function overwriteMsg(date,existing,newExp,newLv){
+  const fe=v=>v!=null?v.toLocaleString('ja-JP'):'-';
+  return fmtDate(date)+' にはすでに記録があります。\n\n'
+    +'既存：累積 '+fe(existing.cumExp)+' / Lv.'+(existing.level||'-')+'\n'
+    +'新規：累積 '+fe(newExp)+' / Lv.'+(newLv||'-')+'\n\n'
+    +'上書きしますか？';
+}
+
 function saveI(id){
+  const i=UD.instances.find(x=>x.id===id);if(!i)return;
+  // 上書き確認（過去日の既存レコードを書き換える時のみ）
+  const _peekCumEl=document.getElementById('ie-cumexp');
+  const _peekCum=_peekCumEl?(parseInt(_peekCumEl.value.replace(/[^\d]/g,''))||null):i.cumExp;
+  const _peekLv=parseInt(document.getElementById('ie-lv').value)||1;
+  const _peekDateEl=document.getElementById('ie-recdate');
+  const _peekDate=_peekDateEl&&_peekDateEl.value?_peekDateEl.value:todayStr();
+  const _peekEx=(_peekCum!=null&&i.history)?i.history.find(h=>h.date===_peekDate):null;
+  if(needsOverwriteConfirm(_peekEx,_peekDate,_peekCum,_peekLv)){
+    showCF(overwriteMsg(_peekDate,_peekEx,_peekCum,_peekLv),'上書きする',()=>_commitSaveI(id));
+    return;
+  }
+  _commitSaveI(id);
+}
+function _commitSaveI(id){
   const i=UD.instances.find(x=>x.id===id);if(!i)return;
   i.nickname=document.getElementById('ie-nick').value.trim();
   i.level=parseInt(document.getElementById('ie-lv').value)||1;
@@ -1848,8 +1881,12 @@ function saveI(id){
     const recDate=recDateEl&&recDateEl.value?recDateEl.value:todayStr();
     const existing=i.history.findIndex(h=>h.date===recDate);
     const snap={date:recDate,cumExp:i.cumExp,level:i.level,auto:true};
-    if(existing>=0)i.history[existing]=snap;
-    else i.history.push(snap);
+    if(existing>=0){
+      const prev=i.history[existing];
+      if(prev.note)snap.note=prev.note;   // 既存メモを保持
+      if('auto'in prev)snap.auto=prev.auto; // 既存のauto区分を保持
+      i.history[existing]=snap;
+    }else i.history.push(snap);
     i.history.sort((a,b)=>a.date.localeCompare(b.date));
   }
   save();rc();
@@ -2354,6 +2391,21 @@ function stepCustomLv(delta){
   el.value=Math.max(1,Math.min(199,(parseInt(el.value)||1)+delta));
 }
 function saveCustom(cid,isNew){
+  if(!document.getElementById('c-name').value.trim()){toast('名前を入力してください');return;}
+  // 上書き確認（過去日の既存レコードを書き換える時のみ）
+  const _peekCum=parseInt(document.getElementById('c-cumexp').value.replace(/[^\d]/g,''))||null;
+  const _peekLv=parseInt(document.getElementById('c-level').value)||1;
+  const _peekDateEl=document.getElementById('c-recdate');
+  const _peekDate=_peekDateEl&&_peekDateEl.value?_peekDateEl.value:todayStr();
+  const _peekSword=cid?UD.customSwords.find(x=>x.cid===cid):null;
+  const _peekEx=(_peekCum!=null&&_peekSword&&_peekSword.history)?_peekSword.history.find(h=>h.date===_peekDate):null;
+  if(needsOverwriteConfirm(_peekEx,_peekDate,_peekCum,_peekLv)){
+    showCF(overwriteMsg(_peekDate,_peekEx,_peekCum,_peekLv),'上書きする',()=>_commitSaveCustom(cid,isNew));
+    return;
+  }
+  _commitSaveCustom(cid,isNew);
+}
+function _commitSaveCustom(cid,isNew){
   const name=document.getElementById('c-name').value.trim();
   if(!name){toast('名前を入力してください');return;}
   const cumExpVal=parseInt(document.getElementById('c-cumexp').value.replace(/[^\d]/g,''))||null;
@@ -2366,7 +2418,12 @@ function saveCustom(cid,isNew){
   if(cumExpVal){
     const idx=history.findIndex(h=>h.date===recDate);
     const snap={date:recDate,cumExp:cumExpVal,level:levelVal,auto:true};
-    if(idx>=0)history[idx]=snap; else history.push(snap);
+    if(idx>=0){
+      const prev=history[idx];
+      if(prev.note)snap.note=prev.note;   // 既存メモを保持
+      if('auto'in prev)snap.auto=prev.auto; // 既存のauto区分を保持
+      history[idx]=snap;
+    }else history.push(snap);
     history.sort((a,b)=>a.date.localeCompare(b.date));
   }
   const obj={
@@ -3196,8 +3253,15 @@ function drawChart(selectedInsts){
 
   const labels=allDates.map(d=>{const[y,m,dd]=d.split('-');return m+'/'+dd;});
 
-  // 全データセット（常にExp・Lv両方）を描画、_gHiddenDatasetsで個別表示制御
-  datasets.forEach(ds=>{ds.hidden=_gHiddenDatasets.has(ds.label);});
+  // 全データセット（常にExp・Lv両方）を描画。表示モード(_gAxisMode)と_gHiddenDatasets(凡例OFF)の両方で表示制御
+  datasets.forEach(ds=>{
+    const isExp=ds.label.endsWith(' Exp');
+    const isLv=ds.label.endsWith(' Lv');
+    let modeHidden=false;
+    if(_gAxisMode==='exp')modeHidden=isLv;       // 累積経験値モード→Lvを隠す
+    else if(_gAxisMode==='lv')modeHidden=isExp;  // レベルモード→Expを隠す
+    ds.hidden=modeHidden||_gHiddenDatasets.has(ds.label);
+  });
 
   _gChart=new Chart(canvas,{
     type:'line',data:{labels,datasets},plugins:[evtPlugin,hoverHighlightPlugin],
@@ -3858,8 +3922,20 @@ function addHistRec(){
   if(!exp){toast('累積経験値を入力してください');return;}
   const inst=UD.instances.find(i=>i.id===id);if(!inst)return;
   if(!inst.history)inst.history=[];
+  const existing=inst.history.find(h=>h.date===date);
+  // 上書き確認（過去日の既存レコードを書き換える時のみ）
+  if(needsOverwriteConfirm(existing,date,exp,lv)){
+    showCF(overwriteMsg(date,existing,exp,lv),'上書きする',()=>_commitHistRec(id,date,exp,lv,note));
+    return;
+  }
+  _commitHistRec(id,date,exp,lv,note);
+}
+function _commitHistRec(id,date,exp,lv,note){
+  const inst=UD.instances.find(i=>i.id===id);if(!inst)return;
+  if(!inst.history)inst.history=[];
   const existing=inst.history.findIndex(h=>h.date===date);
-  const rec={date,cumExp:exp,level:lv,note,auto:false};
+  const prevNote=existing>=0?inst.history[existing].note:'';
+  const rec={date,cumExp:exp,level:lv,note:note||prevNote||'',auto:false}; // メモ空欄なら既存メモを保持
   if(existing>=0)inst.history[existing]=rec;
   else inst.history.push(rec);
   inst.history.sort((a,b)=>a.date.localeCompare(b.date));
@@ -4597,6 +4673,12 @@ async function gdSyncDown(fromLogin=false){
         });
         UD.notes=Object.values(ntMap).map(n=>{if(!n.id)n.id='n'+Date.now()+Math.random().toString(36).slice(2);return n;});
       }
+      if(d.saniwaLog&&Array.isArray(d.saniwaLog)){
+        const snMap={};
+        d.saniwaLog.forEach(r=>{if(r&&r.date)snMap[r.date]=r;});      // クラウド
+        (UD.saniwaLog||[]).forEach(r=>{if(r&&r.date)snMap[r.date]=r;}); // 同日はローカル優先、クラウドのみの日付は保持
+        UD.saniwaLog=Object.values(snMap).sort((a,b)=>a.date.localeCompare(b.date));
+      }
       loadShared();
       save();ra();
       toast('ローカルの方が新しいため、クラウドへの保存をおすすめします');
@@ -4648,6 +4730,12 @@ async function gdSyncUp(silent=false){
               if(!ntMap[k]||(norm.updatedAt||0)>(ntMap[k].updatedAt||0))ntMap[k]=norm;
             });
             UD.notes=Object.values(ntMap).map(n=>{if(!n.id)n.id='n'+Date.now()+Math.random().toString(36).slice(2);return n;});
+          }
+          if(cloudUD.saniwaLog&&Array.isArray(cloudUD.saniwaLog)){
+            const snMap={};
+            cloudUD.saniwaLog.forEach(r=>{if(r&&r.date)snMap[r.date]=r;});   // クラウド（他端末の記録）
+            (UD.saniwaLog||[]).forEach(r=>{if(r&&r.date)snMap[r.date]=r;});  // 同日はローカル優先
+            UD.saniwaLog=Object.values(snMap).sort((a,b)=>a.date.localeCompare(b.date));
           }
         }
       }catch(e){

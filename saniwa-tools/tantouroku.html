@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>鍛刀録</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#faf8f4; --surface:#ffffff; --surface2:#f3f0ea; --line:#e4ded3; --line2:#d6cebf;
+  --text:#33302a; --text2:#6f685d; --text3:#9a9183;
+  --info-bg:#e8f0fb; --info:#185fa5; --info-line:#bcd4ef; --bar-grp:#185fa5;
+  --ok-bg:#e6f3e7; --ok:#2f7d3a; --warn-bg:#fbeede; --warn:#9a5a08;
+  --fuda-fuji-bg:#faeeda; --fuda-fuji:#854f0b;
+  --fuda-matsu-bg:#edf4e1; --fuda-matsu:#3b6d11;
+  --fuda-take-bg:#e1f5ee; --fuda-take:#0f6e56;
+  --fuda-ume-bg:#fbeaf0; --fuda-ume:#993556;
+  --tetsu-bg:#faeeda; --tetsu:#854f0b;
+  --sakura-bg:#fbeaf0; --sakura:#993556;
+  --radius:10px; --radius-s:7px;
+}
+html[data-theme="dark"]{
+  --bg:#1b1916; --surface:#26241f; --surface2:#2f2c26; --line:#3a3630; --line2:#4a453d;
+  --text:#ece7dd; --text2:#b3aa9b; --text3:#857d6f;
+  --info-bg:#1d2c3f; --info:#7ab2ec; --info-line:#33506f; --bar-grp:#6aa6df;
+  --ok-bg:#1f3322; --ok:#7fc98a; --warn-bg:#3a2e1a; --warn:#d9a85a;
+  --fuda-fuji-bg:#3a2e1a; --fuda-fuji:#d9a85a;
+  --fuda-matsu-bg:#243219; --fuda-matsu:#9fd16a;
+  --fuda-take-bg:#16352c; --fuda-take:#6fc9ad;
+  --fuda-ume-bg:#37212a; --fuda-ume:#d98aa6;
+  --tetsu-bg:#3a2e1a; --tetsu:#d9a85a;
+  --sakura-bg:#37212a; --sakura:#d98aa6;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+  font-size:15px;line-height:1.6;-webkit-text-size-adjust:100%}
+.wrap{max-width:760px;margin:0 auto;padding:0 14px 64px}
+header{display:flex;align-items:center;gap:11px;padding:14px 2px}
+.logo{font-size:24px;line-height:1}
+.htitle{font-size:19px;font-weight:700;line-height:1.15}
+.hsub{font-size:11.5px;color:var(--text3)}
+.hbtns{margin-left:auto;display:flex;gap:7px}
+.iconbtn{background:var(--surface);border:1px solid var(--line2);color:var(--text2);
+  border-radius:var(--radius-s);padding:7px 11px;font-size:15px;cursor:pointer;line-height:1}
+.iconbtn:hover{border-color:var(--info-line)}
+.tabs{display:flex;gap:2px;background:var(--surface2);border:1px solid var(--line);
+  border-radius:var(--radius);padding:5px;overflow-x:auto;margin-bottom:18px}
+.tab{flex:0 0 auto;border:0;background:none;color:var(--text2);font-size:13.5px;cursor:pointer;
+  padding:8px 13px;border-radius:var(--radius-s);white-space:nowrap;font-family:inherit}
+.tab:hover{color:var(--text)}
+.tab.active{background:var(--info-bg);color:var(--info);font-weight:600}
+.badge{display:inline-block;min-width:17px;text-align:center;font-size:10.5px;font-weight:700;
+  background:#c2410c;color:#fff;border-radius:99px;padding:1px 5px;margin-left:4px;vertical-align:1px}
+html[data-theme="dark"] .badge{background:#d96a3a}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin-bottom:14px}
+.lbl{font-size:12px;color:var(--text2);display:block;margin-bottom:6px}
+.row{margin-bottom:15px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+input[type=date],input[type=time],input[type=datetime-local],input.txt{font-family:inherit;font-size:14px;color:var(--text);
+  background:var(--surface);border:1px solid var(--line2);border-radius:var(--radius-s);padding:8px 10px;width:100%}
+input:focus{outline:2px solid var(--info-line);outline-offset:0;border-color:var(--info)}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:var(--radius-s);overflow:hidden}
+.seg button{border:0;background:none;font-family:inherit;font-size:13.5px;color:var(--text2);
+  padding:8px 16px;cursor:pointer;border-left:1px solid var(--line)}
+.seg button:first-child{border-left:0}
+.seg button.on{background:var(--info-bg);color:var(--info);font-weight:600}
+.pills{display:flex;gap:7px;flex-wrap:wrap}
+.pill{border:1px solid var(--line2);background:var(--surface);color:var(--text2);font-family:inherit;
+  font-size:12.5px;padding:6px 13px;border-radius:var(--radius-s);cursor:pointer}
+.pill.on{background:var(--info-bg);color:var(--info);border-color:var(--info-line);font-weight:600}
+.pill.fuda-fuji.on{background:var(--fuda-fuji-bg);color:var(--fuda-fuji);border-color:var(--fuda-fuji)}
+.pill.fuda-matsu.on{background:var(--fuda-matsu-bg);color:var(--fuda-matsu);border-color:var(--fuda-matsu)}
+.pill.fuda-take.on{background:var(--fuda-take-bg);color:var(--fuda-take);border-color:var(--fuda-take)}
+.pill.fuda-ume.on{background:var(--fuda-ume-bg);color:var(--fuda-ume);border-color:var(--fuda-ume)}
+.recipe{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.recipe .cell input{text-align:center;font-size:16px;padding:9px 4px}
+.recipe .cap{text-align:center;font-size:11px;color:var(--text3);margin-top:4px}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line2);border-radius:var(--radius-s);overflow:hidden}
+.stepper button{border:0;background:none;color:var(--text2);font-family:inherit;font-size:14px;padding:6px 11px;cursor:pointer;line-height:1}
+.stepper .val{padding:6px 10px;font-size:15px;font-weight:600;min-width:40px;text-align:center;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+.tag{font-size:11px;padding:2px 8px;border-radius:var(--radius-s);background:var(--surface2);color:var(--text2);white-space:nowrap}
+.tag.event{background:var(--info-bg);color:var(--info)}
+.tag.normal{background:var(--surface2);color:var(--text2)}
+.tag.star{background:var(--info-bg);color:var(--info)}
+.tag.f-fuji{background:var(--fuda-fuji-bg);color:var(--fuda-fuji)}
+.tag.f-matsu{background:var(--fuda-matsu-bg);color:var(--fuda-matsu)}
+.tag.f-take{background:var(--fuda-take-bg);color:var(--fuda-take)}
+.tag.f-ume{background:var(--fuda-ume-bg);color:var(--fuda-ume)}
+.eventbox{background:var(--info-bg);border-radius:var(--radius-s);padding:11px 13px}
+.eventbox .lbl{color:var(--info)}
+.sakurabox{background:var(--sakura-bg);border-radius:var(--radius-s);padding:11px 13px}
+.sakurabox .lbl{color:var(--sakura)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;padding:5px 6px 5px 11px;border-radius:99px;
+  background:var(--surface);border:1px solid var(--line2);color:var(--text)}
+.chip .x{border:0;background:none;color:var(--text3);cursor:pointer;font-size:15px;line-height:1;padding:0 2px}
+.chip .x:hover{color:var(--warn)}
+.res-head{display:flex;align-items:baseline;margin-bottom:9px}
+.res-head .sum{margin-left:auto;font-size:12.5px;font-weight:600;padding:2px 11px;border-radius:var(--radius-s)}
+.sum.ok{background:var(--ok-bg);color:var(--ok)}
+.sum.bad{background:var(--warn-bg);color:var(--warn)}
+.resrow{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.pick{flex:1;text-align:left;background:var(--surface);border:1px solid var(--line2);border-radius:var(--radius-s);
+  font-family:inherit;font-size:13.5px;color:var(--text);padding:8px 10px;cursor:pointer;display:flex;align-items:center}
+.pick.empty{color:var(--text3)}
+.pick .ar{margin-left:auto;color:var(--text3)}
+.pick .ty{font-size:11px;color:var(--text3);margin-left:7px}
+.regtime{font-size:11.5px;color:var(--text2);min-width:74px;text-align:right}
+.xbtn{border:0;background:none;color:var(--text3);font-size:18px;cursor:pointer;padding:2px 4px;line-height:1}
+.xbtn:hover{color:var(--warn)}
+.addbtn{display:inline-flex;align-items:center;gap:5px;font-size:13px;padding:8px 14px;border:1px dashed var(--line2);
+  border-radius:var(--radius-s);color:var(--text2);background:none;font-family:inherit;cursor:pointer}
+.addbtn:hover{border-color:var(--info);color:var(--info)}
+.actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:18px}
+.btn{font-family:inherit;font-size:13.5px;padding:10px 18px;border-radius:var(--radius-s);cursor:pointer;border:1px solid transparent}
+.btn.ghost{background:var(--surface);border-color:var(--line2);color:var(--text2)}
+.btn.ghost:hover{border-color:var(--info-line)}
+.btn.primary{background:var(--info);color:#fff;font-weight:600}
+.btn.tetsu{background:var(--tetsu-bg);color:var(--tetsu);font-weight:600}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.bcard{border:1px solid var(--line);border-radius:var(--radius-s);padding:12px 14px;margin-bottom:10px;background:var(--surface)}
+.bhead{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.bhead .recipe-txt{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;font-weight:600}
+.bhead .when{margin-left:auto;font-size:11px;color:var(--text3)}
+.bres{font-size:13px;color:var(--text2);margin-top:9px;line-height:1.9}
+.bres .mei{color:var(--text);font-weight:500}
+.brow-actions{display:flex;gap:8px;margin-top:10px;justify-content:flex-end}
+.linkbtn{border:0;background:none;font-family:inherit;font-size:12.5px;cursor:pointer;color:var(--text2);padding:4px 8px;border-radius:var(--radius-s)}
+.linkbtn:hover{background:var(--surface2);color:var(--text)}
+.linkbtn.del:hover{color:var(--warn)}
+.empty{text-align:center;color:var(--text3);font-size:13.5px;padding:38px 10px}
+.note{font-size:12px;color:var(--text3);line-height:1.7}
+.editbanner{background:var(--warn-bg);color:var(--warn);font-size:13px;padding:9px 14px;border-radius:var(--radius-s);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+/* 鍛刀中トレイ */
+.forge{border:1px solid var(--line2);border-radius:var(--radius);overflow:hidden;margin-bottom:11px}
+.forge.open{border:2px solid var(--info-line)}
+.fhead{padding:12px 14px;cursor:pointer}
+.forge.open .fhead{background:var(--info-bg)}
+.fhead-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fhead .fname{font-size:14px;font-weight:600}
+.forge.open .fhead .fname{color:var(--info)}
+.fhead-sub{display:flex;align-items:center;gap:13px;flex-wrap:wrap;padding-left:25px;margin-top:6px}
+.fhead-sub .cd{font-size:12px}
+.cd.counting{color:var(--info);font-weight:600}
+.cd.ready{color:var(--ok);font-weight:600}
+.cd.await{color:var(--text3)}
+.fbody{padding:4px 14px 14px;background:var(--surface)}
+.slot{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:0.5px solid var(--line);flex-wrap:wrap}
+.slot:last-child{border-bottom:0}
+.slot .sn{font-size:11px;color:var(--text3);width:34px}
+.slot .obs{display:inline-flex;align-items:center;gap:4px}
+.slot .obs .u{font-size:10px;color:var(--text3)}
+.ministep{display:inline-flex;align-items:center;border:1px solid var(--line2);border-radius:var(--radius-s);overflow:hidden}
+.ministep button{border:0;background:none;color:var(--text2);font-family:inherit;font-size:12px;padding:4px 7px;cursor:pointer;line-height:1}
+.ministep .v{padding:4px 6px;font-size:13px;font-weight:600;min-width:26px;text-align:center;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+.slot .scd{font-size:11px;min-width:104px;line-height:1.35}
+.slot .pick.mini{padding:6px 9px;font-size:12px}
+.slot .mei-done{flex:1;font-size:13px}
+.tetsubtn{font-size:11px;padding:6px 9px;border-radius:var(--radius-s);background:var(--tetsu-bg);color:var(--tetsu);border:0;font-family:inherit;cursor:pointer;white-space:nowrap}
+.confirmed{font-size:11px;color:var(--ok);white-space:nowrap}
+.ffoot{display:flex;gap:9px;justify-content:flex-end;flex-wrap:wrap;margin-top:13px;padding-top:11px;border-top:0.5px dashed var(--line)}
+.fname-edit{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:14px}
+.sortseg{display:inline-flex;border:1px solid var(--line2);border-radius:var(--radius-s);overflow:hidden}
+.sortseg button{border:0;background:none;font-family:inherit;font-size:12px;color:var(--text2);padding:6px 12px;cursor:pointer;border-left:1px solid var(--line)}
+.sortseg button:first-child{border-left:0}
+.sortseg button.on{background:var(--info-bg);color:var(--info);font-weight:600}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:flex-end;justify-content:center;z-index:50}
+.overlay.show{display:flex}
+.sheet{background:var(--surface);width:100%;max-width:520px;max-height:82vh;border-radius:14px 14px 0 0;display:flex;flex-direction:column;overflow:hidden}
+@media(min-width:560px){.overlay{align-items:center}.sheet{border-radius:14px}}
+.sheet-head{padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+.sheet-head h3{margin:0 0 10px;font-size:15px}
+.sheet-search{width:100%;font-family:inherit;font-size:15px;padding:10px 12px;border:1px solid var(--line2);border-radius:var(--radius-s);background:var(--surface);color:var(--text)}
+.sheet-body{overflow-y:auto;padding:8px 10px 16px}
+.grp-lbl{font-size:11px;color:var(--text3);padding:10px 6px 4px;position:sticky;top:0;background:var(--surface)}
+.mitem{display:flex;align-items:center;width:100%;text-align:left;border:0;background:none;font-family:inherit;color:var(--text);font-size:14px;padding:9px 10px;border-radius:var(--radius-s);cursor:pointer}
+.mitem:hover{background:var(--surface2)}
+.mitem .ty{font-size:11px;color:var(--text3);margin-left:auto;padding-left:10px}
+.sheet-foot{padding:10px 14px;border-top:1px solid var(--line);text-align:right}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+/* 集計 */
+.agg-grid{display:grid;grid-template-columns:215px minmax(0,1fr);gap:16px}
+@media(max-width:560px){.agg-grid{grid-template-columns:1fr}}
+.rlist-lbl{font-size:12px;color:var(--text3);margin:0 0 8px}
+.rrow{border:1px solid var(--line);border-radius:var(--radius-s);padding:9px 11px;margin-bottom:8px;cursor:pointer;background:var(--surface)}
+.rrow:hover{border-color:var(--info-line)}
+.rrow.on{border:2px solid var(--info-line)}
+.rrow .rv{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;font-weight:600}
+.rrow .rmeta{display:flex;gap:6px;align-items:center;margin-top:6px;flex-wrap:wrap}
+.rrow .cnt{margin-left:auto;font-size:12px;font-weight:600;color:var(--info)}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.metric{background:var(--surface2);border-radius:var(--radius-s);padding:11px 12px}
+.metric .ml{font-size:12px;color:var(--text2)}
+.metric .mv{font-size:22px;font-weight:600;line-height:1.25}
+.metric .mv.sm{font-size:15px;margin-top:5px}
+.grp{margin-bottom:17px}
+.grp-h{display:flex;align-items:baseline;font-size:14px;margin-bottom:6px}
+.grp-h .gn{font-weight:600}
+.grp-h .gp{margin-left:auto;font-weight:600;color:var(--info)}
+.track{height:6px;background:var(--surface2);border-radius:99px;overflow:hidden}
+.track .fill{height:100%}
+.grp-track .fill{background:var(--bar-grp)}
+.sub{padding-left:10px;margin-top:9px;display:flex;flex-direction:column;gap:8px}
+.sub .sh{display:flex;align-items:baseline;font-size:13px;margin-bottom:3px}
+.sub .sh .ty{font-size:11px;color:var(--text3);margin-left:6px}
+.sub .sh .sp{margin-left:auto;color:var(--text2)}
+.sub .fill{background:#85b7eb}
+html[data-theme="dark"] .sub .fill{background:#34577a}
+.pickup-hi{background:var(--info-bg);border-radius:var(--radius-s);padding:10px 12px;margin-bottom:16px}
+.pickup-hi .pl{font-size:12px;color:var(--info)}
+.pickup-hi .pv{font-size:20px;font-weight:600;color:var(--info)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="logo">🔥</span>
+    <div><div class="htitle">鍛刀録</div><div class="hsub">鍛刀の記録と集計</div></div>
+    <div class="hbtns"><button class="iconbtn" id="themeBtn" title="表示切替" aria-label="表示切替">🌙</button></div>
+  </header>
+  <nav class="tabs" id="tabs">
+    <button class="tab" data-tab="shukei">📊 集計</button>
+    <button class="tab" data-tab="kiroku">🔥 記録</button>
+    <button class="tab" data-tab="tantouchu">⏳ 鍛刀中<span class="badge" id="trayBadge" style="display:none"></span></button>
+    <button class="tab" data-tab="rireki">📜 履歴</button>
+    <button class="tab" data-tab="settei">⚙ 設定</button>
+  </nav>
+  <main id="view"></main>
+</div>
+
+<div class="overlay" id="pickerOverlay">
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="男士を選ぶ">
+    <div class="sheet-head"><h3 id="pickerTitle">男士を選ぶ</h3>
+      <input class="sheet-search" id="pickerSearch" placeholder="名前・読みで検索" autocomplete="off"></div>
+    <div class="sheet-body" id="pickerList"></div>
+    <div class="sheet-foot"><button class="btn ghost" id="pickerCancel">閉じる</button></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* =========================================================================
+   男士マスタ（仮データ）— あとで本物のマスタに差し替え
+   [番号, 名前, 読み, 刀種, レア, 規定鍛刀時間("H:MM:SS" / 不明は"")]
+   ========================================================================= */
+const TANTOU_MASTER_SEED = [
+  [1,"今剣","いまのつるぎ","短刀",2,""],[2,"厚藤四郎","あつしとうしろう","短刀",3,""],
+  [3,"乱藤四郎","みだれとうしろう","短刀",3,""],[4,"平野藤四郎","ひらのとうしろう","短刀",4,""],
+  [5,"五虎退","ごこたい","短刀",3,""],[6,"前田藤四郎","まえだとうしろう","短刀",3,""],
+  [7,"薬研藤四郎","やげんとうしろう","短刀",3,""],[8,"鯰尾藤四郎","なまずおとうしろう","脇差",3,""],
+  [9,"堀川国広","ほりかわくにひろ","脇差",3,""],[10,"浦島虎徹","うらしまこてつ","脇差",4,""],
+  [11,"にっかり青江","にっかりあおえ","脇差",4,""],[12,"加州清光","かしゅうきよみつ","打刀",3,""],
+  [13,"大和守安定","やまとのかみやすさだ","打刀",3,""],[14,"山姥切国広","やまんばぎりくにひろ","打刀",4,""],
+  [15,"歌仙兼定","かせんかねさだ","打刀",3,""],[16,"和泉守兼定","いずみのかみかねさだ","打刀",3,""],
+  [17,"蜂須賀虎徹","はちすかこてつ","打刀",4,""],[18,"陸奥守吉行","むつのかみよしゆき","打刀",4,""],
+  [19,"へし切長谷部","へしきりはせべ","打刀",4,""],[20,"豊前江","ぶぜんごう","打刀",3,""],
+  [21,"篭手切江","こてぎりごう","打刀",3,""],[22,"松井江","まついごう","打刀",3,""],
+  [23,"桑名江","くわなごう","打刀",3,""],[24,"同田貫正国","どうだぬきまさくに","太刀",3,""],
+  [25,"大般若長光","だいはんにゃながみつ","太刀",4,""],[26,"三日月宗近","みかづきむねちか","太刀",5,""],
+  [27,"鶴丸国永","つるまるくになが","太刀",5,""],[28,"髭切","ひげきり","太刀",5,""],
+  [29,"膝丸","ひざまる","太刀",5,""],[30,"蜻蛉切","とんぼきり","槍",4,""],
+];
+const MASTER = TANTOU_MASTER_SEED.map(a=>({no:a[0],mei:a[1],yomi:a[2],type:a[3],rarity:a[4],time:a[5]}));
+const MASTER_BY_MEI = Object.fromEntries(MASTER.map(m=>[m.mei,m]));
+const TYPE_ORDER = ["短刀","脇差","打刀","太刀","大太刀","槍","薙刀","剣","弓","銃","その他"];
+function typeRank(t){const i=TYPE_ORDER.indexOf(t);return i<0?99:i;}
+function stars(n){return "★".repeat(n||0);}
+const FUDA={none:"なし",fuji:"富士",matsu:"松",take:"竹",ume:"梅"};
+const FUDA_CLS={fuji:"f-fuji",matsu:"f-matsu",take:"f-take",ume:"f-ume"};
+const FORGE_DEFAULTS=["第一鍛刀場","第二鍛刀場","第三鍛刀場","第四鍛刀場"];
+
+/* =========================== 状態 =========================== */
+const LS_DATA="tantouroku_v1",LS_TAB="tantouroku_tab",LS_THEME="tantouroku_theme";
+let DB=load();
+function load(){
+  let r=null; try{r=JSON.parse(localStorage.getItem(LS_DATA));}catch(e){}
+  if(!r||!Array.isArray(r.batches)) r={batches:[]};
+  if(!Array.isArray(r.wishlist)) r.wishlist=[];
+  if(!r.settings) r.settings={trayShowAll:false,notify:false};
+  r.batches.forEach(b=>{
+    if(b.forgeName===undefined) b.forgeName="";
+    if(b.startTime===undefined) b.startTime="";
+    if(b.eventStart===undefined) b.eventStart="";
+    if(b.eventEnd===undefined) b.eventEnd="";
+    (b.slots||[]).forEach(s=>{
+      if(s.observedSec===undefined){ s.observedSec=null; }
+      if(s.rushed===undefined) s.rushed=false;
+      if(s.notified===undefined) s.notified=false;
+      delete s.observed;
+    });
+  });
+  return r;
+}
+function save(){try{localStorage.setItem(LS_DATA,JSON.stringify(DB));}catch(e){alert("保存に失敗しました。容量をご確認ください。");}}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+function nowISO(){return new Date().toISOString();}
+function activeBatches(){return DB.batches.filter(b=>!b.deleted);}
+function forgingBatches(){return activeBatches().filter(b=>b.state==="forging");}
+
+/* =========================== ユーティリティ =========================== */
+function el(html){const t=document.createElement("template");t.innerHTML=html.trim();return t.content.firstChild;}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function pad2(n){return String(n).padStart(2,"0");}
+function fmtDateTime(iso){if(!iso)return"";const m=iso.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);return m?`${m[1]}/${m[2]}/${m[3]} ${m[4]}:${m[5]}`:iso;}
+function fmtDateOnly(d){if(!d)return"";const m=d.match(/^(\d{4})-(\d{2})-(\d{2})/);return m?`${m[1]}/${m[2]}/${m[3]}`:d;}
+function todayLocalDate(){const d=new Date();return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;}
+function nowLocalTime(){const d=new Date();return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;}
+function nowLocalDateTime(){return `${todayLocalDate()}T${nowLocalTime()}`;}
+function fmtDur(sec){sec=Math.max(0,Math.floor(sec));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return h>0?`${h}:${pad2(m)}:${pad2(s)}`:`${pad2(m)}:${pad2(s)}`;}
+function fmtClock(ms){const d=new Date(ms),now=new Date();const t=`${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+  if(d.toDateString()===now.toDateString())return t;
+  const tm=new Date(now);tm.setDate(now.getDate()+1);
+  if(d.toDateString()===tm.toDateString())return"翌 "+t;
+  return `${d.getMonth()+1}/${d.getDate()} ${t}`;}
+
+/* =========================== 記録フォーム =========================== */
+let form=blankForm();
+function blankForm(){return {editingId:null,date:todayLocalDate(),time:nowLocalTime(),mode:"normal",pickup:"",
+  eventStart:"",eventEnd:"",recipe:{charcoal:"",steel:"",coolant:"",whetstone:""},fuda:"none",count:1,
+  results:[{mei:"",qty:1}]};}
+function resultsTotal(){return form.results.reduce((s,r)=>s+(r.mei?(r.qty||0):0),0);}
+
+/* =========================== ルーティング =========================== */
+const VIEW=document.getElementById("view");
+let currentTab=localStorage.getItem(LS_TAB)||"kiroku";
+function setTab(t){currentTab=t;localStorage.setItem(LS_TAB,t);render();}
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.tab)));
+function render(scrollTop=true){
+  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===currentTab));
+  const pend=forgingBatches().length;const badge=document.getElementById("trayBadge");
+  badge.style.display=pend?"inline-block":"none";badge.textContent=pend;
+  if(currentTab==="kiroku")renderKiroku();
+  else if(currentTab==="rireki")renderRireki();
+  else if(currentTab==="tantouchu")renderTantouchu();
+  else if(currentTab==="shukei")renderShukei();
+  else if(currentTab==="settei")renderSettei();
+  if(scrollTop)window.scrollTo(0,0);
+}
+
+/* =========================== 記録タブ =========================== */
+function renderKiroku(){
+  VIEW.innerHTML="";const editing=!!form.editingId;
+  const card=el(`<div class="card"></div>`);
+  if(editing){
+    const b=el(`<div class="editbanner"><span>✎ 編集中です。保存すると上書きされます。</span></div>`);
+    const c=el(`<button class="linkbtn" style="margin-left:auto">編集をやめる</button>`);
+    c.onclick=()=>{form=blankForm();render();};b.appendChild(c);card.appendChild(b);
+  }
+  card.appendChild(el(`<div style="font-size:15px;font-weight:600;margin-bottom:16px">${editing?"鍛刀を編集":"鍛刀を記録"}</div>`));
+
+  const top=el(`<div class="grid2 row"></div>`);
+  const dcol=el(`<div></div>`);dcol.appendChild(el(`<label class="lbl">鍛刀日時</label>`));
+  const dwrap=el(`<div style="display:flex;gap:7px"></div>`);
+  const di=el(`<input type="date" style="flex:1">`);di.value=form.date;di.onchange=()=>form.date=di.value;
+  const ti=el(`<input type="time" style="width:96px">`);ti.value=form.time;ti.onchange=()=>form.time=ti.value;
+  dwrap.append(di,ti);dcol.appendChild(dwrap);top.appendChild(dcol);
+  const mcol=el(`<div></div>`);mcol.appendChild(el(`<label class="lbl">種別</label>`));
+  const seg=el(`<div class="seg"></div>`);const bn=el(`<button>通常</button>`),be=el(`<button>イベント</button>`);
+  bn.classList.toggle("on",form.mode==="normal");be.classList.toggle("on",form.mode==="event");
+  bn.onclick=()=>{form.mode="normal";renderKiroku();};be.onclick=()=>{form.mode="event";renderKiroku();};
+  seg.append(bn,be);mcol.appendChild(seg);top.appendChild(mcol);card.appendChild(top);
+
+  if(form.mode==="event"){
+    const eb=el(`<div class="eventbox row"></div>`);
+    eb.appendChild(el(`<label class="lbl">⭐ 目玉男士（このイベントの目玉を選ぶ）</label>`));
+    const pk=el(`<button class="pick ${form.pickup?"":"empty"}"></button>`);
+    pk.innerHTML=form.pickup?`${esc(form.pickup)}<span class="ar">▾</span>`:`選択してください<span class="ar">▾</span>`;
+    pk.onclick=()=>openPicker("目玉男士を選ぶ",mei=>{form.pickup=mei;renderKiroku();});
+    eb.appendChild(pk);
+    eb.appendChild(el(`<label class="lbl" style="margin-top:11px">イベント期間</label>`));
+    const pw=el(`<div style="display:flex;gap:8px;align-items:center"></div>`);
+    const es=el(`<input type="date" style="flex:1">`);es.value=form.eventStart;es.onchange=()=>form.eventStart=es.value;
+    const ee=el(`<input type="date" style="flex:1">`);ee.value=form.eventEnd;ee.onchange=()=>form.eventEnd=ee.value;
+    pw.append(es,el(`<span style="color:var(--info)">〜</span>`),ee);eb.appendChild(pw);
+    card.appendChild(eb);
+  }else{
+    const sb=el(`<div class="sakurabox row"></div>`);
+    sb.appendChild(el(`<label class="lbl">🌸 お迎え男士（お迎えしたい子を選ぶ・共通）</label>`));
+    const chips=el(`<div class="pills" style="margin-bottom:9px"></div>`);
+    if(!DB.wishlist.length) chips.appendChild(el(`<span class="note">まだ登録がありません。</span>`));
+    DB.wishlist.forEach(mei=>{
+      const c=el(`<span class="chip">🌸 ${esc(mei)}</span>`);
+      const x=el(`<button class="x" title="外す">×</button>`);
+      x.onclick=()=>{DB.wishlist=DB.wishlist.filter(w=>w!==mei);save();renderKiroku();};
+      c.appendChild(x);chips.appendChild(c);
+    });
+    sb.appendChild(chips);
+    const add=el(`<button class="addbtn">＋ お迎え男士を追加</button>`);
+    add.onclick=()=>openPicker("お迎え男士を追加",mei=>{if(!DB.wishlist.includes(mei)){DB.wishlist.push(mei);save();}renderKiroku();});
+    sb.appendChild(add);card.appendChild(sb);
+  }
+
+  const rc=el(`<div class="row"></div>`);rc.appendChild(el(`<label class="lbl">レシピ</label>`));
+  const grid=el(`<div class="recipe"></div>`);
+  [["charcoal","木炭"],["steel","玉鋼"],["coolant","冷却材"],["whetstone","砥石"]].forEach(([k,lab])=>{
+    const cell=el(`<div class="cell"></div>`);const inp=el(`<input class="txt" inputmode="numeric" maxlength="4">`);
+    inp.value=form.recipe[k];
+    inp.oninput=()=>{const v=inp.value.replace(/[^0-9]/g,"").slice(0,4);form.recipe[k]=v;if(inp.value!==v)inp.value=v;};
+    cell.appendChild(inp);cell.appendChild(el(`<div class="cap">${lab}</div>`));grid.appendChild(cell);
+  });
+  rc.appendChild(grid);card.appendChild(rc);
+
+  const fr=el(`<div class="row" style="display:grid;grid-template-columns:1fr;gap:15px"></div>`);
+  const fcol=el(`<div></div>`);fcol.appendChild(el(`<label class="lbl">お札</label>`));
+  const pills=el(`<div class="pills"></div>`);
+  Object.keys(FUDA).forEach(k=>{const cls=k==="none"?"":("fuda-"+k);
+    const p=el(`<button class="pill ${cls} ${form.fuda===k?"on":""}">${FUDA[k]}</button>`);
+    p.onclick=()=>{form.fuda=k;renderKiroku();};pills.appendChild(p);});
+  fcol.appendChild(pills);fr.appendChild(fcol);
+  const ccol=el(`<div></div>`);ccol.appendChild(el(`<label class="lbl">鍛刀数</label>`));
+  const st=el(`<div class="stepper"></div>`);
+  const m10=el(`<button title="−10">−10</button>`),m1=el(`<button>−</button>`),val=el(`<span class="val">${form.count}</span>`),p1=el(`<button>＋</button>`),p10=el(`<button title="+10">+10</button>`);
+  m10.onclick=()=>{form.count=1;renderKiroku();};
+  m1.onclick=()=>{form.count=Math.max(1,form.count-1);renderKiroku();};
+  p1.onclick=()=>{form.count=Math.min(10,form.count+1);renderKiroku();};
+  p10.onclick=()=>{form.count=10;renderKiroku();};
+  st.append(m10,m1,val,p1,p10);ccol.appendChild(st);
+  ccol.appendChild(el(`<span class="note" style="margin-left:10px">最大10（十連）</span>`));
+  fr.appendChild(ccol);card.appendChild(fr);
+
+  const total=resultsTotal(),okSum=total===form.count;
+  const rh=el(`<div class="res-head"></div>`);
+  rh.appendChild(el(`<span class="lbl" style="margin:0">結果<span style="color:var(--text3)">　男士ごとに数を入れる</span></span>`));
+  rh.appendChild(el(`<span class="sum ${okSum?"ok":"bad"}">${total} / ${form.count} 振${okSum?" ✓":""}</span>`));
+  card.appendChild(rh);
+  const list=el(`<div></div>`);
+  form.results.forEach((r,idx)=>{
+    const row=el(`<div class="resrow"></div>`);const m=r.mei?MASTER_BY_MEI[r.mei]:null;
+    const pk=el(`<button class="pick ${r.mei?"":"empty"}"></button>`);
+    pk.innerHTML=r.mei?`${esc(r.mei)}${m?`<span class="ty">${m.type} ${stars(m.rarity)}</span>`:""}<span class="ar">▾</span>`:`選択してください<span class="ar">▾</span>`;
+    pk.onclick=()=>openPicker("男士を選ぶ",mei=>{r.mei=mei;renderKiroku();});
+    row.appendChild(pk);
+    if(form.mode==="event"&&r.mei&&r.mei===form.pickup)row.appendChild(el(`<span class="tag star">★目玉</span>`));
+    if(DB.wishlist.includes(r.mei))row.appendChild(el(`<span class="tag" style="background:var(--sakura-bg);color:var(--sakura)">🌸</span>`));
+    const reg=m&&m.time?`規定 ${m.time}`:(r.mei?"規定 —":"—");
+    row.appendChild(el(`<span class="regtime">${reg}</span>`));
+    const qs=el(`<div class="stepper"></div>`);
+    const qm=el(`<button>−</button>`),qv=el(`<span class="val">${r.qty}</span>`),qp=el(`<button>＋</button>`);
+    qm.onclick=()=>{r.qty=Math.max(1,(r.qty||1)-1);renderKiroku();};
+    qp.onclick=()=>{r.qty=Math.min(10,(r.qty||1)+1);renderKiroku();};
+    qs.append(qm,qv,qp);row.appendChild(qs);
+    const x=el(`<button class="xbtn" title="削除">×</button>`);
+    x.onclick=()=>{form.results.splice(idx,1);if(!form.results.length)form.results.push({mei:"",qty:1});renderKiroku();};
+    row.appendChild(x);list.appendChild(row);
+  });
+  card.appendChild(list);
+  if(total<form.count&&total>0)
+    card.appendChild(el(`<div class="note" style="margin:2px 0 10px">あと ${form.count-total} 振ぶん未入力です。</div>`));
+  const add=el(`<button class="addbtn">＋ 男士を追加</button>`);
+  add.onclick=()=>{form.results.push({mei:"",qty:1});renderKiroku();};
+  card.appendChild(add);
+
+  const act=el(`<div class="actions"></div>`);
+  const sf=el(`<button class="btn ghost">⏳ 鍛刀中として保存</button>`);sf.onclick=()=>submit("forging");
+  const sd=el(`<button class="btn primary">✓ 完了として登録</button>`);
+  sd.disabled=!okSum||form.results.some(r=>r.qty&&!r.mei)||total===0;sd.onclick=()=>submit("done");
+  act.append(sf,sd);card.appendChild(act);
+  if(!okSum&&total>0)card.appendChild(el(`<div class="note" style="text-align:right;margin-top:6px">完了登録は合計を鍛刀数（${form.count}）に合わせてください。</div>`));
+  VIEW.appendChild(card);
+}
+
+function buildSlots(state){
+  const slots=[];
+  form.results.forEach(r=>{if(r.mei){for(let i=0;i<(r.qty||0);i++){const m=MASTER_BY_MEI[r.mei];
+    slots.push({id:uid(),mei:r.mei,time:m&&m.time?m.time:"",observedSec:null,rushed:false,notified:false});}}});
+  if(state==="forging"){while(slots.length<form.count)slots.push({id:uid(),mei:null,time:"",observedSec:null,rushed:false,notified:false});}
+  return slots.slice(0,Math.max(form.count,slots.length));
+}
+function submit(state){
+  if(!form.recipe.charcoal&&!form.recipe.steel&&!form.recipe.coolant&&!form.recipe.whetstone){
+    if(!confirm("レシピが空欄です。このまま保存しますか？"))return;}
+  const datetime=form.date&&form.time?`${form.date}T${form.time}`:(form.date?`${form.date}T00:00`:"");
+  const exist=form.editingId?DB.batches.find(b=>b.id===form.editingId):null;
+  const batch={id:form.editingId||uid(),createdAt:exist?exist.createdAt:nowISO(),updatedAt:nowISO(),deleted:false,
+    datetime,mode:form.mode,pickup:form.mode==="event"?form.pickup:"",
+    eventStart:form.mode==="event"?form.eventStart:"",eventEnd:form.mode==="event"?form.eventEnd:"",
+    recipe:{charcoal:+form.recipe.charcoal||0,steel:+form.recipe.steel||0,coolant:+form.recipe.coolant||0,whetstone:+form.recipe.whetstone||0},
+    fuda:form.fuda,count:form.count,state,slots:buildSlots(state),
+    forgeName:exist&&exist.forgeName?exist.forgeName:(state==="forging"?freeForgeName():""),
+    startTime:exist&&exist.startTime?exist.startTime:(state==="forging"?nowLocalDateTime():"")};
+  if(form.editingId){const i=DB.batches.findIndex(b=>b.id===form.editingId);if(i>=0)DB.batches[i]=batch;else DB.batches.push(batch);}
+  else DB.batches.push(batch);
+  save();form=blankForm();setTab(state==="done"?"rireki":"tantouchu");
+}
+function freeForgeName(){const used=new Set(forgingBatches().map(b=>b.forgeName));return FORGE_DEFAULTS.find(n=>!used.has(n))||FORGE_DEFAULTS[0];}
+function loadIntoForm(b){
+  const counts={};(b.slots||[]).forEach(s=>{if(s.mei)counts[s.mei]=(counts[s.mei]||0)+1;});
+  const results=Object.keys(counts).map(mei=>({mei,qty:counts[mei]}));
+  const dt=(b.datetime||"").match(/^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})/);
+  form={editingId:b.id,date:dt?dt[1]:todayLocalDate(),time:dt?dt[2]:nowLocalTime(),mode:b.mode||"normal",pickup:b.pickup||"",
+    eventStart:b.eventStart||"",eventEnd:b.eventEnd||"",
+    recipe:{charcoal:String(b.recipe.charcoal||""),steel:String(b.recipe.steel||""),coolant:String(b.recipe.coolant||""),whetstone:String(b.recipe.whetstone||"")},
+    fuda:b.fuda||"none",count:b.count||1,results:results.length?results:[{mei:"",qty:1}]};
+  setTab("kiroku");
+}
+
+/* =========================== 共有表示 =========================== */
+function batchTags(b){let h="";
+  h+=b.mode==="event"?`<span class="tag event">イベント</span>`:`<span class="tag normal">通常</span>`;
+  if(b.mode==="event"&&b.pickup)h+=`<span class="tag">⭐ 目玉：${esc(b.pickup)}</span>`;
+  if(b.fuda&&b.fuda!=="none")h+=`<span class="tag ${FUDA_CLS[b.fuda]||""}">${FUDA[b.fuda]}</span>`;
+  h+=`<span class="tag">${b.count}連</span>`;return h;}
+function recipeTxt(r){return `${r.charcoal} / ${r.steel} / ${r.coolant} / ${r.whetstone}`;}
+function resultSummary(b){const counts={};(b.slots||[]).forEach(s=>{if(s.mei)counts[s.mei]=(counts[s.mei]||0)+1;});
+  const keys=Object.keys(counts).sort((a,c)=>counts[c]-counts[a]);
+  if(!keys.length)return `<span style="color:var(--text3)">結果未入力</span>`;
+  return keys.map(m=>`<span class="mei">${esc(m)}</span>×${counts[m]}`).join("　");}
+
+/* =========================== 履歴タブ =========================== */
+function renderRireki(){
+  VIEW.innerHTML="";
+  const done=activeBatches().filter(b=>b.state==="done").sort((a,b)=>(b.datetime||"").localeCompare(a.datetime||""));
+  if(!done.length){VIEW.appendChild(el(`<div class="card"><div class="empty">まだ記録がありません。<br>「🔥 記録」から鍛刀を登録すると、ここに残ります。</div></div>`));return;}
+  const card=el(`<div class="card"></div>`);
+  card.appendChild(el(`<div style="font-size:15px;font-weight:600;margin-bottom:14px">履歴（${done.length}件）</div>`));
+  done.forEach(b=>{
+    const c=el(`<div class="bcard"></div>`);const head=el(`<div class="bhead"></div>`);
+    head.appendChild(el(`<span class="recipe-txt">${recipeTxt(b.recipe)}</span>`));
+    head.appendChild(el(`<span style="display:contents">${batchTags(b)}</span>`));
+    head.appendChild(el(`<span class="when">${fmtDateTime(b.datetime)}</span>`));
+    c.appendChild(head);
+    if(b.mode==="event"&&(b.eventStart||b.eventEnd))
+      c.appendChild(el(`<div class="note" style="margin-top:5px">期間：${fmtDateOnly(b.eventStart)||"?"} 〜 ${fmtDateOnly(b.eventEnd)||"?"}</div>`));
+    c.appendChild(el(`<div class="bres">${resultSummary(b)}</div>`));
+    const act=el(`<div class="brow-actions"></div>`);
+    const ed=el(`<button class="linkbtn">✎ 編集</button>`);ed.onclick=()=>loadIntoForm(b);
+    const dl=el(`<button class="linkbtn del">🗑 削除</button>`);dl.onclick=()=>{if(confirm("この記録を削除しますか？")){b.deleted=true;b.updatedAt=nowISO();save();render();}};
+    act.append(ed,dl);c.appendChild(act);card.appendChild(c);
+  });
+  VIEW.appendChild(card);
+}
+
+/* =========================== 鍛刀中トレイ =========================== */
+let traySort=localStorage.getItem("tantouroku_traysort")||"time"; // time | name
+let trayOpen=new Set();
+let trayRefs=[]; // {batch, slot, idx, el(span), lastKind}
+
+function startMs(b){const t=b.startTime||b.createdAt;const d=new Date(t);return isNaN(d)?Date.now():d.getTime();}
+function slotState(b,s){
+  if(s.mei)return {kind:"confirmed"};
+  if(s.observedSec==null&&!s.rushed)return {kind:"await"};
+  if(s.rushed)return {kind:"ready",comp:Date.now()};
+  const comp=startMs(b)+s.observedSec*1000;
+  if(Date.now()>=comp)return {kind:"ready",comp};
+  return {kind:"counting",comp,rem:comp-Date.now()};
+}
+function forgeHeaderInfo(b){
+  let anyCount=false,maxComp=0,anyReady=false,allConfirmed=true;
+  (b.slots||[]).forEach(s=>{const st=slotState(b,s);
+    if(st.kind!=="confirmed")allConfirmed=false;
+    if(st.kind==="counting"){anyCount=true;if(st.comp>maxComp)maxComp=st.comp;}
+    if(st.kind==="ready"){anyReady=true;if(st.comp>maxComp)maxComp=st.comp;}
+  });
+  if(anyCount)return {cls:"counting",text:`⏱ 最遅 残り ${fmtDur((maxComp-Date.now())/1000)}`,sub:`${fmtClock(maxComp)} 全完成`};
+  if(anyReady)return {cls:"ready",text:"受取待ち（完成）",sub:""};
+  if(allConfirmed&&b.slots.length)return {cls:"ready",text:"全て確定済み",sub:""};
+  return {cls:"await",text:"観測時間 未入力",sub:""};
+}
+function confirmedCount(b){return (b.slots||[]).filter(s=>s.mei).length;}
+function forgeSortKey(b){
+  const info=forgeHeaderInfo(b);
+  if(info.cls==="ready")return [0,0];
+  if(info.cls==="counting"){let mc=0;(b.slots||[]).forEach(s=>{const st=slotState(b,s);if(st.kind==="counting"&&st.comp>mc)mc=st.comp;});return [1,mc];}
+  return [2,0];
+}
+
+function renderTantouchu(){
+  VIEW.innerHTML="";trayRefs=[];
+  let forges=forgingBatches();
+  if(traySort==="name")forges=forges.slice().sort((a,b)=>(a.forgeName||"").localeCompare(b.forgeName||"","ja"));
+  else forges=forges.slice().sort((a,b)=>{const ka=forgeSortKey(a),kb=forgeSortKey(b);return ka[0]-kb[0]||ka[1]-kb[1];});
+
+  const card=el(`<div class="card"></div>`);
+  card.appendChild(el(`<div style="font-size:15px;font-weight:600;margin-bottom:4px"><span>🔥 鍛刀中（使用中 ${forges.length} 枠）</span></div>`));
+  card.appendChild(el(`<p class="note" style="margin:0 0 14px">観測時間（ゲームに出た鍛刀時間）を入れると、開始時刻から完成予定を逆算してカウントダウンします。待たずに片付けるときは手伝い札で即完成。</p>`));
+
+  const tb=el(`<div class="toolbar"></div>`);
+  tb.appendChild(el(`<span class="note">並び替え</span>`));
+  const ss=el(`<div class="sortseg"></div>`);
+  const stime=el(`<button>残り時間順</button>`),sname=el(`<button>名前順</button>`);
+  stime.classList.toggle("on",traySort==="time");sname.classList.toggle("on",traySort==="name");
+  stime.onclick=()=>{traySort="time";localStorage.setItem("tantouroku_traysort","time");renderTantouchu();};
+  sname.onclick=()=>{traySort="name";localStorage.setItem("tantouroku_traysort","name");renderTantouchu();};
+  ss.append(stime,sname);tb.appendChild(ss);card.appendChild(tb);
+
+  if(!forges.length)card.appendChild(el(`<div class="empty">鍛刀中の記録はありません。<br>「🔥 記録」で「鍛刀中として保存」すると、ここに鍛刀場として並びます。</div>`));
+  forges.forEach(b=>card.appendChild(forgeCard(b)));
+
+  if(DB.settings.trayShowAll){
+    const used=new Set(forges.map(b=>b.forgeName));
+    FORGE_DEFAULTS.filter(n=>!used.has(n)).forEach(n=>{
+      card.appendChild(el(`<div class="bcard" style="opacity:.6"><div class="bhead"><span class="fname" style="font-size:14px;font-weight:600">${n}</span><span class="note" style="margin-left:auto">空き</span></div></div>`));
+    });
+  }
+  VIEW.appendChild(card);
+}
+
+function forgeCard(b){
+  const open=trayOpen.has(b.id);
+  const info=forgeHeaderInfo(b);const cc=confirmedCount(b);
+  const fc=el(`<div class="forge ${open?"open":""}"></div>`);
+
+  const head=el(`<div class="fhead"></div>`);
+  const top=el(`<div class="fhead-top"></div>`);
+  top.appendChild(el(`<span style="font-size:15px;color:var(--text2)">${open?"▾":"▸"}</span>`));
+  top.appendChild(el(`<span class="fname">${esc(b.forgeName||"鍛刀場")}</span>`));
+  top.appendChild(el(`<span style="display:contents">${batchTags(b)}</span>`));
+  head.appendChild(top);
+  const sub=el(`<div class="fhead-sub"></div>`);
+  const cd=el(`<span class="cd ${info.cls}">${info.text}</span>`);
+  sub.appendChild(cd);
+  if(info.sub)sub.appendChild(el(`<span class="note">${info.sub}</span>`));
+  sub.appendChild(el(`<span style="margin-left:auto;font-size:12px;color:var(--text2)">${cc} / ${b.count} 確定</span>`));
+  head.appendChild(sub);
+  head.onclick=()=>{if(open)trayOpen.delete(b.id);else trayOpen.add(b.id);renderTantouchu();};
+  fc.appendChild(head);
+
+  if(open){
+    const body=el(`<div class="fbody"></div>`);
+    body.onclick=e=>e.stopPropagation();
+
+    const fe=el(`<div class="fname-edit"></div>`);
+    fe.appendChild(el(`<span class="note">鍛刀場名</span>`));
+    const ni=el(`<input class="txt" style="width:150px" maxlength="20">`);ni.value=b.forgeName||"";
+    ni.onchange=()=>{b.forgeName=ni.value.trim()||b.forgeName;b.updatedAt=nowISO();save();renderTantouchu();};
+    fe.appendChild(ni);
+    const rs=el(`<button class="linkbtn">第○鍛刀場に戻す</button>`);
+    rs.onclick=()=>{b.forgeName=freeForgeName();b.updatedAt=nowISO();save();renderTantouchu();};
+    fe.appendChild(rs);
+    body.appendChild(fe);
+
+    const se=el(`<div class="fname-edit" style="margin-top:-2px"></div>`);
+    se.appendChild(el(`<span class="note">開始時刻</span>`));
+    const si=el(`<input type="datetime-local" style="width:210px">`);si.value=b.startTime||nowLocalDateTime();
+    si.onchange=()=>{b.startTime=si.value;b.updatedAt=nowISO();save();renderTantouchu();};
+    se.appendChild(si);body.appendChild(se);
+
+    (b.slots||[]).forEach((s,i)=>body.appendChild(slotRow(b,s,i)));
+
+    const foot=el(`<div class="ffoot"></div>`);
+    const remain=(b.slots||[]).filter(s=>!s.mei).length;
+    if(remain){
+      const tf=el(`<button class="btn tetsu">🎴 手伝い札で残り${remain}振を完成</button>`);
+      tf.onclick=()=>{(b.slots||[]).forEach(s=>{if(!s.mei)s.rushed=true;});b.updatedAt=nowISO();save();renderTantouchu();};
+      foot.appendChild(tf);
+    }
+    const allDone=(b.slots||[]).length&&(b.slots||[]).every(s=>s.mei);
+    const done=el(`<button class="btn primary">✓ 全部確定して完了へ</button>`);done.disabled=!allDone;
+    done.onclick=()=>{b.state="done";b.updatedAt=nowISO();save();setTab("rireki");};
+    foot.appendChild(done);
+    const dl=el(`<button class="btn ghost">🗑 削除</button>`);
+    dl.onclick=()=>{if(confirm("この鍛刀場の記録を削除しますか？")){b.deleted=true;b.updatedAt=nowISO();trayOpen.delete(b.id);save();renderTantouchu();}};
+    foot.appendChild(dl);
+    body.appendChild(foot);
+    fc.appendChild(body);
+  }
+  return fc;
+}
+
+function slotRow(b,s,i){
+  const st=slotState(b,s);const row=el(`<div class="slot"></div>`);
+  row.appendChild(el(`<span class="sn">${i+1}振</span>`));
+
+  if(s.mei){
+    row.appendChild(el(`<span class="confirmed">✓ 確定</span>`));
+    const m=MASTER_BY_MEI[s.mei];
+    const md=el(`<span class="mei-done">${esc(s.mei)}${m?`<span class="ty" style="font-size:11px;color:var(--text3);margin-left:6px">${m.type} ${stars(m.rarity)}</span>`:""}</span>`);
+    if(b.mode==="event"&&s.mei===b.pickup)md.appendChild(el(`<span class="tag star" style="margin-left:6px">★目玉</span>`));
+    if(DB.wishlist.includes(s.mei))md.appendChild(el(`<span class="tag" style="margin-left:6px;background:var(--sakura-bg);color:var(--sakura)">🌸</span>`));
+    row.appendChild(md);
+    const un=el(`<button class="linkbtn">取消</button>`);un.onclick=()=>{s.mei=null;b.updatedAt=nowISO();save();renderTantouchu();};
+    row.appendChild(un);
+    return row;
+  }
+
+  // 観測時間 ステッパー（時 / 分10分刻み）
+  const sec=s.observedSec||0;const h=Math.floor(sec/3600),mn=Math.floor(sec%3600/60);
+  const obs=el(`<span class="obs"></span>`);
+  const hstep=el(`<span class="ministep"></span>`);
+  const hm=el(`<button>−</button>`),hv=el(`<span class="v">${h}</span>`),hp=el(`<button>＋</button>`);
+  hm.onclick=()=>setObs(b,s,Math.max(0,h-1),mn);hp.onclick=()=>setObs(b,s,Math.min(23,h+1),mn);
+  hstep.append(hm,hv,hp);
+  const mstep=el(`<span class="ministep"></span>`);
+  const mm=el(`<button>−</button>`),mv=el(`<span class="v">${pad2(mn)}</span>`),mp=el(`<button>＋</button>`);
+  mm.onclick=()=>setObs(b,s,h,Math.max(0,mn-10));mp.onclick=()=>setObs(b,s,h,Math.min(50,mn+10));
+  mstep.append(mm,mv,mp);
+  obs.append(el(`<span class="u">時</span>`),hstep,el(`<span class="u">分</span>`),mstep);
+  row.appendChild(obs);
+
+  // 状態・カウントダウン
+  const scd=el(`<span class="scd"></span>`);
+  if(st.kind==="await")scd.innerHTML=`<span class="cd await">時間未入力</span>`;
+  else if(st.kind==="ready")scd.innerHTML=`<span class="cd ready">✓ 受取待ち</span>`;
+  else scd.innerHTML=`<span class="cd counting">残り ${fmtDur(st.rem/1000)}</span><br><span class="note">${fmtClock(st.comp)}完成</span>`;
+  row.appendChild(scd);
+  trayRefs.push({b,s,el:scd});
+
+  // 男士確定 or 手伝い札
+  const ready=(st.kind==="ready");
+  if(ready){
+    const pk=el(`<button class="pick mini" style="flex:1">男士を確定 <span class="ar" style="margin-left:auto">▾</span></button>`);
+    pk.onclick=()=>openPicker("男士を確定",mei=>{s.mei=mei;b.updatedAt=nowISO();save();renderTantouchu();});
+    row.appendChild(pk);
+  }else{
+    row.appendChild(el(`<span style="flex:1"></span>`));
+    const tf=el(`<button class="tetsubtn">🎴 手伝い札</button>`);
+    tf.onclick=()=>{s.rushed=true;b.updatedAt=nowISO();save();renderTantouchu();};
+    row.appendChild(tf);
+  }
+  return row;
+}
+function setObs(b,s,h,mn){s.observedSec=h*3600+mn*60;b.updatedAt=nowISO();save();renderTantouchu();}
+
+/* 毎秒：カウントダウン更新（種別が変わったら再描画） */
+function trayTick(){
+  if(currentTab!=="tantouchu")return;
+  let needRe=false;
+  for(const r of trayRefs){const st=slotState(r.b,r.s);
+    if(st.kind==="counting"){r.el.innerHTML=`<span class="cd counting">残り ${fmtDur(st.rem/1000)}</span><br><span class="note">${fmtClock(st.comp)}完成</span>`;}
+    else{needRe=true;}
+    if(st.kind==="ready"&&!r.s.notified&&DB.settings.notify){fireNotify(r.b,r.s);r.s.notified=true;save();}
+  }
+  if(needRe)renderTantouchu();
+}
+function fireNotify(b,s){try{if(window.Notification&&Notification.permission==="granted")
+  new Notification("鍛刀完成",{body:`${b.forgeName||"鍛刀場"} の鍛刀が1振完成しました`});}catch(e){}}
+setInterval(trayTick,1000);
+
+/* =========================== 集計タブ =========================== */
+let shukeiView=localStorage.getItem("tantouroku_sview")||"recipe"; // recipe | mei
+let shukeiMergeFuda=localStorage.getItem("tantouroku_smerge")==="1";
+let shFilter={mode:"all",fuda:"all",from:"",to:""};
+let shSelRecipe=null, shSelMei=null;
+
+function dateOf(b){const m=(b.datetime||"").match(/^(\d{4}-\d{2}-\d{2})/);return m?m[1]:"";}
+function passFilter(b){
+  if(shFilter.mode!=="all"&&b.mode!==shFilter.mode)return false;
+  if(!shukeiMergeFuda&&shFilter.fuda!=="all"&&(b.fuda||"none")!==shFilter.fuda)return false;
+  const d=dateOf(b);
+  if(shFilter.from&&d&&d<shFilter.from)return false;
+  if(shFilter.to&&d&&d>shFilter.to)return false;
+  return true;
+}
+function recipeKey(b){const r=b.recipe;
+  return `${r.charcoal}/${r.steel}/${r.coolant}/${r.whetstone}__${b.mode}__${shukeiMergeFuda?"*":(b.fuda||"none")}`;}
+function doneSlots(){const out=[];
+  activeBatches().filter(b=>b.state==="done"&&passFilter(b)).forEach(b=>{
+    (b.slots||[]).forEach(s=>{if(s.mei)out.push({b,mei:s.mei});});});
+  return out;}
+
+function aggRecipes(){
+  const map={};
+  activeBatches().filter(b=>b.state==="done"&&passFilter(b)).forEach(b=>{
+    const k=recipeKey(b);
+    if(!map[k])map[k]={key:k,recipe:b.recipe,mode:b.mode,fuda:shukeiMergeFuda?null:(b.fuda||"none"),
+      trials:0,byMei:{},byType:{},pickups:{}};
+    const g=map[k];
+    if(b.mode==="event"&&b.pickup)g.pickups[b.pickup]=(g.pickups[b.pickup]||0)+1;
+    (b.slots||[]).forEach(s=>{if(!s.mei)return;
+      g.trials++;g.byMei[s.mei]=(g.byMei[s.mei]||0)+1;
+      const m=MASTER_BY_MEI[s.mei];const ty=m?m.type:"その他";
+      if(!g.byType[ty])g.byType[ty]={count:0,byMei:{}};
+      g.byType[ty].count++;g.byType[ty].byMei[s.mei]=(g.byType[ty].byMei[s.mei]||0)+1;});
+  });
+  return Object.values(map).filter(g=>g.trials>0).sort((a,b)=>b.trials-a.trials);
+}
+function aggMei(){
+  const map={};
+  doneSlots().forEach(({b,mei})=>{
+    if(!map[mei])map[mei]={mei,total:0,byRecipe:{}};
+    map[mei].total++;
+    const k=recipeKey(b);
+    if(!map[mei].byRecipe[k])map[mei].byRecipe[k]={recipe:b.recipe,mode:b.mode,fuda:shukeiMergeFuda?null:(b.fuda||"none"),count:0};
+    map[mei].byRecipe[k].count++;
+  });
+  return Object.values(map).sort((a,b)=>b.total-a.total||(MASTER_BY_MEI[b.mei]?0:1));
+}
+function recipeLabel(g){return `${g.recipe.charcoal} / ${g.recipe.steel} / ${g.recipe.coolant} / ${g.recipe.whetstone}`;}
+function recipeMetaTags(g){let h="";
+  h+=g.mode==="event"?`<span class="tag event">イベント</span>`:`<span class="tag normal">通常</span>`;
+  if(g.fuda!==null&&g.fuda!=="none")h+=`<span class="tag ${FUDA_CLS[g.fuda]||""}">${FUDA[g.fuda]}</span>`;
+  else if(g.fuda==="none")h+=`<span class="tag">お札なし</span>`;
+  return h;}
+function pct(n,d){return d?Math.round(n/d*1000)/10:0;}
+
+function renderShukei(){
+  VIEW.innerHTML="";
+  const card=el(`<div class="card"></div>`);
+
+  const head=el(`<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap"></div>`);
+  const sv=el(`<div class="sortseg"></div>`);
+  const rb=el(`<button>レシピ別</button>`),mb=el(`<button>男士別</button>`);
+  rb.classList.toggle("on",shukeiView==="recipe");mb.classList.toggle("on",shukeiView==="mei");
+  rb.onclick=()=>{shukeiView="recipe";localStorage.setItem("tantouroku_sview","recipe");renderShukei();};
+  mb.onclick=()=>{shukeiView="mei";localStorage.setItem("tantouroku_sview","mei");renderShukei();};
+  sv.append(rb,mb);head.appendChild(sv);
+  card.appendChild(head);
+
+  // 絞り込みバー
+  const fb=el(`<div class="toolbar" style="background:var(--surface2);border-radius:var(--radius-s);padding:10px 12px;margin-bottom:16px"></div>`);
+  fb.appendChild(el(`<span class="note">絞り込み</span>`));
+  const modeSel=el(`<select class="txt" style="width:auto;padding:6px 8px"><option value="all">種別：すべて</option><option value="normal">通常</option><option value="event">イベント</option></select>`);
+  modeSel.value=shFilter.mode;modeSel.onchange=()=>{shFilter.mode=modeSel.value;renderShukei();};
+  fb.appendChild(modeSel);
+  const fudaSel=el(`<select class="txt" style="width:auto;padding:6px 8px"><option value="all">お札：すべて</option><option value="none">なし</option><option value="fuji">富士</option><option value="matsu">松</option><option value="take">竹</option><option value="ume">梅</option></select>`);
+  fudaSel.value=shFilter.fuda;fudaSel.disabled=shukeiMergeFuda;fudaSel.onchange=()=>{shFilter.fuda=fudaSel.value;renderShukei();};
+  fb.appendChild(fudaSel);
+  const fromI=el(`<input type="date" style="width:auto">`);fromI.value=shFilter.from;fromI.onchange=()=>{shFilter.from=fromI.value;renderShukei();};
+  const toI=el(`<input type="date" style="width:auto">`);toI.value=shFilter.to;toI.onchange=()=>{shFilter.to=toI.value;renderShukei();};
+  fb.appendChild(el(`<span class="note">期間</span>`));fb.append(fromI,el(`<span class="note">〜</span>`),toI);
+  card.appendChild(fb);
+
+  // お札まとめトグル
+  const mt=el(`<div class="toolbar" style="margin-top:-6px"></div>`);
+  const ms=el(`<div class="sortseg"></div>`);
+  const sep=el(`<button>お札を分ける</button>`),mrg=el(`<button>お札をまとめる</button>`);
+  sep.classList.toggle("on",!shukeiMergeFuda);mrg.classList.toggle("on",shukeiMergeFuda);
+  sep.onclick=()=>{shukeiMergeFuda=false;localStorage.setItem("tantouroku_smerge","0");renderShukei();};
+  mrg.onclick=()=>{shukeiMergeFuda=true;localStorage.setItem("tantouroku_smerge","1");renderShukei();};
+  ms.append(sep,mrg);mt.appendChild(ms);
+  mt.appendChild(el(`<span class="note">レシピ値だけでまとめて見るときは「まとめる」</span>`));
+  card.appendChild(mt);
+
+  const hasDone=activeBatches().some(b=>b.state==="done");
+  if(!hasDone){card.appendChild(el(`<div class="empty">完了した記録がまだありません。<br>記録を「完了として登録」すると集計に出ます。</div>`));VIEW.appendChild(card);return;}
+
+  if(shukeiView==="recipe")renderShRecipe(card);
+  else renderShMei(card);
+  VIEW.appendChild(card);
+}
+
+function renderShRecipe(card){
+  const groups=aggRecipes();
+  if(!groups.length){card.appendChild(el(`<div class="empty">条件に合う記録がありません。絞り込みを見直してください。</div>`));return;}
+  if(!shSelRecipe||!groups.find(g=>g.key===shSelRecipe))shSelRecipe=groups[0].key;
+  const sel=groups.find(g=>g.key===shSelRecipe);
+
+  const grid=el(`<div class="agg-grid"></div>`);
+  const left=el(`<div></div>`);
+  left.appendChild(el(`<p class="rlist-lbl">レシピ一覧（試行回数順）</p>`));
+  groups.forEach(g=>{
+    const r=el(`<div class="rrow ${g.key===shSelRecipe?"on":""}"></div>`);
+    r.appendChild(el(`<div class="rv">${recipeLabel(g)}</div>`));
+    const meta=el(`<div class="rmeta"></div>`);
+    meta.appendChild(el(`<span style="display:contents">${recipeMetaTags(g)}</span>`));
+    meta.appendChild(el(`<span class="cnt">${g.trials}振</span>`));
+    r.appendChild(meta);
+    r.onclick=()=>{shSelRecipe=g.key;renderShukei();};
+    left.appendChild(r);
+  });
+  grid.appendChild(left);
+
+  const right=el(`<div></div>`);
+  const types=Object.keys(sel.byType).sort((a,b)=>typeRank(a)-typeRank(b));
+  const topType=types.slice().sort((a,b)=>sel.byType[b].count-sel.byType[a].count)[0];
+
+  if(sel.mode==="event"){
+    const pk=Object.keys(sel.pickups).sort((a,b)=>sel.pickups[b]-sel.pickups[a])[0]||"";
+    const hit=pk?(sel.byMei[pk]||0):0;
+    const ph=el(`<div class="pickup-hi"></div>`);
+    ph.appendChild(el(`<div class="pl">⭐ 目玉 ${pk?esc(pk):"（未設定）"} の排出率</div>`));
+    ph.appendChild(el(`<div class="pv">${pk?pct(hit,sel.trials)+"%":"—"}${pk?`　<span style="font-size:13px;font-weight:400">${hit} / ${sel.trials}振</span>`:""}</div>`));
+    right.appendChild(ph);
+  }
+  const metrics=el(`<div class="metrics"></div>`);
+  metrics.appendChild(el(`<div class="metric"><div class="ml">試行回数</div><div class="mv">${sel.trials}<span style="font-size:13px;font-weight:400;color:var(--text2)"> 振</span></div></div>`));
+  metrics.appendChild(el(`<div class="metric"><div class="ml">最多刀種</div><div class="mv sm">${topType||"—"} <span style="color:var(--text2);font-weight:400">${topType?pct(sel.byType[topType].count,sel.trials)+"%":""}</span></div></div>`));
+  metrics.appendChild(el(`<div class="metric"><div class="ml">振種数</div><div class="mv">${Object.keys(sel.byMei).length}<span style="font-size:13px;font-weight:400;color:var(--text2)"> 種</span></div></div>`));
+  right.appendChild(metrics);
+
+  right.appendChild(el(`<p class="rlist-lbl">入手した男士（刀種ごと・多い順）</p>`));
+  types.forEach(ty=>{
+    const t=sel.byType[ty];const grp=el(`<div class="grp"></div>`);
+    const gh=el(`<div class="grp-h"><span class="gn">${ty}</span><span class="gp">${t.count}振 ・ ${pct(t.count,sel.trials)}%</span></div>`);
+    grp.appendChild(gh);
+    grp.appendChild(el(`<div class="track grp-track"><div class="fill" style="width:${pct(t.count,sel.trials)}%"></div></div>`));
+    const sub=el(`<div class="sub"></div>`);
+    Object.keys(t.byMei).sort((a,b)=>t.byMei[b]-t.byMei[a]).forEach(mei=>{
+      const c=t.byMei[mei];const m=MASTER_BY_MEI[mei];const p=pct(c,sel.trials);
+      const isPk=sel.mode==="event"&&Object.keys(sel.pickups).includes(mei);
+      const it=el(`<div></div>`);
+      it.appendChild(el(`<div class="sh"><span>${esc(mei)}${isPk?' <span class="tag star" style="margin-left:4px">★目玉</span>':""}</span><span class="ty">${m?stars(m.rarity):""}</span><span class="sp">${c}振 ・ ${p}%</span></div>`));
+      it.appendChild(el(`<div class="track"><div class="fill" style="width:${p}%"></div></div>`));
+      sub.appendChild(it);
+    });
+    grp.appendChild(sub);right.appendChild(grp);
+  });
+  grid.appendChild(right);
+  card.appendChild(grid);
+}
+
+function renderShMei(card){
+  const list=aggMei();
+  if(!list.length){card.appendChild(el(`<div class="empty">条件に合う記録がありません。</div>`));return;}
+  if(!shSelMei||!list.find(x=>x.mei===shSelMei))shSelMei=list[0].mei;
+  const sel=list.find(x=>x.mei===shSelMei);
+
+  const grid=el(`<div class="agg-grid"></div>`);
+  const left=el(`<div></div>`);
+  left.appendChild(el(`<p class="rlist-lbl">男士一覧（入手数順）</p>`));
+  list.forEach(x=>{const m=MASTER_BY_MEI[x.mei];
+    const r=el(`<div class="rrow ${x.mei===shSelMei?"on":""}" style="display:flex;align-items:center;gap:8px"></div>`);
+    r.appendChild(el(`<span style="font-size:13px;font-weight:600">${esc(x.mei)}</span>`));
+    if(m)r.appendChild(el(`<span class="note">${m.type} ${stars(m.rarity)}</span>`));
+    r.appendChild(el(`<span class="cnt" style="margin-left:auto">${x.total}振</span>`));
+    r.onclick=()=>{shSelMei=x.mei;renderShukei();};
+    left.appendChild(r);
+  });
+  grid.appendChild(left);
+
+  const right=el(`<div></div>`);const m=MASTER_BY_MEI[sel.mei];
+  const recs=Object.values(sel.byRecipe).sort((a,b)=>b.count-a.count);
+  const metrics=el(`<div class="metrics"></div>`);
+  metrics.appendChild(el(`<div class="metric"><div class="ml">入手数</div><div class="mv">${sel.total}<span style="font-size:13px;font-weight:400;color:var(--text2)"> 振</span></div></div>`));
+  metrics.appendChild(el(`<div class="metric"><div class="ml">刀種</div><div class="mv sm">${m?m.type+" "+stars(m.rarity):"—"}</div></div>`));
+  metrics.appendChild(el(`<div class="metric"><div class="ml">出たレシピ</div><div class="mv">${recs.length}<span style="font-size:13px;font-weight:400;color:var(--text2)"> 種</span></div></div>`));
+  right.appendChild(metrics);
+
+  right.appendChild(el(`<p class="rlist-lbl">${esc(sel.mei)} が出たレシピ（多い順）</p>`));
+  const sub=el(`<div class="sub" style="padding-left:0"></div>`);
+  const maxc=recs.length?recs[0].count:1;
+  recs.forEach(rc=>{
+    const lab=`${rc.recipe.charcoal} / ${rc.recipe.steel} / ${rc.recipe.coolant} / ${rc.recipe.whetstone}`;
+    let tags=rc.mode==="event"?`<span class="tag event">イベント</span>`:`<span class="tag normal">通常</span>`;
+    if(rc.fuda!==null&&rc.fuda!=="none")tags+=`<span class="tag ${FUDA_CLS[rc.fuda]||""}">${FUDA[rc.fuda]}</span>`;
+    else if(rc.fuda==="none")tags+=`<span class="tag">お札なし</span>`;
+    const it=el(`<div></div>`);
+    it.appendChild(el(`<div class="sh"><span style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px">${lab}</span> <span style="display:contents">${tags}</span><span class="sp">${rc.count}振</span></div>`));
+    it.appendChild(el(`<div class="track"><div class="fill" style="width:${pct(rc.count,maxc)}%"></div></div>`));
+    sub.appendChild(it);
+  });
+  right.appendChild(sub);
+  grid.appendChild(right);
+  card.appendChild(grid);
+}
+
+/* =========================== 設定タブ =========================== */
+function renderSettei(){
+  VIEW.innerHTML="";const card=el(`<div class="card"></div>`);
+  card.appendChild(el(`<div style="font-size:15px;font-weight:600;margin-bottom:14px">設定</div>`));
+
+  const t=el(`<div class="row"></div>`);t.appendChild(el(`<label class="lbl">表示</label>`));
+  const seg=el(`<div class="seg"></div>`);const lb=el(`<button>ライト</button>`),db=el(`<button>ダーク</button>`);
+  const cur=document.documentElement.getAttribute("data-theme")||"light";
+  lb.classList.toggle("on",cur!=="dark");db.classList.toggle("on",cur==="dark");
+  lb.onclick=()=>{setTheme("light");renderSettei();};db.onclick=()=>{setTheme("dark");renderSettei();};
+  seg.append(lb,db);t.appendChild(seg);card.appendChild(t);
+
+  const tr=el(`<div class="row"></div>`);tr.appendChild(el(`<label class="lbl">鍛刀中トレイ</label>`));
+  const seg2=el(`<div class="seg"></div>`);const u=el(`<button>使用中のみ</button>`),a=el(`<button>4枠 常時表示</button>`);
+  u.classList.toggle("on",!DB.settings.trayShowAll);a.classList.toggle("on",DB.settings.trayShowAll);
+  u.onclick=()=>{DB.settings.trayShowAll=false;save();renderSettei();};
+  a.onclick=()=>{DB.settings.trayShowAll=true;save();renderSettei();};
+  seg2.append(u,a);tr.appendChild(seg2);card.appendChild(tr);
+
+  const nr=el(`<div class="row"></div>`);nr.appendChild(el(`<label class="lbl">鍛刀完了の通知（PC向け・要許可）</label>`));
+  const nb=el(`<button class="btn ghost">${DB.settings.notify?"通知 ON":"通知をオンにする"}</button>`);
+  nb.onclick=()=>{
+    if(DB.settings.notify){DB.settings.notify=false;save();renderSettei();return;}
+    if(!window.Notification){alert("この端末は通知に対応していません。");return;}
+    Notification.requestPermission().then(p=>{if(p==="granted"){DB.settings.notify=true;save();}else{alert("通知が許可されませんでした。");}renderSettei();});
+  };
+  nr.appendChild(nb);
+  nr.appendChild(el(`<p class="note" style="margin-top:6px">鍛刀録を開いている間だけ通知します。スマホでは動かないことがあるので、画面のカウントダウンが基本です。</p>`));
+  card.appendChild(nr);
+
+  const d=el(`<div class="row"></div>`);d.appendChild(el(`<label class="lbl">データ（バックアップ）</label>`));
+  const bar=el(`<div style="display:flex;gap:10px;flex-wrap:wrap"></div>`);
+  const exp=el(`<button class="btn ghost">⬇ 書き出し（JSON）</button>`);exp.onclick=exportJSON;
+  const imp=el(`<button class="btn ghost">⬆ 読み込み（JSON）</button>`);imp.onclick=()=>document.getElementById("importFile").click();
+  bar.append(exp,imp);d.appendChild(bar);
+  d.appendChild(el(`<input type="file" id="importFile" accept="application/json,.json" style="display:none">`));
+  card.appendChild(d);
+
+  card.appendChild(el(`<p class="note" style="margin-top:18px">
+    ・男士マスタは現在<b>仮データ</b>です。本物に差し替えると、選べる男士と規定鍛刀時間が反映されます。<br>
+    ・Google Drive同期は次の段階で追加予定です。<br>
+    ・記録件数：${activeBatches().length}件（完了 ${activeBatches().filter(b=>b.state==="done").length} ／ 鍛刀中 ${forgingBatches().length}）／ お迎え男士 ${DB.wishlist.length}件
+  </p>`));
+  VIEW.appendChild(card);
+  document.getElementById("importFile").onchange=importJSON;
+}
+function exportJSON(){const blob=new Blob([JSON.stringify(DB,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`tantouroku_${todayLocalDate()}.json`;a.click();URL.revokeObjectURL(a.href);}
+function importJSON(e){const f=e.target.files[0];if(!f)return;const rd=new FileReader();
+  rd.onload=()=>{try{const o=JSON.parse(rd.result);if(!o||!Array.isArray(o.batches))throw 0;
+    if(confirm("読み込んだデータで現在の記録を置き換えますか？（現在のデータは消えます）")){localStorage.setItem(LS_DATA,JSON.stringify(o));DB=load();render();}
+  }catch(_){alert("読み込めませんでした。鍛刀録の書き出しJSONか確認してください。");}};
+  rd.readAsText(f);e.target.value="";}
+
+/* =========================== 男士ピッカー =========================== */
+let pickerCb=null;
+const ov=document.getElementById("pickerOverlay"),pkList=document.getElementById("pickerList"),
+      pkSearch=document.getElementById("pickerSearch"),pkTitle=document.getElementById("pickerTitle");
+function openPicker(title,cb){pickerCb=cb;pkTitle.textContent=title;pkSearch.value="";renderPicker("");ov.classList.add("show");setTimeout(()=>pkSearch.focus(),50);}
+function closePicker(){ov.classList.remove("show");pickerCb=null;}
+function renderPicker(q){q=(q||"").trim().toLowerCase();
+  const items=MASTER.filter(m=>!q||m.mei.toLowerCase().includes(q)||m.yomi.toLowerCase().includes(q))
+    .sort((a,b)=>typeRank(a.type)-typeRank(b.type)||b.rarity-a.rarity||a.no-b.no);
+  pkList.innerHTML="";
+  if(!items.length){pkList.appendChild(el(`<div class="empty">該当する男士がいません。</div>`));return;}
+  let last=null;
+  items.forEach(m=>{if(m.type!==last){pkList.appendChild(el(`<div class="grp-lbl">${m.type}</div>`));last=m.type;}
+    const wl=DB.wishlist.includes(m.mei)?"🌸 ":"";
+    const it=el(`<button class="mitem">${wl}${esc(m.mei)}<span class="ty">${stars(m.rarity)}${m.time?" ・ "+m.time:""}</span></button>`);
+    it.onclick=()=>{const cb=pickerCb;closePicker();if(cb)cb(m.mei);};pkList.appendChild(it);});}
+pkSearch.addEventListener("input",()=>renderPicker(pkSearch.value));
+document.getElementById("pickerCancel").onclick=closePicker;
+ov.addEventListener("click",e=>{if(e.target===ov)closePicker();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&ov.classList.contains("show"))closePicker();});
+
+/* =========================== テーマ・起動 =========================== */
+function setTheme(t){document.documentElement.setAttribute("data-theme",t);localStorage.setItem(LS_THEME,t);
+  document.getElementById("themeBtn").textContent=t==="dark"?"☀":"🌙";}
+document.getElementById("themeBtn").onclick=()=>{const c=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";setTheme(c);if(currentTab==="settei")renderSettei();};
+setTheme(localStorage.getItem(LS_THEME)||"light");
+render();
+</script>
+</body>
+</html>

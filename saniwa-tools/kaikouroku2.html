@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>邂逅録 ― 大阪城ドロップ集計</title>
+<title>邂逅録 ― 男士ドロップ集計</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <!-- Google tag (gtag.js) -->
@@ -200,6 +200,29 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
 .shizai-card{border:1.5px solid #3b8c5a;background:linear-gradient(135deg,rgba(59,140,90,.08),var(--surface))}
 .shizai-card .card-h{color:#2e7048}
 .shizai-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stage-tag-res{font-family:var(--font);font-size:11px;font-weight:500;color:#fff;background:#3b8c5a;border-radius:99px;padding:2px 10px;margin-left:2px}
+.scfg-places{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.scfg-place-btn{font-size:13px;padding:8px 16px;border:1px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--text2);cursor:pointer;font-family:inherit;font-weight:500}
+.scfg-place-btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.scfg-has{position:absolute;top:-6px;right:-4px;font-size:11px}
+.osaka-cfg-note{background:var(--bg2);border-radius:8px;padding:11px 13px;font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:10px}
+.osaka-cfg-note b{color:var(--accent)}
+.meda-box{background:var(--bg3);border-radius:10px;padding:13px;margin-top:4px}
+.meda-target{font-size:13px;color:var(--accent);font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.meda-target .tag{font-size:10px;background:var(--accent);color:#fff;border-radius:99px;padding:2px 9px;font-weight:500}
+.cm-label{font-size:11px;color:var(--text3);margin:11px 0 6px}
+.scfg-current{display:flex;flex-direction:column;gap:6px}
+.meda-chip{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--surface);border:1px solid var(--gold);border-radius:8px}
+.meda-chip .nm{font-size:13px;color:var(--accent);font-weight:600}
+.meda-chip .nm .star{color:var(--gold);margin-right:4px}
+.meda-chip .nm .y{font-size:10px;color:var(--text3);margin-left:5px;font-weight:400}
+.meda-chip .rm{font-size:11px;color:var(--text3);border:1px solid var(--border2);background:var(--bg);border-radius:6px;padding:3px 9px;cursor:pointer}
+.meda-empty{font-size:12px;color:var(--text3);font-style:italic;padding:10px;text-align:center}
+.shizai-none{padding:16px;text-align:center;color:var(--text3);font-size:12px;background:var(--bg2);border-radius:8px;font-style:italic;grid-column:1/-1}
+.shizai-grid.res-switch{animation:shizaiswitch .26s ease}
+@keyframes shizaiswitch{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.stage-tag-res.tag-bump{animation:restagbump .3s}
+@keyframes restagbump{0%{transform:scale(.85);opacity:.5}100%{transform:scale(1);opacity:1}}
 .shizai-item label{display:block;font-size:11px;color:var(--text3);margin-bottom:3px;font-weight:500}
 .shizai-item .si-icon{font-size:15px;margin-right:2px}
 .shizai-item input{width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:15px;font-family:inherit}
@@ -233,6 +256,18 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
 /* 最近の記録：周回まとまり＋インライン編集 */
 .session{border:1px solid var(--border2);border-radius:var(--r2);margin-bottom:12px;overflow:hidden}
 .session-head{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.rec-men-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.rec-men-btn{font-size:12px;padding:7px 11px;border:1px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--accent);cursor:pointer;font-family:inherit;font-weight:600}
+.rec-men-btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.rec-men-btn .sub{font-size:9px;color:var(--text2);font-weight:400;margin-left:4px}
+.rec-men-btn.on .sub{color:rgba(255,255,255,.8)}
+.rec-stage-area{margin-bottom:6px}
+.rec-stage-btns{display:flex;gap:6px;flex-wrap:wrap;padding:9px;background:var(--bg2);border-radius:8px}
+.rec-stage-btn{font-size:12px;padding:7px 11px;border:1px solid var(--border2);border-radius:7px;background:var(--surface);color:var(--accent);cursor:pointer;font-family:inherit;line-height:1.25;text-align:left}
+.rec-stage-btn .id{font-weight:700}
+.rec-stage-btn .nm{display:block;font-size:9px;color:var(--text2)}
+.rec-stage-btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.rec-stage-btn.on .nm{color:rgba(255,255,255,.85)}
 .sh-toggle{display:flex;align-items:center;gap:8px;flex:1;min-width:0;cursor:pointer;user-select:none}
 .sh-caret{font-size:10px;color:var(--text3);flex-shrink:0;width:11px;text-align:center}
 .session.collapsed .session-head{border-bottom:none}
@@ -335,6 +370,7 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
  <div class="tabs-inner">
   <div class="tab active" onclick="showScreen('rec',this)">記録</div>
   <div class="tab" onclick="showScreen('agg',this)">集計</div>
+  <div class="tab" onclick="showScreen('stagecfg',this)">ステージ設定</div>
   <div class="tab" onclick="showScreen('preset',this)">設定</div>
  </div>
 </div>
@@ -357,6 +393,12 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
       <label class="fl">階数</label>
       <select id="recFloor" onchange="onRecFloorChange()"></select>
       <div class="floor-info" id="floorInfo"></div>
+    </div>
+    <div id="recStageWrap" style="display:none">
+      <label class="fl">ステージ</label>
+      <div id="recMenBtns" class="rec-men-btns"></div>
+      <div id="recStageArea"></div>
+      <div class="floor-info" id="stageInfo2"></div>
     </div>
   </div>
 
@@ -435,7 +477,7 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
   </div>
 
   <div class="card shizai-card" id="shizaiCard">
-    <div class="card-h">🟢 資源 <span class="rec-koban-tag">緑マスで拾った合計を入力</span></div>
+    <div class="card-h">🟢 資源 <span class="rec-koban-tag">緑マスで拾った合計を入力</span><span class="stage-tag-res" id="shizaiStageTag" style="display:none"></span></div>
     <div class="card-sub">この周回で拾った資源の合計を入れます（0や空欄でもOK）</div>
     <div class="shizai-grid" id="shizaiGrid"></div>
     <div class="time-row">
@@ -529,6 +571,16 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
   </div>
 </div>
 
+<!-- ===== ステージ設定 ===== -->
+<div id="stagecfg" class="screen">
+  <div class="card">
+    <div class="card-h">⭐ 目玉男士の指定</div>
+    <div class="mini-note" style="margin-bottom:8px;">看板になる目玉男士を指定します。記録画面でそのステージを選ぶと★付きで出て、集計でハイライトされます（指定しなくてもOK）。<b>過去はステージごと</b>、<b>大阪城は全体で1つ</b>です。目玉はボスマスでのみ候補に出ます。</div>
+    <div class="scfg-places" id="scfgPlaces"></div>
+    <div id="scfgBody"></div>
+  </div>
+</div>
+
 <!-- ===== プリセット ===== -->
 <div id="preset" class="screen">
   <div class="card">
@@ -553,14 +605,6 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
     <div class="note">※ 通常は固定ですが、宝物ドロップ倍増の回などに備えて変更できます。</div>
     <button class="btn" style="width:100%;margin-top:10px" onclick="saveOsakaSettings()">設定を保存</button>
   </div>
-  <div class="card">
-    <div class="card-h">★ 目玉男士の指定</div>
-    <div class="mini-note" style="margin-bottom:8px;">指定すると集計画面で特別枠にハイライト表示されます（指定しなくてもOK・一覧には全員出ます。目玉はボスマスでのみ候補に出ます）</div>
-    <div class="feat-current" id="featCurrent"></div>
-    <input type="text" class="feat-search" id="featSearch" placeholder="名前で検索して目玉に追加（漢字・読み仮名）" oninput="onFeatSearch()">
-    <div class="feat-add-list" id="featAddList"></div>
-  </div>
-
   <div class="card">
     <div class="card-h">🌸 お迎え男士の指定</div>
     <div class="mini-note" style="margin-bottom:8px;">あなたが欲しい男士を登録すると、記録・最近の記録・集計で 🌸 が付きます（マスを問わず・全部の場所で共通）。目玉（★）と違って、ボス以外で拾える子の目印に。目玉になっている子は、ボスマスでは★、それ以外のマスでは🌸で表示されます。</div>
@@ -807,6 +851,39 @@ const RESOURCES=[['mokutan','木炭','🪵'],['tamahagane','玉鋼','🪨'],['re
 const RES_LABEL={};const RES_ICON={};RESOURCES.forEach(([k,l,i])=>{RES_LABEL[k]=l;RES_ICON[k]=i;});
 // 大阪城で使う資源（依頼札を除く4種）
 const OSAKA_RES=['mokutan','tamahagane','reikyaku','toishi'];
+// 資源の表示並び順（2列なので：木炭 玉鋼 / 冷却材 砥石 / 依頼札）
+const RES_ORDER=['mokutan','tamahagane','reikyaku','toishi','irai'];
+function orderRes(arr){return RES_ORDER.filter(k=>arr.includes(k));}
+
+// 過去（恒常マップ）：面 → ステージ（id, 和名, 落ちる資源キー）。資源は第2段で使用
+const KAKO_MAP=[
+  {men:'1',name:'維新の記憶',stages:[
+    {id:'1-1',nm:'函館',res:[]},{id:'1-2',nm:'会津',res:['mokutan']},
+    {id:'1-3',nm:'宇都宮',res:['toishi']},{id:'1-4',nm:'鳥羽',res:['mokutan','reikyaku']}]},
+  {men:'2',name:'江戸の記憶',stages:[
+    {id:'2-1',nm:'鳥羽',res:['tamahagane','toishi']},{id:'2-2',nm:'江戸',res:['mokutan']},
+    {id:'2-3',nm:'江戸(元禄)',res:['reikyaku']},{id:'2-4',nm:'大阪(大坂冬の陣)',res:['irai']}]},
+  {men:'3',name:'織豊の記憶',stages:[
+    {id:'3-1',nm:'関ヶ原',res:['toishi']},{id:'3-2',nm:'本能寺',res:['tamahagane','irai']},
+    {id:'3-3',nm:'越前',res:['mokutan','tamahagane']},{id:'3-4',nm:'安土',res:['toishi','irai']}]},
+  {men:'4',name:'戦国の記憶',stages:[
+    {id:'4-1',nm:'長篠',res:['reikyaku','irai']},{id:'4-2',nm:'三方ヶ原',res:['toishi']},
+    {id:'4-3',nm:'桶狭間',res:['mokutan','tamahagane','reikyaku']},{id:'4-4',nm:'京都(西陣)',res:['reikyaku','irai']}]},
+  {men:'5',name:'武家の記憶',stages:[
+    {id:'5-1',nm:'鎌倉(元弘の乱)',res:['mokutan']},{id:'5-2',nm:'博多湾(元寇)',res:['mokutan','tamahagane','reikyaku']},
+    {id:'5-3',nm:'墨俣(承久の乱)',res:['tamahagane','toishi']},{id:'5-4',nm:'厚樫山(阿津賀志山の戦い)',res:['mokutan','reikyaku']}]},
+  {men:'6',name:'池田屋の記憶',stages:[
+    {id:'6-1',nm:'京都(市中)',res:['reikyaku','toishi']},{id:'6-2',nm:'京都(三条大橋)',res:['tamahagane','reikyaku']},
+    {id:'6-3',nm:'京都(池田屋二階)',res:['mokutan','tamahagane','irai']},{id:'6-4',nm:'京都(池田屋一階)',res:['mokutan','toishi']}]},
+  {men:'7',name:'延享の記憶',stages:[
+    {id:'7-1',nm:'江戸(新橋)',res:['mokutan','tamahagane','reikyaku','irai']},{id:'7-2',nm:'江戸(白金台)',res:['mokutan','tamahagane','reikyaku','toishi']},
+    {id:'7-3',nm:'江戸(江戸城下)',res:['mokutan','tamahagane','reikyaku','toishi']},{id:'7-4',nm:'江戸(江戸城内)',res:[]}]},
+  {men:'8',name:'青野原の記憶',stages:[
+    {id:'8-1',nm:'京都(阿弥陀ヶ峰)',res:['mokutan','tamahagane','toishi','reikyaku','irai']},{id:'8-2',nm:'信濃(上田城)',res:['mokutan','tamahagane','toishi','reikyaku','irai']},
+    {id:'8-3',nm:'美濃(青野原)',res:['mokutan','tamahagane','toishi','reikyaku','irai']},{id:'8-4',nm:'京都(五条)',res:['mokutan','tamahagane','toishi','reikyaku','irai']}]},
+];
+function stageById(id){for(const g of KAKO_MAP){const s=g.stages.find(x=>x.id===id);if(s)return s;}return null;}
+function menOfStage(id){const g=KAKO_MAP.find(x=>x.stages.some(s=>s.id===id));return g?g.men:'8';}
 const MASS_ICON={boss:'🔴',normal:'🟣',resource:'🟢',unknown:'⚪'};
 // 進行マーク（ここに足せば増やせる）
 const PROG_MARKS=[['done','⭕ やれた'],['lots','🔥 たくさん'],['little','😪 少しだけ'],['rest','💤 お休み']];
@@ -815,8 +892,8 @@ const PROG_MARKS=[['done','⭕ やれた'],['lots','🔥 たくさん'],['little
 const SK='kk_data_v1', SS='kk_set_v1';
 
 // ── データ ──
-let UD={records:[],places:[],featured:[],wishlist:[],updatedAt:0};
-let ST={palette:'tetsu',mode:'light',aggMode:'A',guideShown:false,periodicSync:false,lastSync:0,lastHakata:'極',recentSort:'featured',recentSortDir:'desc',stickyMode:true,selGroup:true,addFlash:false,recentOpen:{}};
+let UD={records:[],places:[],featured:[],featuredByStage:{},wishlist:[],updatedAt:0};
+let ST={palette:'tetsu',mode:'light',aggMode:'A',guideShown:false,periodicSync:false,lastSync:0,lastHakata:'極',recentSort:'featured',recentSortDir:'desc',stickyMode:true,selGroup:true,addFlash:false,recentOpen:{},lastPlaceId:null,lastFloor:{}};
 let _appReady=false;
 
 // デフォルト場所プリセット（大阪城）
@@ -824,8 +901,12 @@ function defaultOsaka(){
   return {
     id:'osaka', name:'大阪城（地下に眠る千両箱）', type:'osaka',
     floors:[10,20,30,40,50,51,90,95,99], maxFloor:99,
-    hakataRate:{'初':1.5,'極':2.0}, order:0, updatedAt:Date.now(), deleted:false
+    hakataRate:{'初':1.5,'極':2.0}, order:100, updatedAt:Date.now(), deleted:false
   };
+}
+// 過去（恒常マップ）の場所プリセット。並び順は 過去=0／（将来）異去=10／大阪城=100
+function defaultKako(){
+  return {id:'kako', name:'過去（恒常マップ）', type:'kako', order:0, updatedAt:Date.now(), deleted:false};
 }
 
 function load(){
@@ -836,11 +917,24 @@ function load(){
   if(!UD.records)UD.records=[];
   if(!UD.places)UD.places=[];
   if(!UD.featured)UD.featured=[];
+  if(!UD.featuredByStage||typeof UD.featuredByStage!=='object')UD.featuredByStage={};
   if(!UD.wishlist)UD.wishlist=[];
   // 初回は大阪城プリセットとデフォルト目玉を入れておく
   if(UD.places.filter(p=>!p.deleted).length===0){
     UD.places.push(defaultOsaka());
     if(UD.featured.length===0)UD.featured=['鬼丸国綱','白山吉光'];
+  }
+  // 過去（恒常マップ）を一度だけ追加（過去にkakoが存在したことがなければ）
+  if(!UD.places.some(p=>p.id==='kako')){
+    UD.places.push(defaultKako());
+  }
+  // 一度きりの移行：場所の並び順を 過去=0／大阪城=100 に揃える（記録・男士のデータには触らない）
+  if(!ST.placeOrderV2){
+    const o=UD.places.find(p=>p.type==='osaka');if(o)o.order=100;
+    const k=UD.places.find(p=>p.id==='kako');if(k)k.order=0;
+    ST.placeOrderV2=true;
+    try{saveST();}catch(e){}
+    try{localStorage.setItem(SK,JSON.stringify(UD));}catch(e){}
   }
 }
 function save(){if(_appReady){UD.updatedAt=Date.now();if(typeof scheduleAutoSync==='function')scheduleAutoSync();}try{localStorage.setItem(SK,JSON.stringify(UD));}catch(e){}}
@@ -877,6 +971,7 @@ function showScreen(id,el){
   const mb=document.getElementById('modeBar');if(mb)mb.style.display=(id==='rec')?'':'none';
   if(id==='agg'){renderAggControls();renderAgg();}
   if(id==='preset')renderPreset();
+  if(id==='stagecfg')renderStageCfg();
   if(id==='rec')renderRecent();
 }
 
@@ -917,12 +1012,31 @@ let recState={
   recMode:'easy', prog:null
 };
 let recFilter={type:'すべて',school:'すべて',q:''};
+let _kakoStage='8-1', _kakoMen='8'; // 過去：現在のステージと開いている面（セッション内記憶。恒久化は後の段で）
+let _lastShizaiSig=null; // 資源欄が切り替わったか検知（スッと差し替わる演出用）
 
 function initRecState(){
   const places=activePlaces();
-  if(places.length){recState.placeId=places[0].id;}
+  // 前回いた場所を覚えていればそこ。無ければ当面は大阪城（過去マップ完成までデフォルトは据え置き）
+  let pid=(ST.lastPlaceId&&placeById(ST.lastPlaceId))?ST.lastPlaceId
+         :(placeById('osaka')?'osaka':(places[0]&&places[0].id));
+  recState.placeId=pid;
+  const p=placeById(pid);
+  const lf=ST.lastFloor||{};
+  if(p&&p.type==='osaka'&&p.floors.length){
+    recState.floor=(lf[pid]!=null&&p.floors.includes(lf[pid]))?lf[pid]:p.floors[p.floors.length-1];
+  }else if(p&&p.type==='kako'){
+    const st=(lf[pid]&&stageById(lf[pid]))?lf[pid]:_kakoStage;
+    recState.floor=st;_kakoStage=st;_kakoMen=menOfStage(st);
+  }
+}
+// 前回いた場所と、場所ごとの前回ステージ（大阪城は前回の階）を覚える
+function rememberPlace(){
+  if(!ST.lastFloor)ST.lastFloor={};
+  ST.lastPlaceId=recState.placeId;
   const p=placeById(recState.placeId);
-  if(p&&p.type==='osaka'&&p.floors.length){recState.floor=p.floors[p.floors.length-1];}
+  if(p&&(p.type==='osaka'||p.type==='kako'))ST.lastFloor[recState.placeId]=recState.floor;
+  saveST();
 }
 
 function renderRecPlace(){
@@ -939,21 +1053,38 @@ function onRecPlaceChange(){
   recState.res={}; // 場所が変わると資源の種類も変わるのでクリア
   const p=placeById(recState.placeId);
   if(p&&p.type==='osaka'&&p.floors.length){recState.floor=p.floors[p.floors.length-1];}
+  else if(p&&p.type==='kako'){recState.floor=_kakoStage;_kakoMen=menOfStage(_kakoStage);}
+  rememberPlace();
   renderRecFloor();buildQuick();updateHeaderSub();renderShizaiGrid();
 }
 function renderRecFloor(){
   const p=placeById(recState.placeId);
-  const wrap=document.getElementById('recFloorWrap');
+  const fw=document.getElementById('recFloorWrap');
+  const sw=document.getElementById('recStageWrap');
   if(p&&p.type==='osaka'){
-    wrap.style.display='block';
+    fw.style.display='block'; if(sw)sw.style.display='none';
     const sel=document.getElementById('recFloor');
     sel.innerHTML=(p.floors||[]).slice().sort((a,b)=>b-a).map(f=>`<option value="${f}" ${f===recState.floor?'selected':''}>${f}階</option>`).join('');
     document.getElementById('floorInfo').innerHTML='※ 記録できる階は<b>設定・プリセット</b>で増やせます（50階・特定階の周回にも対応）';
+  }else if(p&&p.type==='kako'){
+    fw.style.display='none'; if(sw)sw.style.display='block';
+    renderRecStage();
   }else{
-    wrap.style.display='none';
+    fw.style.display='none'; if(sw)sw.style.display='none';
   }
 }
-function onRecFloorChange(){recState.floor=parseInt(document.getElementById('recFloor').value);buildQuick();}
+function renderRecStage(){
+  const menBtns=document.getElementById('recMenBtns');
+  if(!menBtns)return;
+  menBtns.innerHTML=KAKO_MAP.map(g=>`<button class="rec-men-btn ${_kakoMen===g.men?'on':''}" onclick="openRecMen('${g.men}')">${g.men}面 <span class="sub">${g.name}</span></button>`).join('');
+  const g=KAKO_MAP.find(x=>x.men===_kakoMen)||KAKO_MAP[0];
+  document.getElementById('recStageArea').innerHTML='<div class="rec-stage-btns">'+g.stages.map(s=>`<button class="rec-stage-btn ${recState.floor===s.id?'on':''}" onclick="pickRecStage('${s.id}')"><span class="id">${s.id}</span><span class="nm">${s.nm}</span></button>`).join('')+'</div>';
+  const cur=stageById(recState.floor);
+  document.getElementById('stageInfo2').innerHTML=cur?`選択中：<b>${cur.id} ${cur.nm}</b>`:'ステージを選んでください';
+}
+function openRecMen(men){_kakoMen=men;renderRecStage();}
+function pickRecStage(id){recState.floor=id;_kakoStage=id;_kakoMen=menOfStage(id);rememberPlace();buildQuick();renderRecStage();renderShizaiGrid();}
+function onRecFloorChange(){recState.floor=parseInt(document.getElementById('recFloor').value);rememberPlace();buildQuick();}
 
 // 記録モード切替（かんたん / 詳しく）
 function setRecMode(m){
@@ -980,7 +1111,7 @@ function setProg(k){recState.prog=(recState.prog===k)?null:k;renderProg();}
 // 男士を選ぶときの実効マス：詳しく=選択中のマス、かんたん=目玉ならboss・他はunknown
 function effMass(name){
   if(recState.recMode==='detail')return recState.mass;
-  return UD.featured.includes(name)?'boss':'unknown';
+  return curFeatured().includes(name)?'boss':'unknown';
 }
 
 // マス種別（詳しくモードのみ）
@@ -996,8 +1127,9 @@ function setMass(m){
 function buildQuick(){
   const box=document.getElementById('quickCands');
   const easy=recState.recMode==='easy';
+  const _pt=placeById(recState.placeId)?.type;
   const recs=activeRecords().filter(r=>r.placeId===recState.placeId
-    &&(placeById(recState.placeId)?.type!=='osaka'||r.floor===recState.floor));
+    &&((_pt!=='osaka'&&_pt!=='kako')||r.floor===recState.floor));
   // 頻度集計（詳しくモードは選択中マスのみ、かんたんは全マス）
   const freq={};
   recs.forEach(r=>r.swords.forEach(s=>{
@@ -1008,12 +1140,13 @@ function buildQuick(){
   let names=Object.keys(freq).sort((a,b)=>freq[b]-freq[a]).slice(0,8);
   // 目玉を先頭に足す（かんたん、または詳しくのボスマス）。詳しくの通常マスでは目玉を出さない
   const showStar=easy||recState.mass==='boss';
-  if(showStar){UD.featured.forEach(f=>{if(!names.includes(f))names.unshift(f);});}
-  else{names=names.filter(n=>!UD.featured.includes(n));}
+  const _cf=curFeatured();
+  if(showStar){_cf.forEach(f=>{if(!names.includes(f))names.unshift(f);});}
+  else{names=names.filter(n=>!_cf.includes(n));}
   names=names.slice(0,10);
   if(names.length===0){box.innerHTML='<span style="font-size:11px;color:var(--text3)">記録すると、この階でよく出る男士がここに並びます</span>';return;}
   box.innerHTML=names.map(n=>{
-    const isStar=UD.featured.includes(n)&&showStar;
+    const isStar=_cf.includes(n)&&showStar;
     const isWish=!isStar&&UD.wishlist&&UD.wishlist.includes(n);
     return `<span class="q-chip ${isStar?'star':''}" onclick="addSword('${esc(n)}')">${isStar?'★ ':(isWish?'🌸 ':'')}${n}</span>`;
   }).join('');
@@ -1037,8 +1170,9 @@ function setSchool(el,s){document.querySelectorAll('#schoolFilter .chip').forEac
 function renderList(){
   recFilter.q=document.getElementById('swSearch').value.trim().toLowerCase();
   const detailNormal=(recState.recMode==='detail'&&recState.mass==='normal');
+  const _cfL=curFeatured();
   let items=MR.filter(s=>{
-    if(detailNormal&&UD.featured.includes(s[1]))return false; // 詳しく×通常マスは目玉除外
+    if(detailNormal&&_cfL.includes(s[1]))return false; // 詳しく×通常マスは目玉除外
     if(recFilter.type!=="すべて"&&s[3]!==recFilter.type)return false;
     if(recFilter.school!=="すべて"&&s[4]!==recFilter.school)return false;
     if(recFilter.q&&!s[1].toLowerCase().includes(recFilter.q)&&!s[2].toLowerCase().includes(recFilter.q))return false;
@@ -1049,7 +1183,7 @@ function renderList(){
   document.getElementById('listCount').textContent=`${items.length} 振り`;
   if(items.length===0){list.innerHTML='<div style="padding:18px;text-align:center;color:var(--text3);font-size:13px">該当なし</div>';return;}
   list.innerHTML=items.map(s=>{
-    const star=(UD.featured.includes(s[1])&&showStar)?'<span class="sw-star">★</span> ':((UD.wishlist&&UD.wishlist.includes(s[1]))?'<span class="sw-wish">🌸</span> ':'');
+    const star=(_cfL.includes(s[1])&&showStar)?'<span class="sw-star">★</span> ':((UD.wishlist&&UD.wishlist.includes(s[1]))?'<span class="sw-wish">🌸</span> ':'');
     const sch=s[4]==="なし"?'':`<span class="sw-school">${s[4]}</span>`;
     return `<div class="sword-item" onclick="addSword('${esc(s[1])}')">
       <span class="sw-no">No.${s[0]}</span><span class="sw-type">${s[3]}</span>${sch}
@@ -1205,7 +1339,7 @@ function renderSelected(flashKey){
     if(it.name===NODROP){label='<span style="color:var(--text2)">ドロップ無し（空振り）</span>';}
     else{
       const sw=swInfo(it.name);
-      feat=(UD.featured.includes(it.name)&&it.mass==='boss');
+      feat=(curFeatured().includes(it.name)&&it.mass==='boss');
       const star=feat?'<span class="sw-star">★</span> ':((UD.wishlist&&UD.wishlist.includes(it.name))?'<span class="sw-wish">🌸</span> ':'');
       label=`${star}${it.name} <span class="y">${sw?sw[2]:''}</span>`;
     }
@@ -1247,14 +1381,52 @@ function placeResources(placeId){
   if(p&&p.type==='osaka')return OSAKA_RES;
   return OSAKA_RES;
 }
+// いま記録中の場所・ステージで手に入る資源（過去はステージごと）
+function currentResources(){
+  const p=placeById(recState.placeId);
+  if(p&&p.type==='kako'){
+    const st=stageById(recState.floor);
+    return st?orderRes(st.res):[];
+  }
+  if(p&&Array.isArray(p.resources))return p.resources;
+  return OSAKA_RES;
+}
+// 目玉リスト：過去はステージごと(UD.featuredByStage[stage])、大阪城ほかは UD.featured（据え置き）
+function featuredList(placeId,floor){
+  const p=placeById(placeId);
+  if(p&&p.type==='kako')return (UD.featuredByStage&&UD.featuredByStage[floor])||[];
+  return UD.featured||[];
+}
+function isFeatured(name,placeId,floor){return featuredList(placeId,floor).includes(name);}
+function curFeatured(){return featuredList(recState.placeId,recState.floor);} // 記録中の文脈
 function renderShizaiGrid(){
   const grid=document.getElementById('shizaiGrid');
   if(!grid)return;
-  const keys=placeResources(recState.placeId);
-  grid.innerHTML=keys.map(k=>`<div class="shizai-item">
+  const p=placeById(recState.placeId);
+  const keys=currentResources();
+  // ステージタグ（過去のみ）
+  const tag=document.getElementById('shizaiStageTag');
+  // 切り替え検知：過去はステージ単位、大阪城は階を無視（資源が変わらないので演出しない）
+  const sig=(p&&p.type==='kako')?('kako|'+recState.floor):recState.placeId;
+  const animate=(_lastShizaiSig!==null&&_lastShizaiSig!==sig);
+  _lastShizaiSig=sig;
+  if(tag){
+    if(p&&p.type==='kako'){
+      const st=stageById(recState.floor);
+      tag.style.display='';tag.textContent='📍 '+(st?st.id+' '+st.nm:'—');
+      if(animate){tag.classList.remove('tag-bump');void tag.offsetWidth;tag.classList.add('tag-bump');}
+    }else{tag.style.display='none';}
+  }
+  // 資源欄
+  if(keys.length===0){
+    grid.innerHTML='<div class="shizai-none">このステージでは資源は手に入りません</div>';
+  }else{
+    grid.innerHTML=keys.map(k=>`<div class="shizai-item">
     <label><span class="si-icon">${RES_ICON[k]}</span>${RES_LABEL[k]}</label>
     <input type="text" inputmode="numeric" id="res-${k}" placeholder="0" value="${recState.res[k]||''}" oninput="resChg('${k}')">
   </div>`).join('');
+  }
+  if(animate){grid.classList.remove('res-switch');void grid.offsetWidth;grid.classList.add('res-switch');}
 }
 function resChg(k){
   const v=Math.max(0,parseInt(document.getElementById('res-'+k).value)||0);
@@ -1265,11 +1437,12 @@ function minsChg(){recState.mins=Math.max(0,parseInt(document.getElementById('mi
 // 記録の保存
 function saveRecord(){
   const keys=Object.keys(recState.swords);
-  const resKeys=Object.keys(recState.res).filter(k=>recState.res[k]>0);
+  const _allowRes=currentResources();
+  const resKeys=Object.keys(recState.res).filter(k=>recState.res[k]>0&&_allowRes.includes(k));
   if(keys.length===0&&recState.koban===0&&resKeys.length===0){toast('男士・小判・資源のいずれかを入力してください');return;}
   const p=placeById(recState.placeId);
   const swords=selOrderedKeys().map(k=>({name:recState.swords[k].name,count:recState.swords[k].count,mass:recState.swords[k].mass}));
-  const floor=(p&&p.type==='osaka')?recState.floor:null;
+  const floor=(p&&(p.type==='osaka'||p.type==='kako'))?recState.floor:null;
   const res={};resKeys.forEach(k=>{res[k]=recState.res[k];});
   const rec={
     id:uid('r'), placeId:recState.placeId, floor,
@@ -1356,7 +1529,9 @@ function renderRecent(){
 
   box.innerHTML=glist.map(g=>{
     const p=placeById(g.placeId);
-    const head=g.floor?(g.floor+'階'):(p?p.name.replace(/（.*）/,''):'');
+    let head;
+    if(p&&p.type==='kako'){const st=stageById(g.floor);head=st?`${st.id} ${st.nm}`:(g.floor||(p?p.name.replace(/（.*）/,''):''));}
+    else head=g.floor?(g.floor+'階'):(p?p.name.replace(/（.*）/,''):'');
     const totalKills=g.records.reduce((s,r)=>s+(r.kills||0),0);
     const totalKoban=g.records.reduce((s,r)=>s+(r.koban||0),0);
     const gid=[g.date,g.placeId,g.floor==null?'-':g.floor].join('~');
@@ -1370,6 +1545,7 @@ function renderRecent(){
       });
     });
     // 並び替え
+    const _gf=featuredList(g.placeId,g.floor); // このグループのステージの目玉
     const sortMode=ST.recentSort||'featured';
     const dir=ST.recentSortDir||'desc';
     const massOrder={boss:0,normal:1,unknown:2};
@@ -1382,7 +1558,7 @@ function renderRecent(){
       let r=0;
       if(sortMode==='featured'){
         // 目玉優先は方向固定（目玉が上、その下は図鑑番号）
-        const fa=UD.featured.includes(a.name)?0:1,fb=UD.featured.includes(b.name)?0:1;
+        const fa=_gf.includes(a.name)?0:1,fb=_gf.includes(b.name)?0:1;
         if(fa!==fb)return fa-fb;
         return noA-noB;
       }else if(sortMode==='mass'){
@@ -1413,7 +1589,7 @@ function renderRecent(){
     const swRows=aggKeys.map(k=>{
       const a=agg[k];
       const isND=a.name===NODROP;
-      const star=(UD.featured.includes(a.name))?'<span class="star">★</span> ':((UD.wishlist&&UD.wishlist.includes(a.name))?'<span class="sw-wish">🌸</span> ':'');
+      const star=(_gf.includes(a.name))?'<span class="star">★</span> ':((UD.wishlist&&UD.wishlist.includes(a.name))?'<span class="sw-wish">🌸</span> ':'');
       const nm=isND?'<span style="color:var(--text2)">ドロップ無し</span>':`${star}${a.name}`;
       const sw=swInfo(a.name);
       const yomi=(!isND&&sw)?`<span class="y">${sw[2]}</span>`:'';
@@ -1634,9 +1810,10 @@ function toggleAddPick(gid){
 function renderAddPick(gid,q){
   const el=document.getElementById('pick-'+gid);
   q=(q||'').trim().toLowerCase();
+  const _ps=gid.split('~');const _gf=featuredList(_ps[1],_ps[2]==='-'?null:_ps[2]);
   let items=MR.filter(s=>!q||s[1].toLowerCase().includes(q)||s[2].toLowerCase().includes(q)).slice(0,30);
   const list=items.map(s=>{
-    const star=UD.featured.includes(s[1])?'<span class="star" style="color:var(--gold)">★</span> ':((UD.wishlist&&UD.wishlist.includes(s[1]))?'<span class="sw-wish">🌸</span> ':'');
+    const star=_gf.includes(s[1])?'<span class="star" style="color:var(--gold)">★</span> ':((UD.wishlist&&UD.wishlist.includes(s[1]))?'<span class="sw-wish">🌸</span> ':'');
     return `<div class="pick-item" onclick="addSwordToGroup('${gid}','${esc(s[1])}')"><span class="sw-type">${s[3]}</span>${star}${s[1]} <span style="font-size:10px;color:var(--text3)">${s[2]}</span></div>`;
   }).join('');
   el.innerHTML=`<input type="text" placeholder="名前で検索（漢字・読み仮名）" oninput="renderAddPick('${gid}',this.value)" autofocus>${list||'<div style="padding:12px;text-align:center;color:var(--text3);font-size:12px">該当なし</div>'}`;
@@ -1644,7 +1821,7 @@ function renderAddPick(gid,q){
 function addSwordToGroup(gid,name){
   const r=groupFirstRecord(gid);
   if(!r)return;
-  const m=UD.featured.includes(name)?'boss':'unknown';
+  const m=featuredList(r.placeId,r.floor).includes(name)?'boss':'unknown';
   const dup=(r.swords||[]).find(s=>s.name===name&&s.mass===m);
   if(dup)dup.count++;
   else{if(!r.swords)r.swords=[];r.swords.push({name,mass:m,count:1});}
@@ -1656,7 +1833,7 @@ function addSwordToRec(id,name){
   const r=UD.records.find(x=>x.id===id);
   if(!r)return;
   // かんたん判定と同じ：目玉ならboss、他はunknown（行で後から変えられる）
-  const m=UD.featured.includes(name)?'boss':'unknown';
+  const m=featuredList(r.placeId,r.floor).includes(name)?'boss':'unknown';
   const dup=(r.swords||[]).find(s=>s.name===name&&s.mass===m);
   if(dup)dup.count++;
   else{if(!r.swords)r.swords=[];r.swords.push({name,mass:m,count:1});}
@@ -1750,6 +1927,7 @@ function renderAgg(){
     });
   });
   // ランキング生成
+  const _af=featuredList(aggState.placeId,aggState.floor); // 集計中の文脈の目玉
   let rank=Object.keys(counts).map(n=>{
     const sw=swInfo(n);
     let rate;
@@ -1758,12 +1936,12 @@ function renderAgg(){
       const denom=(isAll||aggState.mass==='boss')?killTotal:massVisit;
       rate=denom?counts[n]/denom*100:0;
     }
-    return {name:n,type:sw?sw[3]:'',count:counts[n],rate,star:UD.featured.includes(n),wish:UD.wishlist&&UD.wishlist.includes(n)};
+    return {name:n,type:sw?sw[3]:'',count:counts[n],rate,star:_af.includes(n),wish:UD.wishlist&&UD.wishlist.includes(n)};
   }).sort((a,b)=>b.count-a.count);
 
   // 目玉ハイライト（ボス または すべて、で表示。目玉はボス由来なので率は周回数基準）
   const featBlock=document.getElementById('featBlock');
-  if((aggState.mass==='boss'||isAll)&&UD.featured.length){
+  if((aggState.mass==='boss'||isAll)&&_af.length){
     const feats=rank.filter(r=>r.star);
     if(feats.length){
       featBlock.style.display='block';
@@ -1883,7 +2061,7 @@ function renderShizaiAgg(recs){
    設定・プリセット画面
    ============================================================ */
 function renderPreset(){
-  renderPlaceList();renderOsakaSettings();renderFeaturedSettings();renderWishSettings();
+  renderPlaceList();renderOsakaSettings();renderWishSettings();
   if(typeof renderSyncUI==='function')renderSyncUI();
 }
 function renderPlaceList(){
@@ -1921,32 +2099,75 @@ function saveOsakaSettings(){
   toast('設定を保存しました');
 }
 
-// 目玉指定
-let featSearch='';
-function renderFeaturedSettings(){
-  // 現在の目玉
-  const cur=document.getElementById('featCurrent');
-  if(UD.featured.length===0){
-    cur.innerHTML='<div class="feat-current-title">現在の目玉</div><div style="font-size:12px;color:var(--text3)">まだ指定していません</div>';
-  }else{
-    cur.innerHTML='<div class="feat-current-title">現在の目玉（'+UD.featured.length+'振り）</div>'+
-      '<div class="chips">'+UD.featured.map(n=>`<span class="feat-tag">★ ${n}<span class="x" onclick="removeFeat('${esc(n)}')">✕</span></span>`).join('')+'</div>';
+// 目玉指定（ステージ設定タブ）：大阪城=全体(UD.featured)、過去=ステージごと(UD.featuredByStage[stage])
+let scfgPlace='kako', scfgMen='8', scfgStage='8-4', scfgSearch='';
+function renderStageCfg(){
+  // 場所ボタン（過去・大阪城。並び順に従う＝過去が先）
+  const places=activePlaces();
+  const pbox=document.getElementById('scfgPlaces');
+  if(pbox){
+    pbox.innerHTML=places.map(p=>`<button class="scfg-place-btn ${scfgPlace===p.id?'on':''}" onclick="scfgSetPlace('${p.id}')">${p.name.replace(/（.*）/,'')}</button>`).join('');
   }
-  renderFeatAddList();
+  const body=document.getElementById('scfgBody');
+  if(!body)return;
+  const p=placeById(scfgPlace);
+  if(p&&p.type==='kako'){
+    // 面→ステージ
+    let html=KAKO_MAP.map(g=>`<button class="rec-men-btn ${scfgMen===g.men?'on':''}" onclick="scfgOpenMen('${g.men}')">${g.men}面 <span class="sub">${g.name}</span></button>`).join('');
+    const g=KAKO_MAP.find(x=>x.men===scfgMen)||KAKO_MAP[0];
+    html+='<div class="rec-stage-btns" style="margin-bottom:10px">'+g.stages.map(s=>{
+      const has=(UD.featuredByStage&&UD.featuredByStage[s.id]&&UD.featuredByStage[s.id].length)?'<span class="scfg-has">⭐</span>':'';
+      return `<button class="rec-stage-btn ${scfgStage===s.id?'on':''}" onclick="scfgPickStage('${s.id}')" style="position:relative">${has}<span class="id">${s.id}</span><span class="nm">${s.nm}</span></button>`;
+    }).join('')+'</div>';
+    const st=stageById(scfgStage);
+    html+=scfgEditorHtml(st?`${st.id} ${st.nm}`:scfgStage);
+    body.innerHTML=html;
+  }else{
+    body.innerHTML='<div class="osaka-cfg-note">大阪城は階で目玉が変わらないので、<b>大阪城ぜんぶで1つ</b>の目玉リストです。</div>'+scfgEditorHtml('大阪城');
+  }
+  renderScfgAddList();
 }
-function onFeatSearch(){featSearch=document.getElementById('featSearch').value.trim().toLowerCase();renderFeatAddList();}
-function renderFeatAddList(){
-  const list=document.getElementById('featAddList');
-  if(!featSearch){list.innerHTML='<div style="padding:14px;text-align:center;color:var(--text3);font-size:12px">名前で検索して目玉に追加（漢字・読み仮名）</div>';return;}
-  let items=MR.filter(s=>!UD.featured.includes(s[1])&&(s[1].toLowerCase().includes(featSearch)||s[2].toLowerCase().includes(featSearch))).slice(0,20);
+function scfgList(){
+  if(scfgPlace==='osaka')return UD.featured||[];
+  return (UD.featuredByStage&&UD.featuredByStage[scfgStage])||[];
+}
+function scfgEditorHtml(label){
+  const list=scfgList();
+  return `<div class="meda-box">
+    <div class="meda-target">⭐ <span>${label}</span> の目玉 <span class="tag">${list.length}人</span></div>
+    <input type="text" class="feat-search" id="scfgSearch" placeholder="名前で検索して目玉に追加（漢字・読み仮名）" oninput="onScfgSearch()" value="${scfgSearch.replace(/"/g,'&quot;')}">
+    <div class="feat-add-list" id="scfgAddList"></div>
+    <div class="cm-label">指定中の目玉</div>
+    <div class="scfg-current">${list.length?list.map(n=>{const sw=swInfo(n);return `<div class="meda-chip"><span class="nm"><span class="star">★</span>${n}<span class="y">${sw?sw[2]:''}</span></span><button class="rm" onclick="scfgRemove('${esc(n)}')">外す</button></div>`;}).join(''):'<div class="meda-empty">まだ指定していません</div>'}</div>
+  </div>`;
+}
+function renderScfgAddList(){
+  const list=document.getElementById('scfgAddList');
+  if(!list)return;
+  const q=scfgSearch.trim().toLowerCase();
+  const cur=scfgList();
+  if(!q){list.innerHTML='<div style="padding:14px;text-align:center;color:var(--text3);font-size:12px">名前で検索して目玉に追加（漢字・読み仮名）</div>';return;}
+  let items=MR.filter(s=>!cur.includes(s[1])&&(s[1].toLowerCase().includes(q)||s[2].toLowerCase().includes(q))).slice(0,20);
   if(items.length===0){list.innerHTML='<div style="padding:14px;text-align:center;color:var(--text3);font-size:12px">該当なし</div>';return;}
-  list.innerHTML=items.map(s=>`<div class="sword-item" onclick="addFeat('${esc(s[1])}')">
+  list.innerHTML=items.map(s=>`<div class="sword-item" onclick="scfgAdd('${esc(s[1])}')">
     <span class="sw-no">No.${s[0]}</span><span class="sw-type">${s[3]}</span>
     <span class="sw-namewrap"><span class="sw-name">${s[1]}</span><span class="sw-yomi">${s[2]}</span></span>
     <span style="color:var(--gold);font-size:13px">＋★</span></div>`).join('');
 }
-function addFeat(n){if(!UD.featured.includes(n))UD.featured.push(n);save();document.getElementById('featSearch').value='';featSearch='';renderFeaturedSettings();buildQuick();renderList();toast(n+' を目玉に追加');}
-function removeFeat(n){UD.featured=UD.featured.filter(x=>x!==n);save();renderFeaturedSettings();buildQuick();renderList();toast('目玉から外しました');}
+function onScfgSearch(){const el=document.getElementById('scfgSearch');scfgSearch=el?el.value:'';renderScfgAddList();}
+function scfgSetPlace(id){scfgPlace=id;scfgSearch='';renderStageCfg();}
+function scfgOpenMen(men){scfgMen=men;renderStageCfg();}
+function scfgPickStage(id){scfgStage=id;scfgSearch='';scfgMen=menOfStage(id);renderStageCfg();}
+function scfgAdd(name){
+  if(scfgPlace==='osaka'){if(!UD.featured.includes(name))UD.featured.push(name);}
+  else{if(!UD.featuredByStage)UD.featuredByStage={};if(!UD.featuredByStage[scfgStage])UD.featuredByStage[scfgStage]=[];if(!UD.featuredByStage[scfgStage].includes(name))UD.featuredByStage[scfgStage].push(name);}
+  save();scfgSearch='';renderStageCfg();buildQuick();renderList();toast(name+' を目玉に追加');
+}
+function scfgRemove(name){
+  if(scfgPlace==='osaka'){UD.featured=UD.featured.filter(x=>x!==name);}
+  else if(UD.featuredByStage&&UD.featuredByStage[scfgStage]){UD.featuredByStage[scfgStage]=UD.featuredByStage[scfgStage].filter(x=>x!==name);}
+  save();renderStageCfg();buildQuick();renderList();toast('目玉から外しました');
+}
 
 let wishSearch='';
 function renderWishSettings(){
@@ -2112,10 +2333,18 @@ function importJSON(text,mode){
   const data=JSON.parse(text);
   const inUD=data.UD||data;
   if(!inUD.records){showImportReport({error:'邂逅録のJSONではないようです'});return;}
-  if(mode==='replace'){UD.records=[];UD.places=inUD.places||UD.places;UD.featured=inUD.featured||UD.featured;UD.wishlist=inUD.wishlist||UD.wishlist;}
+  if(mode==='replace'){UD.records=[];UD.places=inUD.places||UD.places;UD.featured=inUD.featured||UD.featured;UD.featuredByStage=inUD.featuredByStage||UD.featuredByStage||{};UD.wishlist=inUD.wishlist||UD.wishlist;}
   const before=UD.records.length;
   (inUD.records||[]).forEach(r=>{if(!UD.records.find(x=>x.id===r.id))UD.records.push(r);});
   if(inUD.featured&&mode!=='replace')inUD.featured.forEach(f=>{if(!UD.featured.includes(f))UD.featured.push(f);});
+  // 過去のステージ目玉：マージ時はステージごとに和集合
+  if(inUD.featuredByStage&&mode!=='replace'){
+    if(!UD.featuredByStage)UD.featuredByStage={};
+    Object.keys(inUD.featuredByStage).forEach(sid=>{
+      if(!UD.featuredByStage[sid])UD.featuredByStage[sid]=[];
+      (inUD.featuredByStage[sid]||[]).forEach(n=>{if(!UD.featuredByStage[sid].includes(n))UD.featuredByStage[sid].push(n);});
+    });
+  }
   if(inUD.wishlist&&mode!=='replace')inUD.wishlist.forEach(w=>{if(!UD.wishlist.includes(w))UD.wishlist.push(w);});
   save();afterImport();
   showImportReport({added:UD.records.length-before,total:UD.records.length,fmt:'JSON'});
@@ -2162,7 +2391,7 @@ function importTable(raw,ext,mode){
     }
     // マス不明でも目玉男士ならボス由来とみなす（かんたん記録と同じ判定）
     let useMass=mass;
-    if(useMass==='unknown'&&swName&&swName!==NODROP&&UD.featured.includes(swName))useMass='boss';
+    if(useMass==='unknown'&&swName&&swName!==NODROP&&isFeatured(swName,placeId,floor))useMass='boss';
     const gkey=[date,placeId,floor,kills,koban,hakata].join('|');
     if(!groups[gkey])groups[gkey]={date,placeId,floor,kills,koban,hakata,swords:{},res:{},mins:0};
     // 資源は行に値があれば取り込む（エクスポートは先頭行のみ値を持つ）
@@ -2195,7 +2424,7 @@ function importTable(raw,ext,mode){
 
 function afterImport(){
   initRecState();renderRecPlace();renderRecFloor();updateHeaderSub();
-  buildQuick();renderList();renderRecent();renderFeaturedSettings();renderWishSettings();renderOsakaSettings();renderPlaceList();
+  buildQuick();renderList();renderRecent();renderStageCfg();renderWishSettings();renderOsakaSettings();renderPlaceList();
 }
 function showImportReport(r){
   const box=document.getElementById('importResult');
@@ -2364,14 +2593,19 @@ function mergeById(localArr,cloudArr){
 }
 function mergeCloud(cloud){
   if(!cloud)return false;
-  const beforeJson=JSON.stringify({r:UD.records,p:UD.places,f:UD.featured,w:UD.wishlist});
+  const beforeJson=JSON.stringify({r:UD.records,p:UD.places,f:UD.featured,fbs:UD.featuredByStage,w:UD.wishlist});
   UD.records=mergeById(UD.records,cloud.records);
   UD.places=mergeById(UD.places,cloud.places);
   const fset=new Set([...(UD.featured||[]),...(cloud.featured||[])]);
   UD.featured=Array.from(fset);
+  // 過去のステージ目玉：ステージごとに和集合
+  const _fbs=UD.featuredByStage||{},_cfbs=cloud.featuredByStage||{};
+  const _allSid=new Set([...Object.keys(_fbs),...Object.keys(_cfbs)]);
+  const _mfbs={};_allSid.forEach(sid=>{_mfbs[sid]=Array.from(new Set([...(_fbs[sid]||[]),...(_cfbs[sid]||[])]));});
+  UD.featuredByStage=_mfbs;
   const wset=new Set([...(UD.wishlist||[]),...(cloud.wishlist||[])]);
   UD.wishlist=Array.from(wset);
-  const changed=beforeJson!==JSON.stringify({r:UD.records,p:UD.places,f:UD.featured,w:UD.wishlist});
+  const changed=beforeJson!==JSON.stringify({r:UD.records,p:UD.places,f:UD.featured,fbs:UD.featuredByStage,w:UD.wishlist});
   if(changed){
     // マージ結果をローカルへ（updatedAtはいじらず直接保存）
     localStorage.setItem(SK,JSON.stringify(UD));

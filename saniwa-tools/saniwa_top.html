@@ -5,6 +5,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>審神者の道具箱</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -99,6 +101,11 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   font-size: 10px; letter-spacing: .22em;
   color: rgba(240,210,150,.5);
   font-family: 'Noto Sans JP', sans-serif; white-space: nowrap;
+}
+.manual-note {
+  font-size: 11px; line-height: 1.7; color: rgba(240,220,180,.75);
+  font-family: 'Noto Sans JP', sans-serif;
+  text-align: center; margin: -8px 0 2px;
 }
 
 /* マニュアルカード */
@@ -803,7 +810,7 @@ footer {
     <div class="card-body">
       <div class="card-title">出陣支度部屋</div>
       <div class="card-desc">
-        稽古録に登録した刀剣男士で部隊を編制し、装備を整えるツールです。※稽古録未登録の男士への対応は後日アップデート予定です。
+        刀剣男士で部隊を編制し、装備を整えるツールです。稽古録への登録の有無に関わらず利用できます。
       </div>
       <span class="card-link">道具を開く →</span>
     </div>
@@ -829,6 +836,8 @@ footer {
     <span class="manual-divider-label">マ ニ ュ ア ル</span>
     <div class="manual-divider-line"></div>
   </div>
+
+  <div class="manual-note">各ツールの詳しい使い方は、下のマニュアルからご確認ください。</div>
 
   <a class="manual-card" href="Shizaichou_manual.html">
     <span class="manual-icon">📖</span>
@@ -871,52 +880,19 @@ footer {
 <div class="sp-update-bar">
   <div class="sp-update-toggle" onclick="spUpdateToggle()" id="sp-update-btn">
     <span class="sp-update-label">最新更新</span>
-    <span class="sp-update-date">2026.06.12</span>
+    <span class="sp-update-date">2026.06.16</span>
     <span class="sp-update-badge">最新</span>
     <span class="sp-update-arrow">▼</span>
   </div>
   <div class="sp-update-body" id="sp-update-body">
     <div class="tl-content">
-      <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">資源帳</div>
+      <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">邂逅録</div>
       <ul>
-        <li>お札（富士・松・竹・梅）の記録に対応しました</li>
-        <li>使い方ガイド（「？」ボタン）を追加しました</li>
-        <li>インポート・エクスポートを刷新しました（JSON・CSV・Excelに対応、日付単位のマージ）</li>
-        <li>カレンダーの日付ズレを修正し、年・月のドロップダウンを追加しました</li>
-        <li>期間メモ・日メモを折りたたみ表示できるようにしました</li>
-        <li>グラフのメモ凡例に折りたたみを追加しました（終了済み期間メモ・日メモの月別集計・縦横切替）</li>
-        <li>クラウドログイン時に通知メールが届く問題に対処しました</li>
-      </ul>
-      <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
-      <ul>
-        <li>使い方ガイド（「？」ボタン）を追加しました。起動時に初回のみ案内を自動表示します</li>
-        <li>顕現日（入手日）の記録に対応しました</li>
-        <li>入手順ソートを追加しました（同日の手動並べ替えにも対応）</li>
-        <li>絵文字マークでの絞り込みに対応しました（複数選択・OR条件）</li>
-        <li>Lv・経験値・乱舞Lv・入手順のソートをひとつのボタンで昇順⇄降順に切り替えられるようにしました</li>
-        <li>乱舞Lvでのソートを追加しました</li>
-        <li>顕現日の入力UIを装飾カレンダーに統一し、クリアボタンも追加しました</li>
-        <li>日付入力方法（装飾カレンダー／標準）を設定から切り替えられるようにしました</li>
-        <li>カレンダーの日付ズレを修正し、年・月のドロップダウンを追加しました</li>
-        <li>期間メモ・日メモを折りたたみ表示できるようにしました</li>
-        <li>日メモ強調時のグラフのちらつきを修正しました</li>
-        <li>カレンダーが画面外クリックで閉じない不具合を修正しました</li>
-        <li>柏太刀（No.256）の最大生存ステータスを修正しました</li>
-      </ul>
-      <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">出陣支度部屋</div>
-      <ul>
-        <li>説明書（マニュアル）を公開しました。トップページからアクセスできます</li>
-        <li>使い方ガイド（「？」ボタン）を追加しました</li>
-        <li>稽古録連携モードで顕現日順・乱舞Lv順ソートと絵文字マーク絞り込みに対応しました</li>
-        <li>テーマ設定時のちらつきを修正しました</li>
-        <li>柏太刀（No.256）の最大生存ステータスを修正しました</li>
-      </ul>
-      <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">愛蔵の一ノ倉</div>
-      <ul>
-        <li>説明書（マニュアル）を公開しました。トップページからアクセスできます</li>
-        <li>暦メモのカレンダーの日付ズレを修正しました</li>
-        <li>愛用度欄で日本語入力ができなくなる不具合を修正しました</li>
-        <li>カレンダーに年・月のドロップダウンを追加しました</li>
+        <li>「選んだ男士」を自由に並べ替えられるようにしました。▲▼で手動入れ替えができるほか、記録順／名前順／種類順／No順／件数順でのソートにも対応しています。並べた順番を覚えておく「カスタム順」も使えます</li>
+        <li>同じ名前の男士を、自動でまとめて表示するようにしました（設定で切り替えられます）</li>
+        <li>件数の数字をタップして、直接入力できるようにしました。±ボタンでは記録が消えないように変更したので、消したいときはゴミ箱から行ってください</li>
+        <li>「お迎え男士（🌸）」を登録できるようにしました。欲しい子に目印を付けられます</li>
+        <li>集計の表示名を分かりやすく整え、切り替えバーの初期表示なども改善しました</li>
       </ul>
     </div>
   </div>
@@ -1014,7 +990,7 @@ footer {
       <!-- 1件目：最新・最初から開く -->
       <div class="tl-entry is-latest" id="tl-0">
         <div class="tl-header" onclick="tlToggle('tl-0')">
-          <span class="tl-date">2026.06.12</span>
+          <span class="tl-date">2026.06.16</span>
           <span class="tl-badge">最新</span>
           <span class="tl-arrow">▼</span>
         </div>
@@ -1022,48 +998,11 @@ footer {
           <div class="tl-content">
             <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">邂逅録</div>
             <ul>
-              <li>邂逅録を公開しました。ドロップした刀剣男士を記録・集計できます（大阪城に対応、通常マップ・連隊戦は順次対応予定）</li>
-            </ul>
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">資源帳</div>
-            <ul>
-              <li>お札（富士・松・竹・梅）の記録に対応しました</li>
-              <li>使い方ガイド（「？」ボタン）を追加しました</li>
-              <li>インポート・エクスポートを刷新しました（JSON・CSV・Excelに対応、日付単位のマージ）</li>
-              <li>カレンダーの日付ズレを修正し、年・月のドロップダウンを追加しました</li>
-              <li>期間メモ・日メモを折りたたみ表示できるようにしました</li>
-              <li>グラフのメモ凡例に折りたたみを追加しました（終了済み期間メモ・日メモの月別集計・縦横切替）</li>
-              <li>クラウドログイン時に通知メールが届く問題に対処しました</li>
-            </ul>
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
-            <ul>
-              <li>使い方ガイド（「？」ボタン）を追加しました。起動時に初回のみ案内を自動表示します</li>
-              <li>顕現日（入手日）の記録に対応しました</li>
-              <li>入手順ソートを追加しました（同日の手動並べ替えにも対応）</li>
-              <li>絵文字マークでの絞り込みに対応しました（複数選択・OR条件）</li>
-              <li>Lv・経験値・乱舞Lv・入手順のソートをひとつのボタンで昇順⇄降順に切り替えられるようにしました</li>
-              <li>乱舞Lvでのソートを追加しました</li>
-              <li>顕現日の入力UIを装飾カレンダーに統一し、クリアボタンも追加しました</li>
-              <li>日付入力方法（装飾カレンダー／標準）を設定から切り替えられるようにしました</li>
-              <li>カレンダーの日付ズレを修正し、年・月のドロップダウンを追加しました</li>
-              <li>期間メモ・日メモを折りたたみ表示できるようにしました</li>
-              <li>日メモ強調時のグラフのちらつきを修正しました</li>
-              <li>カレンダーが画面外クリックで閉じない不具合を修正しました</li>
-              <li>柏太刀（No.256）の最大生存ステータスを修正しました</li>
-            </ul>
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">出陣支度部屋</div>
-            <ul>
-              <li>説明書（マニュアル）を公開しました。トップページからアクセスできます</li>
-              <li>使い方ガイド（「？」ボタン）を追加しました</li>
-              <li>稽古録連携モードで顕現日順・乱舞Lv順ソートと絵文字マーク絞り込みに対応しました</li>
-              <li>テーマ設定時のちらつきを修正しました</li>
-              <li>柏太刀（No.256）の最大生存ステータスを修正しました</li>
-            </ul>
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">愛蔵の一ノ倉</div>
-            <ul>
-              <li>説明書（マニュアル）を公開しました。トップページからアクセスできます</li>
-              <li>暦メモのカレンダーの日付ズレを修正しました</li>
-              <li>愛用度欄で日本語入力ができなくなる不具合を修正しました</li>
-              <li>カレンダーに年・月のドロップダウンを追加しました</li>
+              <li>「選んだ男士」を自由に並べ替えられるようにしました。▲▼で手動入れ替えができるほか、記録順／名前順／種類順／No順／件数順でのソートにも対応しています。並べた順番を覚えておく「カスタム順」も使えます</li>
+              <li>同じ名前の男士を、自動でまとめて表示するようにしました（設定で切り替えられます）</li>
+              <li>件数の数字をタップして、直接入力できるようにしました。±ボタンでは記録が消えないように変更したので、消したいときはゴミ箱から行ってください</li>
+              <li>「お迎え男士（🌸）」を登録できるようにしました。欲しい子に目印を付けられます</li>
+              <li>集計の表示名を分かりやすく整え、切り替えバーの初期表示なども改善しました</li>
             </ul>
           </div>
         </div>
@@ -1072,27 +1011,19 @@ footer {
       <!-- 2件目：折りたたみ -->
       <div class="tl-entry" id="tl-1">
         <div class="tl-header" onclick="tlToggle('tl-1')">
-          <span class="tl-date">2026.05.31</span>
+          <span class="tl-date">2026.06.15</span>
           <span class="tl-arrow">▼</span>
         </div>
         <div class="tl-body">
           <div class="tl-content">
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
+            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">出陣支度部屋</div>
             <ul>
-              <li>審神者レベルの記録に対応しました</li>
-            </ul>
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">出陣支度部屋</div>
-            <ul>
-              <li>稽古録に未登録の男士も表示できるモードを追加しました</li>
-              <li>スマホ表示の編制画面に新しい表示形式を追加しました</li>
-            </ul>
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">愛蔵の一ノ倉</div>
-            <ul>
-              <li>宝物帳：グリッドカードのレイアウトを刷新しました（縦積み・★レア度表示・列数自動調整など）</li>
-              <li>断片管理：スマホでカード表示に対応し、テーブル／カード切替ボタンを追加しました</li>
-              <li>刀装タブ：テーブル／カード切替ボタンを追加しました</li>
-              <li>暦メモ：カラーピッカー・カレンダーピッカーを導入し、メモ一覧の表示を刷新しました</li>
-              <li>最後に開いたタブを記憶するようにしました・その他UI改善</li>
+              <li>通常装備リストを、装備の有無で絞り込めるようにしました。刀装・馬・お守り・宝物それぞれをタップすると「装備あり→なし→解除」の3段階で切り替えられます</li>
+              <li>左側の「並び替え・絞り込み」を折りたためるようにしました。並び替え／刀種／状態／絵文字マーク／装備の各見出しをクリックで開閉でき、畳んだときは見出しに今の選択（例：「太刀」「極のみ」）が表示されます</li>
+              <li>表示列（モードバー）の位置を設定で選べるようにしました（PCのみ）。「ヘッダー下のバー（従来）／ヘッダー内のタイトル横／ヘッダー右側」から選べ、ヘッダー内に置くときは注記の位置（表示しない／トグルの左／トグルの右）も選べます</li>
+              <li>白山吉光（極）・南海太郎朝尊（極）のマスターデータを追加しました（白山吉光の生存120、南海太郎朝尊の偵察91）</li>
+              <li>閾値チェックにプリセットを追加しました。閾値エディタ上部のプルダウンから「大阪城・高速槍先制（機動）」を選べます</li>
+              <li>閾値チェックを部隊ごとに登録・管理できるようにしました（これまでは全部隊で共通表示でした）</li>
             </ul>
           </div>
         </div>
@@ -1101,15 +1032,25 @@ footer {
       <!-- 3件目：折りたたみ -->
       <div class="tl-entry" id="tl-2">
         <div class="tl-header" onclick="tlToggle('tl-2')">
-          <span class="tl-date">2026.05.30</span>
+          <span class="tl-date">2026.06.14</span>
           <span class="tl-arrow">▼</span>
         </div>
         <div class="tl-body">
           <div class="tl-content">
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">サイト</div>
+            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">邂逅録</div>
             <ul>
-              <li>愛蔵の一ノ倉を公開しました</li>
-              <li>出陣支度部屋を公開しました</li>
+              <li>集計に「1時間あたり」の表示を追加しました。周回にかけた時間（分）を記録すると、資源も小判も「1時間でどれだけ拾えるか」が見られるようになりました（時間を入れなければ今まで通り合計と1周あたりだけ表示します）</li>
+              <li>木炭・玉鋼・冷却材・砥石の資源を記録できるようにしました。集計では資源ごとに「合計・1周あたり・1時間あたり」を表示し、小判（金枠）と資源（緑枠）が色で区別されるようになりました。インポート・エクスポートも資源に対応しています</li>
+              <li>ボス小判のドロップ率を表示するようにしました。「詳しく記録」のときにボスマスで小判が出た回数を入力すると、大阪城のボスがどれくらいの確率で小判を落とすかが分かります</li>
+              <li>博多藤四郎の小判倍率の選択を覚えておくようにしました。最初から極（×2.0）が選ばれた状態になり、前回選んだ状態も記憶するので、毎回選び直す手間がなくなりました</li>
+              <li>「かんたん記録」を改善しました。見出しを「ドロップした男士」に統一し、刀種・刀派での絞り込みもかんたん記録で使えるようにしました</li>
+              <li>「最近の記録」に男士の並べ替えを追加しました（目玉優先・マス順・種類順・No順・件数順、昇順／降順の切替つき）。男士の行を2段にして、名前とゴミ箱・マスと件数を見やすく配置しました</li>
+              <li>「かんたん／詳しく」の切り替えバーを画面上部に固定するかどうか、設定で選べるようにしました（初期設定はオフ）</li>
+              <li>タブの名前を「記録／集計／設定」に短くして、スマホで見やすくしました。「何周した？」の説明文も分かりやすくしました</li>
+            </ul>
+            <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">サイト全体</div>
+            <ul>
+              <li>ファビコン（ブラウザのタブやスマホのホーム画面に表示される小さなアイコン）を追加しました</li>
             </ul>
           </div>
         </div>
