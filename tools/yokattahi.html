@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="b">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="description" content="今日のよかったことを書きためる、じぶん用のちいさな日記">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="よかったこと日記">
+<meta name="theme-color" content="#fdf6ec" id="theme-color-meta">
+<title>よかったこと日記</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Zen+Maru+Gothic:wght@400;500;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ═══════════════════════════════
+   THEMES
+   a = つきよ (MyRecord moon系) / b = みかん (あたたか系・デフォルト) / c = ほしぞら (星あつめ系)
+═══════════════════════════════ */
+[data-theme="a"]{
+  --bg:#0d0d1a;--bg2:#1a1a2e;--bg3:#111120;--border:#2a2a3a;--border2:#333;
+  --text:#f0f0f0;--muted:#777;--muted2:#555;--accent:#c8a8e9;--accent-txt:#0d0d1a;
+  --danger:#ff6b6b;--sat:#c8a8e9;--hg:linear-gradient(135deg,#1a1a2e,#12122a);
+  --sr1:#1c1c2e;--sr2:#2a2a3e;--obg:#06060f;
+  --font:'DM Mono','Zen Maru Gothic','Courier New',monospace;
+  --radius:10px;--dash:solid;
+}
+[data-theme="b"]{
+  --bg:#fdf6ec;--bg2:#fffdf8;--bg3:#fdf6ec;--border:#f0dcc0;--border2:#e8d0b0;
+  --text:#4a3728;--muted:#a08050;--muted2:#c8a880;--accent:#e8965a;--accent-txt:#fff;
+  --danger:#e05a4a;--sat:#5a9ad0;--hg:linear-gradient(135deg,#ffe8c8,#ffd9a8);
+  --sr1:#f0d8b0;--sr2:#e0c090;--obg:#f5e8d5;
+  --font:'Zen Maru Gothic','DM Mono',sans-serif;
+  --radius:13px;--dash:dashed;
+}
+[data-theme="c"]{
+  --bg:#0a1228;--bg2:#141f42;--bg3:#0d1530;--border:#1c2a50;--border2:#26355e;
+  --text:#e8ecf8;--muted:#6a7aa8;--muted2:#4a5a88;--accent:#f0c860;--accent-txt:#0a1228;
+  --danger:#ff7a8a;--sat:#7ab8ff;--hg:linear-gradient(135deg,#141f42,#0d1530);
+  --sr1:#182550;--sr2:#26355e;--obg:#050a18;
+  --font:'Zen Maru Gothic','DM Mono',sans-serif;
+  --radius:12px;--dash:solid;
+}
+html,body{height:100%;font-family:var(--font)}
+body{background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+::-webkit-scrollbar{width:3px;height:3px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+textarea{resize:none}
+
+/* ═══════════════════════════════
+   LAYOUT MOBILE (phone shell)
+═══════════════════════════════ */
+#page-wrap{min-height:100vh;min-height:100dvh}
+#page-wrap.layout-mobile{display:flex;justify-content:center;align-items:center;height:100dvh;padding:20px 12px;overflow:hidden;background:var(--obg);transition:background .3s}
+#page-wrap.layout-mobile #shell-wrap{display:flex;flex-direction:column;width:390px;max-width:100%;height:calc(100dvh - 40px);max-height:860px;background:var(--bg);border-radius:40px;box-shadow:0 0 0 8px var(--sr1),0 0 0 11px var(--sr2),0 30px 80px rgba(0,0,0,.4);overflow:hidden;flex-shrink:0;transition:box-shadow .3s,background .3s}
+#page-wrap.layout-mobile #shell-wrap::before{content:'';display:block;width:100px;height:26px;background:var(--sr1);border-radius:0 0 16px 16px;margin:0 auto;flex-shrink:0}
+#page-wrap.layout-mobile #app{flex:1;overflow:hidden;min-height:0;display:flex;flex-direction:column}
+#page-wrap.layout-mobile #main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+#page-wrap.layout-mobile #tab-bar{display:flex;flex-shrink:0}
+#page-wrap.layout-mobile #sidebar{display:none}
+#page-wrap.layout-mobile #top-header{display:block}
+#page-wrap.layout-mobile .content{padding:14px}
+
+/* ═══════════════════════════════
+   LAYOUT DESKTOP (sidebar)
+═══════════════════════════════ */
+#page-wrap.layout-desktop{display:flex;flex-direction:row;min-height:100vh;background:var(--bg);justify-content:center}
+#page-wrap.layout-desktop #shell-wrap{display:contents}
+#page-wrap.layout-desktop #app{display:flex;flex-direction:column;flex:1;min-height:100vh;min-width:0;max-width:720px}
+#page-wrap.layout-desktop #sidebar{display:flex;flex-direction:column;width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border2);position:sticky;top:0;height:100vh;overflow-y:auto;order:-1}
+#page-wrap.layout-desktop #main{flex:1;overflow-y:auto;padding-bottom:40px}
+#page-wrap.layout-desktop #tab-bar{display:none}
+#page-wrap.layout-desktop #top-header{display:none}
+#page-wrap.layout-desktop .content{padding:24px 28px}
+
+/* ═══════════════════════════════
+   SIDEBAR
+═══════════════════════════════ */
+#sidebar-logo{padding:18px 18px 12px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between}
+#sidebar-logo .sub{font-size:9px;color:var(--accent);letter-spacing:3px;margin-bottom:3px}
+#sidebar-logo .title{font-size:15px;font-weight:700}
+.sb-tog-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:13px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0;font-family:inherit}
+.sb-tog-btn:hover{border-color:var(--accent);color:var(--accent)}
+#sidebar-clock{padding:12px 18px;border-bottom:1px solid var(--border2)}
+#sidebar-clock .sc-date{font-size:10px;color:var(--muted);margin-bottom:2px}
+#sidebar-clock .sc-time{font-size:21px;font-weight:700;color:var(--accent);letter-spacing:2px}
+#sidebar-nav{padding:10px;flex:1}
+.snav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border:none;border-radius:8px;background:none;color:var(--muted);font-family:inherit;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;margin-bottom:3px;transition:all .15s;text-align:left}
+.snav-btn:hover{background:rgba(128,128,128,.1);color:var(--text)}
+.snav-btn.active{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)}
+.snav-icon{font-size:14px}
+#sb-stats{padding:10px 14px;border-top:1px solid var(--border2)}
+.ss-title{font-size:8px;color:var(--muted);letter-spacing:2px;margin-bottom:6px}
+.ss-item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)}
+.ss-item:last-child{border-bottom:none}
+.ss-lbl{font-size:9px;color:var(--muted)}
+.ss-val{font-size:11px;font-weight:700}
+
+/* ═══════════════════════════════
+   TOP HEADER (mobile)
+═══════════════════════════════ */
+#top-header{background:var(--hg);border-bottom:2px solid var(--accent);padding:12px 14px 10px;position:sticky;top:0;z-index:40;flex-shrink:0}
+.th-row{display:flex;align-items:flex-start;justify-content:space-between}
+.th-left .th-sub{font-size:8px;color:var(--accent);letter-spacing:3px;margin-bottom:1px}
+[data-theme="b"] .th-left .th-sub{color:#c06830}
+.th-left .th-title{font-size:17px;font-weight:700}
+[data-theme="b"] .th-left .th-title{color:#5a3818}
+.th-right{display:flex;align-items:flex-start;gap:7px}
+.th-clock{text-align:right}
+.th-clock .tc-date{font-size:9px;color:var(--muted);margin-bottom:1px}
+.th-clock .tc-time{font-size:17px;font-weight:700;color:var(--accent);letter-spacing:1px}
+[data-theme="b"] .th-clock .tc-time{color:#c06830}
+.hdr-tog-btn{background:none;border:1px solid rgba(128,128,128,.3);border-radius:6px;color:var(--muted);font-size:14px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0;margin-top:2px;font-family:inherit}
+.hdr-tog-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ═══════════════════════════════
+   TAB BAR (mobile)
+═══════════════════════════════ */
+#tab-bar{background:var(--bg2);border-top:1px solid var(--border2)}
+.tab-btn{flex:1;padding:8px 0 10px;background:none;border:none;border-top:2px solid transparent;color:var(--muted2);font-family:inherit;font-size:10px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px}
+.tab-btn .ticon{font-size:15px}
+.tab-btn.active{border-top-color:var(--accent);color:var(--accent)}
+
+/* ═══════════════════════════════
+   COMMON
+═══════════════════════════════ */
+.content{display:none}
+.content.show{display:block}
+.panel{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:14px;margin-bottom:14px}
+[data-theme="b"] .panel{box-shadow:0 2px 8px rgba(200,140,60,.08)}
+.panel-title{font-size:9px;color:var(--accent);letter-spacing:2px;margin-bottom:12px;font-weight:700}
+[data-theme="b"] .panel-title{color:#c06830}
+.empty{text-align:center;color:var(--muted2);padding:40px 0;font-size:11px;line-height:2}
+.empty .ei{font-size:26px;margin-bottom:6px}
+
+/* date nav (記録タブ) */
+.date-nav{display:flex;align-items:center;gap:6px;margin-bottom:12px}
+.dnav-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:18px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0;font-family:inherit}
+.dnav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.date-disp-btn{flex:1;position:relative;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:inherit;font-size:13px;font-weight:700;padding:7px 10px;cursor:pointer;text-align:center;transition:all .15s}
+.date-disp-btn:hover{border-color:var(--accent)}
+.date-disp-btn input[type=date]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:none}
+.today-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-family:inherit;font-size:9px;font-weight:700;letter-spacing:1px;padding:7px 8px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.today-btn:hover,.today-btn.active{border-color:var(--accent);color:var(--accent)}
+
+/* input area */
+.add-area textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:calc(var(--radius) - 3px);padding:10px 11px;font-size:13px;color:var(--text);font-family:inherit;line-height:1.7;outline:none;min-height:64px;transition:border-color .15s}
+.add-area textarea:focus{border-color:var(--accent)}
+.add-area textarea::placeholder{color:var(--muted2)}
+.add-btn{display:block;width:100%;background:var(--accent);color:var(--accent-txt);border:none;border-radius:calc(var(--radius) - 3px);text-align:center;padding:10px;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;font-family:inherit;margin-top:8px;transition:opacity .15s}
+.add-btn:hover{opacity:.85}
+
+/* entry list */
+.day-group{padding:10px 2px;border-bottom:1px var(--dash) var(--border)}
+.day-group:last-child{border-bottom:none}
+.dg-date{color:var(--accent);font-size:10px;font-weight:700;margin-bottom:5px;letter-spacing:.5px}
+[data-theme="b"] .dg-date{color:#c06830}
+.dg-date .dg-cnt{color:var(--muted);font-weight:400;margin-left:6px;font-size:9px}
+.entry-row{display:flex;align-items:flex-start;gap:7px;padding:4px 0}
+.entry-mark{flex-shrink:0;font-size:10px;margin-top:4px;line-height:1}
+.entry-txt{flex:1;font-size:12px;line-height:1.8;white-space:pre-wrap;word-break:break-word}
+.entry-acts{display:flex;gap:4px;flex-shrink:0}
+.ea-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:11px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-family:inherit}
+.ea-btn:hover{border-color:var(--accent);color:var(--accent)}
+.ea-btn.del:hover{border-color:var(--danger);color:var(--danger)}
+
+/* ═══════════════════════════════
+   CALENDAR
+═══════════════════════════════ */
+.cal-ctrl{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.cal-month-lbl{font-size:13px;font-weight:700;letter-spacing:1px}
+.cal-nav-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:16px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-family:inherit}
+.cal-nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.cal-this-month{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:9px;font-weight:700;padding:6px 8px;cursor:pointer;transition:all .15s;font-family:inherit;letter-spacing:1px}
+.cal-this-month:hover{border-color:var(--accent);color:var(--accent)}
+.cal-wdays{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:3px}
+.cal-wd{text-align:center;font-size:8px;font-weight:700;color:var(--muted);padding:3px 0}
+.cal-wd.sun{color:var(--danger)}
+.cal-wd.sat{color:var(--sat)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:10px}
+.cal-cell{background:var(--bg3);border:1px solid var(--border);border-radius:7px;min-height:50px;padding:4px 3px 3px;cursor:pointer;transition:all .15s;position:relative;display:flex;flex-direction:column}
+[data-theme="b"] .cal-cell{background:var(--bg2)}
+.cal-cell:hover{border-color:var(--accent)}
+.cal-cell.today{border-color:var(--accent);border-width:1.5px}
+.cal-cell.empty-cell{background:transparent;border-color:transparent;cursor:default;pointer-events:none}
+.cal-cell.no-rec{opacity:.55}
+.cal-dn{font-size:9px;font-weight:700;color:var(--muted);line-height:1;margin-bottom:2px}
+.cal-cell.today .cal-dn{color:var(--accent)}
+.cal-cell.sun .cal-dn{color:var(--danger)}
+.cal-mark{flex:1;display:flex;align-items:center;justify-content:center;font-size:11px;line-height:1.2;text-align:center;word-break:break-all;color:var(--accent)}
+.cal-cnt{position:absolute;bottom:3px;right:4px;font-size:8px;font-weight:700;color:var(--accent)}
+.cal-month-total{text-align:center;font-size:10px;color:var(--muted);padding:9px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius)}
+[data-theme="b"] .cal-month-total{background:var(--bg2)}
+.cal-month-total b{color:var(--accent);font-size:12px}
+[data-theme="b"] .cal-month-total b{color:#c06830}
+
+/* ═══════════════════════════════
+   DAY PANEL OVERLAY
+═══════════════════════════════ */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;align-items:center;justify-content:center;padding:16px}
+.overlay.show{display:flex}
+#edit-overlay{z-index:250}
+#confirm-overlay{z-index:300}
+.day-panel{background:var(--bg);border:1px solid var(--border2);border-radius:14px;width:100%;max-width:440px;max-height:84vh;overflow-y:auto;padding:0 0 16px;display:flex;flex-direction:column}
+.dp-hd{display:flex;align-items:center;justify-content:space-between;padding:13px 14px 11px;position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--border2);z-index:1}
+.dp-nav{display:flex;align-items:center;gap:8px}
+.dp-nav-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:18px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-family:inherit}
+.dp-nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.dp-date{font-size:12px;font-weight:700;letter-spacing:1px;min-width:118px;text-align:center}
+.dp-close{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:16px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-family:inherit}
+.dp-close:hover{border-color:var(--danger);color:var(--danger)}
+.dp-body{padding:13px 14px 0}
+.dp-empty{font-size:11px;color:var(--muted2);text-align:center;padding:22px 0;line-height:2}
+.dp-add{padding:0 14px;margin-top:10px}
+
+/* ═══════════════════════════════
+   EDIT / CONFIRM MODALS
+═══════════════════════════════ */
+.modal{background:var(--bg);border:1px solid var(--border2);border-radius:14px;width:100%;max-width:400px;padding:18px 16px}
+.modal-title{font-size:12px;font-weight:700;margin-bottom:12px;letter-spacing:1px}
+.modal textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:10px 11px;font-size:13px;color:var(--text);font-family:inherit;line-height:1.7;outline:none;min-height:90px}
+.modal textarea:focus{border-color:var(--accent)}
+.modal-msg{font-size:12px;line-height:1.9;color:var(--text);margin-bottom:4px;white-space:pre-wrap}
+.modal-btns{display:flex;gap:8px;margin-top:14px}
+.m-btn{flex:1;border-radius:9px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:1px;border:1px solid var(--border2);background:none;color:var(--muted);transition:all .15s}
+.m-btn:hover{border-color:var(--accent);color:var(--accent)}
+.m-btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-txt)}
+.m-btn.pri:hover{opacity:.85;color:var(--accent-txt)}
+.m-btn.dgr{background:var(--danger);border-color:var(--danger);color:#fff}
+.m-btn.dgr:hover{opacity:.85;color:#fff}
+
+/* ═══════════════════════════════
+   SETTINGS
+═══════════════════════════════ */
+.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ts{border-radius:10px;padding:12px 6px;text-align:center;cursor:pointer;border:2px solid var(--border2);transition:all .15s;font-size:10px;font-weight:700;font-family:inherit;line-height:1.6}
+.ts.active{border-color:var(--accent)}
+.ts .ts-mark{font-size:16px;display:block;margin-bottom:3px}
+.ts-a{background:#0d0d1a;color:#c8a8e9}
+.ts-b{background:#fdf6ec;color:#c06830}
+.ts-c{background:#0a1228;color:#f0c860}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-label{font-size:12px}
+.setting-sub{font-size:9px;color:var(--muted);margin-top:2px;line-height:1.6}
+.tg-group{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.tg-opt{padding:5px 11px;border-radius:20px;font-size:10px;font-weight:700;font-family:inherit;cursor:pointer;border:1px solid var(--border2);background:none;color:var(--muted);transition:all .15s;white-space:nowrap}
+.tg-opt.active{background:var(--accent);border-color:var(--accent);color:var(--accent-txt)}
+.io-btn{display:block;width:100%;background:none;border:1px solid var(--border2);border-radius:9px;color:var(--text);font-family:inherit;font-size:12px;font-weight:700;padding:11px;cursor:pointer;transition:all .15s;margin-bottom:8px;letter-spacing:1px}
+.io-btn:hover{border-color:var(--accent);color:var(--accent)}
+.io-btn.danger{color:var(--danger)}
+.io-btn.danger:hover{border-color:var(--danger)}
+#import-file{display:none}
+
+/* toast */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--accent);color:var(--accent-txt);font-weight:700;border-radius:20px;padding:9px 20px;font-size:12px;box-shadow:0 4px 20px rgba(0,0,0,.35);z-index:400;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s,transform .2s}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div id="page-wrap" class="layout-mobile">
+  <div id="shell-wrap">
+
+    <!-- ═══ SIDEBAR (desktop) ═══ -->
+    <div id="sidebar">
+      <div id="sidebar-logo">
+        <div class="logo-txt">
+          <div class="sub">YOKATTA DIARY</div>
+          <div class="title">よかったこと日記</div>
+        </div>
+        <button class="sb-tog-btn" id="sb-tog" onclick="quickToggleLayout()" title="スマホ表示に切替">📱</button>
+      </div>
+      <div id="sidebar-clock">
+        <div class="sc-date" id="sc-date">----.--.--</div>
+        <div class="sc-time" id="sc-time">--:--:--</div>
+      </div>
+      <div id="sidebar-nav">
+        <button class="snav-btn active" id="snav-record" onclick="setTab('record')"><span class="snav-icon">✏️</span>記録</button>
+        <button class="snav-btn" id="snav-list" onclick="setTab('list')"><span class="snav-icon">📋</span>一覧</button>
+        <button class="snav-btn" id="snav-cal" onclick="setTab('cal')"><span class="snav-icon">📅</span>カレンダー</button>
+        <button class="snav-btn" id="snav-settings" onclick="setTab('settings')"><span class="snav-icon">⚙️</span>設定</button>
+      </div>
+      <div id="sb-stats">
+        <div class="ss-title">これまでのきろく</div>
+        <div class="ss-item"><span class="ss-lbl">ぜんぶで</span><span class="ss-val" id="ss-total">0 件</span></div>
+        <div class="ss-item"><span class="ss-lbl">こんげつ</span><span class="ss-val" id="ss-month">0 件</span></div>
+      </div>
+    </div>
+
+    <!-- ═══ APP ═══ -->
+    <div id="app">
+      <!-- top header (mobile) -->
+      <div id="top-header">
+        <div class="th-row">
+          <div class="th-left">
+            <div class="th-sub">YOKATTA DIARY</div>
+            <div class="th-title">よかったこと日記</div>
+          </div>
+          <div class="th-right">
+            <div class="th-clock">
+              <div class="tc-date" id="tc-date">----.--.--</div>
+              <div class="tc-time" id="tc-time">--:--:--</div>
+            </div>
+            <button class="hdr-tog-btn" id="hdr-tog" onclick="quickToggleLayout()" title="PC表示に切替">🖥️</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- main -->
+      <div id="main">
+
+        <!-- ✏️ 記録タブ -->
+        <div class="content show" id="view-record">
+          <div class="date-nav">
+            <button class="dnav-btn" onclick="navRecDate(-1)">‹</button>
+            <div class="date-disp-btn" onclick="openRecDatePicker()">
+              <span id="rec-date-lbl">----.--.--</span>
+              <input type="date" id="rec-date-input" onchange="onRecDatePicked(this.value)">
+            </div>
+            <button class="dnav-btn" onclick="navRecDate(1)">›</button>
+            <button class="today-btn" id="rec-today-btn" onclick="setRecToday()">今日</button>
+          </div>
+          <div class="panel">
+            <div class="panel-title" id="rec-panel-title">✏️ 今日のよかったこと</div>
+            <div class="add-area">
+              <textarea id="rec-input" placeholder="今日のよかったことをひとつ書く…"></textarea>
+              <button class="add-btn" id="rec-add-btn" onclick="addEntryFromRecord()">＋ 追加する</button>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">📋 さいきんのよかったこと</div>
+            <div id="recent-list"></div>
+          </div>
+        </div>
+
+        <!-- 📋 一覧タブ -->
+        <div class="content" id="view-list">
+          <div class="panel">
+            <div class="panel-title">📋 よかったこと いちらん</div>
+            <div id="all-list"></div>
+          </div>
+        </div>
+
+        <!-- 📅 カレンダータブ -->
+        <div class="content" id="view-cal">
+          <div class="panel">
+            <div class="cal-ctrl">
+              <button class="cal-nav-btn" onclick="navCal(-1)">‹</button>
+              <span class="cal-month-lbl" id="cal-month-lbl">----年 --月</span>
+              <div style="display:flex;gap:5px;align-items:center">
+                <button class="cal-this-month" onclick="calToThisMonth()">今月</button>
+                <button class="cal-nav-btn" onclick="navCal(1)">›</button>
+              </div>
+            </div>
+            <div class="cal-wdays">
+              <div class="cal-wd sun">日</div><div class="cal-wd">月</div><div class="cal-wd">火</div><div class="cal-wd">水</div><div class="cal-wd">木</div><div class="cal-wd">金</div><div class="cal-wd sat">土</div>
+            </div>
+            <div class="cal-grid" id="cal-grid"></div>
+            <div class="cal-month-total" id="cal-month-total"></div>
+          </div>
+        </div>
+
+        <!-- ⚙️ 設定タブ -->
+        <div class="content" id="view-settings">
+          <div class="panel">
+            <div class="panel-title">🎨 テーマ</div>
+            <div class="theme-grid">
+              <button class="ts ts-a" id="ts-a" onclick="setTheme('a')"><span class="ts-mark">🌟</span>つきよ</button>
+              <button class="ts ts-b" id="ts-b" onclick="setTheme('b')"><span class="ts-mark">🍊</span>みかん</button>
+              <button class="ts ts-c" id="ts-c" onclick="setTheme('c')"><span class="ts-mark">✦</span>ほしぞら</button>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">🖥️ 画面レイアウト</div>
+            <div class="setting-row">
+              <div><div class="setting-label">表示モード</div><div class="setting-sub">「自動」は画面の広さで切り替わります</div></div>
+              <div class="tg-group">
+                <button class="tg-opt" id="tog-auto" onclick="setLayoutMode('auto')">自動</button>
+                <button class="tg-opt" id="tog-mobile" onclick="setLayoutMode('mobile')">スマホ</button>
+                <button class="tg-opt" id="tog-desktop" onclick="setLayoutMode('desktop')">PC</button>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">💾 データ</div>
+            <button class="io-btn" onclick="exportJSON()">⬇️ バックアップを保存（JSON）</button>
+            <button class="io-btn" onclick="document.getElementById('import-file').click()">⬆️ バックアップから読み込み</button>
+            <input type="file" id="import-file" accept=".json,application/json" onchange="importJSON(this)">
+            <div class="setting-sub" style="margin-bottom:12px">読み込みは追記マージです。同じ記録は新しいほうが残り、既存の記録が消えることはありません。</div>
+            <button class="io-btn danger" onclick="askWipe()">🗑 データをぜんぶ消す</button>
+          </div>
+        </div>
+
+      </div><!-- /main -->
+
+      <!-- tab bar (mobile) -->
+      <div id="tab-bar">
+        <button class="tab-btn active" id="tab-record" onclick="setTab('record')"><span class="ticon">✏️</span>記録</button>
+        <button class="tab-btn" id="tab-list" onclick="setTab('list')"><span class="ticon">📋</span>一覧</button>
+        <button class="tab-btn" id="tab-cal" onclick="setTab('cal')"><span class="ticon">📅</span>カレンダー</button>
+        <button class="tab-btn" id="tab-settings" onclick="setTab('settings')"><span class="ticon">⚙️</span>設定</button>
+      </div>
+    </div><!-- /app -->
+
+  </div><!-- /shell-wrap -->
+</div><!-- /page-wrap -->
+
+<!-- ═══ 日別パネル ═══ -->
+<div class="overlay" id="day-overlay" onclick="closeDayPanel(event)">
+  <div class="day-panel">
+    <div class="dp-hd">
+      <div class="dp-nav">
+        <button class="dp-nav-btn" onclick="navDayPanel(-1)">‹</button>
+        <span class="dp-date" id="dp-date-lbl">----.--.--</span>
+        <button class="dp-nav-btn" onclick="navDayPanel(1)">›</button>
+      </div>
+      <button class="dp-close" onclick="closeDayPanelForce()">✕</button>
+    </div>
+    <div class="dp-body" id="dp-body"></div>
+    <div class="dp-add">
+      <div class="add-area">
+        <textarea id="dp-input" placeholder="この日のよかったことを書く…"></textarea>
+        <button class="add-btn" onclick="addEntryFromPanel()">＋ この日に追加する</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 編集モーダル ═══ -->
+<div class="overlay" id="edit-overlay">
+  <div class="modal">
+    <div class="modal-title">✏️ よかったことを編集</div>
+    <textarea id="edit-input"></textarea>
+    <div class="modal-btns">
+      <button class="m-btn" onclick="closeEdit()">キャンセル</button>
+      <button class="m-btn pri" onclick="saveEdit()">保存する</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 確認モーダル ═══ -->
+<div class="overlay" id="confirm-overlay">
+  <div class="modal">
+    <div class="modal-title" id="confirm-title">確認</div>
+    <div class="modal-msg" id="confirm-msg"></div>
+    <div class="modal-btns">
+      <button class="m-btn" onclick="closeConfirm(false)">やめる</button>
+      <button class="m-btn dgr" id="confirm-ok-btn" onclick="closeConfirm(true)">実行する</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+'use strict';
+/* ═══════════════════════════════
+   よかったこと日記 (yokattahi.html)
+   localStorage keys: yokatta_data_v1 / yokatta_theme_v1 / yokatta_layout_v1
+═══════════════════════════════ */
+const SK_DATA='yokatta_data_v1';
+const SK_THEME='yokatta_theme_v1';
+const SK_LAYOUT='yokatta_layout_v1';
+
+const THEMES={
+  a:{mark:'🌟',name:'つきよ',bar:'#0d0d1a'},
+  b:{mark:'🍊',name:'みかん',bar:'#fdf6ec'},
+  c:{mark:'✦',name:'ほしぞら',bar:'#0a1228'}
+};
+const WDAYS=['日','月','火','水','木','金','土'];
+
+let entries=[];           // {id, date:'YYYY-MM-DD', text, at}
+let theme='b';
+let layoutMode='auto';    // 'auto' | 'mobile' | 'desktop'
+let curDate=todayStr();   // 記録タブの対象日
+let calYear,calMonth;     // カレンダー表示中の年月
+let dpDate=null;          // 日別パネルの対象日
+let editId=null;          // 編集中エントリid
+let confirmCb=null;       // 確認モーダルのコールバック
+let toastTimer=null;
+
+/* ───── util ───── */
+function todayStr(){
+  const d=new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function dow(ds){return new Date(ds+'T00:00:00').getDay();}
+function fmtShort(ds){ // 07.13(月)
+  const [,m,d]=ds.split('-');
+  return `${m}.${d}(${WDAYS[dow(ds)]})`;
+}
+function fmtFull(ds){ // 2026.07.13 (月)
+  const [y,m,d]=ds.split('-');
+  return `${y}.${m}.${d} (${WDAYS[dow(ds)]})`;
+}
+function shiftDate(ds,n){
+  const d=new Date(ds+'T00:00:00');
+  d.setDate(d.getDate()+n);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function newId(){
+  return Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
+}
+function mark(){return THEMES[theme].mark;}
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  if(toastTimer)clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),1800);
+}
+
+/* ───── storage ───── */
+function safeSet(key,val){
+  try{
+    localStorage.setItem(key,val);
+    return true;
+  }catch(e){
+    console.error('localStorage save failed:',e);
+    toast('⚠️ 保存に失敗しました（容量不足かも）');
+    return false;
+  }
+}
+function saveData(){safeSet(SK_DATA,JSON.stringify({entries}));}
+function loadAll(){
+  try{
+    const raw=localStorage.getItem(SK_DATA);
+    if(raw){
+      const d=JSON.parse(raw);
+      if(d&&Array.isArray(d.entries))entries=d.entries.filter(isValidEntry);
+    }
+  }catch(e){console.error('load failed:',e);}
+  const t=localStorage.getItem(SK_THEME);
+  if(t&&THEMES[t])theme=t;
+  const l=localStorage.getItem(SK_LAYOUT);
+  if(l==='mobile'||l==='desktop'||l==='auto')layoutMode=l;
+}
+function isValidEntry(e){
+  return e&&typeof e.id==='string'&&typeof e.text==='string'
+    &&typeof e.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(e.date);
+}
+
+/* ───── theme / layout ───── */
+function setTheme(t){
+  if(!THEMES[t])return;
+  theme=t;
+  applyTheme();
+  safeSet(SK_THEME,t);
+  refresh();
+}
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme',theme);
+  document.getElementById('theme-color-meta').setAttribute('content',THEMES[theme].bar);
+  ['a','b','c'].forEach(k=>{
+    document.getElementById('ts-'+k).classList.toggle('active',k===theme);
+  });
+}
+function getEffLayout(){
+  return layoutMode==='auto'?(window.innerWidth>=768?'desktop':'mobile'):layoutMode;
+}
+function applyLayout(){
+  const eff=getEffLayout();
+  document.getElementById('page-wrap').className=eff==='desktop'?'layout-desktop':'layout-mobile';
+  const hdrTog=document.getElementById('hdr-tog');
+  if(hdrTog)hdrTog.textContent=eff==='desktop'?'📱':'🖥️';
+  ['auto','mobile','desktop'].forEach(k=>{
+    const el=document.getElementById('tog-'+k);
+    if(el)el.classList.toggle('active',k===layoutMode);
+  });
+}
+function setLayoutMode(m){
+  layoutMode=m;
+  applyLayout();
+  safeSet(SK_LAYOUT,m);
+}
+function quickToggleLayout(){
+  layoutMode=getEffLayout()==='desktop'?'mobile':'desktop';
+  applyLayout();
+  safeSet(SK_LAYOUT,layoutMode);
+}
+
+/* ───── tabs ───── */
+function setTab(t){
+  ['record','list','cal','settings'].forEach(k=>{
+    document.getElementById('view-'+k).classList.toggle('show',k===t);
+    document.getElementById('tab-'+k).classList.toggle('active',k===t);
+    document.getElementById('snav-'+k).classList.toggle('active',k===t);
+  });
+  if(t==='cal')renderCalendar();
+  if(t==='list')renderAllList();
+  if(t==='record')renderRecord();
+}
+
+/* ───── entry helpers ───── */
+function entriesOf(ds){
+  return entries.filter(e=>e.date===ds).sort((a,b)=>(a.at||0)-(b.at||0));
+}
+function countByDate(){
+  const m={};
+  entries.forEach(e=>{m[e.date]=(m[e.date]||0)+1;});
+  return m;
+}
+function entryRowHtml(e){
+  return `<div class="entry-row">
+    <span class="entry-mark">${mark()}</span>
+    <span class="entry-txt">${esc(e.text)}</span>
+    <span class="entry-acts">
+      <button class="ea-btn" onclick="openEdit('${e.id}')" title="編集">✏️</button>
+      <button class="ea-btn del" onclick="askDelete('${e.id}')" title="削除">🗑</button>
+    </span>
+  </div>`;
+}
+function dayGroupHtml(ds,list){
+  return `<div class="day-group">
+    <div class="dg-date">${fmtShort(ds)}<span class="dg-cnt">${list.length}件</span></div>
+    ${list.map(entryRowHtml).join('')}
+  </div>`;
+}
+function groupedDatesDesc(){
+  return [...new Set(entries.map(e=>e.date))].sort().reverse();
+}
+
+/* ───── add / edit / delete ───── */
+function addEntry(ds,text){
+  const t=text.trim();
+  if(!t){toast('なにか書いてから追加してね');return false;}
+  entries.push({id:newId(),date:ds,text:t,at:Date.now()});
+  saveData();
+  refresh();
+  return true;
+}
+function addEntryFromRecord(){
+  const inp=document.getElementById('rec-input');
+  if(addEntry(curDate,inp.value)){
+    inp.value='';
+    toast(`${mark()} 追加しました`);
+  }
+}
+function addEntryFromPanel(){
+  const inp=document.getElementById('dp-input');
+  if(addEntry(dpDate,inp.value)){
+    inp.value='';
+    toast(`${mark()} 追加しました`);
+  }
+}
+function openEdit(id){
+  const e=entries.find(x=>x.id===id);
+  if(!e)return;
+  editId=id;
+  document.getElementById('edit-input').value=e.text;
+  document.getElementById('edit-overlay').classList.add('show');
+  document.getElementById('edit-input').focus();
+}
+function closeEdit(){
+  editId=null;
+  document.getElementById('edit-overlay').classList.remove('show');
+}
+function saveEdit(){
+  const e=entries.find(x=>x.id===editId);
+  if(!e){closeEdit();return;}
+  const t=document.getElementById('edit-input').value.trim();
+  if(!t){toast('空っぽでは保存できないよ');return;}
+  e.text=t;
+  e.at=e.at||Date.now();
+  saveData();
+  closeEdit();
+  refresh();
+  toast('✏️ 保存しました');
+}
+function askDelete(id){
+  const e=entries.find(x=>x.id===id);
+  if(!e)return;
+  const preview=e.text.length>30?e.text.slice(0,30)+'…':e.text;
+  openConfirm('🗑 削除の確認',`この記録を削除する？\n\n「${preview}」`,'削除する',ok=>{
+    if(!ok)return;
+    entries=entries.filter(x=>x.id!==id);
+    saveData();
+    refresh();
+    toast('🗑 削除しました');
+  });
+}
+
+/* ───── confirm modal ───── */
+function openConfirm(title,msg,okLabel,cb){
+  document.getElementById('confirm-title').textContent=title;
+  document.getElementById('confirm-msg').textContent=msg;
+  document.getElementById('confirm-ok-btn').textContent=okLabel;
+  confirmCb=cb;
+  document.getElementById('confirm-overlay').classList.add('show');
+}
+function closeConfirm(result){
+  document.getElementById('confirm-overlay').classList.remove('show');
+  const cb=confirmCb;
+  confirmCb=null;
+  if(cb)cb(result);
+}
+
+/* ───── 記録タブ ───── */
+function navRecDate(n){curDate=shiftDate(curDate,n);renderRecord();}
+function setRecToday(){curDate=todayStr();renderRecord();}
+function openRecDatePicker(){
+  const inp=document.getElementById('rec-date-input');
+  inp.value=curDate;
+  try{inp.showPicker();}catch(e){/* showPicker非対応ブラウザでは透明inputの直接タップで開く */}
+}
+function onRecDatePicked(v){
+  if(/^\d{4}-\d{2}-\d{2}$/.test(v)){curDate=v;renderRecord();}
+}
+function renderRecord(){
+  const isToday=curDate===todayStr();
+  document.getElementById('rec-date-lbl').textContent=fmtFull(curDate);
+  document.getElementById('rec-today-btn').classList.toggle('active',isToday);
+  document.getElementById('rec-panel-title').textContent=
+    `✏️ ${isToday?'今日':fmtShort(curDate)}のよかったこと`;
+  // さいきんのよかったこと（直近5日ぶん）
+  const dates=groupedDatesDesc().slice(0,5);
+  const con=document.getElementById('recent-list');
+  if(!dates.length){
+    con.innerHTML=`<div class="empty"><div class="ei">${mark()}</div>まだ記録がありません<br>ちいさなことから書いてみよう</div>`;
+  }else{
+    con.innerHTML=dates.map(ds=>dayGroupHtml(ds,entriesOf(ds))).join('');
+  }
+}
+
+/* ───── 一覧タブ ───── */
+function renderAllList(){
+  const dates=groupedDatesDesc();
+  const con=document.getElementById('all-list');
+  if(!dates.length){
+    con.innerHTML=`<div class="empty"><div class="ei">${mark()}</div>まだ記録がありません</div>`;
+    return;
+  }
+  con.innerHTML=dates.map(ds=>dayGroupHtml(ds,entriesOf(ds))).join('');
+}
+
+/* ───── カレンダータブ ───── */
+function navCal(n){
+  calMonth+=n;
+  if(calMonth<0){calMonth=11;calYear--;}
+  if(calMonth>11){calMonth=0;calYear++;}
+  renderCalendar();
+}
+function calToThisMonth(){
+  const d=new Date();
+  calYear=d.getFullYear();
+  calMonth=d.getMonth();
+  renderCalendar();
+}
+function calCellMarkHtml(cnt){
+  if(!cnt)return '';
+  if(theme==='c'){
+    // ほしぞら：件数ぶん星が増える（4つまで、それ以上は件数バッジ併用）
+    const stars=mark().repeat(Math.min(cnt,4));
+    const extra=cnt>4?`<div class="cal-cnt">${cnt}</div>`:'';
+    return `<div class="cal-mark">${stars}</div>${extra}`;
+  }
+  // つきよ・みかん：マーク1つ＋2件以上なら件数
+  const badge=cnt>1?`<div class="cal-cnt">${cnt}</div>`:'';
+  return `<div class="cal-mark">${mark()}</div>${badge}`;
+}
+function renderCalendar(){
+  const y=calYear,m=calMonth;
+  document.getElementById('cal-month-lbl').textContent=`${y}年 ${m+1}月`;
+  const firstDay=new Date(y,m,1).getDay();
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const today=todayStr();
+  const cbd=countByDate();
+  let cells='';
+  for(let i=0;i<firstDay;i++)cells+=`<div class="cal-cell empty-cell"></div>`;
+  let monthTotal=0;
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const cnt=cbd[ds]||0;
+    monthTotal+=cnt;
+    const isToday=ds===today;
+    const isSun=new Date(y,m,d).getDay()===0;
+    cells+=`<div class="cal-cell${isToday?' today':''}${isSun?' sun':''}${cnt?'':' no-rec'}" onclick="openDayPanel('${ds}')">
+      <div class="cal-dn">${d}</div>
+      ${calCellMarkHtml(cnt)}
+    </div>`;
+  }
+  document.getElementById('cal-grid').innerHTML=cells;
+  document.getElementById('cal-month-total').innerHTML=
+    `この月のよかったこと：<b>${monthTotal}</b> ${mark()}`;
+}
+
+/* ───── 日別パネル ───── */
+function openDayPanel(ds){
+  dpDate=ds;
+  document.getElementById('dp-input').value='';
+  renderDayPanel();
+  document.getElementById('day-overlay').classList.add('show');
+}
+function closeDayPanel(ev){
+  if(ev&&ev.target!==document.getElementById('day-overlay'))return;
+  closeDayPanelForce();
+}
+function closeDayPanelForce(){
+  document.getElementById('day-overlay').classList.remove('show');
+  dpDate=null;
+}
+function navDayPanel(n){
+  dpDate=shiftDate(dpDate,n);
+  document.getElementById('dp-input').value='';
+  renderDayPanel();
+}
+function renderDayPanel(){
+  if(!dpDate)return;
+  document.getElementById('dp-date-lbl').textContent=fmtFull(dpDate);
+  const list=entriesOf(dpDate);
+  const body=document.getElementById('dp-body');
+  if(!list.length){
+    body.innerHTML=`<div class="dp-empty">${mark()}<br>この日の記録はまだありません</div>`;
+  }else{
+    body.innerHTML=list.map(entryRowHtml).join('');
+  }
+}
+
+/* ───── export / import / wipe ───── */
+function exportJSON(){
+  const d=new Date();
+  const stamp=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+  const payload={app:'yokattahi',version:1,exportedAt:new Date().toISOString(),entries};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`yokattahi_backup_${stamp}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  toast('⬇️ バックアップを保存しました');
+}
+function importJSON(input){
+  const file=input.files&&input.files[0];
+  input.value='';
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onerror=()=>toast('⚠️ ファイルを読めませんでした');
+  reader.onload=()=>{
+    try{
+      const d=JSON.parse(reader.result);
+      const arr=Array.isArray(d)?d:(d&&Array.isArray(d.entries)?d.entries:null);
+      if(!arr){toast('⚠️ よかったこと日記のバックアップではないみたい');return;}
+      const incoming=arr.filter(isValidEntry);
+      if(!incoming.length){toast('⚠️ 読み込める記録がありませんでした');return;}
+      const byId=new Map(entries.map(e=>[e.id,e]));
+      let added=0,updated=0;
+      incoming.forEach(e=>{
+        const ex=byId.get(e.id);
+        if(!ex){
+          byId.set(e.id,{id:e.id,date:e.date,text:e.text,at:e.at||0});
+          added++;
+        }else if((e.at||0)>(ex.at||0)){
+          ex.date=e.date;ex.text=e.text;ex.at=e.at||0;
+          updated++;
+        }
+      });
+      entries=[...byId.values()];
+      saveData();
+      refresh();
+      toast(`⬆️ 読み込みました（追加${added}件・更新${updated}件）`);
+    }catch(e){
+      console.error(e);
+      toast('⚠️ JSONの形式が正しくありません');
+    }
+  };
+  reader.readAsText(file);
+}
+function askWipe(){
+  openConfirm('🗑 全データ削除の確認',
+    `すべての「よかったこと」を削除します。\nこの操作はもとに戻せません。\n\n心配なときは、先にバックアップを保存してね。\n本当に削除する？`,
+    'ぜんぶ削除する',ok=>{
+    if(!ok)return;
+    entries=[];
+    saveData();
+    refresh();
+    toast('🗑 すべて削除しました');
+  });
+}
+
+/* ───── stats / clock ───── */
+function updateStats(){
+  const total=entries.length;
+  const ym=todayStr().slice(0,7);
+  const month=entries.filter(e=>e.date.slice(0,7)===ym).length;
+  document.getElementById('ss-total').textContent=`${total} 件`;
+  document.getElementById('ss-month').textContent=`${month} 件`;
+}
+function tickClock(){
+  const d=new Date();
+  const ds=`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} (${WDAYS[d.getDay()]})`;
+  const ts=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+  document.getElementById('tc-date').textContent=ds;
+  document.getElementById('tc-time').textContent=ts;
+  document.getElementById('sc-date').textContent=ds;
+  document.getElementById('sc-time').textContent=ts;
+}
+
+/* ───── refresh ───── */
+function refresh(){
+  renderRecord();
+  renderAllList();
+  renderCalendar();
+  if(dpDate)renderDayPanel();
+  updateStats();
+}
+
+/* ───── init ───── */
+function init(){
+  loadAll();
+  const d=new Date();
+  calYear=d.getFullYear();
+  calMonth=d.getMonth();
+  applyTheme();
+  applyLayout();
+  refresh();
+  tickClock();
+  setInterval(tickClock,1000);
+  window.addEventListener('resize',()=>{if(layoutMode==='auto')applyLayout();});
+  // Escで各オーバーレイを閉じる（確認→編集→日別の順）
+  window.addEventListener('keydown',ev=>{
+    if(ev.key!=='Escape')return;
+    if(document.getElementById('confirm-overlay').classList.contains('show')){closeConfirm(false);return;}
+    if(document.getElementById('edit-overlay').classList.contains('show')){closeEdit();return;}
+    if(document.getElementById('day-overlay').classList.contains('show'))closeDayPanelForce();
+  });
+}
+init();
+</script>
+</body>
+</html>

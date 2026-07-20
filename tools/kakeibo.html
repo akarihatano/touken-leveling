@@ -14,6 +14,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="家計簿">
+<meta name="theme-color" content="#f2f2f0" id="meta-theme-color">
 <title>家計簿</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -390,40 +391,40 @@ input:focus,select:focus{outline:none;border-color:var(--accent);background:var(
 <!-- PC side nav -->
 <nav class="pc-sidenav" id="pc-sidenav">
   <button onclick="switchTab('weekly')" id="pnav-weekly">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
     記録
   </button>
   <button onclick="switchTab('monthly')" id="pnav-monthly">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
     月次レポート
   </button>
   <button onclick="switchTab('budget')" id="pnav-budget">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
     予算
   </button>
   <button onclick="switchTab('assets')" id="pnav-assets">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
     資産
   </button>
   <button onclick="switchTab('spending')" id="pnav-spending">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
     支出
   </button>
   <button onclick="switchTab('io')" id="pnav-io">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
     データ
   </button>
   <button onclick="switchTab('cards')" id="pnav-cards">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
     後払い管理
   </button>
   <button onclick="switchTab('fixed')" id="pnav-fixed">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
     固定費
   </button>
 
   <button onclick="switchTab('settings')" id="pnav-settings">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     設定
   </button>
 </nav>
@@ -433,11 +434,11 @@ input:focus,select:focus{outline:none;border-color:var(--accent);background:var(
   <!-- 週間記録 -->
   <div id="sec-weekly" class="section active">
     <div class="week-nav">
-      <button class="nav-btn" onclick="shiftDay(-1)">&#8592;</button>
+      <button class="nav-btn" onclick="shiftDay(-1)" aria-label="前の日へ">&#8592;</button>
       <div class="week-nav-dates" style="justify-content:center;">
         <input type="date" id="record-date" style="text-align:center;font-weight:600;font-size:15px;"/>
       </div>
-      <button class="nav-btn" onclick="shiftDay(1)">&#8594;</button>
+      <button class="nav-btn" onclick="shiftDay(1)" aria-label="次の日へ">&#8594;</button>
     </div>
 
     <div class="card">
@@ -547,7 +548,7 @@ input:focus,select:focus{outline:none;border-color:var(--accent);background:var(
 
       <!-- レシートで入力ボタン（APIコスト問題のため一時非表示） -->
       <button class="receipt-btn" onclick="openOcrModal()" style="display:none;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
         レシートを撮影して入力
       </button>
       <button class="btn-add" onclick="addRow()">＋ リストに追加</button>
@@ -895,9 +896,9 @@ input:focus,select:focus{outline:none;border-color:var(--accent);background:var(
     <!-- ── 予測セクション ── -->
     <div id="spending-section-forecast" style="display:none;">
       <div class="month-nav" style="margin-bottom:4px;">
-        <button class="nav-btn" onclick="shiftForecastMonth(-1)">&#8592;</button>
+        <button class="nav-btn" onclick="shiftForecastMonth(-1)" aria-label="前の月へ">&#8592;</button>
         <div style="flex:1;text-align:center;font-size:15px;font-weight:700;color:var(--text);" id="forecast-month-label"></div>
-        <button class="nav-btn" onclick="shiftForecastMonth(1)">&#8594;</button>
+        <button class="nav-btn" onclick="shiftForecastMonth(1)" aria-label="次の月へ">&#8594;</button>
       </div>
       <p style="font-size:11px;color:var(--text-3);text-align:center;margin-bottom:12px;">後払い管理・固定費・変動費（前月実績）をもとに予測します</p>
 
@@ -953,9 +954,9 @@ input:focus,select:focus{outline:none;border-color:var(--accent);background:var(
 
     <!-- 月ナビ -->
     <div class="month-nav">
-      <button class="nav-btn" onclick="shiftCardMonth(-1)">&#8592;</button>
+      <button class="nav-btn" onclick="shiftCardMonth(-1)" aria-label="前の月へ">&#8592;</button>
       <div style="flex:1;text-align:center;font-size:15px;font-weight:700;color:var(--text);" id="card-month-label"></div>
-      <button class="nav-btn" onclick="shiftCardMonth(1)">&#8594;</button>
+      <button class="nav-btn" onclick="shiftCardMonth(1)" aria-label="次の月へ">&#8594;</button>
     </div>
 
     <!-- 支払いサマリーカード -->
@@ -1423,6 +1424,13 @@ input:focus,select:focus{outline:none;border-color:var(--accent);background:var(
         <button class="btn-outline danger" id="gd-logout-btn" onclick="gdSignOut()" style="display:none;">ログアウト</button>
       </div>
       <div id="gd-last-sync" style="font-size:11px;color:var(--text-3);margin-top:8px;"></div>
+      <div class="setting-row" id="gd-auto-row" style="display:none;margin-top:6px;border-top:0.5px solid var(--border);border-bottom:none;padding-bottom:0;">
+        <div><div class="setting-label">自動でDriveに保存</div><div class="setting-sub">記録を変更するたびに自動アップロード</div></div>
+        <div class="seg-ctrl">
+          <button class="seg-btn active" id="gd-auto-off" onclick="setGdAuto(false)">OFF</button>
+          <button class="seg-btn" id="gd-auto-on" onclick="setGdAuto(true)">ON</button>
+        </div>
+      </div>
     </div>
     <div class="card">
       <div class="card-title">データ管理</div>
@@ -1436,7 +1444,7 @@ input:focus,select:focus{outline:none;border-color:var(--accent);background:var(
       <div class="setting-row">
         <div>
           <div class="setting-label">家計簿アプリ</div>
-          <div class="setting-sub">v4.0043 — iPhone / Android / PC対応</div>
+          <div class="setting-sub">v4.0044 — iPhone / Android / PC対応</div>
           <div class="setting-sub">更新日：2026-04-05</div>
         </div>
       </div>
@@ -1475,41 +1483,41 @@ input:focus,select:focus{outline:none;border-color:var(--accent);background:var(
 <div class="submenu-overlay" id="submenu-overlay" onclick="closeSubmenu()"></div>
 <div class="submenu" id="submenu-panel">
   <button class="submenu-item" id="sub-budget" onclick="submenuSwitch('budget')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>予算
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>予算
   </button>
   <button class="submenu-item" id="sub-spending" onclick="submenuSwitch('spending')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg>支出
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg>支出
   </button>
   <button class="submenu-item" id="sub-assets" onclick="submenuSwitch('assets')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>資産
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>資産
   </button>
   <button class="submenu-item" id="sub-cards" onclick="submenuSwitch('cards')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>後払い
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>後払い
   </button>
   <button class="submenu-item" id="sub-fixed" onclick="submenuSwitch('fixed')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>固定費
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>固定費
   </button>
   <button class="submenu-item" id="sub-io" onclick="submenuSwitch('io')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>データ
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>データ
   </button>
 </div>
 
 <!-- メインタブバー（4ボタン） -->
 <div class="tabbar" id="sp-tabbar">
   <button class="active" id="tab-weekly" onclick="switchTab('weekly')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
     記録
   </button>
   <button id="tab-monthly" onclick="switchTab('monthly')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
     レポート
   </button>
   <button id="tab-manage" onclick="toggleSubmenu()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
     管理
   </button>
   <button id="tab-settings" onclick="switchTab('settings')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l-.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l-.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     設定
   </button>
 </div>
@@ -1526,8 +1534,30 @@ const KEY_INCOME_PLANS     = 'kakeibo_inc_plans';    // 収入プラン
 const KEY_INCOME_RECORDS   = 'kakeibo_inc_records';  // 収入実績
 const KEY_SYS     = 'kakeibo_system';   // システム設定
 const KEY_CARDS   = 'kakeibo_cards';    // カード・分割管理
+
+// localStorage への安全な書き込み。失敗時(容量超過・プライベートモード等)はトーストで警告し false を返す
+let _saveErrorShown=false; // 連続失敗時にトーストを出しすぎないためのフラグ
+function safeSet(key,value){
+  try{
+    localStorage.setItem(key,value);
+    _saveErrorShown=false;
+    // データ系キーの変更時のみ自動Drive同期をスケジュール(設定・同期メタは除外)
+    if(key!==KEY_SYS && key!=='kakeibo_last_sync' && typeof scheduleGdAutoUpload==='function'){
+      scheduleGdAutoUpload();
+    }
+    return true;
+  }catch(e){
+    console.error('localStorage write failed:',key,e);
+    if(!_saveErrorShown && typeof showToast==='function'){
+      showToast('保存できませんでした。ストレージ空き容量やブラウザ設定を確認してください','error',5000);
+      _saveErrorShown=true;
+    }
+    return false;
+  }
+}
+
 function loadCards(){try{return JSON.parse(localStorage.getItem(KEY_CARDS))||[];}catch{return[];}}
-function saveCards(d){localStorage.setItem(KEY_CARDS,JSON.stringify(d));}
+function saveCards(d){safeSet(KEY_CARDS,JSON.stringify(d));}
 
 const CATS    = ['食費','日用品','外食','交通','衣類','医療','娯楽','その他'];
 const COLORS  = ['#1d4ed8','#15803d','#c2410c','#7e22ce','#6d28d9','#4d7c0f','#92400e','#4b5563'];
@@ -1536,14 +1566,14 @@ const TAX_FOOD = 0.08, TAX_OTHER = 0.10;
 
 // -- System settings --
 function loadSys(){try{return JSON.parse(localStorage.getItem(KEY_SYS))||{};}catch{return{};}}
-function saveSys(d){localStorage.setItem(KEY_SYS,JSON.stringify(d));}
+function saveSys(d){safeSet(KEY_SYS,JSON.stringify(d));}
 
 // -- Data helpers --
 function load(){try{return JSON.parse(localStorage.getItem(KEY_DATA))||[];}catch{return[];}}
-function saveData(d){localStorage.setItem(KEY_DATA,JSON.stringify(d));}
+function saveData(d){safeSet(KEY_DATA,JSON.stringify(d));}
 function loadBudget(){try{return JSON.parse(localStorage.getItem(KEY_BUDGET))||{};}catch{return{};}}
 function loadAssets(){try{return JSON.parse(localStorage.getItem(KEY_ASSETS))||[];}catch{return[];}}
-function saveAssets(d){localStorage.setItem(KEY_ASSETS,JSON.stringify(d));}
+function saveAssets(d){safeSet(KEY_ASSETS,JSON.stringify(d));}
 
 function fmt(d){return d.toISOString().slice(0,10);}
 // JST YYYY-MM-DD (UTC offset bug fix)
@@ -1606,6 +1636,12 @@ function setTheme(t){
     const el=document.getElementById('ts-'+x);
     if(el){el.classList.toggle('active',x===t);}
   });
+  // ステータスバー/アドレスバーの色をテーマの背景色に追従させる
+  requestAnimationFrame(()=>{
+    const bg=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+    const meta=document.getElementById('meta-theme-color');
+    if(meta && bg) meta.setAttribute('content',bg);
+  });
 }
 function setLayout(l){
   const sys=loadSys(); sys.layout=l; saveSys(sys);
@@ -1633,6 +1669,11 @@ function applySystemSettings(){
       document.getElementById('sumview-'+k)?.classList.toggle('active',k===sys.summaryView);
     });
   }
+
+  // Drive自動保存トグルの状態を復元
+  gdAuto = !!sys.gdAuto;
+  document.getElementById('gd-auto-on')?.classList.toggle('active',gdAuto);
+  document.getElementById('gd-auto-off')?.classList.toggle('active',!gdAuto);
 
   // Drive同期の最終日時を復元
   try{
@@ -1750,6 +1791,7 @@ function addRow(){
 }
 document.getElementById('new-price').addEventListener('keydown',e=>{if(e.key==='Enter')addRow();});
 document.getElementById('new-name').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('new-price').focus();});
+document.getElementById('new-qty').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('new-price').focus();});
 
 function renderPending(){
   const el=document.getElementById('entry-rows');
@@ -2273,7 +2315,7 @@ function saveBudget(){
   const totalV=document.getElementById('b-total')?.value;
   if(totalV) b._total=parseInt(totalV)||0;
   CATS.forEach(c=>{const v=document.getElementById('b-'+c)?.value;if(v)b[c]=parseInt(v)||0;});
-  localStorage.setItem(KEY_BUDGET,JSON.stringify(b));renderBudget();
+  safeSet(KEY_BUDGET,JSON.stringify(b));renderBudget();
   const btn=document.getElementById('budget-save-btn');
   btn.textContent='✓ 保存しました';btn.classList.add('success');
   setTimeout(()=>{btn.textContent='保存する';btn.classList.remove('success');},1600);
@@ -2284,13 +2326,13 @@ function saveBudget(){
 // 新資産タブ JS
 // |||||||||||||||||||||||||||||||||||||||||||
 function loadBalAccounts(){try{return JSON.parse(localStorage.getItem(KEY_BALANCE_ACCOUNTS))||[];}catch{return[];}}
-function saveBalAccounts(d){localStorage.setItem(KEY_BALANCE_ACCOUNTS,JSON.stringify(d));}
+function saveBalAccounts(d){safeSet(KEY_BALANCE_ACCOUNTS,JSON.stringify(d));}
 function loadBalRecords(){try{return JSON.parse(localStorage.getItem(KEY_BALANCE_RECORDS))||[];}catch{return[];}}
-function saveBalRecords(d){localStorage.setItem(KEY_BALANCE_RECORDS,JSON.stringify(d));}
+function saveBalRecords(d){safeSet(KEY_BALANCE_RECORDS,JSON.stringify(d));}
 function loadIncomePlans(){try{return JSON.parse(localStorage.getItem(KEY_INCOME_PLANS))||[];}catch{return[];}}
-function saveIncomePlans(d){localStorage.setItem(KEY_INCOME_PLANS,JSON.stringify(d));}
+function saveIncomePlans(d){safeSet(KEY_INCOME_PLANS,JSON.stringify(d));}
 function loadIncomeRecords(){try{return JSON.parse(localStorage.getItem(KEY_INCOME_RECORDS))||[];}catch{return[];}}
-function saveIncomeRecords(d){localStorage.setItem(KEY_INCOME_RECORDS,JSON.stringify(d));}
+function saveIncomeRecords(d){safeSet(KEY_INCOME_RECORDS,JSON.stringify(d));}
 
 let currentAssetSection='balance';
 let assetGraphRange=3;
@@ -3209,7 +3251,7 @@ function handleFile(file){
             if(cols[0]==='合計月間予算') budget._total=parseInt(cols[1])||0;
             else budget[cols[0]]=parseInt(cols[1])||0;
           }
-          localStorage.setItem(KEY_BUDGET,JSON.stringify({...loadBudget(),...budget}));
+          safeSet(KEY_BUDGET,JSON.stringify({...loadBudget(),...budget}));
           addedB=1;
         }
         // 資産データ(name+type+amount+dateで重複排除)
@@ -4288,7 +4330,7 @@ function renderCards(){
 // -- Fixed expenses --
 const KEY_FIXED='kakeibo_fixed';
 function loadFixed(){try{return JSON.parse(localStorage.getItem(KEY_FIXED))||[];}catch{return[];}}
-function saveFixed_data(d){localStorage.setItem(KEY_FIXED,JSON.stringify(d));}
+function saveFixed_data(d){safeSet(KEY_FIXED,JSON.stringify(d));}
 const FIXED_CAT_COLORS={
   '住居費':'#1d4ed8','光熱費':'#ea580c','通信費':'#7c3aed',
   '保険':'#15803d','サブスク':'#9333ea','ローン':'#b91c1c',
@@ -4384,7 +4426,7 @@ function renderFixed(){
 // -- Variable expenses(変動費) --
 const KEY_VARIABLE='kakeibo_variable';
 function loadVariable(){try{return JSON.parse(localStorage.getItem(KEY_VARIABLE))||[];}catch{return[];}}
-function saveVariable_data(d){localStorage.setItem(KEY_VARIABLE,JSON.stringify(d));}
+function saveVariable_data(d){safeSet(KEY_VARIABLE,JSON.stringify(d));}
 
 const VAR_CAT_LABELS={
   electricity:'電気代',gas:'ガス代',water:'水道代',
@@ -4577,7 +4619,7 @@ function renderVariableList(){
 
 // -- Ledger(資産推移) --
 function loadLedger(){try{return JSON.parse(localStorage.getItem(KEY_LEDGER))||[];}catch{return[];}}
-function saveLedger_data(d){localStorage.setItem(KEY_LEDGER,JSON.stringify(d));}
+function saveLedger_data(d){safeSet(KEY_LEDGER,JSON.stringify(d));}
 
 let ledgerRangeMonths=1;  // 表示期間(0=全期間)
 let ledgerSortDir='new';
@@ -4836,6 +4878,27 @@ var GD_SCOPE='https://www.googleapis.com/auth/drive.appdata';
 var GD_FILE='kakeibo_data.json';
 var gdToken=null,gdTokenClient=null,gdTokenExpiry=0,_lastSyncTime=null;
 
+// ── Drive 自動アップロード ──
+let gdAuto=false;          // 自動保存ON/OFF
+let _gdAutoTimer=null;     // デバウンス用
+let _restoringData=false;  // Drive読込中は自動アップロードを抑止
+
+function setGdAuto(on){
+  gdAuto=on;
+  const sys=loadSys(); sys.gdAuto=on; saveSys(sys);
+  document.getElementById('gd-auto-on')?.classList.toggle('active',on);
+  document.getElementById('gd-auto-off')?.classList.toggle('active',!on);
+  if(on) showToast('自動保存をオンにしました','info');
+}
+
+// データ変更時に呼ばれる。条件を満たせば5秒後に自動アップロード
+function scheduleGdAutoUpload(){
+  if(!gdAuto || !gdToken || _restoringData) return;
+  clearTimeout(_gdAutoTimer);
+  _gdAutoTimer=setTimeout(()=>{ gdSave(true); }, 5000);
+}
+
+
 function gdReady(){
   if(typeof google==='undefined'||!google.accounts) return false;
   if(!gdTokenClient){
@@ -4871,6 +4934,8 @@ function gdShowBtns(loggedIn){
   show('gd-save-btn',loggedIn);
   show('gd-load-btn',loggedIn);
   show('gd-logout-btn',loggedIn);
+  const ar=document.getElementById('gd-auto-row');
+  if(ar) ar.style.display=loggedIn?'flex':'none';
 }
 function gdSetStatus(msg){
   const e=document.getElementById('gd-status');
@@ -4979,7 +5044,7 @@ async function gdFindFile(){
 // 全データをまとめてJSONに
 function gatherAllData(){
   return {
-    version:'4.0043',
+    version:'4.0044',
     savedAt:new Date().toISOString(),
     entries:    JSON.parse(localStorage.getItem(KEY_DATA)||'[]'),
     budget:     JSON.parse(localStorage.getItem(KEY_BUDGET)||'{}'),
@@ -4998,25 +5063,27 @@ function gatherAllData(){
 
 // JSONから全データを復元
 function restoreAllData(d){
-  if(d.entries)    localStorage.setItem(KEY_DATA,            JSON.stringify(d.entries));
-  if(d.budget)     localStorage.setItem(KEY_BUDGET,          JSON.stringify(d.budget));
-  if(d.assets)     localStorage.setItem(KEY_ASSETS,          JSON.stringify(d.assets));
-  if(d.cards)      localStorage.setItem(KEY_CARDS,           JSON.stringify(d.cards));
-  if(d.fixed)      localStorage.setItem(KEY_FIXED,           JSON.stringify(d.fixed));
-  if(d.variable)   localStorage.setItem(KEY_VARIABLE,        JSON.stringify(d.variable));
-  if(d.balAccounts)localStorage.setItem(KEY_BALANCE_ACCOUNTS,JSON.stringify(d.balAccounts));
-  if(d.balRecords) localStorage.setItem(KEY_BALANCE_RECORDS, JSON.stringify(d.balRecords));
-  if(d.incPlans)   localStorage.setItem(KEY_INCOME_PLANS,    JSON.stringify(d.incPlans));
-  if(d.incRecords) localStorage.setItem(KEY_INCOME_RECORDS,  JSON.stringify(d.incRecords));
-  if(d.ledger)     localStorage.setItem(KEY_LEDGER,          JSON.stringify(d.ledger));
+  _restoringData=true; // 復元中は自動アップロードを抑止
+  if(d.entries)    safeSet(KEY_DATA,            JSON.stringify(d.entries));
+  if(d.budget)     safeSet(KEY_BUDGET,          JSON.stringify(d.budget));
+  if(d.assets)     safeSet(KEY_ASSETS,          JSON.stringify(d.assets));
+  if(d.cards)      safeSet(KEY_CARDS,           JSON.stringify(d.cards));
+  if(d.fixed)      safeSet(KEY_FIXED,           JSON.stringify(d.fixed));
+  if(d.variable)   safeSet(KEY_VARIABLE,        JSON.stringify(d.variable));
+  if(d.balAccounts)safeSet(KEY_BALANCE_ACCOUNTS,JSON.stringify(d.balAccounts));
+  if(d.balRecords) safeSet(KEY_BALANCE_RECORDS, JSON.stringify(d.balRecords));
+  if(d.incPlans)   safeSet(KEY_INCOME_PLANS,    JSON.stringify(d.incPlans));
+  if(d.incRecords) safeSet(KEY_INCOME_RECORDS,  JSON.stringify(d.incRecords));
+  if(d.ledger)     safeSet(KEY_LEDGER,          JSON.stringify(d.ledger));
   const sysData = d.sys || d.system;  // 旧フォーマット(system)との互換性
-  if(sysData)      localStorage.setItem(KEY_SYS,             JSON.stringify(sysData));
+  if(sysData)      safeSet(KEY_SYS,             JSON.stringify(sysData));
+  _restoringData=false; // 復元完了、自動アップロードを再許可
 }
 
-async function gdSave(){
-  if(!gdToken){gdSetStatus('先にログインしてください');return;}
+async function gdSave(isAuto=false){
+  if(!gdToken){ if(!isAuto) gdSetStatus('先にログインしてください'); return;}
   try{ await gdEnsureToken(); }catch(e){ gdSetStatus('エラー: '+e.message); return; }
-  gdSetStatus('Driveに保存中…');
+  gdSetStatus(isAuto?'自動保存中…':'Driveに保存中…');
   try{
     const payload=JSON.stringify(gatherAllData(),null,2);
     const fid=await gdFindFile();
@@ -5036,8 +5103,8 @@ async function gdSave(){
     }
     if(resp.ok){
       _lastSyncTime=new Date();
-      localStorage.setItem('kakeibo_last_sync', JSON.stringify({time:_lastSyncTime.toISOString(),type:'save'}));
-      gdSetStatus('Driveに保存しました ✓');
+      safeSet('kakeibo_last_sync', JSON.stringify({time:_lastSyncTime.toISOString(),type:'save'}));
+      gdSetStatus(isAuto?'自動保存しました ✓':'Driveに保存しました ✓');
       gdSetLastSync('最終保存: '+_lastSyncTime.toLocaleString('ja-JP'));
     } else {
       const e2=await resp.json();
@@ -5067,7 +5134,7 @@ async function gdLoad(){
     applySystemSettings();
     switchTab(_currentTab);
     _lastSyncTime=new Date();
-    localStorage.setItem('kakeibo_last_sync', JSON.stringify({time:_lastSyncTime.toISOString(),type:'load'}));
+    safeSet('kakeibo_last_sync', JSON.stringify({time:_lastSyncTime.toISOString(),type:'load'}));
     gdSetStatus('Driveから読み込みました ✓ ('+d.savedAt.slice(0,16).replace('T',' ')+' 保存分)');
     gdSetLastSync('最終読込: '+_lastSyncTime.toLocaleString('ja-JP'));
   }catch(e){

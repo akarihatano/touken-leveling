@@ -2,7 +2,13 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="description" content="体重・体組成・食事・運動・血糖値などを記録する個人用の健康記録アプリ">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="わたしの記録">
+<meta name="theme-color" content="#1a80d0" id="theme-color-meta">
 <title>わたしの記録 - MyRecord</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap');
@@ -149,6 +155,8 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 .ptoggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--muted);transition:all .2s;}
 .ptoggle.on::after{left:22px;background:#ff7eb3}
 .btn-p{background:var(--accent);border:none;border-radius:8px;color:var(--bg);font-weight:700;padding:11px 16px;font-size:12px;cursor:pointer;font-family:inherit;letter-spacing:1px;transition:opacity .15s;}
+.btn-p.dirty{animation:savePulse 1.6s ease-in-out infinite}
+@keyframes savePulse{0%,100%{opacity:1}50%{opacity:.6}}
 .btn-p:hover{opacity:.82}
 .btn-g{background:none;border:1px solid var(--border2);border-radius:8px;color:var(--muted);padding:9px 13px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s;}
 .btn-g:hover{border-color:var(--accent);color:var(--accent)}
@@ -570,7 +578,14 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
               </div>
             </div>
           </div>
-          <div class="btn-row"><button class="btn-p" onclick="saveRec()">💾 保存</button><button class="btn-g" onclick="delRec()">削除</button></div>
+          <div class="btn-row"><button class="btn-p" id="save-btn" onclick="saveRec()">💾 保存</button><button class="btn-g" onclick="delRec()">削除</button></div>
+          <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:8px">
+            <span style="font-size:9px;color:var(--muted)">未保存データの通知</span>
+            <div class="tg-group" style="transform:scale(.9)">
+              <button class="tg-opt active" id="dirtynotif-on" onclick="setDirtyNotif(true)">ON</button>
+              <button class="tg-opt" id="dirtynotif-off" onclick="setDirtyNotif(false)">OFF</button>
+            </div>
+          </div>
           <div style="height:10px"></div>
         </div>
 
@@ -885,7 +900,7 @@ function calcMuscle(w,bf){if(w==null||bf==null)return null;return Math.round(w*(
 function calcMeta(w,h,age,sex){if(!w||!h||!age)return null;let b=sex==='female'?655.1+9.563*w+1.850*h-4.676*age:66.5+13.75*w+5.003*h-6.75*age;return Math.round(b);}
 function loadData(){
   const raw=localStorage.getItem(SK);
-  if(raw){try{const d=JSON.parse(raw);records=d.records||[];mealLogs=d.mealLogs||[];exerciseLogs=d.exerciseLogs||[];glucoseLogs=d.glucoseLogs||[];events=d.events||[];goal=d.goal??null;profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown',...(d.profile||{})};appL=d.layout??'auto';appT=d.theme||'sky';appD=d.display??'normal';appSbRight=d.sbRight??false;showSbStats=d.sbStats??true;og=d.og||og;showPeriodDots=d.showPeriodDots??false;bodyTwiceMode=d.bodyTwiceMode??false;
+  if(raw){try{const d=JSON.parse(raw);records=d.records||[];mealLogs=d.mealLogs||[];exerciseLogs=d.exerciseLogs||[];glucoseLogs=d.glucoseLogs||[];events=d.events||[];goal=d.goal??null;profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown',...(d.profile||{})};appL=d.layout??'auto';appT=d.theme||'sky';appD=d.display??'normal';appSbRight=d.sbRight??false;showSbStats=d.sbStats??true;og=d.og||og;showPeriodDots=d.showPeriodDots??false;bodyTwiceMode=d.bodyTwiceMode??false;dirtyNotifEnabled=d.dirtyNotifEnabled??true;
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // 旧フィールド→新フィールド の移行（1回モード→2回モードへの対応）
     // - weight → weightMorning
@@ -904,7 +919,7 @@ function loadData(){
   if(old){try{const d=JSON.parse(old);records=(d.records||[]).map(r=>({bust:null,waist:null,hip:null,hba1c:null,bpHigh:null,bpLow:null,mood:null,weather:null,period:false,periodNote:'',muscleManual:false,bmiManual:false,...r}));goal=d.goal??null;profile={height:null,birthYear:null,birthMonth:null,birthday:null,sex:'unknown',...(d.profile||{})};return true;}catch(e){}}
   return false;
 }
-function saveData(){localStorage.setItem(SK,JSON.stringify({records,mealLogs,exerciseLogs,glucoseLogs,events,goal,profile,layout:appL,theme:appT,display:appD,sbRight:appSbRight,sbStats:showSbStats,og,showPeriodDots,bodyTwiceMode}));}
+function saveData(){localStorage.setItem(SK,JSON.stringify({records,mealLogs,exerciseLogs,glucoseLogs,events,goal,profile,layout:appL,theme:appT,display:appD,sbRight:appSbRight,sbStats:showSbStats,og,showPeriodDots,bodyTwiceMode,dirtyNotifEnabled}));}
 function getEff(){return appL==='auto'?(window.innerWidth>=768?'desktop':'mobile'):appL;}
 function applyLayout(){
   const eff=getEff();
@@ -924,7 +939,14 @@ function setLayoutMode(m){appL=m;applyLayout();saveData();}
 function setSbPos(p){appSbRight=(p==='right');applyLayout();saveData();}
 function setSbStats(v){showSbStats=v;updSidebar();saveData();}
 function quickToggleLayout(){const eff=getEff();appL=eff==='desktop'?'mobile':'desktop';applyLayout();saveData();}
-function applyT(t){appT=t;document.documentElement.setAttribute('data-theme',t);renderTG();}
+function applyT(t){
+  appT=t;document.documentElement.setAttribute('data-theme',t);
+  // ブラウザ上部バーの色をテーマに合わせる
+  const th=THEMES.find(x=>x.k===t);
+  const meta=document.getElementById('theme-color-meta');
+  if(th&&meta)meta.setAttribute('content',th.bg);
+  renderTG();
+}
 function applyD(d){
   appD=d;
   const pw=document.getElementById('page-wrap');
@@ -960,7 +982,33 @@ function updSidebar(){
   document.getElementById('tog-stats-off')?.classList.toggle('active',!showSbStats);
 }
 function tickClock(){const n=new Date();const ds=n.toLocaleDateString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit',weekday:'short'});const ts=n.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});['hdr-date','sb-date'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=ds;});['hdr-time','sb-time'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=ts;});}
+// ── 未保存変更の保護 ──
+let formDirty=false;
+let dirtyNotifEnabled=true; // 未保存データ通知のON/OFF
+function setDirtyNotif(v){
+  dirtyNotifEnabled=v;
+  document.getElementById('dirtynotif-on')?.classList.toggle('active',v);
+  document.getElementById('dirtynotif-off')?.classList.toggle('active',!v);
+  saveData();
+  updSaveHint();
+}
+function markDirty(){formDirty=true;updSaveHint();}
+function clearDirty(){formDirty=false;updSaveHint();}
+function confirmIfDirty(){
+  if(!formDirty||!dirtyNotifEnabled)return true;
+  return confirm('保存していない変更があります。\n移動すると入力内容が失われます。\n\nそのまま移動しますか？');
+}
+function updSaveHint(){
+  const btn=document.getElementById('save-btn');
+  if(!btn)return;
+  if(formDirty&&dirtyNotifEnabled){btn.classList.add('dirty');btn.textContent='💾 保存 ●';}
+  else{btn.classList.remove('dirty');btn.textContent='💾 保存';}
+}
 function switchTab(tab){
+  // 記録タブから離れる際、未保存なら確認
+  const curActive=document.querySelector('.tab-btn.active,.snav-btn.active');
+  const leavingLog=document.getElementById('tab-log').style.display!=='none';
+  if(leavingLog&&tab!=='log'&&!confirmIfDirty())return;
   ['log','chart','history','settings'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'':'none');
   document.querySelectorAll('.tab-btn,.snav-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
   if(tab==='history'){
@@ -975,11 +1023,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementB
 function updDD(){const e=document.getElementById('date-disp');if(e)e.textContent=curDate;document.getElementById('today-btn')?.classList.toggle('active',curDate===todayStr());}
 function prevDay(){shiftDay(-1);}function nextDay(){shiftDay(1);}
 function shiftDay(n){
+  if(!confirmIfDirty())return;
   const d=new Date(curDate+'T00:00:00');d.setDate(d.getDate()+n);
   const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
   curDate=`${y}-${m}-${day}`;updDD();updBodyForm();loadForm(curDate);
 }
-function goToday(){curDate=todayStr();updDD();updBodyForm();loadForm(curDate);}
+function goToday(){if(!confirmIfDirty())return;curDate=todayStr();updDD();updBodyForm();loadForm(curDate);}
 function trigDP(){
   const pop=document.getElementById('dp-popup');
   if(!pop)return;
@@ -992,6 +1041,7 @@ function trigDP(){
 }
 function onDP(e){
   if(!e.target.value)return;
+  if(!confirmIfDirty()){e.target.value=curDate;return;}
   curDate=e.target.value;
   document.getElementById('dp-popup').style.display='none';
   updDD();updBodyForm();loadForm(curDate);
@@ -1280,6 +1330,7 @@ function loadForm(date){
   tG=glucoseLogs.filter(g=>g.date===date).map(g=>({...g}));
   tEv=events.filter(ev=>ev.date===date).map(ev=>({...ev}));
   renderMeals();renderEx();renderGlc();renderEv();onBI();
+  clearDirty(); // フォーム読み込み直後は未保存ではない
 }
 function saveRec(){
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1327,7 +1378,7 @@ function saveRec(){
   exerciseLogs=exerciseLogs.filter(e=>e.date!==curDate);tE.filter(e=>e.type).forEach(e=>exerciseLogs.push({...e,date:curDate}));
   glucoseLogs=glucoseLogs.filter(g=>g.date!==curDate);tG.filter(g=>g.value).forEach(g=>glucoseLogs.push({...g,date:curDate}));
   events=events.filter(ev=>ev.date!==curDate);tEv.filter(ev=>ev.title).forEach(ev=>events.push({...ev,date:curDate}));
-  saveData();updSidebar();showToast('保存しました ✓');
+  saveData();updSidebar();clearDirty();showToast('保存しました ✓');
 }
 function delRec(){
   if(!records.find(r=>r.date===curDate)){showToast('この日の記録はありません');return;}
@@ -1381,7 +1432,7 @@ function renderHist(){
   }).join('');
 }
 function togMonth(hd){const bd=hd.nextElementSibling;const isO=bd.classList.contains('open');hd.classList.toggle('open',!isO);bd.classList.toggle('open',!isO);}
-function editDate(date){curDate=date;updDD();updBodyForm();loadForm(date);switchTab('log');}
+function editDate(date){if(!confirmIfDirty())return;curDate=date;updDD();updBodyForm();loadForm(date);switchTab('log');}
 function navCal(dir){
   calMonth+=dir;
   if(calMonth>11){calMonth=0;calYear++;}
@@ -1624,7 +1675,22 @@ function resetD(){
   updSidebar();updBustLbl();updPeriodSec();
   showToast('データを削除しました');
 }
-function initApp(){buildEmoji();buildPeriodCtrls();updDD();updBodyForm();loadForm(curDate);updPeriodSec();updBustLbl();Object.keys(og).forEach(k=>{document.querySelector(`#grp-${k} .group-hd`)?.classList.toggle('open',og[k]);document.getElementById(`grpb-${k}`)?.classList.toggle('open',og[k]);});onBI();updSidebar();}
+function initApp(){buildEmoji();buildPeriodCtrls();updDD();updBodyForm();loadForm(curDate);updPeriodSec();updBustLbl();Object.keys(og).forEach(k=>{document.querySelector(`#grp-${k} .group-hd`)?.classList.toggle('open',og[k]);document.getElementById(`grpb-${k}`)?.classList.toggle('open',og[k]);});onBI();updSidebar();
+  // フォーム入力を検知して未保存フラグを立てる（loadFormの値セットはinputイベントを発火しないので誤検知しない）
+  const logTab=document.getElementById('tab-log');
+  if(logTab){
+    logTab.addEventListener('input',markDirty);
+    logTab.addEventListener('change',markDirty);
+  }
+  // ページを閉じる/リロードする際、未保存なら警告
+  window.addEventListener('beforeunload',e=>{
+    if(formDirty&&dirtyNotifEnabled){e.preventDefault();e.returnValue='';}
+  });
+  clearDirty();
+  // 未保存通知トグルの初期状態を反映
+  document.getElementById('dirtynotif-on')?.classList.toggle('active',dirtyNotifEnabled);
+  document.getElementById('dirtynotif-off')?.classList.toggle('active',!dirtyNotifEnabled);
+}
 loadData();
 applyLayout();
 applyT(appT);
