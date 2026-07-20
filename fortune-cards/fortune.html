@@ -1,0 +1,3125 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="yoi" data-mode="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fortune Card Reading Practice ~私の占いと日記</title>
+<style>
+/* ============================================================
+   テーマ定義：宵 / 綿雲 / 鉄 × ライト / ダーク
+============================================================ */
+html[data-theme="yoi"][data-mode="light"]{
+  --bg:#f3f0fa; --panel:#ffffff; --panel2:#ece7f7;
+  --text:#3a3350; --sub:#7a719a; --line:#d8d0ec;
+  --accent:#6b5b9e; --accent-text:#ffffff;
+  --danger:#b0567a;
+  --cloth-fallback:linear-gradient(145deg,#4a3d78,#2e2452);
+  --slot-line:#cbb9ff; --slot-fill:rgba(255,255,255,.10);
+}
+html[data-theme="yoi"][data-mode="dark"]{
+  --bg:#171224; --panel:#221a38; --panel2:#2c2347;
+  --text:#e8e2f6; --sub:#a99cc9; --line:#3d3260;
+  --accent:#a48fe0; --accent-text:#1c1430;
+  --danger:#e08aa8;
+  --cloth-fallback:linear-gradient(145deg,#3b2f63,#1d1638);
+  --slot-line:#7c5fd0; --slot-fill:rgba(0,0,0,.14);
+}
+html[data-theme="wata"][data-mode="light"]{
+  --bg:#fbf8f4; --panel:#ffffff; --panel2:#f4ede6;
+  --text:#5a5148; --sub:#a2968a; --line:#e8ddd2;
+  --accent:#d99aa6; --accent-text:#ffffff;
+  --danger:#c4707e;
+  --cloth-fallback:linear-gradient(145deg,#f0dce0,#e3ccd4);
+  --slot-line:#c98fa0; --slot-fill:rgba(255,255,255,.45);
+}
+html[data-theme="wata"][data-mode="dark"]{
+  --bg:#2b2624; --panel:#38312e; --panel2:#423a36;
+  --text:#f0e8e2; --sub:#b8a99e; --line:#544a44;
+  --accent:#e0a8b4; --accent-text:#3a2c30;
+  --danger:#e8a0ac;
+  --cloth-fallback:linear-gradient(145deg,#5e4a50,#463840);
+  --slot-line:#c96f88; --slot-fill:rgba(0,0,0,.14);
+}
+html[data-theme="tetsu"][data-mode="light"]{
+  --bg:#f2f3f1; --panel:#ffffff; --panel2:#e8ebe7;
+  --text:#33403a; --sub:#7d8a82; --line:#d3dad4;
+  --accent:#3f6b5a; --accent-text:#ffffff;
+  --danger:#a85c5c;
+  --cloth-fallback:linear-gradient(145deg,#43584f,#2c3b34);
+  --slot-line:#a8d4c0; --slot-fill:rgba(255,255,255,.10);
+}
+html[data-theme="tetsu"][data-mode="dark"]{
+  --bg:#171c1a; --panel:#212a26; --panel2:#2a3530;
+  --text:#dfe8e3; --sub:#93a69b; --line:#3a4a42;
+  --accent:#7ab89e; --accent-text:#12201a;
+  --danger:#d88f8f;
+  --cloth-fallback:linear-gradient(145deg,#33443c,#1e2a25);
+  --slot-line:#3f8a68; --slot-fill:rgba(0,0,0,.14);
+}
+
+/* ============================================================
+   基本
+============================================================ */
+*{box-sizing:border-box;}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+  font-size:14px; line-height:1.6;
+  transition:background .25s,color .25s;
+}
+h1,h2,h3{margin:0; font-weight:600;}
+button{font-family:inherit; cursor:pointer;}
+input,textarea,select{font-family:inherit; font-size:14px;}
+
+.app{display:flex; min-height:100vh;}
+
+/* ---- PCサイドバー ---- */
+.sidebar{
+  width:230px; flex-shrink:0;
+  background:var(--panel); border-right:1px solid var(--line);
+  padding:18px 14px; display:flex; flex-direction:column; gap:18px;
+  position:sticky; top:0; height:100vh; overflow-y:auto;
+}
+.logo{font-size:16px; font-weight:700; letter-spacing:.04em;}
+.logo small{display:block; font-size:11px; color:var(--sub); font-weight:400; margin-top:2px;}
+
+.navlist{display:flex; flex-direction:column; gap:4px;}
+.navbtn{
+  display:flex; align-items:center; gap:8px;
+  border:none; background:transparent; color:var(--text);
+  padding:9px 12px; border-radius:8px; font-size:14px; text-align:left;
+}
+.navbtn.on{background:var(--accent); color:var(--accent-text); font-weight:600;}
+.navbtn:not(.on):hover{background:var(--panel2);}
+
+.sidegroup{border-top:1px solid var(--line); padding-top:14px;}
+.sidegroup .lbl{font-size:11px; color:var(--sub); margin-bottom:6px;}
+.chiprow{display:flex; flex-wrap:wrap; gap:6px;}
+.chip{
+  border:1px solid var(--line); background:var(--panel2); color:var(--text);
+  border-radius:999px; padding:4px 12px; font-size:12px;
+}
+.chip.on{background:var(--accent); color:var(--accent-text); border-color:var(--accent); font-weight:600;}
+.sidestat{font-size:12px; color:var(--sub);}
+.sidestat b{color:var(--text); font-size:16px; margin-right:2px;}
+
+/* ---- メイン ---- */
+.main{flex:1; padding:20px 24px 90px; min-width:0; max-width:980px;}
+.pagetitle{font-size:18px; margin-bottom:4px;}
+.pagesub{font-size:12px; color:var(--sub); margin-bottom:14px;}
+.panel{
+  background:var(--panel); border:1px solid var(--line);
+  border-radius:12px; padding:14px 16px; margin-bottom:14px;
+}
+.page{display:none;}
+.page.on{display:block;}
+
+.tbtn{
+  border:1px solid var(--line); background:var(--panel2); color:var(--text);
+  border-radius:8px; padding:7px 13px; font-size:13px;
+}
+.tbtn.primary{background:var(--accent); color:var(--accent-text); border-color:var(--accent); font-weight:600;}
+.tbtn.danger{color:var(--danger); border-color:var(--danger); background:transparent;}
+.tbtn:disabled{opacity:.45; cursor:default;}
+.hint{font-size:11px; color:var(--sub);}
+
+/* ---- スプレッド一覧 ---- */
+.splist{display:flex; flex-direction:column; gap:10px;}
+.spcard{
+  background:var(--panel); border:1px solid var(--line); border-radius:12px;
+  padding:12px 14px; display:flex; align-items:center; gap:12px;
+}
+.spcard .thumb{
+  width:64px; height:48px; border-radius:8px; flex-shrink:0;
+  background-size:cover; background-position:center; border:1px solid var(--line);
+}
+.spcard .info{flex:1; min-width:0;}
+.spcard .title{font-weight:600; font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.spcard .meta{font-size:11px; color:var(--sub);}
+.spcard .acts{display:flex; gap:6px; flex-shrink:0;}
+.spcard.deleted{opacity:.6;}
+.emptynote{
+  text-align:center; color:var(--sub); font-size:13px; padding:26px 10px;
+  border:1px dashed var(--line); border-radius:12px;
+}
+
+/* ---- エディタ ---- */
+.edrow{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:10px;}
+.edrow label{font-size:12px; color:var(--sub); flex-shrink:0;}
+.ed-title{
+  flex:1; min-width:160px;
+  border:1px solid var(--line); background:var(--bg); color:var(--text);
+  border-radius:8px; padding:8px 10px;
+}
+.clothpick{display:flex; gap:8px; overflow-x:auto; padding-bottom:4px;}
+.clothopt{
+  width:72px; height:54px; border-radius:8px; flex-shrink:0;
+  background-size:cover; background-position:center;
+  border:2px solid var(--line); padding:0; position:relative;
+}
+.clothopt.on{border-color:var(--accent); box-shadow:0 0 0 2px var(--accent);}
+.clothopt .cname{
+  position:absolute; left:0; right:0; bottom:0;
+  font-size:10px; color:#fff; background:rgba(0,0,0,.35);
+  border-radius:0 0 6px 6px; padding:1px 3px; text-align:center;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+
+.cloth{
+  position:relative; width:100%; aspect-ratio:4/3;
+  background-size:cover; background-position:center;
+  border-radius:12px; overflow:hidden;
+  touch-action:none;
+}
+.cloth .grid{
+  position:absolute; inset:0; pointer-events:none; opacity:0;
+  background-image:
+    repeating-linear-gradient(to right,rgba(255,255,255,.14) 0 1px,transparent 1px calc(100%/32)),
+    repeating-linear-gradient(to bottom,rgba(255,255,255,.14) 0 1px,transparent 1px calc(100%/24));
+  transition:opacity .2s;
+}
+.cloth.showgrid .grid{opacity:1;}
+
+/* ---- 布なし ---- */
+.cloth.nocloth{
+  background:var(--panel2) !important;
+  border:1px solid var(--line);
+}
+.cloth.nocloth .grid{
+  background-image:
+    repeating-linear-gradient(to right,rgba(128,128,128,.30) 0 1px,transparent 1px calc(100%/32)),
+    repeating-linear-gradient(to bottom,rgba(128,128,128,.30) 0 1px,transparent 1px calc(100%/24));
+}
+.cloth.nocloth .slot{
+  border-color:var(--accent);
+  background:transparent;
+}
+.cloth.nocloth .slot.sel{box-shadow:0 0 0 3px rgba(128,128,128,.25);}
+.clothopt.nocloth-thumb{background:var(--panel2) !important;}
+
+/* ---- プリセット選択 ---- */
+.presetlist{display:flex; flex-direction:column; gap:8px;}
+.presetbtn{
+  display:flex; flex-wrap:wrap; align-items:center; gap:4px 10px;
+  border:1px solid var(--line); background:var(--panel2); color:var(--text);
+  border-radius:10px; padding:10px 12px; text-align:left; font-size:13px;
+}
+.presetbtn:hover{border-color:var(--accent);}
+.presetbtn .pname{font-weight:600;}
+.presetbtn .pcount{font-size:11px; color:var(--sub);}
+.presetbtn .pdesc{font-size:11px; color:var(--sub); width:100%;}
+.slot{
+  position:absolute; width:11%; aspect-ratio:100/170;
+  border:2px dashed var(--slot-line); border-radius:6px;
+  background:var(--slot-fill);
+  display:flex; align-items:center; justify-content:center;
+  transform:translate(-50%,-50%);
+  user-select:none; -webkit-user-select:none; cursor:grab;
+}
+.slot.rot{transform:translate(-50%,-50%) rotate(90deg);}
+.slot.sel{border-style:solid; box-shadow:0 0 0 3px rgba(255,255,255,.3);}
+.slot .num{
+  min-width:22px; height:22px; padding:0 5px;
+  border-radius:999px;
+  background:var(--accent); color:var(--accent-text);
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:700; line-height:1;
+  box-shadow:0 0 0 2px rgba(255,255,255,.85), 0 1px 3px rgba(0,0,0,.35);
+}
+.slot.rot .num{transform:rotate(-90deg);}
+.slot .lab{
+  position:absolute; top:calc(100% + 4px); left:50%; transform:translateX(-50%);
+  white-space:nowrap; font-size:10px; font-weight:400;
+  background:rgba(0,0,0,.45); color:#fff;
+  padding:1px 8px; border-radius:999px;
+}
+.slot .lab:empty{display:none;}
+.slot.rot .lab{
+  top:50%; left:calc(100% + 6px); transform:translateY(-50%) rotate(-90deg);
+  transform-origin:left center;
+}
+.toolrow{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; align-items:center;}
+.slotpanel{
+  margin-top:10px; padding:10px 12px;
+  background:var(--panel2); border:1px solid var(--line); border-radius:10px;
+  display:none;
+}
+.slotpanel.on{display:block;}
+.slotpanel .edrow{margin-bottom:8px;}
+.slotpanel .edrow:last-child{margin-bottom:0;}
+.lab-input{
+  flex:1; min-width:120px;
+  border:1px solid var(--line); background:var(--panel); color:var(--text);
+  border-radius:8px; padding:7px 10px;
+}
+.edfoot{
+  display:flex; gap:8px; justify-content:flex-end; margin-top:14px;
+  flex-wrap:wrap;
+}
+
+/* ---- 準備中 ---- */
+.soon{
+  text-align:center; color:var(--sub); padding:40px 10px; font-size:13px;
+  border:1px dashed var(--line); border-radius:12px;
+}
+.soon .big{font-size:32px; margin-bottom:8px;}
+
+/* ---- リーディング ---- */
+.rd-toprow{display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:10px; flex-wrap:wrap;}
+.slot.static{pointer-events:none; cursor:default;}
+.deckrow{display:flex; align-items:center; gap:14px; margin-top:12px; flex-wrap:wrap;}
+.deck{position:relative; width:60px; height:96px; flex-shrink:0;}
+.deck .dcard{
+  position:absolute; inset:0; border-radius:8px; border:1px solid rgba(255,255,255,.45);
+  background-size:cover; background-position:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.25);
+}
+.deck .dcard:nth-child(1){transform:translate(-4px,2px) rotate(-4deg);}
+.deck .dcard:nth-child(2){transform:translate(3px,-2px) rotate(3deg);}
+.deck .dcard:nth-child(3){transform:none;}
+.deck.shuffling .dcard:nth-child(1){animation:shf1 .5s ease-in-out 2;}
+.deck.shuffling .dcard:nth-child(2){animation:shf2 .5s ease-in-out 2 .08s;}
+.deck.shuffling .dcard:nth-child(3){animation:shf3 .5s ease-in-out 2 .16s;}
+@keyframes shf1{0%,100%{transform:translate(-4px,2px) rotate(-4deg);}50%{transform:translate(-26px,-8px) rotate(-15deg);}}
+@keyframes shf2{0%,100%{transform:translate(3px,-2px) rotate(3deg);}50%{transform:translate(26px,8px) rotate(13deg);}}
+@keyframes shf3{0%,100%{transform:none;}50%{transform:translate(0,-13px) rotate(2deg);}}
+
+/* 配られたカード */
+.pcard{
+  position:absolute; width:11%; aspect-ratio:100/170;
+  transform:translate(-50%,-50%);
+  perspective:600px; cursor:pointer;
+  animation:dealin .3s ease both;
+}
+@keyframes dealin{from{opacity:0; margin-top:-16px;}to{opacity:1; margin-top:0;}}
+.pcard.rot90{transform:translate(-50%,-50%) rotate(90deg);}
+.pcard .pin{
+  position:absolute; inset:0; transform-style:preserve-3d;
+  transition:transform .5s; border-radius:6px;
+}
+.pcard.flip .pin{transform:rotateY(180deg);}
+.pcard .face{
+  position:absolute; inset:0;
+  backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  border-radius:6px; overflow:hidden;
+  box-shadow:0 2px 6px rgba(0,0,0,.3);
+  background-size:cover; background-position:center;
+}
+.pcard .front{transform:rotateY(180deg); background:#f5f0e6;}
+.pcard .fwrap{position:absolute; inset:0;}
+.pcard.rev .fwrap{transform:rotate(180deg);}
+.pcard .fwrap img{width:100%; height:100%; object-fit:cover; display:block;}
+.pcard .fname{
+  position:absolute; inset:0; display:none; align-items:center; justify-content:center;
+  text-align:center; font-size:10px; line-height:1.5; padding:4px; color:#5a5148;
+  background:linear-gradient(160deg,#f3ead8,#e0d3ba);
+}
+.pcard .front.noimg img{display:none;}
+.pcard .front.noimg .fname{display:flex;}
+
+/* 案A：カード角の番号バッジ */
+.pcard .nbadge{
+  position:absolute; top:-7px; left:-7px; z-index:6;
+  min-width:18px; height:18px; padding:0 4px; border-radius:999px;
+  background:var(--accent); color:var(--accent-text);
+  font-size:10px; font-weight:700; line-height:1;
+  display:none; align-items:center; justify-content:center;
+  box-shadow:0 0 0 2px rgba(255,255,255,.85), 0 1px 2px rgba(0,0,0,.3);
+}
+.pcard.rot90 .nbadge{transform:rotate(-90deg);}
+body.show-badge .pcard .nbadge{display:flex;}
+
+/* 案B：位置名オーバーレイ */
+.pcard .poslab{
+  position:absolute; bottom:3px; left:50%; transform:translateX(-50%);
+  white-space:nowrap; font-size:9px; z-index:5;
+  background:rgba(0,0,0,.62); color:#fff;
+  padding:1px 8px; border-radius:999px;
+  opacity:0; transition:opacity .2s; pointer-events:none;
+}
+.pcard .poslab:empty{display:none;}
+.pcard.rot90 .poslab{
+  bottom:auto; left:auto; top:50%; right:3px;
+  transform:translateY(-50%) rotate(-90deg); transform-origin:center;
+}
+body.show-pos .pcard .poslab{opacity:1;}
+
+/* 卓上のトグル行 */
+.rd-toggles{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; align-items:center;}
+.rd-toggles .tog{
+  border:1px solid var(--line); background:var(--panel2); color:var(--text);
+  border-radius:999px; padding:5px 13px; font-size:12px;
+}
+.rd-toggles .tog.on{background:var(--accent); color:var(--accent-text); border-color:var(--accent); font-weight:600;}
+.rd-toggles .tog:disabled{opacity:.5;}
+
+/* 案C：意味パネルの位置表示 */
+.mean-pos{
+  display:none; font-size:12px; font-weight:700;
+  background:var(--panel2); color:var(--accent);
+  padding:3px 13px; border-radius:999px; margin-bottom:10px;
+}
+.mean-pos.on{display:inline-block;}
+
+/* ---- 意味パネル ---- */
+.modal-bg{position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:50; display:none;}
+.modal-bg.on{display:block;}
+.meanbox{
+  position:fixed; left:0; right:0; bottom:0; z-index:51;
+  background:var(--panel); color:var(--text);
+  border:1px solid var(--line); border-bottom:none;
+  border-radius:16px 16px 0 0;
+  max-height:78vh; overflow-y:auto;
+  padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  display:none;
+}
+.meanbox.on{display:block;}
+body.lay-pc .meanbox{
+  left:50%; right:auto; bottom:auto; top:50%;
+  transform:translate(-50%,-50%);
+  width:520px; max-width:calc(100vw - 24px);
+  border-radius:16px; border-bottom:1px solid var(--line);
+  max-height:82vh;
+}
+.mean-head{display:flex; gap:14px; align-items:flex-start; margin-bottom:12px;}
+.mean-img{
+  width:84px; aspect-ratio:100/170; border-radius:8px; overflow:hidden;
+  flex-shrink:0; background:linear-gradient(160deg,#f3ead8,#e0d3ba); position:relative;
+}
+.mean-img img{width:100%; height:100%; object-fit:cover; display:block;}
+.mean-img.rev{transform:rotate(180deg);}
+.mean-img .mfname{
+  position:absolute; inset:0; display:none; align-items:center; justify-content:center;
+  text-align:center; font-size:11px; padding:4px; color:#5a5148;
+}
+.mean-img.noimg img{display:none;}
+.mean-img.noimg .mfname{display:flex;}
+.mean-title .mnum{font-size:11px; color:var(--sub); letter-spacing:.1em;}
+.mean-title h3{font-size:17px; margin:1px 0;}
+.mean-title .men{font-size:11px; color:var(--sub);}
+.pos-badge{font-size:11px; padding:2px 11px; border-radius:999px; font-weight:700; display:inline-block; margin-top:7px;}
+.pos-badge.up{background:rgba(93,122,79,.16); color:#5d7a4f;}
+.pos-badge.rv{background:rgba(164,89,94,.16); color:#a4595e;}
+html[data-mode="dark"] .pos-badge.up{color:#a4c491;}
+html[data-mode="dark"] .pos-badge.rv{color:#dc9ba0;}
+.kwrow{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;}
+.kwrow span{font-size:11px; background:var(--panel2); border:1px solid var(--line); padding:2px 10px; border-radius:999px;}
+.speaktxt{
+  border-left:3px solid var(--accent); background:var(--panel2);
+  border-radius:0 10px 10px 0; padding:11px 14px;
+  font-size:13px; line-height:2;
+}
+.mean-close{margin-top:14px; width:100%;}
+
+/* ---- クレジット ---- */
+.credit{
+  font-size:11px; color:var(--sub); text-align:center;
+  margin:22px 0 8px; line-height:1.9;
+}
+
+/* ---- カスタム確認ダイアログ（スマホでconfirmが出ない環境対策） ---- */
+.confirm-bg{position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:60; display:none;}
+.confirm-bg.on{display:flex; align-items:center; justify-content:center; padding:24px;}
+.confirm-box{
+  background:var(--panel); color:var(--text);
+  border:1px solid var(--line); border-radius:14px;
+  padding:20px 20px 16px; max-width:340px; width:100%;
+  box-shadow:0 8px 30px rgba(0,0,0,.3);
+}
+.confirm-box .cmsg{font-size:14px; line-height:1.9; white-space:pre-wrap; margin-bottom:16px;}
+.confirm-box .cinput{
+  width:100%; border:1px solid var(--line); background:var(--bg); color:var(--text);
+  border-radius:8px; padding:8px 10px; font-size:14px; margin:-6px 0 16px;
+}
+.confirm-box .crow{display:flex; gap:10px; justify-content:flex-end;}
+.confirm-box .crow .tbtn{min-width:76px; text-align:center;}
+
+/* ---- 設定 ---- */
+.setgroup{margin-bottom:18px;}
+.setgroup:last-child{margin-bottom:0;}
+.setgroup .lbl{font-size:12px; color:var(--sub); margin-bottom:7px;}
+.setnote{font-size:11px; color:var(--sub); margin-top:7px; line-height:1.9;}
+.backpick{display:flex; gap:10px; flex-wrap:wrap;}
+.backopt{
+  width:60px; aspect-ratio:100/170; border-radius:8px;
+  border:2px solid var(--line); padding:0; position:relative;
+  background-size:cover; background-position:center;
+}
+.backopt.on{border-color:var(--accent); box-shadow:0 0 0 2px var(--accent);}
+.backopt .bname{
+  position:absolute; left:0; right:0; bottom:0;
+  font-size:9px; color:#fff; background:rgba(0,0,0,.45);
+  text-align:center; padding:2px 3px; border-radius:0 0 6px 6px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+
+/* ---- 日記：記録フォーム ---- */
+.dylbl{font-size:12px; color:var(--sub); font-weight:700; margin-bottom:7px;}
+.dyta{
+  width:100%; border:1px solid var(--line); background:var(--bg); color:var(--text);
+  border-radius:10px; padding:10px 12px; font-family:inherit; font-size:14px;
+  line-height:1.9; resize:vertical; min-height:90px;
+}
+.row-right{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; margin-top:10px;}
+.markrow{display:flex; flex-wrap:wrap; gap:5px; margin-bottom:9px;}
+.markbtn{
+  width:34px; height:34px; border-radius:9px;
+  border:1px solid var(--line); background:var(--panel2);
+  font-size:16px; display:flex; align-items:center; justify-content:center; padding:0;
+}
+.markbtn.on{border-color:var(--accent); box-shadow:0 0 0 2px var(--accent); background:var(--panel);}
+
+/* ---- 日記：カレンダー ---- */
+.cal-ctrl{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
+.cal-month-lbl{font-size:13px; font-weight:700; letter-spacing:1px;}
+.cal-nav-btn{
+  background:none; border:1px solid var(--line); border-radius:6px; color:var(--text);
+  font-size:16px; width:30px; height:30px;
+  display:flex; align-items:center; justify-content:center;
+}
+.cal-wdays{display:grid; grid-template-columns:repeat(7,1fr); gap:2px; margin-bottom:3px;}
+.cal-wd{text-align:center; font-size:9px; font-weight:700; color:var(--sub); padding:3px 0;}
+.cal-wd.sun{color:var(--danger);}
+.cal-wd.sat{color:var(--accent);}
+.cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:3px; margin-bottom:6px;}
+.cal-cell{
+  background:var(--panel); border:1px solid var(--line); border-radius:7px;
+  min-height:50px; padding:4px 3px 3px; cursor:pointer;
+  position:relative; display:flex; flex-direction:column;
+}
+.cal-cell.today{border-color:var(--accent); border-width:1.5px;}
+.cal-cell.sel{background:var(--panel2); border-color:var(--accent);}
+.cal-cell.empty{background:transparent; border-color:transparent; cursor:default; pointer-events:none;}
+.cal-cell.no-rec{opacity:.55;}
+.cal-dn{font-size:9px; font-weight:700; color:var(--sub); line-height:1; margin-bottom:2px;}
+.cal-cell.today .cal-dn{color:var(--accent);}
+.cal-cell.sun .cal-dn{color:var(--danger);}
+.cal-marks{font-size:11px; line-height:1.2; min-height:13px; margin-bottom:2px; overflow:hidden;}
+.cal-dots{display:flex; flex-wrap:wrap; gap:2px; margin-top:auto;}
+.cal-dot{width:5px; height:5px; border-radius:50%; flex-shrink:0; background:var(--accent);}
+
+/* ---- 日記：一覧カード ---- */
+.viewrow{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; align-items:center;}
+.dayhead{
+  font-size:12px; color:var(--sub); font-weight:700;
+  margin:14px 0 6px; display:flex; align-items:center; gap:8px;
+}
+.dayhead::after{content:""; flex:1; height:1px; background:var(--line);}
+.dyc{
+  background:var(--panel); border:1px solid var(--line); border-radius:12px;
+  padding:11px 14px; margin-bottom:8px; cursor:pointer;
+  display:flex; gap:12px; align-items:flex-start;
+}
+.dyc:hover{border-color:var(--accent);}
+.dyc.deleted{opacity:.6; cursor:default;}
+.dyc .ic{font-size:20px; flex-shrink:0; margin-top:2px;}
+.dyc .body{flex:1; min-width:0;}
+.dyc .ttl{font-weight:600; font-size:13px;}
+.dyc .meta{font-size:11px; color:var(--sub);}
+.dyc .meta .tsk{color:var(--danger);}
+.dyc .prev{
+  font-size:12px; color:var(--text); opacity:.85; margin-top:3px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.dyc .prev.empty{color:var(--sub); opacity:.8;}
+.dyc .acts{flex-shrink:0;}
+.badge-mini{
+  font-size:10px; background:var(--panel2); color:var(--accent);
+  border-radius:999px; padding:1px 8px; margin-left:6px; font-weight:700;
+}
+.month-hd{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:8px 4px; cursor:pointer; user-select:none;
+  font-size:13px; font-weight:700;
+}
+.month-hd .cnt{font-size:11px; color:var(--sub); font-weight:400;}
+.month-bd{display:none;}
+.month-bd.open{display:block;}
+.month-hd .arw{transition:transform .15s;}
+.month-hd.open .arw{transform:rotate(180deg);}
+
+/* ---- 日記：詳細 ---- */
+.secmark{
+  font-size:13px; font-weight:700; color:var(--accent);
+  margin:18px 0 8px; border-left:4px solid var(--accent); padding-left:8px;
+}
+.cardline{
+  display:flex; align-items:center; gap:10px;
+  padding:7px 4px; border-bottom:1px solid var(--line); cursor:pointer;
+}
+.cardline:last-child{border-bottom:none;}
+.cardline .cno{
+  min-width:20px; height:20px; border-radius:999px;
+  background:var(--accent); color:var(--accent-text);
+  font-size:11px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.cardline .cpos{font-size:11px; color:var(--sub); width:96px; flex-shrink:0;}
+.cardline .cname{font-size:13px; font-weight:600; flex:1;}
+.cardline .crev{font-size:10px; padding:1px 8px; border-radius:999px; font-weight:700;}
+.cardline .crev.up{background:rgba(93,122,79,.16); color:#5d7a4f;}
+.cardline .crev.rv{background:rgba(164,89,94,.16); color:#a4595e;}
+html[data-mode="dark"] .cardline .crev.up{color:#a4c491;}
+html[data-mode="dark"] .cardline .crev.rv{color:#dc9ba0;}
+.diarytxt{
+  background:var(--bg); border:1px solid var(--line); border-radius:10px;
+  padding:11px 13px; font-size:13px; line-height:2; white-space:pre-wrap;
+}
+.diarytxt.empty{color:var(--sub);}
+.tsuiki{
+  border-left:3px solid var(--danger); background:var(--panel2);
+  border-radius:0 10px 10px 0; padding:9px 12px; margin-top:8px;
+  font-size:13px; line-height:1.9; white-space:pre-wrap;
+}
+.tsuiki .tdate{font-size:10px; color:var(--danger); font-weight:700; margin-bottom:2px;}
+.dt-headrow{display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;}
+.dt-mark{
+  font-size:22px; background:var(--panel2); border:1px solid var(--line);
+  border-radius:10px; width:42px; height:42px;
+  display:flex; align-items:center; justify-content:center; padding:0;
+}
+
+/* ---- アップロード画像の管理 ---- */
+.uplist{display:flex; flex-direction:column; gap:8px; margin-top:10px;}
+.upitem{
+  display:flex; align-items:center; gap:12px;
+  background:var(--panel2); border:1px solid var(--line);
+  border-radius:10px; padding:8px 10px;
+}
+.upitem .uthumb{
+  border-radius:8px; border:1px solid var(--line); flex-shrink:0;
+  background-size:cover; background-position:center;
+}
+.upitem .uthumb.cloth{width:64px; height:48px;}
+.upitem .uthumb.back{width:34px; height:56px;}
+.upitem .uname{flex:1; font-size:13px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+
+/* ---- SPヘッダー＆下タブ ---- */
+.spheader{display:none;}
+.spnav{display:none;}
+.spsetting{display:none;}
+.spsetting.open{display:block;}
+body.lay-pc .spsetting{display:none;}
+.gearbtn{border:1px solid var(--line); background:var(--panel2); color:var(--text);
+  border-radius:8px; padding:6px 10px; font-size:13px;}
+
+body.lay-sp .sidebar{display:none;}
+body.lay-sp .app{flex-direction:column;}
+body.lay-sp .spheader{
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:10;
+  background:var(--panel); border-bottom:1px solid var(--line);
+  padding:10px 14px;
+}
+body.lay-sp .spheader .logo{font-size:14px;}
+body.lay-sp .spheader .logo small{display:none;}
+body.lay-sp .spnav{
+  display:flex; position:fixed; bottom:0; left:0; right:0; z-index:10;
+  background:var(--panel); border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+body.lay-sp .spnav .navbtn{flex:1; flex-direction:column; gap:2px; align-items:center;
+  font-size:10px; padding:8px 4px; border-radius:0;}
+body.lay-sp .spnav .navbtn .ic{font-size:17px;}
+body.lay-sp .main{padding:14px 14px 90px;}
+body.lay-sp .spcard{flex-wrap:wrap;}
+body.lay-sp .spcard .acts{width:100%; justify-content:flex-end;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== PCサイドバー ===== -->
+  <aside class="sidebar">
+    <div class="logo">Fortune Card<br>Reading Practice<small>~私の占いと日記</small></div>
+
+    <nav class="navlist" id="pcNav">
+      <button class="navbtn on" data-nav="spread"><span class="ic">🃏</span>スプレッド</button>
+      <button class="navbtn" data-nav="reading"><span class="ic">🔮</span>リーディング</button>
+      <button class="navbtn" data-nav="diary"><span class="ic">📔</span>日記</button>
+      <button class="navbtn" data-nav="setting"><span class="ic">⚙️</span>設定</button>
+    </nav>
+
+    <div class="sidegroup">
+      <div class="lbl">テーマ</div>
+      <div class="chiprow theme-row">
+        <button class="chip" data-t="yoi">宵</button>
+        <button class="chip" data-t="wata">綿雲</button>
+        <button class="chip" data-t="tetsu">鉄</button>
+      </div>
+    </div>
+
+    <div class="sidegroup">
+      <div class="lbl">表示モード</div>
+      <div class="chiprow mode-row">
+        <button class="chip" data-m="light">ライト</button>
+        <button class="chip" data-m="dark">ダーク</button>
+        <button class="chip" data-m="system">端末に合わせる</button>
+      </div>
+    </div>
+
+    <div class="sidegroup">
+      <div class="lbl">記録</div>
+      <div class="sidestat" id="pcStat"></div>
+    </div>
+  </aside>
+
+  <!-- ===== SPヘッダー ===== -->
+  <header class="spheader">
+    <div class="logo">Fortune Card Reading Practice</div>
+    <button class="gearbtn" id="spGear">🎨 テーマ</button>
+  </header>
+
+  <!-- ===== メイン ===== -->
+  <main class="main">
+
+    <!-- SP用テーマパネル -->
+    <div class="panel spsetting" id="spSetting">
+      <div class="lbl" style="font-size:11px;color:var(--sub);margin-bottom:6px;">テーマ</div>
+      <div class="chiprow theme-row">
+        <button class="chip" data-t="yoi">宵</button>
+        <button class="chip" data-t="wata">綿雲</button>
+        <button class="chip" data-t="tetsu">鉄</button>
+      </div>
+      <div class="lbl" style="font-size:11px;color:var(--sub);margin:10px 0 6px;">表示モード</div>
+      <div class="chiprow mode-row">
+        <button class="chip" data-m="light">ライト</button>
+        <button class="chip" data-m="dark">ダーク</button>
+        <button class="chip" data-m="system">端末に合わせる</button>
+      </div>
+    </div>
+
+    <!-- ========== スプレッド一覧 ========== -->
+    <section class="page on" id="page-spread">
+      <h2 class="pagetitle">スプレッド</h2>
+      <div class="pagesub">カードを並べる「型」を作って保存できます。</div>
+
+      <div class="edrow" style="justify-content:space-between;">
+        <button class="tbtn primary" id="newSpreadBtn">＋ 新しいスプレッドを作る</button>
+        <button class="tbtn" id="showDelBtn">削除済みを表示</button>
+      </div>
+
+      <div class="panel" id="presetPanel" style="display:none;">
+        <div class="pagesub" style="margin-bottom:8px;">どの形から作りますか？　お手本を選ぶと、あとから自由に手直しできます。</div>
+        <div class="presetlist" id="presetList">
+          <button class="presetbtn" data-preset="blank">
+            <span class="pname">白紙から作る</span>
+            <span class="pdesc">まっさらな布に、自分で枠を置いていきます。</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="splist" id="spList"></div>
+
+      <div id="delWrap" style="display:none; margin-top:18px;">
+        <div class="pagesub" style="margin-bottom:8px;">削除済みのスプレッド</div>
+        <div class="splist" id="spDelList"></div>
+      </div>
+    </section>
+
+    <!-- ========== スプレッド編集 ========== -->
+    <section class="page" id="page-editor">
+      <h2 class="pagetitle" id="edHeading">スプレッドを作る</h2>
+      <div class="pagesub">枠をドラッグで配置。枠をタップすると名前や回転を編集できます。</div>
+
+      <div class="panel">
+        <div class="edrow">
+          <label>名前</label>
+          <input class="ed-title" id="edTitle" maxlength="40" placeholder="例：スリーカード">
+        </div>
+        <div class="edrow" style="align-items:flex-start;">
+          <label style="padding-top:16px;">布</label>
+          <div class="clothpick" id="clothPick"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="cloth" id="edCloth">
+          <div class="grid"></div>
+        </div>
+
+        <div class="toolrow">
+          <button class="tbtn primary" id="addSlotBtn">＋ カード枠を追加</button>
+          <button class="tbtn" id="undoBtn">↩ 戻す</button>
+          <button class="tbtn" id="redoBtn">↪ やり直す</button>
+          <button class="tbtn" id="snapBtn">グリッドスナップ：OFF</button>
+          <span class="hint" id="slotCount"></span>
+        </div>
+
+        <div class="slotpanel" id="slotPanel">
+          <div class="edrow">
+            <label id="slotPanelTitle">枠 1</label>
+            <input class="lab-input" id="slotLabel" maxlength="20" placeholder="位置の名前（例：過去）">
+          </div>
+          <div class="edrow">
+            <button class="tbtn" id="rotBtn">⟳ 90度回転</button>
+            <button class="tbtn danger" id="delSlotBtn">この枠を削除</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="edfoot">
+        <button class="tbtn" id="edCancelBtn">やめる</button>
+        <button class="tbtn primary" id="edSaveBtn">保存する</button>
+      </div>
+    </section>
+
+    <!-- ========== リーディング ========== -->
+    <section class="page" id="page-reading">
+      <div id="rdSelect">
+        <h2 class="pagetitle">リーディング</h2>
+        <div class="pagesub">どのスプレッドで引きますか？</div>
+        <div class="splist" id="rdSpList"></div>
+        <div class="pagesub" style="margin:18px 0 8px;">お手本からすぐ引く（保存しなくても引けます）</div>
+        <div class="splist" id="rdPresetList"></div>
+      </div>
+
+      <div id="rdTable" style="display:none;">
+        <div class="rd-toprow">
+          <div>
+            <h2 class="pagetitle" id="rdTitle"></h2>
+            <div class="pagesub" id="rdSub" style="margin-bottom:0;"></div>
+          </div>
+          <button class="tbtn" id="rdBackBtn">← 選び直す</button>
+        </div>
+        <div class="panel">
+          <div class="rd-toggles">
+            <button class="tog" id="togBadge">番号</button>
+            <button class="tog" id="togPos">位置名</button>
+            <button class="tog" id="togRev">逆位置</button>
+          </div>
+          <div class="cloth" id="rdCloth"></div>
+          <div class="deckrow">
+            <div class="deck" id="rdDeck"><div class="dcard"></div><div class="dcard"></div><div class="dcard"></div></div>
+            <button class="tbtn primary" id="shuffleBtn">シャッフルする</button>
+            <button class="tbtn primary" id="dealBtn" disabled>配る</button>
+            <button class="tbtn" id="flipAllBtn" style="display:none;">すべてめくる</button>
+            <button class="tbtn" id="redealBtn" style="display:none;">配り直す</button>
+          </div>
+          <div class="hint" style="margin-top:9px;" id="rdHint"></div>
+        </div>
+
+        <div class="panel" id="rdDiaryBox" style="display:none;">
+          <div class="dylbl">📔 きょうの日記</div>
+          <div class="markrow" id="rdMarkRow"></div>
+          <textarea class="dyta" id="rdDiaryTa" placeholder="感じたことを、そのまま。あとから書いても、書かなくても大丈夫。"></textarea>
+          <div class="row-right">
+            <button class="tbtn" id="rdSkipBtn">記録せずに終わる</button>
+            <button class="tbtn primary" id="rdRecordBtn">📔 記録する</button>
+          </div>
+          <div class="hint" style="margin-top:7px;">記録すると、カードの並び・正逆・布・スプレッドの形がまるごと保存されます（あとでスプレッドを変えても日記は当時のまま）。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 日記 ========== -->
+    <section class="page" id="page-diary">
+      <div id="dyHome">
+        <h2 class="pagetitle">日記</h2>
+        <div class="pagesub">引いた記録と日記。カレンダーの日をタップすると、その日の記録が下に出ます。</div>
+        <div class="viewrow">
+          <button class="tbtn" id="dyViewCal">📅 カレンダー</button>
+          <button class="tbtn" id="dyViewList">📃 リスト</button>
+          <span style="flex:1;"></span>
+          <button class="tbtn" id="dyShowDelBtn">削除済みを表示</button>
+        </div>
+        <div class="panel" id="dyCalWrap">
+          <div id="dyCal"></div>
+          <div id="dyDayPanel"></div>
+        </div>
+        <div id="dyListView" style="display:none;"></div>
+        <div id="dyDelWrap" style="display:none;">
+          <div class="pagesub" style="margin:14px 0 8px;">削除済みの記録</div>
+          <div id="dyDelList"></div>
+        </div>
+      </div>
+
+      <div id="dyDetail" style="display:none;">
+        <div class="panel">
+          <div class="dt-headrow">
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <button class="dt-mark" id="dtMark" title="マークを変える"></button>
+              <div>
+                <h2 class="pagetitle" id="dtTitle" style="margin-bottom:2px;"></h2>
+                <div class="hint" id="dtMeta"></div>
+              </div>
+            </div>
+            <button class="tbtn" id="dtBackBtn">← 一覧へ</button>
+          </div>
+          <div class="markrow" id="dtMarkRow" style="display:none; margin-top:10px;"></div>
+
+          <div class="rd-toggles" style="margin:12px 0 8px;">
+            <button class="tog" id="dtTogBadge">番号</button>
+            <button class="tog" id="dtTogPos">位置名</button>
+          </div>
+          <div class="cloth" id="dtCloth"></div>
+
+          <div class="secmark">引いたカード</div>
+          <div id="dtCardLines"></div>
+          <div class="hint" style="margin-top:4px;">タップするとカードの意味が開きます</div>
+
+          <div class="secmark">日記</div>
+          <div id="dtDiaryView"></div>
+          <div id="dtDiaryEdit" style="display:none;">
+            <textarea class="dyta" id="dtDiaryTa"></textarea>
+            <div class="row-right">
+              <button class="tbtn" id="dtDiaryCancel">やめる</button>
+              <button class="tbtn primary" id="dtDiarySave">保存する</button>
+            </div>
+          </div>
+          <div id="dtAppends"></div>
+          <div id="dtAppendEdit" style="display:none; margin-top:10px;">
+            <textarea class="dyta" id="dtAppendTa" placeholder="あの時の自分へ、いまの言葉を。"></textarea>
+            <div class="row-right">
+              <button class="tbtn" id="dtAppendCancel">やめる</button>
+              <button class="tbtn primary" id="dtAppendSave">追記を保存</button>
+            </div>
+          </div>
+
+          <div class="row-right" id="dtActRow" style="margin-top:14px;">
+            <button class="tbtn" id="dtAppendBtn">＋ 追記する</button>
+            <button class="tbtn" id="dtEditBtn">本文を編集</button>
+            <button class="tbtn danger" id="dtDelBtn">削除</button>
+          </div>
+          <div class="hint" style="margin-top:6px;">追記は日付つきで積まれていきます。削除しても復元できます。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 設定 ========== -->
+    <section class="page" id="page-setting">
+      <h2 class="pagetitle">設定</h2>
+      <div class="pagesub">リーディングまわりの設定です。テーマと表示モードはサイドバー／🎨テーマから。</div>
+      <div class="panel">
+        <div class="setgroup">
+          <div class="lbl">カードの裏面</div>
+          <div class="backpick" id="backPick"></div>
+          <div class="setnote">「テーマの色」は選んでいるテーマ・表示モードに合わせて変わります。下の「じぶんの裏面」で追加した画像も、ここに出てきます。</div>
+        </div>
+        <div class="setgroup">
+          <div class="lbl">お手本リーディングの布</div>
+          <div class="clothpick" id="presetClothPick"></div>
+          <div class="setnote">リーディングで「お手本からすぐ引く」ときに敷く布です。「最後に使った布」にすると、いままで通り直前のリーディングと同じ布になります。</div>
+        </div>
+        <div class="setgroup">
+          <div class="lbl">画面レイアウト</div>
+          <div class="chiprow" id="layoutRow">
+            <button class="chip" data-v="auto">端末に合わせる</button>
+            <button class="chip" data-v="pc">パソコン</button>
+            <button class="chip" data-v="sp">スマホ</button>
+          </div>
+          <div class="setnote">「端末に合わせる」は画面の幅で自動で切り替わります。パソコンでスマホ表示を確かめたいときや、タブレットで好きなほうを使いたいときに選んでください。</div>
+        </div>
+        <div class="setgroup">
+          <div class="lbl">逆位置</div>
+          <div class="chiprow" id="revRow">
+            <button class="chip" data-v="on">つかう</button>
+            <button class="chip" data-v="off">つかわない</button>
+          </div>
+          <div class="setnote">「つかう」にすると、配るときに1枚ずつ自動で正位置・逆位置が決まります。</div>
+        </div>
+        <div class="setgroup">
+          <div class="lbl">引き直し（配り直し）</div>
+          <div class="chiprow" id="redrawRow">
+            <button class="chip" data-v="on">できる</button>
+            <button class="chip" data-v="off">できない</button>
+          </div>
+          <div class="setnote">「一度引いたものが答え」という流儀の方は「できない」に。どちらが正しい、はありません。自分に合うほうでどうぞ。</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="setgroup">
+          <div class="lbl">じぶんの布（アップロード）</div>
+          <input type="file" id="upClothFile" accept="image/*" style="display:none;">
+          <button class="tbtn" id="upClothBtn">＋ 布の画像を追加</button>
+          <span class="hint" id="upClothCount" style="margin-left:8px;"></span>
+          <div class="uplist" id="upClothList"></div>
+          <div class="setnote">追加した画像は自動で縮小・軽量化して、この端末の中に保存されます（最大10枚）。スプレッド編集の布選びに出てきます。使っているスプレッドや日記がある布を削除すると、その部分は無地の表示になります。</div>
+        </div>
+        <div class="setgroup">
+          <div class="lbl">じぶんの裏面（アップロード）</div>
+          <input type="file" id="upBackFile" accept="image/*" style="display:none;">
+          <button class="tbtn" id="upBackBtn">＋ 裏面の画像を追加</button>
+          <span class="hint" id="upBackCount" style="margin-left:8px;"></span>
+          <div class="uplist" id="upBackList"></div>
+          <div class="setnote">「カードの裏面」の選択肢に追加されます（最大10枚）。縦長（だいたい100:170）の画像がきれいに収まります。</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="setgroup">
+          <div class="lbl">バックアップ</div>
+          <div class="viewrow" style="margin-bottom:0;">
+            <button class="tbtn" id="bakExportBtn">📤 書き出す</button>
+            <button class="tbtn" id="bakImportBtn">📥 読み込む</button>
+            <input type="file" id="bakImportFile" accept=".json,application/json" style="display:none;">
+          </div>
+          <div class="setnote">書き出し＝スプレッド・記録・設定・アップロード画像を、ぜんぶ1つのファイルに保存します。読み込み＝そのファイルから丸ごと復元します（いまのデータは置き換わるので、心配なときは先に書き出しを）。</div>
+        </div>
+      </div>
+      <div class="credit">Tarot card artwork: Pamela Colman Smith (1909)<br>Source: Wikimedia Commons (Public Domain)<br>- akari hatano</div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ===== SP下タブ ===== -->
+<nav class="spnav" id="spNav">
+  <button class="navbtn on" data-nav="spread"><span class="ic">🃏</span>スプレッド</button>
+  <button class="navbtn" data-nav="reading"><span class="ic">🔮</span>リーディング</button>
+  <button class="navbtn" data-nav="diary"><span class="ic">📔</span>日記</button>
+  <button class="navbtn" data-nav="setting"><span class="ic">⚙️</span>設定</button>
+</nav>
+
+<!-- ===== 意味パネル ===== -->
+<div class="modal-bg" id="meanBg"></div>
+<div class="meanbox" id="meanBox">
+  <div class="mean-pos" id="meanPos"></div>
+  <div class="mean-head">
+    <div class="mean-img" id="meanImg"><img alt=""><span class="mfname"></span></div>
+    <div class="mean-title">
+      <div class="mnum" id="meanNum"></div>
+      <h3 id="meanName"></h3>
+      <div class="men" id="meanEn"></div>
+      <span class="pos-badge" id="meanBadge"></span>
+    </div>
+  </div>
+  <div class="kwrow" id="meanKw"></div>
+  <div class="speaktxt" id="meanTxt"></div>
+  <button class="tbtn mean-close" id="meanClose">とじる</button>
+</div>
+
+<!-- ===== カスタム確認ダイアログ ===== -->
+<div class="confirm-bg" id="confirmBg">
+  <div class="confirm-box">
+    <div class="cmsg" id="confirmMsg"></div>
+    <div class="crow">
+      <button class="tbtn" id="confirmNo">やめる</button>
+      <button class="tbtn primary" id="confirmYes">はい</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== カスタム入力ダイアログ（名前の編集など） ===== -->
+<div class="confirm-bg" id="inputBg">
+  <div class="confirm-box">
+    <div class="cmsg" id="inputMsg"></div>
+    <input type="text" class="cinput" id="inputField" maxlength="20">
+    <div class="crow">
+      <button class="tbtn" id="inputNo">やめる</button>
+      <button class="tbtn primary" id="inputYes">決定</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   定数
+============================================================ */
+var SK="ft_data_v1";   // 本体
+var SS="ft_set_v1";    // 設定
+var BK="ft_bak_v1";    // バックアップ
+var MAX_SLOTS=20;
+var GX=32, GY=24;      // 相対グリッド分割数（横・縦）
+
+// 布マスタ。増やすときはここに足すだけ（fbはimages無しでも見分けられる予備色）
+// id:"none" は「布なし」＝テーマの下地色で表示する特別扱い
+var CLOTHS=[
+  {id:"none",    src:"", name:"布なし", fb:""},
+  {id:"cloth01", src:"images/cloth/cloth01.jpg", name:"布 1", fb:"linear-gradient(145deg,#4a3d78,#2e2452)"},
+  {id:"cloth02", src:"images/cloth/cloth02.jpg", name:"布 2", fb:"linear-gradient(145deg,#6b3d5e,#3d2440)"},
+  {id:"cloth03", src:"images/cloth/cloth03.jpg", name:"布 3", fb:"linear-gradient(145deg,#3d5e6b,#243a40)"},
+  {id:"cloth04", src:"images/cloth/cloth04.jpg", name:"布 4", fb:"linear-gradient(145deg,#5e6b3d,#3a4024)"},
+  {id:"cloth05", src:"images/cloth/cloth05.jpg", name:"布 5", fb:"linear-gradient(145deg,#8a6d4a,#4d3a26)"}
+];
+
+// お手本スプレッド（読み込んで自由に手直しできる。位置は割合座標）
+var PRESETS=[
+  {id:"one", title:"ワンオラクル", desc:"1枚だけ引く、いちばんシンプルな形。毎日の習慣にぴったり。", slots:[
+    {n:1,x:0.50,y:0.50,rot:0,label:"きょうの1枚"}
+  ]},
+  {id:"three", title:"スリーカード", desc:"過去・現在・未来を3枚で見る定番の形。", slots:[
+    {n:1,x:0.30,y:0.50,rot:0,label:"過去"},
+    {n:2,x:0.50,y:0.50,rot:0,label:"現在"},
+    {n:3,x:0.70,y:0.50,rot:0,label:"未来"}
+  ]},
+  {id:"choice", title:"二者択一", desc:"AとB、ふたつの選択肢をくらべて見る形。", slots:[
+    {n:1,x:0.50,y:0.78,rot:0,label:"現在の状況"},
+    {n:2,x:0.30,y:0.48,rot:0,label:"Aの経過"},
+    {n:3,x:0.70,y:0.48,rot:0,label:"Bの経過"},
+    {n:4,x:0.18,y:0.20,rot:0,label:"Aの結果"},
+    {n:5,x:0.82,y:0.20,rot:0,label:"Bの結果"}
+  ]},
+  {id:"horseshoe", title:"ホースシュー", desc:"馬蹄形に7枚並べて、流れと対策を見る形。", slots:[
+    {n:1,x:0.12,y:0.62,rot:0,label:"過去"},
+    {n:2,x:0.24,y:0.40,rot:0,label:"現在"},
+    {n:3,x:0.37,y:0.26,rot:0,label:"近い未来"},
+    {n:4,x:0.50,y:0.22,rot:0,label:"アドバイス"},
+    {n:5,x:0.63,y:0.26,rot:0,label:"周囲の状況"},
+    {n:6,x:0.76,y:0.40,rot:0,label:"障害"},
+    {n:7,x:0.88,y:0.62,rot:0,label:"最終結果"}
+  ]},
+  {id:"celtic", title:"ケルト十字", desc:"10枚でじっくり深く見る、伝統的な形。", slots:[
+    {n:1, x:0.38,y:0.50,rot:0, label:"現在"},
+    {n:2, x:0.38,y:0.50,rot:90,label:"障害"},
+    {n:3, x:0.38,y:0.78,rot:0, label:"潜在意識・土台"},
+    {n:4, x:0.20,y:0.50,rot:0, label:"過去"},
+    {n:5, x:0.38,y:0.22,rot:0, label:"顕在意識"},
+    {n:6, x:0.56,y:0.50,rot:0, label:"近い未来"},
+    {n:7, x:0.80,y:0.875,rot:0, label:"あなたの立場"},
+    {n:8, x:0.80,y:0.625,rot:0, label:"周囲"},
+    {n:9, x:0.80,y:0.375,rot:0, label:"願望と不安"},
+    {n:10,x:0.80,y:0.125,rot:0, label:"最終結果"}
+  ]}
+];
+
+// 大アルカナ22枚（番号・名前・画像ファイル・意味テキスト）
+// 意味テキストは major_arcana_texts_v1.html（レビュー承認済み）から機械抽出
+var CARDS=[
+  {id:"M00",file:"00_fool.png",num:"0",name:"愚者",en:"The Fool",
+   up:{kw:["はじまり", "自由", "可能性", "無邪気", "旅立ち"],txt:"なにかが始まろうとしているみたい。先のことがぜんぶ見えていなくても、大丈夫。この身軽さは、あなたがいま持っている財産だよ。荷物が少ないからこそ、行ける場所があるの。"},
+   rv:{kw:["無計画", "軽率", "足踏み", "現実逃避"],txt:"一歩踏み出したい気持ちと、まだ準備ができていない気持ちが、混ざっていない？ 焦って飛び出す必要はないよ。足元をちょっとだけ確かめてから。それは臆病じゃなくて、丁寧ということ。"}},
+  {id:"M01",file:"01_magician.png",num:"I",name:"魔術師",en:"The Magician",
+   up:{kw:["創造", "意志", "はじめる力", "ひらめき"],txt:"必要な道具は、もうテーブルの上にそろっているよ。足りないものを数えるより、いま手の中にあるものを見て。あなたの「やってみたい」には、ちゃんと形にする力が備わっているの。"},
+   rv:{kw:["空回り", "迷い", "自信のなさ", "準備不足"],txt:"やりたい気持ちはあるのに、手が動かない…そんな日もあるよね。うまくやろうとしすぎていないかな。小さくひとつだけ、試してみるくらいでちょうどいいよ。"}},
+  {id:"M02",file:"02_high_priestess.png",num:"II",name:"女教皇",en:"The High Priestess",
+   up:{kw:["直感", "静けさ", "知性", "内なる声", "見守る"],txt:"答えは外じゃなくて、あなたの静かなところにもうあるのかも。今日は大きく動くより、耳を澄ます日。あなたの直感は、あなたが思っているよりずっと賢いよ。"},
+   rv:{kw:["過敏", "閉じこもり", "頭でっかち", "不安のループ"],txt:"考えすぎて、心の水面が波立っていない？ 情報や不安をいったん置いて、深呼吸をひとつ。感じることと考えることのバランスが戻ってくると、視界も戻ってくるからね。"}},
+  {id:"M03",file:"03_empress.png",num:"III",name:"女帝",en:"The Empress",
+   up:{kw:["豊かさ", "実り", "愛情", "育てる", "心地よさ"],txt:"実りの季節が近いよ。育ててきたものが、ちゃんとふくらんできてる。今日は成果を急かすより、水をやって、日向に置いて、ゆったり見守る日。あなた自身にも、おいしいものとやわらかい毛布をね。"},
+   rv:{kw:["自分を後回し", "与えすぎ", "停滞"],txt:"誰かのお世話や、やらなきゃいけないことで、自分のお皿が空っぽになっていない？ 与えることが上手な人ほど、受け取るのを忘れがちなの。今日はあなたが満たされる番だよ。"}},
+  {id:"M04",file:"04_emperor.png",num:"IV",name:"皇帝",en:"The Emperor",
+   up:{kw:["安定", "責任", "組み立てる", "頼れる強さ"],txt:"どっしりと構える力のカード。決めること、守ること、続けること。地味に見えるその積み重ねが、あなたの世界の土台になっているよ。今日は自信を持って、あなたのやり方で進めて大丈夫。"},
+   rv:{kw:["気負いすぎ", "頑固", "ひとりで背負う"],txt:"ぜんぶ自分で背負おうとして、肩に力が入っていないかな。強くあろうとするのは立派だけど、鎧は時々脱いでいいんだよ。譲れないところと、任せていいところ。分けてみよう。"}},
+  {id:"M05",file:"05_hierophant.png",num:"V",name:"教皇",en:"The Hierophant",
+   up:{kw:["学び", "助言", "伝統", "信頼できる導き"],txt:"困ったときは、先を歩いた人の知恵を借りていい、というカード。本でも、先生でも、信頼できる誰かでも。教わることは弱さじゃなくて、いちばん確かな近道だよ。"},
+   rv:{kw:["型苦しさ", "常識への窮屈さ", "自分の答え"],txt:"「こうあるべき」が、ちょっと窮屈になってきていない？ ルールや常識は道具であって、あなたを縛る鎖じゃないの。\"あなたの場合はどうしたいか\"、そこから考え直してみてもいいよ。"}},
+  {id:"M06",file:"06_lovers.png",num:"VI",name:"恋人",en:"The Lovers",
+   up:{kw:["選択", "共鳴", "よろこび", "心が通う"],txt:"心が「こっち」と言っている方向、ほんとうはもう分かっているんじゃないかな。理屈より先に、うれしいと感じるほう。その選択は、あなたをちゃんと連れて行ってくれるよ。"},
+   rv:{kw:["ためらい", "すれ違い", "決めきれない"],txt:"選べないのは、どちらも大切だからだよね。無理に今日決めなくてもいい。ただ、誰かの正解じゃなくて、あなたの心地よさを基準に戻しておこう。"}},
+  {id:"M07",file:"07_chariot.png",num:"VII",name:"戦車",en:"The Chariot",
+   up:{kw:["前進", "勢い", "集中", "乗り越える"],txt:"「行こう」のカード。迷いよりも勢いが勝つとき。目的地をひとつに絞れば、ぐんと進めるよ。少しくらいの障害物は、いまのあなたなら乗り越えられる。"},
+   rv:{kw:["空回り", "方向の迷い", "急ぎすぎ"],txt:"進みたいのに進めない、アクセルとブレーキを同時に踏んでいるような感覚はない？ それは気持ちがふたつの方向を向いているサインかも。速度を落として、ハンドルの向きを確かめてからでも遅くないよ。"}},
+  {id:"M08",file:"08_strength.png",num:"VIII",name:"力",en:"Strength",
+   up:{kw:["芯の強さ", "やさしい勇気", "根気", "なだめる力"],txt:"ここでの「力」は、ねじ伏せる力じゃなくて、なだめて寄り添う力のこと。焦りや不安みたいな暴れる気持ちも、やさしく手なずけられるよ。あなたの中の、静かな強さを信じて。"},
+   rv:{kw:["無理をしている", "自信のゆらぎ", "力ずく"],txt:"強くいなきゃ、と無理をしていないかな。怖いものを怖いと言えるのも、ひとつの勇気だよ。力づくで抑え込むより、いったん認めてあげるほうが、案外おとなしくなるものだから。"}},
+  {id:"M09",file:"09_hermit.png",num:"IX",name:"隠者",en:"The Hermit",
+   up:{kw:["内省", "自分の時間", "探求", "静かな灯り"],txt:"にぎやかな場所から少し離れて、自分と話す時間のカード。ひとりの時間は、寂しさじゃなくて豊かさにもなるの。あなたが手に持つ小さなランプで、ゆっくり照らしていこう。"},
+   rv:{kw:["閉じこもりすぎ", "孤独感", "堂々巡り"],txt:"ひとりで考える時間が、いつのまにか出口のない迷路になっていない？ ずっと同じところを回っているなら、それは合図。少しだけ扉を開けて、外の空気と誰かの声を入れてみよう。"}},
+  {id:"M10",file:"10_wheel_of_fortune.png",num:"X",name:"運命の輪",en:"Wheel of Fortune",
+   up:{kw:["転機", "めぐり合わせ", "流れに乗る", "チャンス"],txt:"くるり、と流れが変わるカード。自分の力だけじゃどうにもならないことが、ふっと良いほうへ回り出すとき。来た波には、考えすぎずに乗ってみて。めぐり合わせは、あなたの味方だよ。"},
+   rv:{kw:["タイミング待ち", "かみ合わない", "足踏みの時期"],txt:"いまはちょっと、歯車がかみ合わない時期かもしれない。でもね、輪は止まらずに回り続けるものなの。無理にこじ開けるより、次のめぐりに備えて力を溜めておこう。"}},
+  {id:"M11",file:"11_justice.png",num:"XI",name:"正義",en:"Justice",
+   up:{kw:["公平", "バランス", "誠実な判断", "筋を通す"],txt:"感情の天秤を、まっすぐに戻すカード。好き嫌いや情に流されず、事実を並べて考えると、いい答えが出るとき。誠実でいようとするあなたの姿勢そのものが、ちゃんと力になるよ。"},
+   rv:{kw:["白黒つけすぎ", "自分にだけ厳しい", "割り切れなさ"],txt:"正しくあろうとするあまり、自分にだけ厳しい採点をしていないかな。それから、白か黒かで割り切れないことも、世界にはたくさんあるの。グレーのまま持っておく強さも、あるんだよ。"}},
+  {id:"M12",file:"12_hanged_man.png",num:"XII",name:"吊るされた男",en:"The Hanged Man",
+   up:{kw:["視点の転換", "あえて待つ", "手放す", "実りある停滞"],txt:"逆さまになると、世界はちがって見える。いまは進めない時期に見えても、それは視点を変えるための時間なのかも。この停滞は無駄じゃないよ。逆さの景色でしか見つからない宝物があるの。"},
+   rv:{kw:["我慢のしすぎ", "報われなさ", "宙ぶらりん"],txt:"がんばって耐えているのに、報われない気がしていない？ 我慢そのものが目的になっていたら、一度降りていいんだよ。何のための辛抱だったか、そこに戻ってみよう。"}},
+  {id:"M13",file:"13_death.png",num:"XIII",name:"死神",en:"Death",
+   up:{kw:["区切り", "終わりと再生", "卒業", "次の章へ"],txt:"怖い名前だけど、意味は「おしまいと、はじまり」。ひとつの章がちゃんと終わるからこそ、次のページがめくれるの。終わらせることは、失うことじゃなくて、身軽になることでもあるよ。"},
+   rv:{kw:["手放せない", "引きずる", "終わらせる怖さ"],txt:"もう役目を終えたものを、まだぎゅっと握りしめていないかな。手放すのが怖いのは、それだけ大切だった証拠。だから急がなくていい。でも、指を一本ずつゆるめる準備は、始めてもいいかもしれない。"}},
+  {id:"M14",file:"14_temperance.png",num:"XIV",name:"節制",en:"Temperance",
+   up:{kw:["調和", "ほどよさ", "回復", "混ぜ合わせる"],txt:"「ちょうどいい」を見つけるカード。がんばりすぎず、さぼりすぎず。水を注ぎ分ける天使みたいに、あなたのペースを整えるとき。心と体のブレンドがうまくいけば、自然と回復していくよ。"},
+   rv:{kw:["偏り", "リズムの乱れ", "やりすぎ・やらなさすぎ"],txt:"最近、どちらかに傾いていないかな。根を詰めすぎとか、逆に何も手につかないとか。責めなくていいから、ひとつだけ整えてみよう。寝る時間でも、ごはんでも。小さな「ほどよさ」から戻ってこられるよ。"}},
+  {id:"M15",file:"15_devil.png",num:"XV",name:"悪魔",en:"The Devil",
+   up:{kw:["誘惑", "執着", "やめられない鎖", "甘い罠"],txt:"わかっちゃいるけどやめられない、のカード。でもよく見ると、絵の中の鎖はゆるくて、ほんとうは外せるの。責めるためのカードじゃないよ。「いま自分は何に絡めとられてる？」って、そっと確かめるためのカード。"},
+   rv:{kw:["鎖に気づく", "抜け出す兆し", "解放の入口"],txt:"鎖の存在に気づけたなら、もう半分抜け出しているようなものだよ。一気に断ち切ろうとしなくていい。少しゆるめる、距離を置く、それだけで十分な前進だからね。"}},
+  {id:"M16",file:"16_tower.png",num:"XVI",name:"塔",en:"The Tower",
+   up:{kw:["崩壊と再生", "急変", "気づき", "解放"],txt:"びっくりするような変化のカード。でもね、崩れるのは、無理して積み上げていた部分だけ。本当に大切なものは、案外壊れないの。壊れたあとの景色は、いまより風通しがいいはずだよ。"},
+   rv:{kw:["崩れかけの維持", "先延ばし", "内側の揺らぎ"],txt:"ぐらぐらしているものを、がんばって支え続けていない？ 手を離すのが怖いのは自然なこと。でも、少しずつ降ろしていくこともできるよ。一気に崩れる前に、自分のペースで。"}},
+  {id:"M17",file:"17_star.png",num:"XVII",name:"星",en:"The Star",
+   up:{kw:["希望", "癒し", "静かな光", "素直さ"],txt:"嵐のあとの、澄んだ夜空のカード。急がなくていい、もう方角は合っているよ。遠くの小さな光を信じて、今日できるぶんだけ進めば大丈夫。"},
+   rv:{kw:["見失い", "疲れ", "光が遠く感じる"],txt:"希望が見えにくいのは、あなたが弱いからじゃなくて、少し疲れているだけかもしれない。光を探しに行く前に、まず休もう。星は逃げないから。"}},
+  {id:"M18",file:"18_moon.png",num:"XVIII",name:"月",en:"The Moon",
+   up:{kw:["ゆらぎ", "不安と幻想", "見えない時間", "感受性"],txt:"月あかりの下では、なんでもないものが怖く見えたりするの。いまは輪郭のはっきりしない、ゆらゆらした時期。無理に答えを出さなくていいよ。不安も想像力も、あなたの感受性の裏返しだから。夜はちゃんと明けるよ。"},
+   rv:{kw:["霧が晴れる", "不安の正体が見える", "夜明け前"],txt:"霧が少しずつ晴れていくカード。正体の分からなかった不安に、名前がつき始めるとき。「なんだ、そういうことだったのか」って思える日が近いよ。焦らず、明るくなっていく空を見ていて。"}},
+  {id:"M19",file:"19_sun.png",num:"XIX",name:"太陽",en:"The Sun",
+   up:{kw:["よろこび", "成功", "のびのび", "あたたかさ"],txt:"まっすぐなよろこびのカード。難しく考えなくていい、楽しいものは楽しい、うれしいものはうれしい。子どもみたいにのびのびしているときのあなたが、いちばん強くて、いちばん輝いているよ。"},
+   rv:{kw:["曇りがち", "元気が出ない", "素直になれない"],txt:"太陽が雲に隠れているだけで、消えたわけじゃないよ。元気が出ない日は、無理に明るくふるまわなくていいの。カーテンを開けて、あたたかい飲みものでも。小さな日向ぼっこから始めよう。"}},
+  {id:"M20",file:"20_judgement.png",num:"XX",name:"審判",en:"Judgement",
+   up:{kw:["目覚め", "再挑戦", "呼び声", "復活"],txt:"「もういちど」のカード。あきらめていたこと、置いてきた夢が、ふっと呼んでいる気がしない？ いまのあなたなら、あの頃とはちがうやり方で向き合えるよ。目覚ましのラッパは、もう鳴っているの。"},
+   rv:{kw:["過去への迷い", "自分への厳しい審判", "聞こえないふり"],txt:"過去の自分に、厳しい判決を下しすぎていないかな。あの時はあの時で、精一杯だったんだよ。やり直したい気持ちに気づいているなら、聞こえないふりをしなくていい。小さく応えてみよう。"}},
+  {id:"M21",file:"21_world.png",num:"XXI",name:"世界",en:"The World",
+   up:{kw:["完成", "達成", "ひと区切り", "祝福"],txt:"ひとつの物語が、まるく完成するカード。ここまで続けてきた自分を、ちゃんと祝ってあげてね。そしてね、完成は終わりじゃなくて、次の物語の扉でもあるの。おめでとう、そして、いってらっしゃい。"},
+   rv:{kw:["あと一歩", "未完成の焦り", "締めくくり待ち"],txt:"ゴールは見えているのに、あと一歩が遠く感じるとき。足りないものを探すより、ここまで来た距離を振り返ってみて。仕上げを焦る必要はないよ。あなたのペースで、まるく結ぼう。"}}
+];
+
+// カード裏面マスタ。id:"img01"はあかりの画像（images/back/back01.jpg に置く）
+// ※URLはシングルクォート必須（HTML属性に埋め込むため）
+var BACKS=[
+  {id:"img01", name:"あなたの裏面",
+   css:"url('images/back/back01.jpg') center/cover, linear-gradient(160deg,#3a3060,#1c1638)"},
+  {id:"yozora", name:"夜空",
+   css:"radial-gradient(rgba(255,255,255,.55) 1px,transparent 1.6px) 0 0/16px 20px, radial-gradient(rgba(216,196,141,.75) 1px,transparent 1.6px) 8px 10px/16px 20px, linear-gradient(160deg,#2e2a4a,#171430)"},
+  {id:"akari", name:"テーマの色",
+   css:"radial-gradient(rgba(255,255,255,.3) 1.2px,transparent 1.8px) 0 0/15px 15px, linear-gradient(160deg,rgba(255,255,255,.16),rgba(0,0,0,.45)), var(--accent)"},
+  {id:"ichimatsu", name:"市松",
+   css:"linear-gradient(45deg,#8a4a52 25%,transparent 25%,transparent 75%,#8a4a52 75%,#8a4a52) 0 0/18px 18px, linear-gradient(45deg,#8a4a52 25%,transparent 25%,transparent 75%,#8a4a52 75%,#8a4a52) 9px 9px/18px 18px, #713a41"}
+];
+
+
+/* ============================================================
+   ストレージ
+============================================================ */
+function loadJSON(key,def){
+  try{
+    var raw=localStorage.getItem(key);
+    if(!raw) return def;
+    var v=JSON.parse(raw);
+    return (v && typeof v==="object") ? v : def;
+  }catch(e){ return def; }
+}
+function saveRaw(key,obj){
+  localStorage.setItem(key,JSON.stringify(obj));
+}
+
+var D=loadJSON(SK,null);
+if(!D || !Array.isArray(D.spreads) || !Array.isArray(D.readings)){
+  D={spreads:[],readings:[]};
+}
+// 並び順(ord)の正規化：無いものは末尾扱いで0から振り直す（保存は次の変更時）
+D.spreads.slice().sort(function(a,b){
+  var ao=(typeof a.ord==="number")?a.ord:Infinity;
+  var bo=(typeof b.ord==="number")?b.ord:Infinity;
+  if(ao!==bo) return ao-bo;
+  return b.updatedAt-a.updatedAt;
+}).forEach(function(s,i){ s.ord=i; });
+var S=loadJSON(SS,null);
+if(!S || typeof S!=="object"){ S={}; }
+if(S.theme!=="yoi" && S.theme!=="wata" && S.theme!=="tetsu") S.theme="yoi";
+if(S.mode!=="light" && S.mode!=="dark" && S.mode!=="system") S.mode="light";
+if(typeof S.snap!=="boolean") S.snap=false;
+if(typeof S.lastCloth!=="string") S.lastCloth="cloth01";
+if(typeof S.reversed!=="boolean") S.reversed=true;   // 逆位置：既定＝つかう
+if(typeof S.redraw!=="boolean") S.redraw=true;       // 引き直し：既定＝できる（メモの決定事項）
+if(typeof S.back!=="string") S.back="img01";         // 裏面：既定＝あかりの画像
+if(typeof S.showBadge!=="boolean") S.showBadge=false; // 番号バッジ表示
+if(typeof S.showPos!=="boolean") S.showPos=false;     // 位置名オーバーレイ表示
+if(typeof S.presetCloth!=="string") S.presetCloth="last"; // お手本の布：既定＝最後に使った布
+if(S.layout!=="auto" && S.layout!=="pc" && S.layout!=="sp") S.layout="auto"; // 画面レイアウト
+
+function saveData(){
+  try{
+    var prev=localStorage.getItem(SK);
+    if(prev){ localStorage.setItem(BK,prev); }  // 直前状態をバックアップ
+    saveRaw(SK,D);
+    return true;
+  }catch(e){
+    alert("保存に失敗しました。端末の保存領域がいっぱいの可能性があります。\n不要なデータの削除や、他アプリのデータ整理をお試しください。");
+    return false;
+  }
+}
+function saveSet(){
+  try{ saveRaw(SS,S); }catch(e){ /* 設定は失敗しても致命的でないので黙って続行 */ }
+}
+
+/* アップロード画像（じぶんの布・裏面）：ft_img_v1 */
+var IMGK="ft_img_v1";
+var IMG=loadJSON(IMGK,null);
+if(!IMG || typeof IMG!=="object") IMG={};
+if(!Array.isArray(IMG.cloths)) IMG.cloths=[];
+if(!Array.isArray(IMG.backs)) IMG.backs=[];
+if(typeof IMG.seqC!=="number") IMG.seqC=IMG.cloths.length;
+if(typeof IMG.seqB!=="number") IMG.seqB=IMG.backs.length;
+function saveImgs(){
+  try{ saveRaw(IMGK,IMG); return true; }
+  catch(e){
+    alert("画像の保存に失敗しました。端末の保存領域がいっぱいかもしれません。\nアップロード画像を減らすか、端末のデータを整理してみてください。");
+    return false;
+  }
+}
+
+/* ============================================================
+   ユーティリティ
+============================================================ */
+function uid(pre){
+  return pre+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+}
+function fmtDate(ts){
+  var d=new Date(ts);
+  var p=function(n){ return (n<10?"0":"")+n; };
+  return d.getFullYear()+"."+p(d.getMonth()+1)+"."+p(d.getDate());
+}
+function clothById(id){
+  for(var i=0;i<CLOTHS.length;i++){ if(CLOTHS[i].id===id) return CLOTHS[i]; }
+  for(var j=0;j<IMG.cloths.length;j++){ if(IMG.cloths[j].id===id) return IMG.cloths[j]; }
+  return {id:"missing",name:"（削除した布）"};
+}
+function isPlainCloth(id){
+  var c=clothById(id);
+  return c.id==="none" || c.id==="missing";
+}
+function clothCss(c){
+  if(c.id==="none" || c.id==="missing") return "var(--panel2)";
+  if(c.data) return "url('"+c.data+"') center/cover, var(--panel2)";
+  // 画像が無い環境でも予備グラデが出る（多重背景）
+  // ※URLはシングルクォート（HTML属性に埋め込むため二重引用符は不可）
+  return "url('"+c.src+"') center/cover, "+c.fb;
+}
+function esc(s){
+  return String(s).replace(/[&<>"']/g,function(ch){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch];
+  });
+}
+
+/* --- カスタム確認ダイアログ（confirmが効かない環境でも動く） --- */
+var _confirmBg=document.getElementById("confirmBg");
+var _confirmMsg=document.getElementById("confirmMsg");
+var _confirmYes=document.getElementById("confirmYes");
+var _confirmNo=document.getElementById("confirmNo");
+var _confirmCb=null;
+function askConfirm(msg,onYes,yesLabel){
+  _confirmMsg.textContent=msg;
+  _confirmYes.textContent=yesLabel||"はい";
+  _confirmCb=onYes;
+  _confirmBg.classList.add("on");
+}
+function _closeConfirm(){
+  _confirmBg.classList.remove("on");
+  _confirmCb=null;
+}
+_confirmYes.addEventListener("click",function(){
+  var cb=_confirmCb;
+  _closeConfirm();
+  if(cb) cb();
+});
+_confirmNo.addEventListener("click",_closeConfirm);
+_confirmBg.addEventListener("click",function(e){
+  if(e.target===_confirmBg) _closeConfirm();
+});
+
+/* --- カスタム入力ダイアログ（名前の編集など。promptが効かない環境でも動く） --- */
+var _inputBg=document.getElementById("inputBg");
+var _inputMsg=document.getElementById("inputMsg");
+var _inputField=document.getElementById("inputField");
+var _inputYes=document.getElementById("inputYes");
+var _inputNo=document.getElementById("inputNo");
+var _inputCb=null;
+function askInput(msg,value,onOk){
+  _inputMsg.textContent=msg;
+  _inputField.value=value||"";
+  _inputCb=onOk;
+  _inputBg.classList.add("on");
+  _inputField.focus();
+  _inputField.select();
+}
+function _closeInput(){
+  _inputBg.classList.remove("on");
+  _inputCb=null;
+}
+_inputYes.addEventListener("click",function(){
+  var v=_inputField.value.trim();
+  var cb=_inputCb;
+  _closeInput();
+  if(cb) cb(v);
+});
+_inputNo.addEventListener("click",_closeInput);
+_inputBg.addEventListener("click",function(e){
+  if(e.target===_inputBg) _closeInput();
+});
+// Enterで決定（日本語入力の変換確定Enterは無視する）
+_inputField.addEventListener("keydown",function(e){
+  if(e.key==="Enter" && !e.isComposing && e.keyCode!==229){
+    e.preventDefault();
+    _inputYes.click();
+  }
+});
+
+/* ============================================================
+   テーマ・表示モード
+============================================================ */
+var html=document.documentElement;
+var mq=window.matchMedia("(prefers-color-scheme: dark)");
+function applyTheme(){
+  html.setAttribute("data-theme",S.theme);
+  var m=(S.mode==="system") ? (mq.matches?"dark":"light") : S.mode;
+  html.setAttribute("data-mode",m);
+  document.querySelectorAll(".theme-row .chip").forEach(function(c){
+    c.classList.toggle("on",c.getAttribute("data-t")===S.theme);
+  });
+  document.querySelectorAll(".mode-row .chip").forEach(function(c){
+    c.classList.toggle("on",c.getAttribute("data-m")===S.mode);
+  });
+}
+mq.addEventListener("change",function(){ if(S.mode==="system") applyTheme(); });
+document.querySelectorAll(".theme-row").forEach(function(row){
+  row.addEventListener("click",function(e){
+    var b=e.target.closest(".chip"); if(!b) return;
+    S.theme=b.getAttribute("data-t"); saveSet(); applyTheme();
+  });
+});
+document.querySelectorAll(".mode-row").forEach(function(row){
+  row.addEventListener("click",function(e){
+    var b=e.target.closest(".chip"); if(!b) return;
+    S.mode=b.getAttribute("data-m"); saveSet(); applyTheme();
+  });
+});
+
+var spGear=document.getElementById("spGear");
+spGear.addEventListener("click",function(){
+  document.getElementById("spSetting").classList.toggle("open");
+});
+
+/* --- 画面レイアウト（端末に合わせる／パソコン／スマホ） --- */
+var layMq=window.matchMedia("(min-width:900px)");
+function applyLayout(){
+  var lay=(S.layout==="auto") ? (layMq.matches?"pc":"sp") : S.layout;
+  document.body.classList.toggle("lay-pc",lay==="pc");
+  document.body.classList.toggle("lay-sp",lay==="sp");
+}
+layMq.addEventListener("change",function(){ if(S.layout==="auto") applyLayout(); });
+applyLayout();
+
+/* ============================================================
+   ページ切替
+============================================================ */
+var currentPage="spread";
+function showPage(name){
+  currentPage=name;
+  document.querySelectorAll(".page").forEach(function(p){
+    p.classList.toggle("on",p.id==="page-"+name);
+  });
+  document.querySelectorAll(".navbtn").forEach(function(b){
+    b.classList.toggle("on",b.getAttribute("data-nav")===name);
+  });
+  if(name==="spread") renderList();
+  if(name==="reading" && !rd.spread) renderRdSelect();
+  if(name==="diary" && !dy.openId) renderDyHome();
+}
+function navHandler(e){
+  var b=e.target.closest(".navbtn"); if(!b) return;
+  var name=b.getAttribute("data-nav");
+  if(currentPage==="editor" && ed.dirty){
+    askConfirm("保存していない変更があります。破棄して移動しますか？",function(){
+      ed.dirty=false;
+      showPage(name);
+    },"破棄する");
+    return;
+  }
+  if(currentPage==="diary" && dyHasUnsavedEdit()){
+    askConfirm("保存していない日記の編集があります。破棄して移動しますか？",function(){
+      dtDiaryEditing=false; dtAppendEditing=false;
+      showPage(name);
+    },"破棄する");
+    return;
+  }
+  showPage(name);
+}
+document.getElementById("pcNav").addEventListener("click",navHandler);
+document.getElementById("spNav").addEventListener("click",navHandler);
+
+/* ============================================================
+   統計（サイドバー）
+============================================================ */
+function renderStat(){
+  var sp=D.spreads.filter(function(s){ return !s.deleted; }).length;
+  var rd=D.readings.filter(function(r){ return !r.deleted; }).length;
+  document.getElementById("pcStat").innerHTML=
+    "<b>"+sp+"</b>個のスプレッド<br><b>"+rd+"</b>回のリーディング";
+}
+
+/* ============================================================
+   スプレッド一覧
+============================================================ */
+var showDeleted=false;
+document.getElementById("showDelBtn").addEventListener("click",function(){
+  showDeleted=!showDeleted;
+  this.textContent=showDeleted?"削除済みを隠す":"削除済みを表示";
+  document.getElementById("delWrap").style.display=showDeleted?"block":"none";
+  renderList();
+});
+
+function spCardHtml(s,deleted,pos,total){
+  var c=clothById(s.cloth);
+  var slots=s.slots.length;
+  var acts;
+  if(deleted){
+    acts='<button class="tbtn" data-act="restore" data-id="'+s.id+'">復元</button>';
+  }else{
+    acts='<button class="tbtn" data-act="up" data-id="'+s.id+'"'+(pos===0?" disabled":"")+'>▲</button>'
+        +'<button class="tbtn" data-act="down" data-id="'+s.id+'"'+(pos===total-1?" disabled":"")+'>▼</button>'
+        +'<button class="tbtn" data-act="edit" data-id="'+s.id+'">編集</button>'
+        +'<button class="tbtn danger" data-act="del" data-id="'+s.id+'">削除</button>';
+  }
+  return '<div class="spcard'+(deleted?" deleted":"")+'">'
+    +'<div class="thumb" style="background:'+clothCss(c)+';"></div>'
+    +'<div class="info">'
+      +'<div class="title">'+esc(s.title)+'</div>'
+      +'<div class="meta">枠 '+slots+'個 ・ '+esc(c.name)+' ・ 更新 '+fmtDate(s.updatedAt)+'</div>'
+    +'</div>'
+    +'<div class="acts">'+acts+'</div>'
+  +'</div>';
+}
+
+function activeSpreads(){
+  return D.spreads.filter(function(s){ return !s.deleted; })
+    .sort(function(a,b){ return a.ord-b.ord; });
+}
+
+function renderList(){
+  var act=activeSpreads();
+  var del=D.spreads.filter(function(s){ return s.deleted; })
+    .sort(function(a,b){ return b.updatedAt-a.updatedAt; });
+
+  var listEl=document.getElementById("spList");
+  if(act.length===0){
+    listEl.innerHTML='<div class="emptynote">まだスプレッドがありません。<br>「＋ 新しいスプレッドを作る」から最初のひとつを作ってみましょう。<br>迷ったら、お手本の「ワンオラクル」や「スリーカード」がおすすめです。</div>';
+  }else{
+    listEl.innerHTML=act.map(function(s,i){ return spCardHtml(s,false,i,act.length); }).join("");
+  }
+
+  var delEl=document.getElementById("spDelList");
+  if(del.length===0){
+    delEl.innerHTML='<div class="emptynote">削除済みのスプレッドはありません。</div>';
+  }else{
+    delEl.innerHTML=del.map(function(s){ return spCardHtml(s,true,0,0); }).join("");
+  }
+  renderStat();
+}
+
+document.getElementById("page-spread").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-act]"); if(!b) return;
+  var id=b.getAttribute("data-id");
+  var act=b.getAttribute("data-act");
+  var s=null;
+  for(var i=0;i<D.spreads.length;i++){ if(D.spreads[i].id===id){ s=D.spreads[i]; break; } }
+  if(!s) return;
+
+  if(act==="edit"){
+    openEditor(s);
+  }else if(act==="up" || act==="down"){
+    var list=activeSpreads();
+    var pos=-1;
+    for(var p=0;p<list.length;p++){ if(list[p].id===id){ pos=p; break; } }
+    var np=(act==="up")?pos-1:pos+1;
+    if(pos<0 || np<0 || np>=list.length) return;
+    var tmp=list[pos].ord;
+    list[pos].ord=list[np].ord;
+    list[np].ord=tmp;
+    if(saveData()) renderList();
+  }else if(act==="del"){
+    askConfirm("「"+s.title+"」を削除しますか？\n（削除済みから復元できます）",function(){
+      s.deleted=true; s.updatedAt=Date.now();
+      if(saveData()) renderList();
+    },"削除する");
+  }else if(act==="restore"){
+    s.deleted=false; s.updatedAt=Date.now();
+    if(saveData()) renderList();
+  }
+});
+
+var presetPanel=document.getElementById("presetPanel");
+document.getElementById("newSpreadBtn").addEventListener("click",function(){
+  presetPanel.style.display=(presetPanel.style.display==="none")?"block":"none";
+});
+// お手本ボタンを描画（「白紙から作る」はHTMLに固定済み）
+(function(){
+  var el=document.getElementById("presetList");
+  var htmls=PRESETS.map(function(p){
+    return '<button class="presetbtn" data-preset="'+p.id+'">'
+      +'<span class="pname">'+esc(p.title)+'</span>'
+      +'<span class="pcount">'+p.slots.length+'枚</span>'
+      +'<span class="pdesc">'+esc(p.desc)+'</span>'
+    +'</button>';
+  }).join("");
+  el.insertAdjacentHTML("beforeend",htmls);
+})();
+presetPanel.addEventListener("click",function(e){
+  var b=e.target.closest(".presetbtn"); if(!b) return;
+  var pid=b.getAttribute("data-preset");
+  presetPanel.style.display="none";
+  if(pid==="blank"){ openEditor(null); return; }
+  for(var i=0;i<PRESETS.length;i++){
+    if(PRESETS[i].id===pid){ openEditor(null,PRESETS[i]); return; }
+  }
+});
+
+/* ============================================================
+   スプレッドエディタ
+============================================================ */
+var ed={
+  id:null,          // 編集中スプレッドID（新規はnull）
+  title:"",
+  cloth:S.lastCloth,
+  slots:[],         // {n,x,y,rot,label}
+  createdAt:0,
+  selected:-1,      // 選択中スロットのindex
+  dirty:false
+};
+
+var edClothEl=document.getElementById("edCloth");
+var slotPanel=document.getElementById("slotPanel");
+var slotLabel=document.getElementById("slotLabel");
+var snapBtn=document.getElementById("snapBtn");
+var undoBtn=document.getElementById("undoBtn");
+var redoBtn=document.getElementById("redoBtn");
+
+/* --- 戻す／やり直す（枠の追加・移動・回転・削除が対象） --- */
+var UNDO_MAX=50;
+var undoStack=[], redoStack=[];
+function snapSlots(){
+  return ed.slots.map(function(s){
+    return {n:s.n,x:s.x,y:s.y,rot:s.rot,label:s.label};
+  });
+}
+function pushUndo(snapshot){
+  undoStack.push(snapshot);
+  if(undoStack.length>UNDO_MAX) undoStack.shift();
+  redoStack.length=0;
+  updateUndoUI();
+}
+function updateUndoUI(){
+  undoBtn.disabled=(undoStack.length===0);
+  redoBtn.disabled=(redoStack.length===0);
+}
+function doUndo(){
+  if(undoStack.length===0) return;
+  redoStack.push(snapSlots());
+  ed.slots=undoStack.pop();
+  ed.selected=-1;
+  ed.dirty=true;
+  renderSlots();
+  updateUndoUI();
+}
+function doRedo(){
+  if(redoStack.length===0) return;
+  undoStack.push(snapSlots());
+  ed.slots=redoStack.pop();
+  ed.selected=-1;
+  ed.dirty=true;
+  renderSlots();
+  updateUndoUI();
+}
+undoBtn.addEventListener("click",doUndo);
+redoBtn.addEventListener("click",doRedo);
+// PCではCtrl+Z / Ctrl+Y（Shift+Ctrl+Z）も使える（入力欄フォーカス中は除く）
+document.addEventListener("keydown",function(e){
+  if(currentPage!=="editor") return;
+  var tag=(e.target.tagName||"").toLowerCase();
+  if(tag==="input"||tag==="textarea"||tag==="select") return;
+  if(!(e.ctrlKey||e.metaKey)) return;
+  var k=e.key.toLowerCase();
+  if(k==="z" && !e.shiftKey){ e.preventDefault(); doUndo(); }
+  else if(k==="y" || (k==="z" && e.shiftKey)){ e.preventDefault(); doRedo(); }
+});
+
+function openEditor(sp,preset){
+  if(sp){
+    ed.id=sp.id;
+    ed.title=sp.title;
+    ed.cloth=sp.cloth;
+    ed.createdAt=sp.createdAt;
+    ed.slots=sp.slots.map(function(s){
+      return {n:s.n,x:s.x,y:s.y,rot:s.rot,label:s.label};
+    });
+    document.getElementById("edHeading").textContent="スプレッドを編集";
+    ed.dirty=false;
+  }else if(preset){
+    ed.id=null;
+    ed.title=preset.title;
+    ed.cloth=S.lastCloth;
+    ed.createdAt=0;
+    ed.slots=preset.slots.map(function(s){
+      return {n:s.n,x:s.x,y:s.y,rot:s.rot,label:s.label};
+    });
+    document.getElementById("edHeading").textContent="スプレッドを作る（お手本："+preset.title+"）";
+    ed.dirty=true; // まだ保存されていない内容なので破棄確認の対象にする
+  }else{
+    ed.id=null;
+    ed.title="";
+    ed.cloth=S.lastCloth;
+    ed.createdAt=0;
+    ed.slots=[];
+    document.getElementById("edHeading").textContent="スプレッドを作る";
+    ed.dirty=false;
+  }
+  ed.selected=-1;
+  undoStack.length=0;
+  redoStack.length=0;
+  updateUndoUI();
+  document.getElementById("edTitle").value=ed.title;
+  renderClothPick();
+  applyCloth();
+  applySnapUI();
+  renderSlots();
+  showPage("editor");
+}
+
+/* --- 布選択 --- */
+function renderClothPick(){
+  var el=document.getElementById("clothPick");
+  var all=CLOTHS.concat(IMG.cloths);
+  el.innerHTML=all.map(function(c){
+    var cls="clothopt"+(c.id===ed.cloth?" on":"")+(c.id==="none"?" nocloth-thumb":"");
+    return '<button class="'+cls+'" data-cloth="'+c.id+'"'
+      +' style="background:'+clothCss(c)+';">'
+      +'<span class="cname">'+esc(c.name)+'</span></button>';
+  }).join("");
+}
+document.getElementById("clothPick").addEventListener("click",function(e){
+  var b=e.target.closest(".clothopt"); if(!b) return;
+  ed.cloth=b.getAttribute("data-cloth");
+  ed.dirty=true;
+  renderClothPick();
+  applyCloth();
+});
+function applyCloth(){
+  edClothEl.style.background=clothCss(clothById(ed.cloth));
+  edClothEl.classList.toggle("nocloth",isPlainCloth(ed.cloth));
+}
+
+/* --- タイトル --- */
+document.getElementById("edTitle").addEventListener("input",function(){
+  ed.title=this.value;
+  ed.dirty=true;
+});
+
+/* --- スロット描画 --- */
+function renderSlots(){
+  // 既存のslot要素を消して作り直し（gridは残す）
+  edClothEl.querySelectorAll(".slot").forEach(function(el){ el.remove(); });
+  ed.slots.forEach(function(s,idx){
+    var el=document.createElement("div");
+    el.className="slot"+(s.rot===90?" rot":"")+(idx===ed.selected?" sel":"");
+    el.style.left=(s.x*100)+"%";
+    el.style.top=(s.y*100)+"%";
+    el.dataset.idx=idx;
+    el.innerHTML='<span class="num">'+s.n+'</span><span class="lab">'+esc(s.label)+'</span>';
+    bindSlotDrag(el);
+    edClothEl.appendChild(el);
+  });
+  updateSlotCount();
+  updateSlotPanel();
+}
+function updateSlotCount(){
+  document.getElementById("slotCount").textContent=
+    "枠 "+ed.slots.length+" / "+MAX_SLOTS;
+  document.getElementById("addSlotBtn").disabled=(ed.slots.length>=MAX_SLOTS);
+}
+function updateSlotPanel(){
+  if(ed.selected<0 || ed.selected>=ed.slots.length){
+    slotPanel.classList.remove("on");
+    return;
+  }
+  var s=ed.slots[ed.selected];
+  slotPanel.classList.add("on");
+  document.getElementById("slotPanelTitle").textContent="枠 "+s.n;
+  if(document.activeElement!==slotLabel){
+    slotLabel.value=s.label;
+  }
+}
+
+/* --- スロット追加 --- */
+document.getElementById("addSlotBtn").addEventListener("click",function(){
+  if(ed.slots.length>=MAX_SLOTS) return;
+  pushUndo(snapSlots());
+  var n=ed.slots.length+1;
+  // 少しずつずらして出す（重なり防止）
+  var x=0.5+(((n-1)%5)-2)*0.06;
+  var y=0.5+(Math.floor((n-1)/5)-1.5)*0.10;
+  x=Math.min(0.95,Math.max(0.05,x));
+  y=Math.min(0.92,Math.max(0.08,y));
+  if(S.snap){ x=Math.round(x*GX)/GX; y=Math.round(y*GY)/GY; }
+  ed.slots.push({n:n,x:x,y:y,rot:0,label:""});
+  ed.selected=ed.slots.length-1;
+  ed.dirty=true;
+  renderSlots();
+});
+
+/* --- スロット選択＆ドラッグ --- */
+function bindSlotDrag(el){
+  el.addEventListener("pointerdown",function(ev){
+    ev.preventDefault();
+    var idx=parseInt(el.dataset.idx,10);
+    if(ed.selected!==idx){
+      ed.selected=idx;
+      // 選択見た目だけ更新（再描画するとドラッグが切れるため）
+      edClothEl.querySelectorAll(".slot").forEach(function(x){
+        x.classList.toggle("sel",parseInt(x.dataset.idx,10)===idx);
+      });
+      updateSlotPanel();
+    }
+    el.setPointerCapture(ev.pointerId);
+    var rect=edClothEl.getBoundingClientRect();
+    var pre=snapSlots(); // 動かす前の状態（移動したら履歴に積む）
+    var moved=false;
+    function move(e){
+      moved=true;
+      var x=(e.clientX-rect.left)/rect.width;
+      var y=(e.clientY-rect.top)/rect.height;
+      x=Math.min(1,Math.max(0,x));
+      y=Math.min(1,Math.max(0,y));
+      if(S.snap){
+        x=Math.round(x*GX)/GX;
+        y=Math.round(y*GY)/GY;
+      }
+      ed.slots[idx].x=x;
+      ed.slots[idx].y=y;
+      el.style.left=(x*100)+"%";
+      el.style.top=(y*100)+"%";
+    }
+    function up(){
+      if(moved){
+        ed.dirty=true;
+        pushUndo(pre);
+      }
+      el.removeEventListener("pointermove",move);
+      el.removeEventListener("pointerup",up);
+      el.removeEventListener("pointercancel",up);
+    }
+    el.addEventListener("pointermove",move);
+    el.addEventListener("pointerup",up);
+    el.addEventListener("pointercancel",up);
+  });
+}
+
+/* --- 布の何もない所をタップ→選択解除 --- */
+edClothEl.addEventListener("pointerdown",function(e){
+  if(e.target.closest(".slot")) return;
+  if(ed.selected!==-1){
+    ed.selected=-1;
+    edClothEl.querySelectorAll(".slot").forEach(function(x){ x.classList.remove("sel"); });
+    updateSlotPanel();
+  }
+});
+
+/* --- ラベル編集 --- */
+slotLabel.addEventListener("input",function(){
+  if(ed.selected<0) return;
+  ed.slots[ed.selected].label=this.value;
+  ed.dirty=true;
+  // 布上のラベルだけ更新
+  var el=edClothEl.querySelector('.slot[data-idx="'+ed.selected+'"] .lab');
+  if(el) el.textContent=this.value;
+});
+
+/* --- 回転 --- */
+document.getElementById("rotBtn").addEventListener("click",function(){
+  if(ed.selected<0) return;
+  pushUndo(snapSlots());
+  var s=ed.slots[ed.selected];
+  s.rot=(s.rot===90)?0:90;
+  ed.dirty=true;
+  var el=edClothEl.querySelector('.slot[data-idx="'+ed.selected+'"]');
+  if(el) el.classList.toggle("rot",s.rot===90);
+});
+
+/* --- 枠削除（番号を詰め直す） --- */
+document.getElementById("delSlotBtn").addEventListener("click",function(){
+  if(ed.selected<0) return;
+  pushUndo(snapSlots());
+  ed.slots.splice(ed.selected,1);
+  ed.slots.forEach(function(s,i){ s.n=i+1; });
+  ed.selected=-1;
+  ed.dirty=true;
+  renderSlots();
+});
+
+/* --- スナップ切替（設定として保存） --- */
+function applySnapUI(){
+  snapBtn.textContent="グリッドスナップ："+(S.snap?"ON":"OFF");
+  edClothEl.classList.toggle("showgrid",S.snap);
+}
+snapBtn.addEventListener("click",function(){
+  S.snap=!S.snap;
+  saveSet();
+  applySnapUI();
+});
+
+/* --- 保存・キャンセル --- */
+document.getElementById("edSaveBtn").addEventListener("click",function(){
+  if(ed.slots.length===0){
+    alert("カード枠がまだありません。\n「＋ カード枠を追加」で枠を置いてから保存してください。");
+    return;
+  }
+  var title=ed.title.trim();
+  if(!title) title="無題のスプレッド";
+  var now=Date.now();
+  var maxOrd=-1;
+  D.spreads.forEach(function(s){ if(typeof s.ord==="number" && s.ord>maxOrd) maxOrd=s.ord; });
+  var slots=ed.slots.map(function(s){
+    return {n:s.n,x:s.x,y:s.y,rot:s.rot,label:s.label.trim()};
+  });
+  if(ed.id){
+    var found=null;
+    for(var i=0;i<D.spreads.length;i++){ if(D.spreads[i].id===ed.id){ found=D.spreads[i]; break; } }
+    if(found){
+      found.title=title;
+      found.cloth=ed.cloth;
+      found.slots=slots;
+      found.updatedAt=now;
+    }else{
+      // 万一見つからなければ新規として救済
+      D.spreads.push({id:uid("sp"),title:title,cloth:ed.cloth,slots:slots,createdAt:now,updatedAt:now,deleted:false,ord:maxOrd+1});
+    }
+  }else{
+    D.spreads.push({id:uid("sp"),title:title,cloth:ed.cloth,slots:slots,createdAt:now,updatedAt:now,deleted:false,ord:maxOrd+1});
+  }
+  S.lastCloth=ed.cloth;
+  saveSet();
+  if(!saveData()) return;
+  ed.dirty=false;
+  showPage("spread");
+});
+
+document.getElementById("edCancelBtn").addEventListener("click",function(){
+  if(ed.dirty){
+    askConfirm("保存していない変更があります。破棄しますか？",function(){
+      ed.dirty=false;
+      showPage("spread");
+    },"破棄する");
+    return;
+  }
+  showPage("spread");
+});
+
+/* --- ページ離脱ガード（ブラウザを閉じる/リロード時） --- */
+window.addEventListener("beforeunload",function(e){
+  if(currentPage==="editor" && ed.dirty){
+    e.preventDefault();
+    e.returnValue="";
+  }
+});
+
+/* ============================================================
+   設定タブ（裏面・逆位置・引き直し）
+============================================================ */
+function backById(id){
+  for(var i=0;i<BACKS.length;i++){ if(BACKS[i].id===id) return BACKS[i]; }
+  for(var j=0;j<IMG.backs.length;j++){
+    if(IMG.backs[j].id===id){
+      var b=IMG.backs[j];
+      return {id:b.id,name:b.name,css:"url('"+b.data+"') center/cover, var(--panel2)"};
+    }
+  }
+  return BACKS[0];
+}
+function allBacks(){
+  return BACKS.concat(IMG.backs.map(function(b){
+    return {id:b.id,name:b.name,css:"url('"+b.data+"') center/cover, var(--panel2)"};
+  }));
+}
+function renderBackPick(){
+  var el=document.getElementById("backPick");
+  var list=allBacks();
+  el.innerHTML=list.map(function(b){
+    return '<button class="backopt'+(b.id===S.back?" on":"")+'" data-back="'+b.id+'">'
+      +'<span class="bname">'+esc(b.name)+'</span></button>';
+  }).join("");
+  // 背景はJSプロパティで設定（url内の引用符事故を避ける）
+  el.querySelectorAll(".backopt").forEach(function(btn){
+    btn.style.background=backById(btn.getAttribute("data-back")).css;
+    btn.style.backgroundSize="cover";
+    btn.style.backgroundPosition="center";
+  });
+}
+document.getElementById("backPick").addEventListener("click",function(e){
+  var b=e.target.closest(".backopt"); if(!b) return;
+  S.back=b.getAttribute("data-back");
+  saveSet();
+  renderBackPick();
+});
+function bindOnOff(rowId,get,set){
+  var row=document.getElementById(rowId);
+  function paint(){
+    row.querySelectorAll(".chip").forEach(function(c){
+      c.classList.toggle("on",(c.getAttribute("data-v")==="on")===get());
+    });
+  }
+  row.addEventListener("click",function(e){
+    var b=e.target.closest(".chip"); if(!b) return;
+    set(b.getAttribute("data-v")==="on");
+    saveSet();
+    paint();
+  });
+  paint();
+}
+bindOnOff("revRow",function(){return S.reversed;},function(v){S.reversed=v;});
+// 設定タブで逆位置を変えたら卓上トグルにも反映
+document.getElementById("revRow").addEventListener("click",function(){
+  paintRdToggles();
+});
+bindOnOff("redrawRow",function(){return S.redraw;},function(v){S.redraw=v;});
+renderBackPick();
+
+/* --- お手本リーディングの布 --- */
+function renderPresetClothPick(){
+  var el=document.getElementById("presetClothPick");
+  var all=[{id:"last",name:"最後に使った布"}].concat(CLOTHS,IMG.cloths);
+  el.innerHTML=all.map(function(c){
+    var cls="clothopt"+(c.id===S.presetCloth?" on":"")
+      +((c.id==="none"||c.id==="last")?" nocloth-thumb":"");
+    return '<button class="'+cls+'" data-pcloth="'+c.id+'">'
+      +'<span class="cname">'+esc(c.name)+'</span></button>';
+  }).join("");
+  // 背景はJSプロパティで設定（url内の引用符事故を避ける）
+  el.querySelectorAll(".clothopt").forEach(function(btn){
+    var id=btn.getAttribute("data-pcloth");
+    if(id==="last") return;
+    btn.style.background=clothCss(clothById(id));
+    btn.style.backgroundSize="cover";
+    btn.style.backgroundPosition="center";
+  });
+}
+document.getElementById("presetClothPick").addEventListener("click",function(e){
+  var b=e.target.closest(".clothopt"); if(!b) return;
+  S.presetCloth=b.getAttribute("data-pcloth");
+  saveSet();
+  renderPresetClothPick();
+});
+/* --- 画面レイアウトの3択 --- */
+var layoutRow=document.getElementById("layoutRow");
+function paintLayoutRow(){
+  layoutRow.querySelectorAll(".chip").forEach(function(c){
+    c.classList.toggle("on",c.getAttribute("data-v")===S.layout);
+  });
+}
+layoutRow.addEventListener("click",function(e){
+  var b=e.target.closest(".chip"); if(!b) return;
+  S.layout=b.getAttribute("data-v");
+  saveSet();
+  paintLayoutRow();
+  applyLayout();
+});
+paintLayoutRow();
+
+// お手本からすぐ引くときの布を決める（削除済みなら「最後に使った布」に戻す）
+function resolvePresetCloth(){
+  if(S.presetCloth==="last") return S.lastCloth;
+  if(clothById(S.presetCloth).id==="missing"){
+    S.presetCloth="last"; saveSet(); renderPresetClothPick();
+    return S.lastCloth;
+  }
+  return S.presetCloth;
+}
+renderPresetClothPick();
+
+/* ============================================================
+   リーディング
+============================================================ */
+var rd={
+  spread:null,   // 引いている型のスナップショット {title,cloth,slots}
+  cards:[],      // [{slot,card,rev}]
+  dealt:false,
+  shuffled:false,
+  flipped:0,
+  busy:false     // シャッフル演出中
+};
+
+var rdCloth=document.getElementById("rdCloth");
+var rdDeck=document.getElementById("rdDeck");
+var shuffleBtn=document.getElementById("shuffleBtn");
+var dealBtn=document.getElementById("dealBtn");
+var flipAllBtn=document.getElementById("flipAllBtn");
+var redealBtn=document.getElementById("redealBtn");
+var rdHint=document.getElementById("rdHint");
+var togBadge=document.getElementById("togBadge");
+var togPos=document.getElementById("togPos");
+var togRev=document.getElementById("togRev");
+
+/* --- 表示トグル（番号バッジ・位置名・逆位置） --- */
+function paintRdToggles(){
+  document.body.classList.toggle("show-badge",S.showBadge);
+  document.body.classList.toggle("show-pos",S.showPos);
+  togBadge.classList.toggle("on",S.showBadge);
+  togPos.classList.toggle("on",S.showPos);
+  togRev.classList.toggle("on",S.reversed);
+  var db=document.getElementById("dtTogBadge");
+  var dp=document.getElementById("dtTogPos");
+  if(db) db.classList.toggle("on",S.showBadge);
+  if(dp) dp.classList.toggle("on",S.showPos);
+}
+function toggleBadgeSetting(){ S.showBadge=!S.showBadge; saveSet(); paintRdToggles(); }
+function togglePosSetting(){ S.showPos=!S.showPos; saveSet(); paintRdToggles(); }
+togBadge.addEventListener("click",toggleBadgeSetting);
+togPos.addEventListener("click",togglePosSetting);
+document.getElementById("dtTogBadge").addEventListener("click",toggleBadgeSetting);
+document.getElementById("dtTogPos").addEventListener("click",togglePosSetting);
+togRev.addEventListener("click",function(){
+  if(togRev.disabled) return; // 配った後は変えられない
+  S.reversed=!S.reversed; saveSet();
+  paintRdToggles();
+  syncRevRow();
+  if(rd.spread){
+    document.getElementById("rdSub").textContent=
+      "枠 "+rd.spread.slots.length+"個 ・ 逆位置："+(S.reversed?"つかう":"つかわない");
+  }
+});
+// 設定タブの逆位置ラジオと双方向同期
+function syncRevRow(){
+  var row=document.getElementById("revRow");
+  if(!row) return;
+  row.querySelectorAll(".chip").forEach(function(c){
+    c.classList.toggle("on",(c.getAttribute("data-v")==="on")===S.reversed);
+  });
+}
+
+function cardById(id){
+  for(var i=0;i<CARDS.length;i++){ if(CARDS[i].id===id) return CARDS[i]; }
+  return CARDS[0];
+}
+
+/* カード画像のsrcを設定。jpg優先で、無ければpng、それも無ければプレースホルダ表示。
+   fileフィールドは拡張子付き（例 "00_fool.png"）なので basename を取り出して両方試す。 */
+function setCardImg(imgEl, onFail, card){
+  var base=card.file.replace(/\.(png|jpg|jpeg|webp)$/i,"");
+  var exts=["jpg","png"];
+  var i=0;
+  imgEl.onerror=function(){
+    i++;
+    if(i<exts.length){
+      imgEl.src="images/cards/rws/"+base+"."+exts[i];
+    }else{
+      imgEl.onerror=null;
+      if(onFail) onFail();
+    }
+  };
+  imgEl.src="images/cards/rws/"+base+"."+exts[0];
+}
+
+/* --- スプレッド選択一覧 --- */
+function renderRdSelect(){
+  var act=activeSpreads();
+  var el=document.getElementById("rdSpList");
+  if(act.length===0){
+    el.innerHTML='<div class="emptynote">じぶんのスプレッドはまだありません。<br>下のお手本からすぐ引けます。じぶんの型は「スプレッド」タブで作れますよ。</div>';
+  }else{
+    el.innerHTML=act.map(function(s){
+      var c=clothById(s.cloth);
+      return '<div class="spcard">'
+        +'<div class="thumb" style="background:'+clothCss(c)+';"></div>'
+        +'<div class="info">'
+          +'<div class="title">'+esc(s.title)+'</div>'
+          +'<div class="meta">枠 '+s.slots.length+'個 ・ '+esc(c.name)+'</div>'
+        +'</div>'
+        +'<div class="acts"><button class="tbtn primary" data-act="pick" data-id="'+s.id+'">この形で引く</button></div>'
+      +'</div>';
+    }).join("");
+  }
+  renderRdPresets();
+}
+function renderRdPresets(){
+  var el=document.getElementById("rdPresetList");
+  // 設定「お手本リーディングの布」に合わせた表示
+  var clothLabel;
+  if(S.presetCloth==="last" || clothById(S.presetCloth).id==="missing"){
+    clothLabel=esc(clothById(S.lastCloth).name)+"（最後に使った布）";
+  }else{
+    clothLabel=esc(clothById(S.presetCloth).name);
+  }
+  el.innerHTML=PRESETS.map(function(p){
+    return '<div class="spcard">'
+      +'<div class="info">'
+        +'<div class="title">'+esc(p.title)+'</div>'
+        +'<div class="meta">枠 '+p.slots.length+'個 ・ 布：'+clothLabel+'</div>'
+      +'</div>'
+      +'<div class="acts"><button class="tbtn primary" data-preset="'+p.id+'">この形で引く</button></div>'
+    +'</div>';
+  }).join("");
+}
+document.getElementById("rdSpList").addEventListener("click",function(e){
+  var b=e.target.closest('button[data-act="pick"]'); if(!b) return;
+  var id=b.getAttribute("data-id");
+  for(var i=0;i<D.spreads.length;i++){
+    if(D.spreads[i].id===id){ startReading(D.spreads[i]); return; }
+  }
+});
+document.getElementById("rdPresetList").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-preset]"); if(!b) return;
+  var pid=b.getAttribute("data-preset");
+  for(var i=0;i<PRESETS.length;i++){
+    if(PRESETS[i].id===pid){
+      startReading({title:PRESETS[i].title,cloth:resolvePresetCloth(),slots:PRESETS[i].slots});
+      return;
+    }
+  }
+});
+
+/* --- リーディング開始（スナップショットを取る） --- */
+function startReading(sp){
+  rd.spread={
+    title:sp.title,
+    cloth:sp.cloth,
+    slots:sp.slots.map(function(s){ return {n:s.n,x:s.x,y:s.y,rot:s.rot,label:s.label}; })
+  };
+  rd.cards=[]; rd.dealt=false; rd.shuffled=false; rd.flipped=0; rd.busy=false;
+
+  document.getElementById("rdTitle").textContent=rd.spread.title;
+  document.getElementById("rdSub").textContent=
+    "枠 "+rd.spread.slots.length+"個 ・ 逆位置："+(S.reversed?"つかう":"つかわない");
+
+  // 布とスロット枠（動かせない表示用）
+  rdCloth.style.background=clothCss(clothById(rd.spread.cloth));
+  rdCloth.classList.toggle("nocloth",isPlainCloth(rd.spread.cloth));
+  rdCloth.innerHTML="";
+  rd.spread.slots.forEach(function(s){
+    var el=document.createElement("div");
+    el.className="slot static"+(s.rot===90?" rot":"");
+    el.style.left=(s.x*100)+"%";
+    el.style.top=(s.y*100)+"%";
+    el.innerHTML='<span class="num">'+s.n+'</span><span class="lab">'+esc(s.label)+'</span>';
+    rdCloth.appendChild(el);
+  });
+
+  // 山札の裏面
+  rdDeck.querySelectorAll(".dcard").forEach(function(dc){
+    dc.style.background=backById(S.back).css;
+    dc.style.backgroundSize="cover";
+    dc.style.backgroundPosition="center";
+  });
+
+  setRdPhase("ready");
+  resetRdDiary();
+  document.getElementById("rdSelect").style.display="none";
+  document.getElementById("rdTable").style.display="block";
+}
+
+function setRdPhase(phase){
+  if(phase==="ready"){
+    shuffleBtn.style.display="";
+    shuffleBtn.disabled=false;
+    dealBtn.style.display="";
+    dealBtn.disabled=true;
+    flipAllBtn.style.display="none";
+    redealBtn.style.display="none";
+    rdHint.textContent="まずはシャッフルしてから配ってね。";
+  }else if(phase==="shuffled"){
+    shuffleBtn.disabled=false;
+    dealBtn.disabled=false;
+    rdHint.textContent="よくまざったよ。「配る」で並べよう。もう一度シャッフルしてもOK。";
+  }else if(phase==="dealt"){
+    shuffleBtn.style.display="none";
+    dealBtn.style.display="none";
+    flipAllBtn.style.display="";
+    redealBtn.style.display=(S.redraw?"":"none");
+    rdHint.textContent="カードをタップしてめくってね。めくったカードをもう一度タップすると意味が読めるよ。";
+  }
+  // 逆位置トグルは「配る前」だけ切り替え可
+  togRev.disabled=(phase==="dealt");
+  // 日記フォームは配った後だけ
+  rdDiaryBox.style.display=(phase==="dealt")?"block":"none";
+}
+
+/* --- シャッフル演出 --- */
+function playShuffle(done){
+  rd.busy=true;
+  shuffleBtn.disabled=true;
+  dealBtn.disabled=true;
+  rdDeck.classList.add("shuffling");
+  setTimeout(function(){
+    rdDeck.classList.remove("shuffling");
+    rd.busy=false;
+    done();
+  },1100);
+}
+shuffleBtn.addEventListener("click",function(){
+  if(rd.busy) return;
+  playShuffle(function(){
+    rd.shuffled=true;
+    setRdPhase("shuffled");
+  });
+});
+
+/* --- 配る --- */
+function dealCards(){
+  // 22枚から重複なしで枠数ぶん引く（Fisher–Yates）
+  var idx=[];
+  for(var i=0;i<CARDS.length;i++) idx.push(i);
+  for(var j=idx.length-1;j>0;j--){
+    var k=Math.floor(Math.random()*(j+1));
+    var t=idx[j]; idx[j]=idx[k]; idx[k]=t;
+  }
+  rd.cards=rd.spread.slots.map(function(s,i){
+    return {
+      slot:s.n,
+      card:CARDS[idx[i]].id,
+      rev:(S.reversed ? Math.random()<0.5 : false)
+    };
+  });
+  rd.dealt=true;
+  rd.flipped=0;
+
+  // 既存のカードを消して並べ直す
+  rdCloth.querySelectorAll(".pcard").forEach(function(el){ el.remove(); });
+  rd.spread.slots.forEach(function(s,i){
+    rdCloth.appendChild(makePcard(s,rd.cards[i],i));
+  });
+  setRdPhase("dealt");
+}
+dealBtn.addEventListener("click",function(){
+  if(rd.busy || !rd.shuffled) return;
+  dealCards();
+});
+
+function makePcard(slotDef,cd,i){
+  var el=document.createElement("div");
+  el.className="pcard"+(slotDef.rot===90?" rot90":"")+(cd.rev?" rev":"");
+  el.style.left=(slotDef.x*100)+"%";
+  el.style.top=(slotDef.y*100)+"%";
+  el.style.animationDelay=(i*0.07)+"s";
+  el.style.zIndex=String(10+i);
+  el.innerHTML='<div class="pin">'
+    +'<div class="face back"></div>'
+    +'<div class="face front"><div class="fwrap">'
+      +'<img alt="">'
+      +'<span class="fname"></span>'
+    +'</div></div>'
+  +'</div>'
+  +'<span class="nbadge">'+slotDef.n+'</span>'
+  +'<span class="poslab">'+slotDef.n+(slotDef.label?'. '+esc(slotDef.label):'')+'</span>';
+  var back=el.querySelector(".back");
+  back.style.background=backById(S.back).css;
+  back.style.backgroundSize="cover";
+  back.style.backgroundPosition="center";
+  var card=cardById(cd.card);
+  var front=el.querySelector(".front");
+  var img=el.querySelector("img");
+  el.querySelector(".fname").textContent=card.num+" "+card.name;
+  img.alt=card.name;
+  setCardImg(img,function(){ front.classList.add("noimg"); },card);
+  el.addEventListener("click",function(){
+    if(!el.classList.contains("flip")){
+      el.classList.add("flip");
+      rd.flipped++;
+      updateFlipUI();
+    }else{
+      openMeaning(cd.card,cd.rev,slotDef.n,slotDef.label);
+    }
+  });
+  return el;
+}
+
+function updateFlipUI(){
+  if(rd.flipped>=rd.cards.length){
+    flipAllBtn.style.display="none";
+    rdHint.textContent="カードをタップすると意味が読めるよ。ゆっくりどうぞ。";
+  }
+}
+flipAllBtn.addEventListener("click",function(){
+  var els=rdCloth.querySelectorAll(".pcard:not(.flip)");
+  els.forEach(function(el,i){
+    setTimeout(function(){
+      if(!el.classList.contains("flip")){
+        el.classList.add("flip");
+        rd.flipped++;
+        updateFlipUI();
+      }
+    },i*120);
+  });
+});
+
+/* --- 配り直し（設定で切替） --- */
+redealBtn.addEventListener("click",function(){
+  if(rd.busy) return;
+  askConfirm("配り直しますか？\nいま並んでいるカードは流れます。",function(){
+    rdCloth.querySelectorAll(".pcard").forEach(function(el){ el.remove(); });
+    flipAllBtn.style.display="none";
+    redealBtn.style.display="none";
+    playShuffle(function(){
+      dealCards();
+    });
+  },"配り直す");
+});
+
+/* --- 選び直す --- */
+document.getElementById("rdBackBtn").addEventListener("click",function(){
+  function go(){
+    rd.spread=null; rd.cards=[]; rd.dealt=false;
+    document.getElementById("rdTable").style.display="none";
+    document.getElementById("rdSelect").style.display="block";
+    renderRdSelect();
+  }
+  if(rd.dealt){
+    askConfirm("引いている途中です。やめてスプレッド選びに戻りますか？",go,"戻る");
+    return;
+  }
+  go();
+});
+
+/* ============================================================
+   意味パネル
+============================================================ */
+var meanBg=document.getElementById("meanBg");
+var meanBox=document.getElementById("meanBox");
+function openMeaning(cardId,rev,slotN,slotLabel){
+  var c=cardById(cardId);
+  var side=rev?c.rv:c.up;
+  var posEl=document.getElementById("meanPos");
+  if(slotN){
+    posEl.textContent=slotN+(slotLabel?". "+slotLabel:"");
+    posEl.classList.add("on");
+  }else{
+    posEl.classList.remove("on");
+  }
+  document.getElementById("meanNum").textContent=c.num;
+  document.getElementById("meanName").textContent=c.name;
+  document.getElementById("meanEn").textContent=c.en;
+  var badge=document.getElementById("meanBadge");
+  badge.textContent=rev?"逆位置":"正位置";
+  badge.className="pos-badge "+(rev?"rv":"up");
+  document.getElementById("meanKw").innerHTML=side.kw.map(function(k){
+    return "<span>"+esc(k)+"</span>";
+  }).join("");
+  document.getElementById("meanTxt").textContent=side.txt;
+  var mi=document.getElementById("meanImg");
+  mi.className="mean-img"+(rev?" rev":"");
+  var img=mi.querySelector("img");
+  mi.querySelector(".mfname").textContent=c.num+" "+c.name;
+  mi.classList.remove("noimg");
+  setCardImg(img,function(){ mi.classList.add("noimg"); },c);
+  meanBg.classList.add("on");
+  meanBox.classList.add("on");
+}
+function closeMeaning(){
+  meanBg.classList.remove("on");
+  meanBox.classList.remove("on");
+}
+meanBg.addEventListener("click",closeMeaning);
+document.getElementById("meanClose").addEventListener("click",closeMeaning);
+
+/* ============================================================
+   日記（記録・カレンダー・リスト・詳細・追記）
+============================================================ */
+var MARKS=["☀️","🌙","⭐","🌸","🍀","🌈","💭","💡","❤️","💪","😊","😢","😴","🔥","🎀","☕"];
+
+function localDateStr(ts){
+  var d=new Date(ts);
+  var p=function(n){ return (n<10?"0":"")+n; };
+  return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());
+}
+function fmtTime(ts){
+  var d=new Date(ts);
+  var p=function(n){ return (n<10?"0":"")+n; };
+  return p(d.getHours())+":"+p(d.getMinutes());
+}
+var WDAYS_JP=["日","月","火","水","木","金","土"];
+function fmtDayJP(ds){
+  var pt=ds.split("-");
+  var d=new Date(parseInt(pt[0],10),parseInt(pt[1],10)-1,parseInt(pt[2],10));
+  return parseInt(pt[1],10)+"月"+parseInt(pt[2],10)+"日（"+WDAYS_JP[d.getDay()]+"）";
+}
+function defaultMark(ts){
+  var h=new Date(ts).getHours();
+  return (h>=5 && h<17) ? "☀️" : "🌙";
+}
+function readingById(id){
+  for(var i=0;i<D.readings.length;i++){ if(D.readings[i].id===id) return D.readings[i]; }
+  return null;
+}
+function recAppends(rec){ return rec.appends || []; }
+
+/* --- マーク選択行（共通） --- */
+function buildMarkRow(el,get,set){
+  el.innerHTML=MARKS.map(function(m){
+    return '<button class="markbtn'+(m===get()?" on":"")+'" data-mark="'+m+'">'+m+'</button>';
+  }).join("");
+}
+function bindMarkRow(el,get,set){
+  el.addEventListener("click",function(e){
+    var b=e.target.closest(".markbtn"); if(!b) return;
+    set(b.getAttribute("data-mark"));
+    buildMarkRow(el,get,set);
+  });
+}
+
+/* --- 卓の日記フォーム --- */
+var rdDiaryBox=document.getElementById("rdDiaryBox");
+var rdDiaryTa=document.getElementById("rdDiaryTa");
+var rdMarkRow=document.getElementById("rdMarkRow");
+var rdMark=defaultMark(Date.now());
+bindMarkRow(rdMarkRow,function(){return rdMark;},function(v){rdMark=v;});
+
+function resetRdDiary(){
+  rdDiaryTa.value="";
+  rdMark=defaultMark(Date.now());
+  buildMarkRow(rdMarkRow,function(){return rdMark;},function(v){rdMark=v;});
+}
+
+document.getElementById("rdRecordBtn").addEventListener("click",function(){
+  if(!rd.dealt || !rd.spread) return;
+  var now=Date.now();
+  var rec={
+    id:uid("rd"),
+    date:localDateStr(now),
+    spreadSnap:{
+      title:rd.spread.title,
+      slots:rd.spread.slots.map(function(s){ return {n:s.n,x:s.x,y:s.y,rot:s.rot,label:s.label}; })
+    },
+    cards:rd.cards.map(function(c){ return {slot:c.slot,card:c.card,rev:c.rev}; }),
+    diary:rdDiaryTa.value.trim(),
+    appends:[],
+    mark:rdMark,
+    revOn:S.reversed,
+    cloth:rd.spread.cloth,
+    createdAt:now,updatedAt:now,deleted:false
+  };
+  D.readings.push(rec);
+  if(!saveData()){ D.readings.pop(); return; }
+  // 卓を片づけて、記録した日記の詳細へ
+  rd.spread=null; rd.cards=[]; rd.dealt=false;
+  document.getElementById("rdTable").style.display="none";
+  document.getElementById("rdSelect").style.display="block";
+  renderRdSelect();
+  renderStat();
+  showPage("diary");
+  openDetail(rec.id);
+});
+
+document.getElementById("rdSkipBtn").addEventListener("click",function(){
+  function go(){
+    rd.spread=null; rd.cards=[]; rd.dealt=false;
+    document.getElementById("rdTable").style.display="none";
+    document.getElementById("rdSelect").style.display="block";
+    renderRdSelect();
+  }
+  if(rdDiaryTa.value.trim()){
+    askConfirm("書きかけの日記があります。記録せずに終わりますか？",go,"終わる");
+    return;
+  }
+  askConfirm("記録せずに終わりますか？\nいま並んでいるカードは残りません。",go,"終わる");
+});
+
+/* --- 日記ホーム（カレンダー／リスト） --- */
+var dy={view:"cal", calY:0, calM:0, selDate:null, openId:null, showDel:false};
+(function(){
+  var t=new Date();
+  dy.calY=t.getFullYear(); dy.calM=t.getMonth();
+  dy.selDate=localDateStr(Date.now());
+})();
+
+function activeReadings(){
+  return D.readings.filter(function(r){ return !r.deleted; });
+}
+function readingsOn(ds){
+  return activeReadings().filter(function(r){ return r.date===ds; })
+    .sort(function(a,b){ return a.createdAt-b.createdAt; });
+}
+
+function recCardHtml(rec,deleted){
+  var c=clothById(rec.cloth);
+  var prev=rec.diary ? rec.diary.split("\n")[0] : "";
+  var meta=fmtTime(rec.createdAt)+" ・ "+esc(c.name)
+    +(recAppends(rec).length?' ・ <span class="tsk">追記あり</span>':"");
+  var acts=deleted?'<div class="acts"><button class="tbtn" data-dyact="restore" data-id="'+rec.id+'">復元</button></div>':"";
+  return '<div class="dyc'+(deleted?" deleted":"")+'"'+(deleted?"":' data-open="'+rec.id+'"')+'>'
+    +'<div class="ic">'+esc(rec.mark||"📔")+'</div>'
+    +'<div class="body">'
+      +'<div class="ttl">'+esc(rec.spreadSnap.title)+'<span class="badge-mini">'+rec.cards.length+'枚</span></div>'
+      +'<div class="meta">'+meta+'</div>'
+      +(prev?'<div class="prev">'+esc(prev)+'</div>'
+            :'<div class="prev empty">（日記はまだ書いていません）</div>')
+    +'</div>'+acts
+  +'</div>';
+}
+
+/* カレンダー */
+function renderDyCal(){
+  var y=dy.calY, m=dy.calM;
+  var firstDay=new Date(y,m,1).getDay();
+  var daysInMonth=new Date(y,m+1,0).getDate();
+  var today=localDateStr(Date.now());
+  var byDate={};
+  activeReadings().forEach(function(r){
+    (byDate[r.date]=byDate[r.date]||[]).push(r);
+  });
+  var cells="";
+  for(var i=0;i<firstDay;i++) cells+='<div class="cal-cell empty"></div>';
+  for(var d=1;d<=daysInMonth;d++){
+    var ds=y+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0");
+    var recs=(byDate[ds]||[]).sort(function(a,b){ return a.createdAt-b.createdAt; });
+    var dow=new Date(y,m,d).getDay();
+    var marks=recs.slice(0,2).map(function(r){ return esc(r.mark||"📔"); }).join("");
+    var dots="";
+    for(var k=0;k<Math.min(recs.length,4);k++) dots+='<div class="cal-dot"></div>';
+    cells+='<div class="cal-cell'
+      +(ds===today?" today":"")
+      +(dow===0?" sun":"")
+      +(ds===dy.selDate?" sel":"")
+      +(recs.length===0?" no-rec":"")
+      +'" data-ds="'+ds+'">'
+      +'<div class="cal-dn">'+d+'</div>'
+      +'<div class="cal-marks">'+marks+'</div>'
+      +'<div class="cal-dots">'+dots+'</div>'
+    +'</div>';
+  }
+  document.getElementById("dyCal").innerHTML=
+    '<div class="cal-ctrl">'
+      +'<button class="cal-nav-btn" id="calPrev">‹</button>'
+      +'<span class="cal-month-lbl">'+y+'年 '+(m+1)+'月</span>'
+      +'<button class="cal-nav-btn" id="calNext">›</button>'
+    +'</div>'
+    +'<div class="cal-wdays">'+WDAYS_JP.map(function(w,i){
+        return '<div class="cal-wd'+(i===0?" sun":i===6?" sat":"")+'">'+w+'</div>';
+      }).join("")+'</div>'
+    +'<div class="cal-grid">'+cells+'</div>';
+  renderDyDayPanel();
+}
+function renderDyDayPanel(){
+  var el=document.getElementById("dyDayPanel");
+  if(!dy.selDate){ el.innerHTML=""; return; }
+  var recs=readingsOn(dy.selDate);
+  var head='<div class="dayhead">'+fmtDayJP(dy.selDate)+'の記録</div>';
+  if(recs.length===0){
+    el.innerHTML=head+'<div class="hint" style="padding:4px 2px 2px;">この日の記録はありません。</div>';
+    return;
+  }
+  el.innerHTML=head+recs.map(function(r){ return recCardHtml(r,false); }).join("");
+}
+document.getElementById("dyCal").addEventListener("click",function(e){
+  var nav=e.target.closest(".cal-nav-btn");
+  if(nav){
+    var dir=(nav.id==="calPrev")?-1:1;
+    dy.calM+=dir;
+    if(dy.calM>11){dy.calM=0;dy.calY++;}
+    if(dy.calM<0){dy.calM=11;dy.calY--;}
+    renderDyCal();
+    return;
+  }
+  var cell=e.target.closest(".cal-cell");
+  if(cell && cell.getAttribute("data-ds")){
+    dy.selDate=cell.getAttribute("data-ds");
+    renderDyCal();
+  }
+});
+
+/* リスト（月ごと・折りたたみ） */
+function renderDyList(){
+  var el=document.getElementById("dyListView");
+  var recs=activeReadings().sort(function(a,b){ return b.createdAt-a.createdAt; });
+  if(recs.length===0){
+    el.innerHTML='<div class="emptynote">まだ記録がありません。<br>リーディングで引いて「記録する」と、ここに日記が増えていきます。</div>';
+    return;
+  }
+  var months={};
+  recs.forEach(function(r){
+    var ym=r.date.slice(0,7);
+    (months[ym]=months[ym]||[]).push(r);
+  });
+  el.innerHTML=Object.keys(months).sort().reverse().map(function(ym,mi){
+    var pt=ym.split("-");
+    var list=months[ym];
+    var days={};
+    list.forEach(function(r){ (days[r.date]=days[r.date]||[]).push(r); });
+    var body=Object.keys(days).sort().reverse().map(function(ds){
+      return '<div class="dayhead">'+fmtDayJP(ds)+'</div>'
+        +days[ds].map(function(r){ return recCardHtml(r,false); }).join("");
+    }).join("");
+    var open=(mi===0)?" open":"";
+    return '<div class="month-group">'
+      +'<div class="month-hd'+open+'" data-mtog="1">'
+        +'<span>'+parseInt(pt[0],10)+'年 '+parseInt(pt[1],10)+'月</span>'
+        +'<span class="cnt">'+list.length+'件 <span class="arw">▾</span></span>'
+      +'</div>'
+      +'<div class="month-bd'+open+'">'+body+'</div>'
+    +'</div>';
+  }).join("");
+}
+document.getElementById("dyListView").addEventListener("click",function(e){
+  var hd=e.target.closest(".month-hd");
+  if(hd){
+    var bd=hd.nextElementSibling;
+    var isO=bd.classList.contains("open");
+    hd.classList.toggle("open",!isO);
+    bd.classList.toggle("open",!isO);
+  }
+});
+
+/* 削除済み */
+function renderDyDel(){
+  var el=document.getElementById("dyDelList");
+  var recs=D.readings.filter(function(r){ return r.deleted; })
+    .sort(function(a,b){ return b.updatedAt-a.updatedAt; });
+  if(recs.length===0){
+    el.innerHTML='<div class="emptynote">削除済みの記録はありません。</div>';
+    return;
+  }
+  el.innerHTML=recs.map(function(r){ return recCardHtml(r,true); }).join("");
+}
+document.getElementById("dyShowDelBtn").addEventListener("click",function(){
+  dy.showDel=!dy.showDel;
+  this.textContent=dy.showDel?"削除済みを隠す":"削除済みを表示";
+  document.getElementById("dyDelWrap").style.display=dy.showDel?"block":"none";
+  if(dy.showDel) renderDyDel();
+});
+document.getElementById("dyDelWrap").addEventListener("click",function(e){
+  var b=e.target.closest('button[data-dyact="restore"]'); if(!b) return;
+  var rec=readingById(b.getAttribute("data-id")); if(!rec) return;
+  rec.deleted=false; rec.updatedAt=Date.now();
+  if(saveData()){ renderDyDel(); renderDyHome(); renderStat(); }
+});
+
+/* ビュー切替とホーム描画 */
+function paintDyView(){
+  document.getElementById("dyViewCal").classList.toggle("primary",dy.view==="cal");
+  document.getElementById("dyViewList").classList.toggle("primary",dy.view==="list");
+  document.getElementById("dyCalWrap").style.display=(dy.view==="cal")?"":"none";
+  document.getElementById("dyListView").style.display=(dy.view==="list")?"":"none";
+}
+document.getElementById("dyViewCal").addEventListener("click",function(){
+  dy.view="cal"; paintDyView(); renderDyCal();
+});
+document.getElementById("dyViewList").addEventListener("click",function(){
+  dy.view="list"; paintDyView(); renderDyList();
+});
+function renderDyHome(){
+  paintDyView();
+  if(dy.view==="cal") renderDyCal(); else renderDyList();
+  if(dy.showDel) renderDyDel();
+}
+
+/* 一覧カードのタップで詳細へ */
+function dyHomeClick(e){
+  var c=e.target.closest(".dyc[data-open]"); if(!c) return;
+  openDetail(c.getAttribute("data-open"));
+}
+document.getElementById("dyDayPanel").addEventListener("click",dyHomeClick);
+document.getElementById("dyListView").addEventListener("click",dyHomeClick);
+
+/* --- 詳細 --- */
+var dtDiaryEditing=false, dtAppendEditing=false;
+
+function makeSnapCard(slotDef,cd){
+  var el=document.createElement("div");
+  el.className="pcard flip"+(slotDef.rot===90?" rot90":"")+(cd.rev?" rev":"");
+  el.style.left=(slotDef.x*100)+"%";
+  el.style.top=(slotDef.y*100)+"%";
+  el.style.animation="none";
+  el.innerHTML='<div class="pin" style="transition:none;">'
+    +'<div class="face back"></div>'
+    +'<div class="face front"><div class="fwrap">'
+      +'<img alt="">'
+      +'<span class="fname"></span>'
+    +'</div></div>'
+  +'</div>'
+  +'<span class="nbadge">'+slotDef.n+'</span>'
+  +'<span class="poslab">'+slotDef.n+(slotDef.label?'. '+esc(slotDef.label):'')+'</span>';
+  var card=cardById(cd.card);
+  var front=el.querySelector(".front");
+  var img=el.querySelector("img");
+  el.querySelector(".fname").textContent=card.num+" "+card.name;
+  img.alt=card.name;
+  setCardImg(img,function(){ front.classList.add("noimg"); },card);
+  el.addEventListener("click",function(){
+    openMeaning(cd.card,cd.rev,slotDef.n,slotDef.label);
+  });
+  return el;
+}
+
+function slotByN(snap,n){
+  for(var i=0;i<snap.slots.length;i++){ if(snap.slots[i].n===n) return snap.slots[i]; }
+  return null;
+}
+
+function openDetail(id){
+  var rec=readingById(id);
+  if(!rec || rec.deleted) return;
+  dy.openId=id;
+  dtDiaryEditing=false; dtAppendEditing=false;
+
+  document.getElementById("dtTitle").textContent=rec.spreadSnap.title;
+  document.getElementById("dtMeta").textContent=
+    rec.date.replace(/-/g,".")+" "+fmtTime(rec.createdAt)
+    +" ・ "+clothById(rec.cloth).name
+    +" ・ 逆位置"+(rec.revOn?"つかう":"つかわない");
+  document.getElementById("dtMark").textContent=rec.mark||"📔";
+  document.getElementById("dtMarkRow").style.display="none";
+
+  // 卓の再現
+  var cl=document.getElementById("dtCloth");
+  cl.style.background=clothCss(clothById(rec.cloth));
+  cl.classList.toggle("nocloth",isPlainCloth(rec.cloth));
+  cl.innerHTML="";
+  rec.cards.forEach(function(cd){
+    var s=slotByN(rec.spreadSnap,cd.slot);
+    if(s) cl.appendChild(makeSnapCard(s,cd));
+  });
+
+  // カード一覧
+  document.getElementById("dtCardLines").innerHTML=rec.cards.map(function(cd){
+    var s=slotByN(rec.spreadSnap,cd.slot)||{n:cd.slot,label:""};
+    var c=cardById(cd.card);
+    return '<div class="cardline" data-card="'+cd.card+'" data-rev="'+(cd.rev?1:0)+'" data-n="'+s.n+'" data-lab="'+esc(s.label)+'">'
+      +'<span class="cno">'+s.n+'</span>'
+      +'<span class="cpos">'+esc(s.label||"　")+'</span>'
+      +'<span class="cname">'+esc(c.name)+' '+esc(c.num)+'</span>'
+      +'<span class="crev '+(cd.rev?"rv":"up")+'">'+(cd.rev?"逆位置":"正位置")+'</span>'
+    +'</div>';
+  }).join("");
+
+  renderDtDiary(rec);
+  renderDtAppends(rec);
+  document.getElementById("dtDiaryEdit").style.display="none";
+  document.getElementById("dtAppendEdit").style.display="none";
+
+  document.getElementById("dyHome").style.display="none";
+  document.getElementById("dyDetail").style.display="block";
+  window.scrollTo(0,0);
+}
+
+function renderDtDiary(rec){
+  var v=document.getElementById("dtDiaryView");
+  if(rec.diary){
+    v.innerHTML='<div class="diarytxt">'+esc(rec.diary)+'</div>';
+  }else{
+    v.innerHTML='<div class="diarytxt empty">（日記はまだ書いていません。「本文を編集」から書けます）</div>';
+  }
+}
+function renderDtAppends(rec){
+  var el=document.getElementById("dtAppends");
+  el.innerHTML=recAppends(rec).map(function(a){
+    var d=new Date(a.at);
+    return '<div class="tsuiki">'
+      +'<div class="tdate">'+(d.getMonth()+1)+'月'+d.getDate()+'日の追記</div>'
+      +esc(a.txt)
+    +'</div>';
+  }).join("");
+}
+
+document.getElementById("dtCardLines").addEventListener("click",function(e){
+  var l=e.target.closest(".cardline"); if(!l) return;
+  openMeaning(l.getAttribute("data-card"),l.getAttribute("data-rev")==="1",
+    parseInt(l.getAttribute("data-n"),10),l.getAttribute("data-lab"));
+});
+
+/* マーク変更 */
+document.getElementById("dtMark").addEventListener("click",function(){
+  var row=document.getElementById("dtMarkRow");
+  var rec=readingById(dy.openId); if(!rec) return;
+  if(row.style.display==="none"){
+    buildMarkRow(row,function(){return rec.mark;},function(){});
+    row.style.display="flex";
+  }else{
+    row.style.display="none";
+  }
+});
+document.getElementById("dtMarkRow").addEventListener("click",function(e){
+  var b=e.target.closest(".markbtn"); if(!b) return;
+  var rec=readingById(dy.openId); if(!rec) return;
+  rec.mark=b.getAttribute("data-mark");
+  rec.updatedAt=Date.now();
+  if(saveData()){
+    document.getElementById("dtMark").textContent=rec.mark;
+    this.style.display="none";
+  }
+});
+
+/* 本文編集 */
+document.getElementById("dtEditBtn").addEventListener("click",function(){
+  var rec=readingById(dy.openId); if(!rec) return;
+  document.getElementById("dtDiaryTa").value=rec.diary||"";
+  document.getElementById("dtDiaryView").style.display="none";
+  document.getElementById("dtDiaryEdit").style.display="block";
+  dtDiaryEditing=true;
+});
+document.getElementById("dtDiaryCancel").addEventListener("click",function(){
+  var rec=readingById(dy.openId);
+  var cur=document.getElementById("dtDiaryTa").value;
+  function close(){
+    document.getElementById("dtDiaryEdit").style.display="none";
+    document.getElementById("dtDiaryView").style.display="";
+    dtDiaryEditing=false;
+  }
+  if(rec && cur.trim()!==(rec.diary||"").trim()){
+    askConfirm("編集した内容を破棄しますか？",close,"破棄する");
+    return;
+  }
+  close();
+});
+document.getElementById("dtDiarySave").addEventListener("click",function(){
+  var rec=readingById(dy.openId); if(!rec) return;
+  rec.diary=document.getElementById("dtDiaryTa").value.trim();
+  rec.updatedAt=Date.now();
+  if(!saveData()) return;
+  renderDtDiary(rec);
+  document.getElementById("dtDiaryEdit").style.display="none";
+  document.getElementById("dtDiaryView").style.display="";
+  dtDiaryEditing=false;
+});
+
+/* 追記 */
+document.getElementById("dtAppendBtn").addEventListener("click",function(){
+  document.getElementById("dtAppendTa").value="";
+  document.getElementById("dtAppendEdit").style.display="block";
+  dtAppendEditing=true;
+});
+document.getElementById("dtAppendCancel").addEventListener("click",function(){
+  var cur=document.getElementById("dtAppendTa").value;
+  function close(){
+    document.getElementById("dtAppendEdit").style.display="none";
+    dtAppendEditing=false;
+  }
+  if(cur.trim()){
+    askConfirm("書きかけの追記を破棄しますか？",close,"破棄する");
+    return;
+  }
+  close();
+});
+document.getElementById("dtAppendSave").addEventListener("click",function(){
+  var rec=readingById(dy.openId); if(!rec) return;
+  var txt=document.getElementById("dtAppendTa").value.trim();
+  if(!txt){
+    alert("追記が空です。ひとことでも大丈夫だよ。");
+    return;
+  }
+  if(!rec.appends) rec.appends=[];
+  rec.appends.push({at:Date.now(),txt:txt});
+  rec.updatedAt=Date.now();
+  if(!saveData()){ rec.appends.pop(); return; }
+  renderDtAppends(rec);
+  document.getElementById("dtAppendEdit").style.display="none";
+  dtAppendEditing=false;
+});
+
+/* 削除・戻る */
+document.getElementById("dtDelBtn").addEventListener("click",function(){
+  var rec=readingById(dy.openId); if(!rec) return;
+  askConfirm("この記録と日記を削除しますか？\n（削除済みから復元できます）",function(){
+    rec.deleted=true; rec.updatedAt=Date.now();
+    if(!saveData()) return;
+    closeDetail();
+    renderStat();
+  },"削除する");
+});
+function dyHasUnsavedEdit(){
+  if(dtDiaryEditing){
+    var rec=readingById(dy.openId);
+    if(rec && document.getElementById("dtDiaryTa").value.trim()!==(rec.diary||"").trim()) return true;
+  }
+  if(dtAppendEditing && document.getElementById("dtAppendTa").value.trim()) return true;
+  return false;
+}
+function closeDetail(){
+  dy.openId=null;
+  dtDiaryEditing=false; dtAppendEditing=false;
+  document.getElementById("dyDetail").style.display="none";
+  document.getElementById("dyHome").style.display="block";
+  renderDyHome();
+}
+document.getElementById("dtBackBtn").addEventListener("click",function(){
+  if(dyHasUnsavedEdit()){
+    askConfirm("保存していない編集があります。破棄して一覧に戻りますか？",closeDetail,"破棄する");
+    return;
+  }
+  closeDetail();
+});
+
+/* ============================================================
+   じぶんの布・裏面のアップロード
+============================================================ */
+var MAX_USER_CLOTH=10, MAX_USER_BACK=10;
+
+function processImageFile(file,kind,done){
+  var reader=new FileReader();
+  reader.onload=function(){
+    var img=new Image();
+    img.onload=function(){
+      // 布は長辺1000px以内、裏面は480x720以内に縮小
+      var maxW=(kind==="cloth")?1000:480;
+      var maxH=(kind==="cloth")?1000:720;
+      var scale=Math.min(1,maxW/img.width,maxH/img.height);
+      var w=Math.max(1,Math.round(img.width*scale));
+      var h=Math.max(1,Math.round(img.height*scale));
+      var cv=document.createElement("canvas");
+      cv.width=w; cv.height=h;
+      cv.getContext("2d").drawImage(img,0,0,w,h);
+      var data=cv.toDataURL("image/jpeg",0.82);
+      if(data.length>900000){ data=cv.toDataURL("image/jpeg",0.7); }
+      if(data.length>1400000){
+        alert("この画像は縮小しても大きすぎるようです。別の画像でお試しください。");
+        return;
+      }
+      done(data);
+    };
+    img.onerror=function(){ alert("画像を読み込めませんでした。別のファイルでお試しください。"); };
+    img.src=reader.result;
+  };
+  reader.onerror=function(){ alert("ファイルを読み込めませんでした。"); };
+  reader.readAsDataURL(file);
+}
+
+function renderUpLists(){
+  // 布
+  var cl=document.getElementById("upClothList");
+  document.getElementById("upClothCount").textContent=IMG.cloths.length+" / "+MAX_USER_CLOTH+"枚";
+  document.getElementById("upClothBtn").disabled=(IMG.cloths.length>=MAX_USER_CLOTH);
+  cl.innerHTML=IMG.cloths.map(function(c){
+    return '<div class="upitem">'
+      +'<div class="uthumb cloth" data-bg="'+c.id+'"></div>'
+      +'<div class="uname">'+esc(c.name)+'</div>'
+      +'<button class="tbtn" data-upren="cloth" data-id="'+c.id+'" title="名前を変える">✎</button>'
+      +'<button class="tbtn danger" data-updel="cloth" data-id="'+c.id+'">削除</button>'
+    +'</div>';
+  }).join("") || '<div class="hint">まだ追加していません。</div>';
+  cl.querySelectorAll(".uthumb").forEach(function(t){
+    t.style.background="url('"+clothById(t.getAttribute("data-bg")).data+"') center/cover";
+  });
+  // 裏面
+  var bl=document.getElementById("upBackList");
+  document.getElementById("upBackCount").textContent=IMG.backs.length+" / "+MAX_USER_BACK+"枚";
+  document.getElementById("upBackBtn").disabled=(IMG.backs.length>=MAX_USER_BACK);
+  bl.innerHTML=IMG.backs.map(function(b){
+    return '<div class="upitem">'
+      +'<div class="uthumb back" data-bg="'+b.id+'"></div>'
+      +'<div class="uname">'+esc(b.name)+'</div>'
+      +'<button class="tbtn" data-upren="back" data-id="'+b.id+'" title="名前を変える">✎</button>'
+      +'<button class="tbtn danger" data-updel="back" data-id="'+b.id+'">削除</button>'
+    +'</div>';
+  }).join("") || '<div class="hint">まだ追加していません。</div>';
+  bl.querySelectorAll(".uthumb").forEach(function(t){
+    t.style.background=backById(t.getAttribute("data-bg")).css;
+    t.style.backgroundSize="cover";
+    t.style.backgroundPosition="center";
+  });
+}
+
+document.getElementById("upClothBtn").addEventListener("click",function(){
+  document.getElementById("upClothFile").click();
+});
+document.getElementById("upBackBtn").addEventListener("click",function(){
+  document.getElementById("upBackFile").click();
+});
+document.getElementById("upClothFile").addEventListener("change",function(){
+  var f=this.files && this.files[0];
+  this.value="";
+  if(!f) return;
+  if(IMG.cloths.length>=MAX_USER_CLOTH){ alert("布は最大"+MAX_USER_CLOTH+"枚までです。"); return; }
+  processImageFile(f,"cloth",function(data){
+    IMG.seqC++;
+    IMG.cloths.push({id:uid("uc"),name:"じぶんの布 "+IMG.seqC,data:data});
+    if(!saveImgs()){ IMG.cloths.pop(); IMG.seqC--; return; }
+    renderUpLists();
+    renderClothPick();
+    renderPresetClothPick();
+  });
+});
+document.getElementById("upBackFile").addEventListener("change",function(){
+  var f=this.files && this.files[0];
+  this.value="";
+  if(!f) return;
+  if(IMG.backs.length>=MAX_USER_BACK){ alert("裏面は最大"+MAX_USER_BACK+"枚までです。"); return; }
+  processImageFile(f,"back",function(data){
+    IMG.seqB++;
+    IMG.backs.push({id:uid("ub"),name:"じぶんの裏面 "+IMG.seqB,data:data});
+    if(!saveImgs()){ IMG.backs.pop(); IMG.seqB--; return; }
+    renderUpLists();
+    renderBackPick();
+  });
+});
+
+/* 削除（布は使用中の数を数えて知らせる） */
+document.getElementById("page-setting").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-updel]"); if(!b) return;
+  var kind=b.getAttribute("data-updel");
+  var id=b.getAttribute("data-id");
+  if(kind==="cloth"){
+    var used=0;
+    D.spreads.forEach(function(s){ if(s.cloth===id) used++; });
+    D.readings.forEach(function(r){ if(r.cloth===id) used++; });
+    var msg="この布を削除しますか？";
+    if(used>0) msg+="\n（"+used+"件のスプレッド・記録がこの布を使っています。その部分は無地の表示になります）";
+    askConfirm(msg,function(){
+      IMG.cloths=IMG.cloths.filter(function(c){ return c.id!==id; });
+      if(S.lastCloth===id){ S.lastCloth="cloth01"; saveSet(); }
+      if(S.presetCloth===id){ S.presetCloth="last"; saveSet(); }
+      if(saveImgs()){ renderUpLists(); renderClothPick(); renderPresetClothPick(); }
+    },"削除する");
+  }else{
+    askConfirm("この裏面を削除しますか？",function(){
+      IMG.backs=IMG.backs.filter(function(x){ return x.id!==id; });
+      if(S.back===id){ S.back="img01"; saveSet(); }
+      if(saveImgs()){ renderUpLists(); renderBackPick(); }
+    },"削除する");
+  }
+});
+
+/* 名前の編集（✎） */
+document.getElementById("page-setting").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-upren]"); if(!b) return;
+  var kind=b.getAttribute("data-upren");
+  var id=b.getAttribute("data-id");
+  var list=(kind==="cloth")?IMG.cloths:IMG.backs;
+  var item=null;
+  for(var i=0;i<list.length;i++){ if(list[i].id===id){ item=list[i]; break; } }
+  if(!item) return;
+  askInput((kind==="cloth"?"布":"裏面")+"の名前（20文字まで）",item.name,function(v){
+    if(!v || v===item.name) return;  // 空のままなら変更しない
+    item.name=v;
+    if(saveImgs()){
+      renderUpLists();
+      if(kind==="cloth"){ renderClothPick(); renderPresetClothPick(); }
+      else{ renderBackPick(); }
+    }
+  });
+});
+
+/* ============================================================
+   バックアップ（書き出し・読み込み）
+============================================================ */
+document.getElementById("bakExportBtn").addEventListener("click",function(){
+  try{
+    var payload={
+      app:"fortune", ver:1,
+      exportedAt:new Date().toISOString(),
+      data:D, set:S, imgs:IMG
+    };
+    var blob=new Blob([JSON.stringify(payload)],{type:"application/json"});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement("a");
+    a.href=url;
+    a.download="fortune_backup_"+localDateStr(Date.now()).replace(/-/g,"")+".json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); },1000);
+  }catch(err){
+    alert("書き出しに失敗しました。");
+  }
+});
+
+document.getElementById("bakImportBtn").addEventListener("click",function(){
+  document.getElementById("bakImportFile").click();
+});
+document.getElementById("bakImportFile").addEventListener("change",function(){
+  var f=this.files && this.files[0];
+  this.value="";
+  if(!f) return;
+  var reader=new FileReader();
+  reader.onload=function(){
+    var obj=null;
+    try{ obj=JSON.parse(reader.result); }catch(e){}
+    if(!obj || obj.app!=="fortune" || !obj.data
+      || !Array.isArray(obj.data.spreads) || !Array.isArray(obj.data.readings)){
+      alert("このファイルは Fortune Card のバックアップではないようです。");
+      return;
+    }
+    askConfirm("バックアップを読み込みますか？\nいまのスプレッド・記録・設定は、このファイルの内容に置き換わります。",function(){
+      try{
+        localStorage.setItem(BK,localStorage.getItem(SK)||"");  // 直前状態を退避
+        saveRaw(SK,obj.data);
+        if(obj.set && typeof obj.set==="object") saveRaw(SS,obj.set);
+        if(obj.imgs && typeof obj.imgs==="object") saveRaw(IMGK,obj.imgs);
+      }catch(e){
+        alert("読み込み中に保存へ失敗しました。端末の保存領域を確認してください。");
+        return;
+      }
+      try{ location.reload(); }catch(e){ /* テスト環境など */ }
+    },"置き換える");
+  };
+  reader.onerror=function(){ alert("ファイルを読み込めませんでした。"); };
+  reader.readAsText(f);
+});
+
+/* ============================================================
+   初期化
+============================================================ */
+applyTheme();
+paintRdToggles();
+renderUpLists();
+renderList();
+
+})();
+</script>
+</body>
+</html>
