@@ -183,6 +183,22 @@ body::before {
   opacity: .75;
 }
 
+.tool-icon-img {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+}
+
+.tool-icon-img img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 5px;
+}
+
 .tool-body { flex: 1; }
 
 .tool-name {
@@ -436,6 +452,19 @@ footer {
         <div class="tool-body">
           <div class="tool-name">審神者の道具箱</div>
           <div class="tool-desc">稽古録・資源帳などの刀剣乱舞ツール群</div>
+        </div>
+        <span class="tool-arrow">開く →</span>
+      </a>
+
+      <!-- 魔法の教室 -->
+      <!-- ★ アイコン画像を用意したら src を差し替えてください 例: src="./images/classroom.png" -->
+      <a class="tool-link" href="./twst/classroom.html">
+        <span class="tool-icon tool-icon-img">
+          <img src="./images/classroom.png" alt="魔法の教室" onerror="this.parentNode.textContent='✨'">
+        </span>
+        <div class="tool-body">
+          <div class="tool-name">魔法の教室</div>
+          <div class="tool-desc">生徒手帳などの便利な道具たち</div>
         </div>
         <span class="tool-arrow">開く →</span>
       </a>

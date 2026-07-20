@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pawtal — 猫も入る Catbinet</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QM317D9ESN');
+</script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -60,6 +68,13 @@ body {
   background: rgba(90,74,53,0.3);
 }
 
+.logo-text.name {
+  font-style: italic;
+  font-size: 11px;
+  color: rgba(138,117,96,0.85);
+  letter-spacing: 0.06em;
+}
+
 .pc-main {
   margin-left: 52px;
   flex: 1;
@@ -75,17 +90,25 @@ body {
   flex-direction: column;
   min-height: 100vh;
   position: relative;
+  padding-top: 52px;
 }
 
 .pc-cards {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(2, 185px);
-  grid-template-rows: repeat(2, auto);
-  gap: 24px;
+  grid-template-columns: repeat(4, 175px);
+  gap: 22px;
   align-content: center;
   justify-content: center;
-  padding: 40px 40px 60px 40px;
+  padding: 40px 32px 60px 32px;
+}
+
+/* 中くらいの画面：2列 */
+@media (max-width: 1400px) and (min-width: 681px) {
+  .pc-cards {
+    grid-template-columns: repeat(2, 185px);
+    gap: 24px;
+  }
 }
 
 .app-card {
@@ -210,6 +233,22 @@ body {
 
 .sp-header { margin-bottom: 36px; }
 
+.sp-home-link {
+  display: inline-block;
+  font-size: 12px;
+  color: #6a5640;
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
+}
+
+.sp-home-link span {
+  font-size: 10px;
+  font-style: italic;
+  color: rgba(106,86,64,0.55);
+  margin-left: 3px;
+}
+
 .sp-logo-en {
   font-style: italic;
   font-size: 22px;
@@ -308,11 +347,112 @@ body {
 }
 
 
+
+/* ========== ヘッダー (PC) ========== */
+.pc-header {
+  position: fixed;
+  top: 0; left: 52px; right: 0;
+  height: 52px;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  background: rgba(255,252,245,0.32);
+  backdrop-filter: blur(4px);
+  border-bottom: 0.5px solid rgba(160,135,100,0.2);
+}
+
+.header-home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  color: #5a4632;
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  padding: 5px 14px 5px 11px;
+  border: 0.5px solid rgba(160,135,100,0.4);
+  border-radius: 3px;
+  background: rgba(255,252,245,0.5);
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.header-home-link:hover {
+  color: #3a2e20;
+  background: rgba(255,252,245,0.8);
+  border-color: rgba(160,135,100,0.7);
+}
+
+.header-home-link .arrow { font-size: 15px; }
+
+.header-home-link .label-sub {
+  font-size: 10px;
+  color: rgba(106,86,64,0.6);
+  font-style: italic;
+  letter-spacing: 0.04em;
+}
+
+
+/* ========== フッター (PC) ========== */
+.pc-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 0 32px 22px 0;
+}
+
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #6a5640;
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  padding: 5px 13px;
+  background: rgba(255,253,248,0.88);
+  border: 0.5px solid rgba(160,135,100,0.25);
+  border-radius: 20px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.footer-link:hover {
+  color: #3a2e20;
+  background: rgba(255,253,248,1);
+}
+
+.footer-link .ico { font-size: 11px; opacity: 0.8; }
+
+/* ========== フッター (スマホ) ========== */
+.sp-footer {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 0.5px solid rgba(160,135,100,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.sp-footer-link {
+  font-size: 12px;
+  color: #6a5640;
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  padding: 8px 18px;
+  background: rgba(255,253,248,0.9);
+  border: 0.5px solid rgba(160,135,100,0.25);
+  border-radius: 20px;
+}
+
+.sp-footer-link .ico { margin-right: 5px; opacity: 0.8; }
+
 /* ========== 更新情報パネル (PC) ========== */
 .update-panel {
   width: 200px;
   flex-shrink: 0;
-  padding: 36px 24px 24px 4px;
+  padding: 88px 24px 24px 4px;
   display: flex;
   flex-direction: column;
 }
@@ -460,6 +600,22 @@ body {
   top: 3px;
 }
 
+.tl-content ul ul {
+  margin-top: 3px;
+}
+
+.tl-content ul ul li {
+  font-size: 9.5px;
+  color: #95856d;
+  margin-bottom: 1px;
+}
+
+.tl-content ul ul li::before {
+  content: '·';
+  font-size: 11px;
+  top: 0;
+}
+
 /* ========== 更新情報バー (スマホ) ========== */
 .sp-update-bar { margin-top: 20px; }
 
@@ -555,11 +711,21 @@ body {
 <!-- ===== PC ===== -->
 <div class="pc-layout">
 
+  <div class="pc-header">
+    <a href="index.html" class="header-home-link">
+      <span class="arrow">←</span>
+      <span>猫の休憩所</span>
+      <span class="label-sub">home</span>
+    </a>
+  </div>
+
   <div class="side-logo">
     <span class="logo-text en">Pawtal</span>
     <div class="logo-divider"></div>
     <span class="logo-text">猫も入る</span>
     <span class="logo-text">Catbinet</span>
+    <div class="logo-divider"></div>
+    <span class="logo-text name">Akari Hatano</span>
   </div>
 
   <div class="pc-main">
@@ -599,7 +765,14 @@ body {
       </div>
 
     </div>
-    <div class="coming-soon">coming soon……</div>
+    <div class="pc-footer">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSenYyphnGrpPY0rct9NelYgx_ZFBFRBHzi-CzhPBCAxxp0zOg/viewform" class="footer-link" target="_blank" rel="noopener">
+        <span class="ico">✉</span>お問い合わせ
+      </a>
+      <a href="https://www.amazon.co.jp/hz/wishlist/ls/7WS3EBENHBJF?type=wishlist&filter=all&sort=custom&viewType=list" class="footer-link" target="_blank" rel="noopener">
+        <span class="ico">🐾</span>ほしいものリスト
+      </a>
+    </div>
     </div><!-- /pc-content -->
 
     <!-- 更新情報パネル -->
@@ -610,8 +783,29 @@ body {
 
         <div class="tl-entry is-latest">
           <div class="tl-header" onclick="tlToggle(this)">
-            <span class="tl-date">2026.05.06</span>
+            <span class="tl-date">2026.06.16</span>
             <span class="tl-badge">最新</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <ul>
+                <li>サイト全体にヘッダー・フッターを追加など、細かい修正</li>
+                <li>MyRecord：細かい修正
+                  <ul>
+                    <li>ホーム画面に追加するとアプリのように全画面表示に（ノッチ周りもきれいに対応）</li>
+                    <li>入力すると保存ボタンが点滅して「未保存」を知らせる機能を追加。日付変更・タブ移動・ページを閉じる時にも警告</li>
+                    <li>スマホ上部バーの色がテーマカラーに連動</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry">
+          <div class="tl-header" onclick="tlToggle(this)">
+            <span class="tl-date">2026.05.06</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -667,6 +861,7 @@ body {
   <div class="sp-inner">
 
     <div class="sp-header">
+      <a href="index.html" class="sp-home-link">← 猫の休憩所 <span>home</span></a>
       <div class="sp-logo-en">Pawtal</div>
       <div class="sp-logo-ja">猫も入る Catbinet</div>
     </div>
@@ -715,28 +910,36 @@ body {
 
     </div>
 
-    <div class="sp-coming">coming soon……</div>
-
     <div class="sp-update-bar">
       <div class="sp-update-toggle" id="sp-update-btn" onclick="spUpdateToggle()">
         <span class="sp-update-label">最新更新</span>
-        <span class="sp-update-date">2026.05.06</span>
+        <span class="sp-update-date">2026.06.16</span>
         <span class="sp-update-badge">最新</span>
         <span class="sp-update-arrow">▼</span>
       </div>
       <div class="sp-update-body" id="sp-update-body">
         <div class="tl-content">
           <ul>
-            <li>Pawtal 公開</li>
-            <li>コットンカード追加</li>
+            <li>サイト全体にヘッダー・フッターを追加など、細かい修正</li>
+            <li>MyRecord：細かい修正
+              <ul>
+                <li>ホーム画面に追加するとアプリのように全画面表示に（ノッチ周りもきれいに対応）</li>
+                <li>入力すると保存ボタンが点滅して「未保存」を知らせる機能を追加。日付変更・タブ移動・ページを閉じる時にも警告</li>
+                <li>スマホ上部バーの色がテーマカラーに連動</li>
+              </ul>
+            </li>
           </ul>
         </div>
       </div>
     </div>
 
+    <div class="sp-footer">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSenYyphnGrpPY0rct9NelYgx_ZFBFRBHzi-CzhPBCAxxp0zOg/viewform" class="sp-footer-link" target="_blank" rel="noopener"><span class="ico">✉</span>お問い合わせ</a>
+      <a href="https://www.amazon.co.jp/hz/wishlist/ls/7WS3EBENHBJF?type=wishlist&filter=all&sort=custom&viewType=list" class="sp-footer-link" target="_blank" rel="noopener"><span class="ico">🐾</span>ほしいものリスト</a>
+    </div>
+
   </div>
 </div>
-
 
 <script>
 function tlToggle(header) {
