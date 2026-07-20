@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>お返事 — 審神者の道具箱</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QM317D9ESN');
+</script>
+<script>
+/* テーマを描画前に適用（ちらつき防止） */
+(function(){
+  var hue = 'blue', mode = 'dark';
+  try {
+    var saved = JSON.parse(localStorage.getItem('reply_theme_v1') || 'null');
+    if (saved && (saved.hue === 'blue' || saved.hue === 'red')) hue = saved.hue;
+    if (saved && (saved.mode === 'dark' || saved.mode === 'light')) mode = saved.mode;
+  } catch(e) {}
+  document.documentElement.dataset.hue = hue;
+  document.documentElement.dataset.mode = mode;
+})();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ============================================================
+   テーマ定義（4種）
+   青系×暗い＝縹色（初期） / 青系×明るい＝白群
+   赤系×暗い＝臙脂        / 赤系×明るい＝アゲート色
+   ============================================================ */
+:root,
+html[data-hue="blue"][data-mode="dark"] {
+  --bg: #354f6b;
+  --tx-heading: #dce9f5;
+  --tx-lead: #c7d8ea;
+  --tx-subject: #d6e4f2;
+  --tx-voice: #a8bdd6;
+  --tx-answer: #cddbeb;
+  --tx-answer-b: #e2edf8;
+  --accent: #9fbdd8;
+  --accent-soft: rgba(159,189,216,.5);
+  --accent-faint: rgba(159,189,216,.14);
+  --panel-bg: rgba(0,0,0,.30);
+  --panel-border: rgba(200,220,245,.18);
+  --voice-bg: rgba(0,0,0,.26);
+  --voice-border: rgba(159,189,216,.45);
+  --tag-bg: rgba(159,189,216,.85);
+  --tag-tx: #14222e;
+  --hover-bg: rgba(159,189,216,.08);
+}
+html[data-hue="blue"][data-mode="light"] {
+  --bg: #8caec0;
+  --tx-heading: #22363d;
+  --tx-lead: #2e4750;
+  --tx-subject: #22363d;
+  --tx-voice: #3d5860;
+  --tx-answer: #2a4149;
+  --tx-answer-b: #1c2f36;
+  --accent: #33505c;
+  --accent-soft: rgba(51,80,92,.5);
+  --accent-faint: rgba(51,80,92,.12);
+  --panel-bg: rgba(255,255,255,.45);
+  --panel-border: rgba(60,90,105,.25);
+  --voice-bg: rgba(255,255,255,.5);
+  --voice-border: rgba(60,90,100,.5);
+  --tag-bg: rgba(40,64,72,.78);
+  --tag-tx: #eaf2f7;
+  --hover-bg: rgba(255,255,255,.35);
+}
+html[data-hue="red"][data-mode="dark"] {
+  --bg: #8b1a1a;
+  --tx-heading: #f5e0c0;
+  --tx-lead: #ecd4b4;
+  --tx-subject: #f0d8a8;
+  --tx-voice: #cdb490;
+  --tx-answer: #e6ceac;
+  --tx-answer-b: #f0d8a8;
+  --accent: #c8a84b;
+  --accent-soft: rgba(200,168,75,.5);
+  --accent-faint: rgba(200,168,75,.14);
+  --panel-bg: rgba(0,0,0,.32);
+  --panel-border: rgba(255,220,160,.16);
+  --voice-bg: rgba(0,0,0,.28);
+  --voice-border: rgba(200,168,75,.4);
+  --tag-bg: rgba(200,168,75,.78);
+  --tag-tx: #1a1200;
+  --hover-bg: rgba(200,168,75,.08);
+}
+html[data-hue="red"][data-mode="light"] {
+  --bg: #e39182;
+  --tx-heading: #5a241a;
+  --tx-lead: #6b2f22;
+  --tx-subject: #5a241a;
+  --tx-voice: #813a2b;
+  --tx-answer: #52221a;
+  --tx-answer-b: #3f1a12;
+  --accent: #813a2b;
+  --accent-soft: rgba(129,58,43,.5);
+  --accent-faint: rgba(129,58,43,.12);
+  --panel-bg: rgba(255,255,255,.46);
+  --panel-border: rgba(155,75,55,.28);
+  --voice-bg: rgba(255,255,255,.52);
+  --voice-border: rgba(155,75,55,.5);
+  --tag-bg: rgba(95,40,30,.8);
+  --tag-tx: #f7e8e2;
+  --hover-bg: rgba(255,255,255,.35);
+}
+
+body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: var(--bg); }
+
+.bg {
+  min-height: 100vh;
+  background-image: url('background.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+/* 背景画像の上にテーマ色を重ねる（画像の模様を活かしつつ色を変える） */
+.bg::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--bg);
+  opacity: .82;
+  pointer-events: none;
+}
+/* テーマ色の上に重ねる格子模様（トップページと同じ） */
+.bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(45deg, rgba(0,0,0,.05) 0px, rgba(0,0,0,.05) 1px, transparent 1px, transparent 9px),
+    repeating-linear-gradient(-45deg, rgba(0,0,0,.04) 0px, rgba(0,0,0,.04) 1px, transparent 1px, transparent 9px);
+  pointer-events: none;
+}
+.layout { position: relative; z-index: 1; }
+
+.layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 44px 20px 60px;
+}
+
+.container { width: 100%; max-width: 680px; }
+
+.site-title {
+  display: block;
+  background: rgba(255,255,255,.88);
+  border: 2px solid rgba(180,120,80,.4);
+  border-radius: 12px;
+  padding: 10px 24px;
+  font-size: 22px; font-weight: 700; letter-spacing: .15em; color: #2c1a10;
+  box-shadow: 2px 3px 14px rgba(0,0,0,.22);
+  margin-bottom: 24px;
+  text-decoration: none;
+  text-align: left;
+  transition: background .2s;
+}
+.site-title:hover { background: rgba(255,255,255,.95); }
+
+.page-heading {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .35em;
+  color: var(--tx-heading);
+  text-align: center;
+  margin-bottom: 12px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.page-lead {
+  font-size: 14px;
+  line-height: 2;
+  color: var(--tx-lead);
+  text-align: center;
+  margin-bottom: 18px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* テーマ切り替えボタン */
+.theme-bar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.theme-btn {
+  appearance: none;
+  border: 1px solid var(--panel-border);
+  background: var(--panel-bg);
+  color: var(--tx-lead);
+  font-size: 12px;
+  letter-spacing: .08em;
+  font-family: 'Noto Sans JP', sans-serif;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.theme-btn:hover { background: var(--hover-bg); }
+
+/* 日付グループ */
+.date-group { margin-bottom: 28px; }
+
+.date-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.date-label {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .2em;
+  color: var(--accent);
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.date-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--accent-soft), transparent);
+}
+.date-count {
+  font-size: 11px;
+  color: var(--accent-soft);
+  font-family: 'Noto Sans JP', sans-serif;
+  letter-spacing: .08em;
+}
+
+/* パネル */
+.rp-panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 6px 18px;
+  backdrop-filter: blur(2px);
+}
+
+/* タイムライン */
+.timeline { position: relative; padding-left: 16px; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 5px; top: 10px; bottom: 10px;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--accent-soft), var(--accent-faint));
+}
+
+.rp-entry { position: relative; margin-bottom: 4px; }
+
+.rp-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 8px 12px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  transition: background .2s;
+  position: relative;
+}
+.rp-header:hover { background: var(--hover-bg); }
+
+.rp-header::before {
+  content: '';
+  position: absolute;
+  left: -14px;
+  top: 20px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent-faint);
+  border: 1.5px solid var(--accent-soft);
+  transition: background .2s;
+}
+.rp-entry.is-open .rp-header::before {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-soft);
+}
+
+.rp-subject {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: var(--tx-subject);
+  font-family: 'Noto Sans JP', sans-serif;
+  line-height: 1.6;
+}
+.rp-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  color: var(--tag-tx);
+  background: var(--tag-bg);
+  border-radius: 3px;
+  padding: 2px 7px;
+  margin-right: 8px;
+  font-family: 'Noto Sans JP', sans-serif;
+  vertical-align: middle;
+}
+.rp-arrow {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--accent-soft);
+  transition: transform .25s;
+  padding-top: 4px;
+}
+.rp-entry.is-open .rp-arrow { transform: rotate(180deg); }
+
+.rp-body {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .4s ease, opacity .3s ease;
+  opacity: 0;
+}
+.rp-entry.is-open .rp-body {
+  max-height: 4000px;
+  opacity: 1;
+}
+
+.rp-content {
+  padding: 4px 8px 16px 12px;
+}
+
+/* いただいたお声（引用） */
+.rp-voice {
+  display: flex;
+  gap: 8px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  background: var(--voice-bg);
+  border-left: 3px solid var(--voice-border);
+  border-radius: 0 6px 6px 0;
+}
+.rp-voice-mark {
+  font-size: 15px;
+  color: var(--accent);
+  font-weight: 700;
+  flex-shrink: 0;
+  line-height: 1.7;
+}
+.rp-voice-text {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--tx-voice);
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* 管理人からのお返事 */
+.rp-answer {
+  font-size: 15px;
+  line-height: 2.05;
+  color: var(--tx-answer);
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.rp-answer p { margin-bottom: 12px; }
+.rp-answer p:last-child { margin-bottom: 0; }
+.rp-answer b { color: var(--tx-answer-b); font-weight: 600; }
+
+/* お返事の中の手順・箇条書き */
+.rp-answer ul {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 12px;
+}
+.rp-answer ul li {
+  padding-left: 16px;
+  position: relative;
+  margin-bottom: 6px;
+  line-height: 1.85;
+}
+.rp-answer ul li::before {
+  content: '・';
+  position: absolute; left: 2px;
+  color: var(--accent);
+}
+
+/* 戻るリンク */
+.back-link {
+  display: inline-block;
+  margin-top: 28px;
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: .15em;
+  font-family: 'Noto Sans JP', sans-serif;
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent-soft);
+  padding-bottom: 1px;
+  transition: opacity .2s;
+}
+.back-link:hover { opacity: .75; }
+
+footer {
+  position: relative; z-index: 1; text-align: center; padding: 18px;
+  background: rgba(0,0,0,.4);
+  font-size: 11px; color: rgba(240,220,190,.55); letter-spacing: .15em;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* トップへ戻るボタン（テーマ連動） */
+.scroll-top {
+  position: fixed;
+  bottom: 24px; right: 20px;
+  z-index: 50;
+  width: 40px; height: 40px;
+  background: var(--accent-faint);
+  border: 1px solid var(--accent-soft);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--accent);
+  font-size: 14px;
+  text-decoration: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s, background .2s;
+  backdrop-filter: blur(2px);
+}
+.scroll-top.visible { opacity: 1; pointer-events: auto; }
+.scroll-top:hover { background: var(--hover-bg); }
+
+@media (max-width: 680px) {
+  .layout { padding: 28px 16px 48px; }
+  .site-title { font-size: 20px; }
+  .rp-subject { font-size: 14px; }
+  .rp-answer { font-size: 14px; line-height: 2; }
+  .rp-voice-text { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+<div class="bg" id="top">
+<div class="layout">
+<div class="container">
+
+  <a class="site-title" href="saniwa_top.html">審神者の道具箱</a>
+
+  <div class="page-heading">＊ お 返 事 ＊</div>
+  <div class="page-lead">
+    いただいたバグ報告やご要望に、管理人がお返事する場所です。<br>
+    メールアドレスのないお声には、こちらでお答えします。
+  </div>
+
+  <div class="theme-bar">
+    <button type="button" class="theme-btn" id="btn-hue" onclick="toggleHue()">色：青系</button>
+    <button type="button" class="theme-btn" id="btn-mode" onclick="toggleMode()">明るさ：暗い</button>
+  </div>
+
+  <!-- 2026年7月9日 -->
+  <div class="date-group">
+    <div class="date-header">
+      <span class="date-label">2026.07.09</span>
+      <span class="date-line"></span>
+      <span class="date-count">1件</span>
+    </div>
+    <div class="rp-panel">
+      <div class="timeline">
+
+        <!-- お返事4：色選択のスポイトで固まる -->
+        <div class="rp-entry" id="rp-4">
+          <div class="rp-header" onclick="rpToggle('rp-4')">
+            <div class="rp-subject"><span class="rp-tag">バグ報告</span>資源帳・色選択のスポイトで固まる</div>
+            <span class="rp-arrow">▼</span>
+          </div>
+          <div class="rp-body">
+            <div class="rp-content">
+              <div class="rp-voice">
+                <span class="rp-voice-mark">&gt;</span>
+                <div class="rp-voice-text">期間メモの色選択でスポイトを使うと固まってしまう。いろいろな色を使い分けたい</div>
+              </div>
+              <div class="rp-answer">
+                <p>スポイトで固まってしまうとのこと、ご報告ありがとうございます。</p>
+                <p>ただ色選択はブラウザ標準の機能を使っており、スポイトはブラウザ・OS側の機能のため、サイト側のプログラムは関与していません（採色中はサイトの処理は何も動きません）。当方の複数ブラウザ(Safari/EDGE/chrome/Firefoxなど)でも再現できず、ブラウザや端末側の状態が影響している可能性が高いです。</p>
+                <p>お手数ですが、次をお試しください。</p>
+                <ul>
+                  <li>ブラウザのハードウェアアクセラレーションをオフにする</li>
+                  <li>拡張機能をオフにする/シークレットウィンドウで試す</li>
+                  <li>ブラウザを最新に更新、または別ブラウザで試す</li>
+                </ul>
+                <p>あわせて、今回ワンタップで選べる「色見本パレット」も新しく追加しましたので、定番の色ならこちらからさっと選べます。スポイトが固まる環境では、こちらの方法もご活用いただけたら幸いです。</p>
+                <p>スポイトをよく使用してくださってるとの事なので、上記の三種の方法で解決できたらなと思っておりますが、なにかありましたらまたご連絡ください。</p>
+                <p>最後にひとつだけお願いです。より正確に原因を突き止めるには、お使いの端末・ブラウザ・OSなどの情報がどうしても必要になります。次回もし不具合を見つけられた際は、お手数ですがバグ報告のテンプレートに沿ってお知らせいただけると、こちらでも状況を把握しやすく、再現・調査が進めやすくなります。ご協力いただけたら助かります。</p>
+                <p>審神者の道具箱をたくさん使ってくださり管理人はとても嬉しいです。これからも御贔屓に。どうぞよろしくお願い致します。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /timeline -->
+    </div><!-- /rp-panel -->
+  </div><!-- /date-group -->
+
+  <!-- 2026年7月7日 -->
+  <div class="date-group">
+    <div class="date-header">
+      <span class="date-label">2026.07.07</span>
+      <span class="date-line"></span>
+      <span class="date-count">1件</span>
+    </div>
+    <div class="rp-panel">
+      <div class="timeline">
+
+        <!-- お返事3：下部バーの周回数が表示されない -->
+        <div class="rp-entry" id="rp-3">
+          <div class="rp-header" onclick="rpToggle('rp-3')">
+            <div class="rp-subject"><span class="rp-tag">バグ報告</span>邂逅録・下部バーの周回数が表示されない</div>
+            <span class="rp-arrow">▼</span>
+          </div>
+          <div class="rp-body">
+            <div class="rp-content">
+              <div class="rp-voice">
+                <span class="rp-voice-mark">&gt;</span>
+                <div class="rp-voice-text">下部バーの周回数が、直接入力しても＋−でも表示されなくなる。バグか仕様か知りたい</div>
+              </div>
+              <div class="rp-answer">
+                <p>ご報告ありがとうございます。調べたところ、仕様ではなくバグでした。画面の横幅が狭めの端末で、周回数の入力欄が隣のボタンに押されて幅がほぼゼロまで潰れ、数字が見えなくなっていました。</p>
+                <p>数字そのものは中にちゃんと入っていて、記録された周回数は正しく保存されていますので、これまでの記録データはご安心ください。修正版を公開しましたので、更新後は数字が見えるようになります。</p>
+                <p>教えていただいたおかげで直すことができました。ありがとうございました。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /timeline -->
+    </div><!-- /rp-panel -->
+  </div><!-- /date-group -->
+
+  <!-- 2026年7月4日 -->
+  <div class="date-group">
+    <div class="date-header">
+      <span class="date-label">2026.07.04</span>
+      <span class="date-line"></span>
+      <span class="date-count">2件</span>
+    </div>
+    <div class="rp-panel">
+      <div class="timeline">
+
+        <!-- お返事1：周回数のみの記録 -->
+        <div class="rp-entry" id="rp-1">
+          <div class="rp-header" onclick="rpToggle('rp-1')">
+            <div class="rp-subject"><span class="rp-tag">ご要望</span>邂逅録・周回数のみでも記録できるように</div>
+            <span class="rp-arrow">▼</span>
+          </div>
+          <div class="rp-body">
+            <div class="rp-content">
+              <div class="rp-voice">
+                <span class="rp-voice-mark">&gt;</span>
+                <div class="rp-voice-text">周回数のみでも記録できるようにしてほしい</div>
+              </div>
+              <div class="rp-answer">
+                <p>邂逅録へのご要望、ありがとうございました。「周回数のみでも記録できるように」という件、対応いたしました。</p>
+                <p>連隊戦の記録画面に「目玉なしで記録（周回だけ）」というボタンを追加しました。目玉（★）の男士が出なかった周回でも、男士を選ばずに周回数だけを記録できます。ボタンを押して「何周した？」に周回数を入れ、保存してください。</p>
+                <p>これで、連隊戦でも目玉の実ドロップ率（目玉が何周で何％落ちるか）が出せるようになりました。使い方は次のとおりです。</p>
+                <ul>
+                  <li>目玉男士が出た周 … 目玉を選んで、その周回数を入れて記録</li>
+                  <li>目玉男士が出なかった周 …「目玉なしで記録」を押して、周回数を入れて記録</li>
+                </ul>
+                <p>集計タブを「実ドロップ率」モードで開くと、両方の記録の周回数を合計した“総周回数”を分母に、目玉男士のドロップ率が表示されます。目玉男士が出なかった周も記録がありますと、より正確な率になります。</p>
+                <p>ご要望、ご指摘ありがとうございました。これからもどうぞよろしくお願い致しますね。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- お返事2：Google同期 -->
+        <div class="rp-entry" id="rp-2">
+          <div class="rp-header" onclick="rpToggle('rp-2')">
+            <div class="rp-subject"><span class="rp-tag">バグ報告</span>Google同期について</div>
+            <span class="rp-arrow">▼</span>
+          </div>
+          <div class="rp-body">
+            <div class="rp-content">
+              <div class="rp-voice">
+                <span class="rp-voice-mark">&gt;</span>
+                <div class="rp-voice-text">ログイン時間が切れた後ページをリロードし再度ログインしようとするとログインに失敗する（Google同期について）</div>
+              </div>
+              <div class="rp-answer">
+                <p>お問い合わせありがとうございます。長い文となりますが、どうぞ最後までお付き合いくださいませ。</p>
+                <p>まず、前提をひとつ伝えさせてください。Googleドライブとの同期に使うログインは、Google側の仕様で「約1時間で期限切れ」となります。これはGoogleがセキュリティのために定めているもので、どのサイト・アプリでも共通です。そのため、一定時間ごとに再ログイン（接続のしなおし）が必要になること自体は、審神者の道具箱の不具合ではなく、仕組み上どうしても起きてしまうものなのです。この1時間という長さを、こちら側でなくすことはできません。</p>
+                <p>その上で、今回いただいた「期限が切れたあとにリロードするとうまく再ログインできない」という不具合については、ツール側に原因がありましたので修正しました。期限切れのあとにアカウント選択画面が出た際、選び終わる前にツールが処理を打ち切ってしまい、選択の結果を受け取れていなかったのが原因です。これを、選択にかかった時間に関係なく受け取るよう修正し、さらに万一うまくいかない場合も、ログアウトされるのではなく画面に「⚠ 再接続」ボタンが出て、ワンクリックで戻れるようにしました（邂逅録はご指摘を受けて、設定タブを開かなくてもヘッダーから押せるようにしました）。稽古録・邂逅録・資源帳の3つに同じ修正を入れています。</p>
+                <p>ただ、ここからは正直にお伝えします。期限が切れたときに「アカウント選択画面が出るか／どのくらいの頻度で再ログインを求められるか」は、お使いのブラウザの設定（プライバシー保護の強さやCookieの扱いなど）やGoogleへのログイン状態によって、人それぞれ大きく変わります。環境によっては再ログインが画面なしで静かに済むこともあれば、毎回アカウント選択画面が出ることもあり、この差をツール側からなくすことはできません。この点は私たちもいろいろ試したのですが、今のところ完全になくす方法は見つけられませんでした。正直に申し上げて、今の私たちには解決しきれない部分です。力及ばず申し訳ありません。</p>
+                <p>ですので、「1時間で切れること自体」はどうしてもなくせないのですが、「切れたときに、できるだけ楽に・確実に戻れる」形にする、という方向で改善してきました。そして接続が切れても記録したデータはこの端末に残っていますので、失われることはありません。その点はどうぞご安心ください。</p>
+                <p>ご報告と、このツールを使っていただいていることに、改めて感謝します。今後ともどうぞよろしくお願い致しますね。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /timeline -->
+    </div><!-- /rp-panel -->
+  </div><!-- /date-group -->
+
+  <a class="back-link" href="saniwa_top.html">← トップへ戻る</a>
+
+</div>
+</div>
+
+<footer>
+  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari hatano
+</footer>
+</div>
+
+<a class="scroll-top" id="scroll-top" href="#top" title="トップへ戻る">▲</a>
+
+<script>
+function rpToggle(id) {
+  const entry = document.getElementById(id);
+  entry.classList.toggle('is-open');
+}
+
+/* ---- テーマ切り替え ---- */
+const THEME_KEY = 'reply_theme_v1';
+
+function saveTheme() {
+  try {
+    localStorage.setItem(THEME_KEY, JSON.stringify({
+      hue: document.documentElement.dataset.hue,
+      mode: document.documentElement.dataset.mode
+    }));
+  } catch(e) {}
+}
+function updateThemeButtons() {
+  const hue = document.documentElement.dataset.hue;
+  const mode = document.documentElement.dataset.mode;
+  const btnHue = document.getElementById('btn-hue');
+  const btnMode = document.getElementById('btn-mode');
+  if (btnHue)  btnHue.textContent  = '色：' + (hue === 'blue' ? '青系' : '赤系');
+  if (btnMode) btnMode.textContent = '明るさ：' + (mode === 'dark' ? '暗い' : '明るい');
+}
+function toggleHue() {
+  const cur = document.documentElement.dataset.hue;
+  document.documentElement.dataset.hue = (cur === 'blue') ? 'red' : 'blue';
+  saveTheme();
+  updateThemeButtons();
+}
+function toggleMode() {
+  const cur = document.documentElement.dataset.mode;
+  document.documentElement.dataset.mode = (cur === 'dark') ? 'light' : 'dark';
+  saveTheme();
+  updateThemeButtons();
+}
+document.addEventListener('DOMContentLoaded', updateThemeButtons);
+
+/* ---- トップへ戻るボタン ---- */
+const scrollBtn = document.getElementById('scroll-top');
+window.addEventListener('scroll', () => {
+  scrollBtn.classList.toggle('visible', window.scrollY > 300);
+}, { passive: true });
+</script>
+</body>
+</html>

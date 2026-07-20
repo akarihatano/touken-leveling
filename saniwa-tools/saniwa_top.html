@@ -5,15 +5,77 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>審神者の道具箱</title>
+<meta name="description" content="刀剣乱舞の審神者のための非公式ツール集。資源帳・稽古録・愛蔵の一ノ倉・出陣支度部屋・邂逅録など、日々の本丸を支える道具をまとめています。">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a1a; }
+
+/* ============================================================
+   テーマ定義（4種）reply / changelog / マニュアルと共通のしくみ。
+   ・左カラムの白プレートは全テーマ白のまま（枠色と影 --plate-* だけ追従）
+   ・右カラムのパネルは暗テーマ＝今の金×黒、明テーマ＝明るい半透明（--rp-*）
+   ============================================================ */
+:root,
+html[data-hue="blue"][data-mode="dark"] {
+  --bg: #354f6b;
+  --plate-border: rgba(180,120,80,.4);
+  --plate-shadow: 3px 4px 16px rgba(0,0,0,.2);
+  --tb-bg: rgba(0,0,0,.3); --tb-border: rgba(255,220,160,.2); --tb-tx: rgba(240,220,190,.8); --tb-hover: rgba(0,0,0,.4);
+  --rp-bg: rgba(0,0,0,.32); --rp-border: rgba(255,220,160,.17);
+  --rp-heading: #f5e0c0; --rp-heading2: #e9d2ad; --rp-text: #f0dcc0; --rp-text2: #dfc4a0; --rp-em: #f8eecc;
+  --rp-note: #d4b898; --rp-note-border: rgba(255,200,120,.28); --rp-note-bg: rgba(0,0,0,.2); --rp-divider: rgba(255,220,160,.1);
+  --rp-accent: #c8a84b; --rp-accent2: #e8c878; --rp-accent-strong: #c8a84b;
+  --rp-accent-soft: rgba(200,168,75,.5); --rp-accent-bg: rgba(200,168,75,.12); --rp-accent-border: rgba(200,168,75,.25); --rp-accent-faint: rgba(200,168,75,.08);
+  --rp-warn-bg: rgba(200,120,50,.15); --rp-warn-border: rgba(220,150,80,.3); --rp-warn-head: #e8b870; --rp-warn-text: #d4a870;
+  --footer-tx: rgba(240,220,190,.55); --footer-bg: rgba(0,0,0,.4);
+}
+html[data-hue="blue"][data-mode="light"] {
+  --bg: #8caec0;
+  --plate-border: rgba(70,100,115,.55);
+  --plate-shadow: 3px 5px 20px rgba(25,45,55,.28);
+  --tb-bg: rgba(255,255,255,.5); --tb-border: rgba(60,90,105,.3); --tb-tx: #2e4750; --tb-hover: rgba(255,255,255,.7);
+  --rp-bg: rgba(255,255,255,.5); --rp-border: rgba(60,90,105,.3);
+  --rp-heading: #22363d; --rp-heading2: #33505c; --rp-text: #2e4750; --rp-text2: #33505c; --rp-em: #132229;
+  --rp-note: #3d5860; --rp-note-border: rgba(51,80,92,.4); --rp-note-bg: rgba(51,80,92,.08); --rp-divider: rgba(60,90,105,.2);
+  --rp-accent: #33505c; --rp-accent2: #2b4a56; --rp-accent-strong: #33505c;
+  --rp-accent-soft: rgba(51,80,92,.5); --rp-accent-bg: rgba(51,80,92,.12); --rp-accent-border: rgba(51,80,92,.3); --rp-accent-faint: rgba(51,80,92,.08);
+  --rp-warn-bg: rgba(200,120,50,.14); --rp-warn-border: rgba(180,110,40,.5); --rp-warn-head: #8a4b12; --rp-warn-text: #7a4517;
+  --footer-tx: rgba(28,47,54,.7); --footer-bg: rgba(255,255,255,.4);
+}
+html[data-hue="red"][data-mode="dark"] {
+  --bg: #8b1a1a;
+  --plate-border: rgba(180,120,80,.4);
+  --plate-shadow: 3px 4px 16px rgba(0,0,0,.2);
+  --tb-bg: rgba(0,0,0,.3); --tb-border: rgba(255,220,160,.2); --tb-tx: rgba(240,220,190,.8); --tb-hover: rgba(0,0,0,.4);
+  --rp-bg: rgba(0,0,0,.32); --rp-border: rgba(255,220,160,.17);
+  --rp-heading: #f5e0c0; --rp-heading2: #e9d2ad; --rp-text: #f0dcc0; --rp-text2: #dfc4a0; --rp-em: #f8eecc;
+  --rp-note: #d4b898; --rp-note-border: rgba(255,200,120,.28); --rp-note-bg: rgba(0,0,0,.2); --rp-divider: rgba(255,220,160,.1);
+  --rp-accent: #c8a84b; --rp-accent2: #e8c878; --rp-accent-strong: #c8a84b;
+  --rp-accent-soft: rgba(200,168,75,.5); --rp-accent-bg: rgba(200,168,75,.12); --rp-accent-border: rgba(200,168,75,.25); --rp-accent-faint: rgba(200,168,75,.08);
+  --rp-warn-bg: rgba(200,120,50,.15); --rp-warn-border: rgba(220,150,80,.3); --rp-warn-head: #e8b870; --rp-warn-text: #d4a870;
+  --footer-tx: rgba(240,220,190,.55); --footer-bg: rgba(0,0,0,.4);
+}
+html[data-hue="red"][data-mode="light"] {
+  --bg: #e39182;
+  --plate-border: rgba(150,80,60,.55);
+  --plate-shadow: 3px 5px 20px rgba(90,40,30,.26);
+  --tb-bg: rgba(255,255,255,.5); --tb-border: rgba(155,75,55,.3); --tb-tx: #6b2f22; --tb-hover: rgba(255,255,255,.7);
+  --rp-bg: rgba(255,255,255,.5); --rp-border: rgba(155,75,55,.3);
+  --rp-heading: #5a241a; --rp-heading2: #813a2b; --rp-text: #6b2f22; --rp-text2: #813a2b; --rp-em: #3f1a12;
+  --rp-note: #813a2b; --rp-note-border: rgba(129,58,43,.4); --rp-note-bg: rgba(129,58,43,.08); --rp-divider: rgba(155,75,55,.2);
+  --rp-accent: #813a2b; --rp-accent2: #6e3225; --rp-accent-strong: #813a2b;
+  --rp-accent-soft: rgba(129,58,43,.5); --rp-accent-bg: rgba(129,58,43,.12); --rp-accent-border: rgba(129,58,43,.3); --rp-accent-faint: rgba(129,58,43,.08);
+  --rp-warn-bg: rgba(200,120,50,.14); --rp-warn-border: rgba(180,110,40,.5); --rp-warn-head: #8a4b12; --rp-warn-text: #7a4517;
+  --footer-tx: rgba(63,26,18,.7); --footer-bg: rgba(255,255,255,.4);
+}
+
+body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: var(--bg); }
 
 .bg {
   min-height: 100vh;
+  background-color: var(--bg);
   background-image: url('background.jpg');
   background-size: cover;
   background-position: center;
@@ -34,11 +96,7 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   grid-template-columns: 1fr 1fr;
   grid-template-areas:
     "apps info"
-    "wavebox wavebox"
-    "twitter twitter"
-    "mail mail"
-    "google google"
-    "neko neko";
+    "contacts contacts";
   min-height: 100vh;
 }
 
@@ -48,21 +106,30 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
 .site-title {
   display: inline-block;
   background: rgba(255,255,255,.88);
-  border: 2px solid rgba(180,120,80,.4);
+  border: 2px solid var(--plate-border);
   border-radius: 12px;
   padding: 12px 26px;
   font-size: 26px; font-weight: 700; letter-spacing: .15em; color: #2c1a10;
-  box-shadow: 2px 3px 14px rgba(0,0,0,.22);
+  box-shadow: var(--plate-shadow);
   align-self: flex-start;
 }
 
+/* ツール2列グリッド */
+.tool-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  align-items: stretch; /* 同じ行のカードは同じ高さ */
+}
+
 .tool-card {
+  position: relative; /* stretched link の基準 */
   background: rgba(255,255,255,.82);
-  border: 1.5px solid rgba(180,120,80,.3);
+  border: 1.5px solid var(--plate-border);
   border-radius: 16px;
-  padding: 22px 22px 22px 18px;
-  box-shadow: 3px 4px 16px rgba(0,0,0,.2);
-  display: flex; gap: 14px; align-items: flex-start;
+  padding: 20px 20px 18px 16px;
+  box-shadow: var(--plate-shadow);
+  display: flex; gap: 12px; align-items: flex-start;
   text-decoration: none; color: inherit;
   transition: transform .25s, box-shadow .25s, background .25s;
 }
@@ -72,12 +139,31 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   background: rgba(255,255,255,.95);
 }
 
-.cat-area { flex-shrink: 0; width: 80px; display: flex; align-items: center; justify-content: center; }
-.cat-area img { width: 80px; height: auto; }
+/* 準備中カード（新ツール予定地） */
+.tool-card--coming {
+  background: rgba(255,255,255,.55);
+  border-style: dashed;
+}
+.tool-card--coming:hover {
+  transform: none; box-shadow: 3px 4px 16px rgba(0,0,0,.2);
+  background: rgba(255,255,255,.55);
+}
+.tool-card--coming .card-title,
+.tool-card--coming .card-desc { color: rgba(74,48,32,.55); }
 
-.card-body { flex: 1; }
+.cat-area { flex-shrink: 0; width: 64px; display: flex; align-items: center; justify-content: center; }
+.cat-area img { width: 64px; height: auto; }
+.cat-ph {
+  width: 64px; height: 64px; border-radius: 12px;
+  border: 1.5px dashed rgba(160,100,60,.35);
+  background: rgba(200,168,75,.08);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; opacity: .6;
+}
+
+.card-body { flex: 1; display: flex; flex-direction: column; min-height: 100%; }
 .card-title {
-  font-size: 22px; font-weight: 700; letter-spacing: .12em; color: #2c1a10;
+  font-size: 20px; font-weight: 700; letter-spacing: .12em; color: #2c1a10;
   margin-bottom: 10px; padding-bottom: 8px;
   border-bottom: 1px solid rgba(160,100,60,.22);
 }
@@ -85,85 +171,68 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   font-size: 13px; line-height: 2.1; color: #4a3020;
   font-family: 'Noto Sans JP', sans-serif; font-weight: 400;
 }
+/* カード内リンク行（開く／説明書：均等な枠ボタン2つ） */
+.card-links {
+  display: flex; gap: 8px;
+  margin-top: auto; padding-top: 14px;
+}
 .card-link {
-  display: inline-block; margin-top: 12px;
-  font-size: 11px; letter-spacing: .15em; color: #8b4513;
-  border-bottom: 1px solid rgba(139,69,19,.35);
+  flex: 1; text-align: center;
+  display: inline-block;
+  font-size: 11.5px; letter-spacing: .1em; color: #8b4513;
   font-family: 'Noto Sans JP', sans-serif;
+  border: 1.3px solid rgba(139,69,19,.4);
+  border-radius: 8px;
+  padding: 7px 6px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background .2s, border-color .2s;
 }
-
-/* マニュアルセクション区切り */
-.manual-divider {
-  display: flex; align-items: center; gap: 10px; margin: 4px 0 2px;
+.card-link:hover { background: rgba(139,69,19,.08); border-color: rgba(139,69,19,.6); }
+/* 「道具を開く」の当たり判定をカード全体に広げる（クリック挙動は変更なし） */
+.card-link--open::after {
+  content: '';
+  position: absolute; inset: 0;
 }
-.manual-divider-line { flex: 1; height: 1px; background: rgba(255,220,160,.2); }
-.manual-divider-label {
-  font-size: 10px; letter-spacing: .22em;
-  color: rgba(240,210,150,.5);
-  font-family: 'Noto Sans JP', sans-serif; white-space: nowrap;
-}
-.manual-note {
-  font-size: 11px; line-height: 1.7; color: rgba(240,220,180,.75);
+/* 説明書ボタンは透明レイヤーより手前に置いてクリック可能にする */
+.card-link--manual { position: relative; z-index: 1; }
+/* マニュアル準備中（枠あり・薄く・非活性の見た目） */
+.card-pending {
+  flex: 1; text-align: center;
+  font-size: 10.5px; letter-spacing: .08em;
+  color: rgba(90,58,32,.45);
   font-family: 'Noto Sans JP', sans-serif;
-  text-align: center; margin: -8px 0 2px;
-}
-
-/* マニュアルカード */
-.manual-card {
-  background: rgba(255,255,255,.65);
-  border: 1.5px solid rgba(180,120,80,.25);
-  border-radius: 12px;
-  padding: 14px 18px;
-  box-shadow: 2px 3px 10px rgba(0,0,0,.15);
-  display: flex; align-items: center; gap: 14px;
-  text-decoration: none; color: inherit;
-  transition: transform .22s, box-shadow .22s, background .22s;
-}
-.manual-card:hover {
-  transform: translateY(-2px) scale(1.01);
-  box-shadow: 3px 6px 18px rgba(0,0,0,.22);
-  background: rgba(255,255,255,.85);
-}
-.manual-icon { font-size: 22px; flex-shrink: 0; opacity: .75; }
-.manual-body { flex: 1; }
-.manual-title {
-  font-size: 15px; font-weight: 700; letter-spacing: .1em; color: #2c1a10; margin-bottom: 3px;
-}
-.manual-desc {
-  font-size: 11px; line-height: 1.7; color: #5a3a20;
-  font-family: 'Noto Sans JP', sans-serif; font-weight: 400;
-}
-.manual-link {
-  flex-shrink: 0; font-size: 10px; letter-spacing: .12em; color: #8b4513;
-  border-bottom: 1px solid rgba(139,69,19,.3);
-  font-family: 'Noto Sans JP', sans-serif;
+  border: 1.3px dashed rgba(90,58,32,.25);
+  border-radius: 8px;
+  padding: 7px 6px;
+  white-space: nowrap;
 }
 
 /* スマホ専用コンパクト更新バー */
 .sp-update-bar { display: none; grid-area: sp-update; margin: 0 20px 4px; }
 .sp-update-toggle {
   width: 100%; display: flex; align-items: center; gap: 8px;
-  background: rgba(0,0,0,.3);
-  border: 1px solid rgba(255,220,160,.2);
+  background: var(--rp-bg);
+  border: 1px solid var(--rp-border);
   border-radius: 10px; padding: 10px 16px;
   cursor: pointer; font-family: 'Noto Sans JP', sans-serif;
   backdrop-filter: blur(2px); transition: background .2s;
 }
-.sp-update-toggle:hover { background: rgba(0,0,0,.38); }
-.sp-update-label { font-size: 10px; letter-spacing: .2em; color: rgba(232,210,160,.7); }
-.sp-update-date { font-size: 12px; font-weight: 600; color: #e8c878; letter-spacing: .06em; }
+.sp-update-toggle:hover { background: var(--rp-accent-faint); }
+.sp-update-label { font-size: 10px; letter-spacing: .2em; color: var(--rp-note); }
+.sp-update-date { font-size: 12px; font-weight: 600; color: var(--rp-accent2); letter-spacing: .06em; }
 .sp-update-badge {
   font-size: 9px; font-weight: 600; color: #1a1200;
   background: #c8a84b; border-radius: 3px; padding: 2px 5px;
   font-family: 'Noto Sans JP', sans-serif;
 }
-.sp-update-arrow { margin-left: auto; font-size: 10px; color: rgba(200,168,75,.6); transition: transform .25s; }
+.sp-update-arrow { margin-left: auto; font-size: 10px; color: var(--rp-accent-soft); transition: transform .25s; }
 .sp-update-toggle.is-open .sp-update-arrow { transform: rotate(180deg); }
 .sp-update-body {
   overflow: hidden; max-height: 0; opacity: 0;
   transition: max-height .35s ease, opacity .3s ease;
-  background: rgba(0,0,0,.22);
-  border: 1px solid rgba(255,220,160,.12); border-top: none;
+  background: var(--rp-bg);
+  border: 1px solid var(--rp-border); border-top: none;
   border-radius: 0 0 10px 10px; padding: 0 14px;
 }
 .sp-update-body.is-open { max-height: 3000px; opacity: 1; padding: 10px 14px 12px; }
@@ -172,30 +241,84 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
 .col-right { grid-area: info; padding: 36px 44px 24px 24px; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
 
 .info-panel {
-  background: rgba(0,0,0,.34);
-  border: 1px solid rgba(255,220,160,.18);
+  background: var(--rp-bg);
+  border: 1px solid var(--rp-border);
   border-radius: 12px;
   padding: 28px 30px;
   backdrop-filter: blur(3px);
 }
-.info-heading {
-  font-size: 14px; font-weight: 600; letter-spacing: .3em; color: #f5e0c0;
-  text-align: center; margin-bottom: 20px; padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255,220,160,.2);
+/* 見出し行＝説明書全体の開閉トグル */
+.info-heading-row {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  cursor: pointer; user-select: none;
+  padding-bottom: 12px; margin-bottom: 20px;
+  border-bottom: 1px solid var(--rp-border);
+  border-radius: 6px;
+  transition: background .2s;
 }
+.info-heading-row:hover { background: var(--rp-accent-faint); }
+.info-panel:not(.is-open) .info-heading-row {
+  padding-bottom: 0; margin-bottom: 0; border-bottom: none;
+}
+.info-heading {
+  font-size: 14px; font-weight: 600; letter-spacing: .3em; color: var(--rp-heading);
+  text-align: center;
+}
+.info-heading-arrow {
+  font-size: 10px; color: var(--rp-accent-soft);
+  transition: transform .25s;
+}
+.info-panel.is-open .info-heading-arrow { transform: rotate(180deg); }
+/* 説明書パネル本体（全体トグルの中身） */
+.info-panel-body {
+  max-height: 0; overflow: hidden; opacity: 0;
+  transition: max-height .35s ease, opacity .3s ease;
+}
+.info-panel.is-open .info-panel-body { max-height: 4000px; opacity: 1; }
+
+/* ブロックごとの折りたたみ（閉時は1行ダイジェスト表示） */
+.fold-head {
+  display: flex; align-items: flex-start; gap: 8px;
+  cursor: pointer; user-select: none;
+  padding: 2px 4px 2px 0;
+  border-radius: 6px;
+  transition: background .2s;
+}
+.fold-head:hover { background: var(--rp-accent-faint); }
+.fold-head-main { flex: 1; }
+.fold-head .info-label { margin-bottom: 0; }
+.fold-digest {
+  font-size: 11px; line-height: 1.8; color: var(--rp-note);
+  font-family: 'Noto Sans JP', sans-serif;
+  margin-top: 6px;
+}
+.fold-digest em { font-style: normal; color: var(--rp-warn-head); font-weight: 500; }
+.fold-arrow {
+  flex-shrink: 0; margin-left: auto; margin-top: 6px;
+  font-size: 10px; color: var(--rp-accent-soft);
+  transition: transform .25s;
+}
+.fold-block.is-open .fold-arrow { transform: rotate(180deg); }
+.fold-block.is-open .fold-digest { display: none; }
+.fold-body {
+  max-height: 0; overflow: hidden; opacity: 0;
+  transition: max-height .3s ease, opacity .25s ease;
+}
+.fold-block.is-open .fold-body { max-height: 1200px; opacity: 1; }
+.fold-body-inner { padding-top: 10px; }
 .info-block { margin-bottom: 18px; }
 .info-block:last-child { margin-bottom: 0; }
 .info-text {
-  font-size: 13px; line-height: 2.1; color: #f0dcc0; text-align: justify;
+  font-size: 13px; line-height: 2.1; color: var(--rp-text); text-align: justify;
   font-family: 'Noto Sans JP', sans-serif; font-weight: 300;
 }
-.info-text em { font-style: normal; color: #f8eecc; font-weight: 500; }
+.info-text em { font-style: normal; color: var(--rp-em); font-weight: 500; }
 .info-note {
-  font-size: 12px; line-height: 1.9; color: #d4b898; margin-top: 8px;
-  padding-left: 12px; border-left: 2px solid rgba(255,200,120,.28);
+  font-size: 12px; line-height: 1.9; color: var(--rp-note); margin-top: 8px;
+  padding-left: 12px; border-left: 2px solid var(--rp-note-border);
   font-family: 'Noto Sans JP', sans-serif;
 }
-.info-section { font-size: 13px; font-weight: 500; color: #f0dcc0; letter-spacing: .08em; margin-bottom: 6px; font-family: 'Noto Sans JP', sans-serif; }
+.info-section { font-size: 13px; font-weight: 500; color: var(--rp-text); letter-spacing: .08em; margin-bottom: 6px; font-family: 'Noto Sans JP', sans-serif; }
 
 /* 説明書改善スタイル */
 .info-label {
@@ -205,9 +328,9 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   font-size: 11px;
   font-weight: 600;
   letter-spacing: .18em;
-  color: #c8a84b;
-  background: rgba(200,168,75,.12);
-  border: 1px solid rgba(200,168,75,.25);
+  color: var(--rp-accent);
+  background: var(--rp-accent-bg);
+  border: 1px solid var(--rp-accent-border);
   border-radius: 4px;
   padding: 3px 10px;
   margin-bottom: 8px;
@@ -222,7 +345,7 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
 .info-list li {
   font-size: 13px;
   line-height: 2.0;
-  color: #f0dcc0;
+  color: var(--rp-text);
   font-family: 'Noto Sans JP', sans-serif;
   font-weight: 300;
   padding-left: 14px;
@@ -232,13 +355,13 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   content: '・';
   position: absolute;
   left: 0;
-  color: #c8a84b;
+  color: var(--rp-accent);
   opacity: .7;
 }
 
 .info-warn {
-  background: rgba(200,120,50,.15);
-  border: 1px solid rgba(220,150,80,.25);
+  background: var(--rp-warn-bg);
+  border: 1px solid var(--rp-warn-border);
   border-radius: 8px;
   padding: 10px 14px;
   margin-top: 8px;
@@ -246,7 +369,7 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
 .info-warn .warn-head {
   font-size: 11px;
   font-weight: 600;
-  color: #e8b870;
+  color: var(--rp-warn-head);
   letter-spacing: .1em;
   margin-bottom: 5px;
   font-family: 'Noto Sans JP', sans-serif;
@@ -254,20 +377,20 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
 .info-warn .warn-text {
   font-size: 11px;
   line-height: 1.9;
-  color: #d4a870;
+  color: var(--rp-warn-text);
   font-family: 'Noto Sans JP', sans-serif;
 }
 
 .info-divider {
   height: 1px;
-  background: rgba(255,220,160,.1);
+  background: var(--rp-divider);
   margin: 14px 0;
 }
 
 /* ── 更新情報タイムライン ── */
 .update-panel {
-  background: rgba(0,0,0,.28);
-  border: 1px solid rgba(255,220,160,.16);
+  background: var(--rp-bg);
+  border: 1px solid var(--rp-border);
   border-radius: 12px;
   padding: 16px 18px 14px;
   backdrop-filter: blur(2px);
@@ -276,7 +399,7 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   font-size: 11px;
   font-weight: 500;
   letter-spacing: .22em;
-  color: #e9d2ad;
+  color: var(--rp-heading2);
   margin-bottom: 14px;
   font-family: 'Noto Sans JP', sans-serif;
 }
@@ -288,7 +411,7 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   position: absolute;
   left: 5px; top: 6px; bottom: 6px;
   width: 1px;
-  background: linear-gradient(to bottom, rgba(200,168,75,.5), rgba(200,168,75,.1));
+  background: linear-gradient(to bottom, var(--rp-accent-soft), var(--rp-accent-faint));
 }
 
 /* 各エントリ */
@@ -306,7 +429,7 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   transition: background .2s;
   position: relative;
 }
-.tl-header:hover { background: rgba(200,168,75,.08); }
+.tl-header:hover { background: var(--rp-accent-faint); }
 
 /* タイムラインの丸 */
 .tl-header::before {
@@ -316,13 +439,16 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   top: 50%; transform: translateY(-50%);
   width: 8px; height: 8px;
   border-radius: 50%;
-  background: var(--dot-color, rgba(200,168,75,.4));
-  border: 1.5px solid rgba(200,168,75,.6);
+  background: var(--dot-color, var(--rp-accent-soft));
+  border: 1.5px solid var(--rp-accent-soft);
   transition: background .2s;
 }
-.tl-entry.is-open .tl-header::before,
+.tl-entry.st-short .tl-header::before {
+  background: var(--rp-accent-soft);
+}
+.tl-entry.st-full .tl-header::before,
 .tl-entry.is-latest .tl-header::before {
-  background: #c8a84b;
+  background: var(--rp-accent-strong);
   box-shadow: 0 0 6px rgba(200,168,75,.4);
 }
 
@@ -331,7 +457,7 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   font-size: 12px;
   font-weight: 600;
   letter-spacing: .08em;
-  color: #e8c878;
+  color: var(--rp-accent2);
   font-family: 'Noto Sans JP', sans-serif;
   font-variant-numeric: tabular-nums;
 }
@@ -352,11 +478,11 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
 .tl-arrow {
   margin-left: auto;
   font-size: 10px;
-  color: rgba(200,168,75,.5);
+  color: var(--rp-accent-soft);
   transition: transform .25s;
 }
-.tl-entry.is-open .tl-arrow { transform: rotate(180deg); }
-.tl-entry.is-latest .tl-arrow { transform: rotate(180deg); }
+.tl-entry.st-short .tl-arrow { transform: rotate(90deg); }
+.tl-entry.st-full .tl-arrow { transform: rotate(180deg); }
 
 /* 本文 */
 .tl-body {
@@ -365,15 +491,70 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   transition: max-height .35s ease, opacity .3s ease;
   opacity: 0;
 }
-.tl-entry.is-open .tl-body,
-.tl-entry.is-latest .tl-body {
+.tl-entry.st-full .tl-body {
   max-height: 3000px;
   opacity: 1;
 }
-.tl-content {
-  font-size: 11px;
+
+/* 短文パート（st-short/st-fullで表示） */
+.tl-short {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height .3s ease, opacity .25s ease;
+}
+.tl-entry.st-short .tl-short,
+.tl-entry.st-full .tl-short {
+  max-height: 400px;
+  opacity: 1;
+}
+.tl-short-inner {
+  font-size: 12.5px;
   line-height: 1.9;
-  color: #dfc4a0;
+  color: var(--rp-text);
+  font-family: 'Noto Sans JP', sans-serif;
+  padding: 2px 8px 4px 12px;
+}
+.tl-more {
+  display: inline-block;
+  font-size: 10.5px;
+  letter-spacing: .12em;
+  color: var(--rp-accent2);
+  font-family: 'Noto Sans JP', sans-serif;
+  cursor: pointer;
+  user-select: none;
+  padding: 3px 10px;
+  margin: 2px 0 6px 12px;
+  border: 1px solid var(--rp-border);
+  border-radius: 12px;
+  background: var(--rp-accent-faint);
+  transition: border-color .2s, background .2s;
+}
+.tl-more:hover { border-color: var(--rp-accent-soft); background: var(--rp-accent-bg); }
+.tl-entry.st-full .tl-more { display: none; }
+
+/* 「詳しく」区切り */
+.tl-detail-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 8px;
+}
+.tl-detail-label .line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--rp-accent-soft), transparent);
+}
+.tl-detail-label .txt {
+  font-size: 10px;
+  letter-spacing: .18em;
+  color: var(--rp-accent-soft);
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.tl-content {
+  font-size: 13px;
+  line-height: 1.95;
+  color: var(--rp-text2);
   font-family: 'Noto Sans JP', sans-serif;
   padding: 6px 8px 10px 12px;
 }
@@ -389,18 +570,18 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
 .tl-content ul li::before {
   content: '―';
   position: absolute; left: 0;
-  color: rgba(200,168,75,.4);
+  color: var(--rp-accent-soft);
   font-size: 9px;
   top: 3px;
 }
 .tl-content .tl-note {
   margin-top: 6px;
   padding: 6px 10px;
-  background: rgba(0,0,0,.2);
-  border-left: 2px solid rgba(200,168,75,.2);
+  background: var(--rp-note-bg);
+  border-left: 2px solid var(--rp-accent-border);
   border-radius: 0 4px 4px 0;
   font-size: 11px;
-  color: #c8a888;
+  color: var(--rp-note);
   line-height: 1.8;
 }
 
@@ -413,17 +594,17 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   width: 100%;
   margin-top: 8px;
   padding: 8px;
-  background: rgba(200,168,75,.07);
-  border: 1px solid rgba(200,168,75,.18);
+  background: var(--rp-accent-faint);
+  border: 1px solid var(--rp-accent-border);
   border-radius: 6px;
   font-size: 11px;
   letter-spacing: .15em;
-  color: #c8a84b;
+  color: var(--rp-accent);
   cursor: pointer;
   font-family: 'Noto Sans JP', sans-serif;
   transition: background .2s;
 }
-.tl-older-toggle:hover { background: rgba(200,168,75,.13); }
+.tl-older-toggle:hover { background: var(--rp-accent-bg); }
 .tl-older-arrow { transition: transform .3s; font-size: 9px; }
 .tl-older-toggle.is-open .tl-older-arrow { transform: rotate(180deg); }
 
@@ -446,16 +627,57 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   margin-top: 10px;
   font-size: 11px;
   letter-spacing: .15em;
-  color: rgba(200,168,75,.7);
+  color: var(--rp-accent);
   font-family: 'Noto Sans JP', sans-serif;
   text-decoration: none;
-  border-bottom: 1px solid rgba(200,168,75,.2);
+  border-bottom: 1px solid var(--rp-accent-border);
   padding-bottom: 1px;
   transition: color .2s;
   width: fit-content;
   margin-left: auto;
 }
-.tl-all-link:hover { color: #c8a84b; }
+.tl-all-link:hover { color: var(--rp-accent-strong); }
+
+/* お返事カード（右カラム・更新履歴の下） */
+.reply-mini {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--rp-bg);
+  border: 1px solid var(--rp-border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-top: 14px;
+  text-decoration: none;
+  backdrop-filter: blur(2px);
+  transition: background .2s;
+}
+.reply-mini:hover { background: var(--rp-accent-faint); }
+.reply-mini-icon {
+  flex-shrink: 0;
+  width: 44px; height: 44px;
+  background: var(--rp-accent-bg);
+  border: 1.5px dashed var(--rp-accent-soft);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+}
+.reply-mini-icon img { width: 36px; height: 36px; object-fit: contain; border-radius: 6px; }
+.reply-mini-body { flex: 1; }
+.reply-mini-title {
+  font-size: 14px; font-weight: 600; letter-spacing: .12em; color: var(--rp-heading);
+  margin-bottom: 3px;
+}
+.reply-mini-desc {
+  font-size: 11px; line-height: 1.75; color: var(--rp-note);
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.reply-mini-link {
+  flex-shrink: 0;
+  font-size: 11px; letter-spacing: .12em; color: var(--rp-accent);
+  border-bottom: 1px solid var(--rp-accent-border);
+  font-family: 'Noto Sans JP', sans-serif;
+  white-space: nowrap;
+}
 
 /* すべての更新履歴リンク（スマホバー下） */
 .sp-changelog-link {
@@ -468,252 +690,131 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
 .sp-changelog-link a {
   font-size: 11px;
   letter-spacing: .12em;
-  color: rgba(200,168,75,.7);
+  color: var(--rp-accent);
   font-family: 'Noto Sans JP', sans-serif;
   text-decoration: none;
-  border-bottom: 1px solid rgba(200,168,75,.2);
+  border-bottom: 1px solid var(--rp-accent-border);
   padding-bottom: 1px;
 }
 
-.mail-panel {
-  grid-area: mail;
-  margin: 0 44px 12px;
-  background: rgba(255,255,255,.82);
-  border: 1.5px solid rgba(180,120,80,.3);
-  border-radius: 16px;
-  padding: 20px 24px;
-  box-shadow: 3px 4px 16px rgba(0,0,0,.2);
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  text-decoration: none;
-  color: inherit;
-  transition: transform .22s, box-shadow .22s, background .22s;
-}
-.mail-panel:hover {
-  transform: translateY(-2px);
-  box-shadow: 4px 8px 22px rgba(0,0,0,.25);
-  background: rgba(255,255,255,.93);
-}
-.mail-icon-area {
-  flex-shrink: 0;
-  width: 56px; height: 56px;
-  background: rgba(200,168,75,.1);
-  border: 1.5px dashed rgba(200,168,75,.4);
+/* アンケートカード（SURVEY_URL 設定時のみ表示・PC/SPの2箇所） */
+.survey-card {
+  display: none;
+  align-items: center; gap: 14px;
+  background: var(--rp-bg);
+  border: 1px solid var(--rp-accent-border);
   border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-}
-.mail-icon-area img {
-  width: 48px; height: 48px; object-fit: contain; border-radius: 8px;
-}
-.mail-body { flex: 1; }
-.wavebox-panel {
-  grid-area: wavebox;
-  margin: 0 44px 12px;
-  background: rgba(255,255,255,.82);
-  border: 1.5px solid rgba(180,120,80,.3);
-  border-radius: 16px;
-  padding: 20px 24px;
-  box-shadow: 3px 4px 16px rgba(0,0,0,.2);
-  display: flex;
-  align-items: center;
-  gap: 20px;
+  padding: 14px 18px;
   text-decoration: none;
-  color: inherit;
-  transition: transform .22s, box-shadow .22s, background .22s;
+  backdrop-filter: blur(2px);
+  transition: background .2s;
 }
-.wavebox-panel:hover {
-  transform: translateY(-2px);
-  box-shadow: 4px 8px 22px rgba(0,0,0,.25);
-  background: rgba(255,255,255,.93);
-}
-.wavebox-icon-area {
-  flex-shrink: 0;
-  width: 56px; height: 56px;
-  background: rgba(200,168,75,.1);
-  border: 1.5px dashed rgba(200,168,75,.4);
-  border-radius: 12px;
+.survey-card.is-active { display: flex; }
+.survey-card:hover { background: var(--rp-accent-faint); }
+.sp-changelog-link .survey-card { margin-top: 10px; text-align: left; }
+.survey-icon {
+  flex-shrink: 0; width: 44px; height: 44px;
+  background: var(--rp-accent-bg);
+  border: 1.5px dashed var(--rp-accent-soft);
+  border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
 }
-.wavebox-icon-area img {
-  width: 48px; height: 48px; object-fit: contain; border-radius: 8px;
+.survey-body { flex: 1; min-width: 0; }
+.survey-title-row { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; flex-wrap: wrap; }
+.survey-title {
+  font-size: 14px; font-weight: 600; letter-spacing: .12em;
+  color: var(--rp-heading);
 }
-.wavebox-body { flex: 1; }
-.wavebox-title {
-  font-size: 16px; font-weight: 700; letter-spacing: .12em; color: #2c1a10; margin-bottom: 5px;
+.survey-badge {
+  font-size: 9px; font-weight: 600; letter-spacing: .12em;
+  color: #1a1200; background: #c8a84b;
+  border-radius: 3px; padding: 2px 6px;
+  font-family: 'Noto Sans JP', sans-serif;
+  animation: survey-blink 2s ease-in-out infinite;
 }
-.wavebox-desc {
-  font-size: 12px; line-height: 1.8; color: #4a3020;
+@keyframes survey-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .45; }
+}
+.survey-desc {
+  font-size: 11px; line-height: 1.75; color: var(--rp-note);
   font-family: 'Noto Sans JP', sans-serif;
 }
-.wavebox-link {
-  flex-shrink: 0;
-  font-size: 12px; letter-spacing: .12em; color: #8b4513;
-  border-bottom: 1px solid rgba(139,69,19,.35);
+.survey-arrow {
+  flex-shrink: 0; font-size: 13px; color: var(--rp-accent-soft);
   font-family: 'Noto Sans JP', sans-serif;
-  white-space: nowrap;
-}
-.mail-title {
-  font-size: 16px; font-weight: 700; letter-spacing: .12em; color: #2c1a10; margin-bottom: 5px;
-}
-.mail-desc {
-  font-size: 12px; line-height: 1.8; color: #4a3020;
-  font-family: 'Noto Sans JP', sans-serif;
-}
-.mail-link {
-  flex-shrink: 0;
-  font-size: 12px; letter-spacing: .12em; color: #8b4513;
-  border-bottom: 1px solid rgba(139,69,19,.35);
-  font-family: 'Noto Sans JP', sans-serif;
-  white-space: nowrap;
 }
 
-.twitter-panel {
-  grid-area: twitter;
-  margin: 0 44px 12px;
-  background: rgba(255,255,255,.82);
-  border: 1.5px solid rgba(180,120,80,.3);
-  border-radius: 16px;
-  padding: 20px 24px;
-  box-shadow: 3px 4px 16px rgba(0,0,0,.2);
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  text-decoration: none;
-  color: inherit;
-  transition: transform .22s, box-shadow .22s, background .22s;
-}
-.twitter-panel:hover {
-  transform: translateY(-2px);
-  box-shadow: 4px 8px 22px rgba(0,0,0,.25);
-  background: rgba(255,255,255,.93);
-}
-.twitter-icon-area {
-  flex-shrink: 0;
-  width: 56px; height: 56px;
-  background: rgba(200,168,75,.1);
-  border: 1.5px dashed rgba(200,168,75,.4);
-  border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-}
-.twitter-icon-area img {
-  width: 48px; height: 48px; object-fit: contain; border-radius: 8px;
-}
-.twitter-body { flex: 1; }
-.twitter-title {
-  font-size: 16px; font-weight: 700; letter-spacing: .12em; color: #2c1a10; margin-bottom: 5px;
-}
-.twitter-desc {
-  font-size: 12px; line-height: 1.8; color: #4a3020;
-  font-family: 'Noto Sans JP', sans-serif;
-}
-.twitter-link {
-  flex-shrink: 0;
-  font-size: 12px; letter-spacing: .12em; color: #8b4513;
-  border-bottom: 1px solid rgba(139,69,19,.35);
-  font-family: 'Noto Sans JP', sans-serif;
-  white-space: nowrap;
-}
-
-.neko-panel {
-  grid-area: neko;
+/* 下部連絡先：3列グリッド（3+2左詰め） */
+.contacts {
+  grid-area: contacts;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
   margin: 0 44px 28px;
+}
+.contact-panel {
   background: rgba(255,255,255,.82);
-  border: 1.5px solid rgba(180,120,80,.3);
-  border-radius: 16px;
-  padding: 20px 24px;
-  box-shadow: 3px 4px 16px rgba(0,0,0,.2);
+  border: 1.5px solid var(--plate-border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: var(--plate-shadow);
   display: flex;
-  align-items: center;
-  gap: 20px;
+  align-items: flex-start;
+  gap: 12px;
   text-decoration: none;
   color: inherit;
   transition: transform .22s, box-shadow .22s, background .22s;
 }
-.neko-panel:hover {
+.contact-panel:hover {
   transform: translateY(-2px);
   box-shadow: 4px 8px 22px rgba(0,0,0,.25);
   background: rgba(255,255,255,.93);
 }
-.neko-icon-area {
+.contact-icon-area {
   flex-shrink: 0;
-  width: 56px; height: 56px;
+  width: 44px; height: 44px;
   background: rgba(200,168,75,.1);
   border: 1.5px dashed rgba(200,168,75,.4);
-  border-radius: 12px;
+  border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
 }
-.neko-icon-area img {
-  width: 48px; height: 48px; object-fit: contain; border-radius: 8px;
+.contact-icon-area img {
+  width: 36px; height: 36px; object-fit: contain; border-radius: 6px;
 }
-.neko-body { flex: 1; }
-.neko-title {
-  font-size: 16px; font-weight: 700; letter-spacing: .12em; color: #2c1a10; margin-bottom: 5px;
+.contact-body { flex: 1; }
+.contact-title {
+  font-size: 14px; font-weight: 700; letter-spacing: .1em; color: #2c1a10; margin-bottom: 4px;
 }
-.neko-desc {
-  font-size: 12px; line-height: 1.8; color: #4a3020;
+.contact-desc {
+  font-size: 11px; line-height: 1.8; color: #4a3020;
   font-family: 'Noto Sans JP', sans-serif;
 }
-.neko-link {
-  flex-shrink: 0;
-  font-size: 12px; letter-spacing: .12em; color: #8b4513;
-  border-bottom: 1px solid rgba(139,69,19,.35);
-  font-family: 'Noto Sans JP', sans-serif;
-  white-space: nowrap;
-}
-
-.google-panel {
-  grid-area: google;
-  margin: 0 44px 12px;
-  background: rgba(255,255,255,.82);
-  border: 1.5px solid rgba(180,120,80,.3);
-  border-radius: 16px;
-  padding: 20px 24px;
-  box-shadow: 3px 4px 16px rgba(0,0,0,.2);
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  text-decoration: none;
-  color: inherit;
-  transition: transform .22s, box-shadow .22s, background .22s;
-}
-.google-panel:hover {
-  transform: translateY(-2px);
-  box-shadow: 4px 8px 22px rgba(0,0,0,.25);
-  background: rgba(255,255,255,.93);
-}
-.google-icon-area {
-  flex-shrink: 0;
-  width: 56px; height: 56px;
-  background: rgba(200,168,75,.1);
-  border: 1.5px dashed rgba(200,168,75,.4);
-  border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-}
-.google-icon-area img {
-  width: 48px; height: 48px; object-fit: contain; border-radius: 8px;
-}
-.google-body { flex: 1; }
-.google-title {
-  font-size: 16px; font-weight: 700; letter-spacing: .12em; color: #2c1a10; margin-bottom: 5px;
-}
-.google-desc {
-  font-size: 12px; line-height: 1.8; color: #4a3020;
-  font-family: 'Noto Sans JP', sans-serif;
-}
-.google-link {
-  flex-shrink: 0;
-  font-size: 12px; letter-spacing: .12em; color: #8b4513;
+.contact-link {
+  display: inline-block; margin-top: 6px;
+  font-size: 11px; letter-spacing: .12em; color: #8b4513;
   border-bottom: 1px solid rgba(139,69,19,.35);
   font-family: 'Noto Sans JP', sans-serif;
   white-space: nowrap;
 }
 
 footer {
-  background: rgba(0,0,0,.4);
-  font-size: 11px; color: rgba(240,220,190,.55); letter-spacing: .15em;
-  font-family: 'Noto Sans JP', sans-serif;
+  position: relative; z-index: 1; text-align: center; padding: 18px;
+  font-size: 11px; color: var(--footer-tx); letter-spacing: .15em;
+  font-family: 'Noto Sans JP', sans-serif; background: var(--footer-bg);
 }
+
+/* テーマ切り替えボタン（reply 等と同じしくみ） */
+.theme-bar { display: flex; gap: 10px; margin-bottom: 4px; }
+.theme-btn {
+  appearance: none; border: 1px solid var(--tb-border); background: var(--tb-bg);
+  color: var(--tb-tx); font-size: 12px; letter-spacing: .08em;
+  font-family: 'Noto Sans JP', sans-serif; padding: 6px 14px; border-radius: 999px;
+  cursor: pointer; backdrop-filter: blur(2px);
+  transition: background .2s, color .2s, border-color .2s;
+}
+.theme-btn:hover { background: var(--tb-hover); }
 
 @media (max-width: 680px) {
   .layout {
@@ -723,25 +824,19 @@ footer {
       "sp-update"
       "sp-changelog"
       "info"
-      "wavebox"
-      "twitter"
-      "mail"
-      "google"
-      "neko";
+      "contacts";
   }
   .col-left { padding: 28px 20px 16px; }
   .col-right { padding: 8px 20px 32px; }
   .site-title { font-size: 20px; }
+  .tool-grid { grid-template-columns: 1fr; }
   .card-title { font-size: 18px; }
   .info-panel { padding: 20px 18px; }
-  .mail-panel { margin: 0 20px 12px; padding: 16px 18px; }
-  .google-panel { margin: 0 20px 12px; padding: 16px 18px; }
-  .wavebox-panel { margin: 0 20px 12px; padding: 16px 18px; }
-  .twitter-panel { margin: 0 20px 12px; padding: 16px 18px; }
-  .neko-panel { margin: 0 20px 28px; padding: 16px 18px; }
+  .contacts { grid-template-columns: 1fr; gap: 12px; margin: 0 20px 28px; }
   .sp-update-bar { display: block; }
   .sp-changelog-link { display: block; }
   .update-panel { display: none; }
+  .survey-pc.is-active { display: none; }
 }
 </style>
 <meta name="google-site-verification" content="41PBQmId38sOlXSM_sEyzmUPCmkdAd6uwCU-YnOtzpA" />
@@ -753,6 +848,31 @@ footer {
   gtag('js', new Date());
   gtag('config', 'G-QM317D9ESN');
 </script>
+<script>
+/* テーマを描画前に適用（ちらつき防止） */
+(function(){
+  var hue = 'blue', mode = 'dark';
+  try {
+    var saved = JSON.parse(localStorage.getItem('reply_theme_v1') || 'null');
+    if (saved && (saved.hue === 'blue' || saved.hue === 'red')) hue = saved.hue;
+    if (saved && (saved.mode === 'dark' || saved.mode === 'light')) mode = saved.mode;
+  } catch(e) {}
+  document.documentElement.dataset.hue = hue;
+  document.documentElement.dataset.mode = mode;
+})();
+</script>
+<script>
+/* ================================================================
+   ★ アンケート設定（ここを編集します）
+   SURVEY_URL にGoogleフォームのURLを入れると、アンケートカードが
+   PC版（お返事カードの下）とスマホ版（すべての更新履歴→の下）に
+   表示されます。 ''（空）に戻すと両方とも非表示になります。
+   SURVEY_DESC は説明文。開催ごとに変えてもOK、そのままでもOKです。
+   例: var SURVEY_URL = 'https://docs.google.com/forms/d/e/○○○/viewform';
+   ================================================================ */
+var SURVEY_URL  = 'https://docs.google.com/forms/d/e/1FAIpQLScGc5Bn5QE6sA8DJzYDbczJBnCygjhNES0836ILfV_dAFopAQ/viewform?usp=dialog';
+var SURVEY_DESC = '道具箱の使い心地について、3分ほどのアンケートです';
+</script>
 </head>
 <body>
 <div class="bg">
@@ -762,7 +882,15 @@ footer {
 <div class="col-left">
   <div class="site-title">審神者の道具箱</div>
 
-  <a class="tool-card" href="Shizaichou.html">
+  <!-- テーマ切り替え -->
+  <div class="theme-bar">
+    <button type="button" class="theme-btn" id="btn-hue" onclick="toggleHue()">色：青系</button>
+    <button type="button" class="theme-btn" id="btn-mode" onclick="toggleMode()">明るさ：暗い</button>
+  </div>
+
+  <div class="tool-grid">
+
+  <div class="tool-card">
     <div class="cat-area">
       <!-- cat.png を同じフォルダに入れると表示されます -->
       <img src="cat1.png" alt="猫" onerror="this.style.display='none'">
@@ -773,11 +901,14 @@ footer {
         木炭・玉鋼・冷却材・砥石などの資源や道具を記録・管理するツールです。
         推移をグラフで確認できます。
       </div>
-      <span class="card-link">道具を開く →</span>
+      <div class="card-links">
+        <a class="card-link card-link--open" href="Shizaichou.html">道具を開く →</a>
+        <a class="card-link card-link--manual" href="Shizaichou_manual.html">説明書 →</a>
+      </div>
     </div>
-  </a>
+  </div>
 
-  <a class="tool-card" href="keikoroku.html">
+  <div class="tool-card">
     <div class="cat-area">
       <img src="cat2.png" alt="猫" onerror="this.style.display='none'">
     </div>
@@ -786,37 +917,46 @@ footer {
       <div class="card-desc">
         刀剣男士のレベルと累積経験値を記録・管理するツールです。
       </div>
-      <span class="card-link">道具を開く →</span>
+      <div class="card-links">
+        <a class="card-link card-link--open" href="keikoroku.html">道具を開く →</a>
+        <a class="card-link card-link--manual" href="keikoroku_manual.html">説明書 →</a>
+      </div>
     </div>
-  </a>
+  </div>
 
-  <a class="tool-card" href="ichinokura.html">
+  <div class="tool-card">
     <div class="cat-area">
       <img src="cat4.png" alt="猫" onerror="this.style.display='none'">
     </div>
     <div class="card-body">
       <div class="card-title">愛蔵の一ノ倉</div>
       <div class="card-desc">
-        宝物・断片の所持数を記録・管理するツールです。資源帳・稽古録の記録をカレンダーで振り返ることもできます。刀装・馬のソート機能も備えています。
+        宝物・断片を記録・管理するツールです。資源帳・稽古録の記録をカレンダーで振り返れて、刀装・馬のソートもできます。
       </div>
-      <span class="card-link">道具を開く →</span>
+      <div class="card-links">
+        <a class="card-link card-link--open" href="ichinokura.html">道具を開く →</a>
+        <a class="card-link card-link--manual" href="ichinokura_manual.html">説明書 →</a>
+      </div>
     </div>
-  </a>
+  </div>
 
-  <a class="tool-card" href="shitakubeya.html">
+  <div class="tool-card">
     <div class="cat-area">
-      <img src="cat5.png" alt="猫" onerror="this.style.display='none'" style="width:100px;">
+      <img src="cat5.png" alt="猫" onerror="this.style.display='none'" style="width:80px;">
     </div>
     <div class="card-body">
       <div class="card-title">出陣支度部屋</div>
       <div class="card-desc">
-        刀剣男士で部隊を編制し、装備を整えるツールです。稽古録への登録の有無に関わらず利用できます。
+        刀剣男士で部隊を編制し、装備を整えるツールです。稽古録と連携して、男士の乱舞レベルをステータスに反映できます（登録がなくても利用できます）。
       </div>
-      <span class="card-link">道具を開く →</span>
+      <div class="card-links">
+        <a class="card-link card-link--open" href="shitakubeya.html">道具を開く →</a>
+        <a class="card-link card-link--manual" href="shitakubeya_manual.html">説明書 →</a>
+      </div>
     </div>
-  </a>
+  </div>
 
-  <a class="tool-card" href="kaikouroku.html">
+  <div class="tool-card">
     <div class="cat-area">
       <!-- cat6.png を同じフォルダに入れると表示されます -->
       <img src="cat6.png" alt="猫" onerror="this.style.display='none'">
@@ -824,102 +964,104 @@ footer {
     <div class="card-body">
       <div class="card-title">邂逅録</div>
       <div class="card-desc">
-        ドロップした刀剣男士を記録・集計するツールです。大阪城のボスドロップや小判、目玉男士のドロップ率を分析できます。※通常マップ・連隊戦は順次対応予定です。
+        ドロップした刀剣男士を記録・集計するツールです。目玉男士のドロップ率を分析できます。
       </div>
-      <span class="card-link">道具を開く →</span>
+      <div class="card-links">
+        <a class="card-link card-link--open" href="kaikouroku.html">道具を開く →</a>
+        <a class="card-link card-link--manual" href="kaikouroku_manual.html">説明書 →</a>
+      </div>
     </div>
-  </a>
-
-  <!-- マニュアルリンク -->
-  <div class="manual-divider">
-    <div class="manual-divider-line"></div>
-    <span class="manual-divider-label">マ ニ ュ ア ル</span>
-    <div class="manual-divider-line"></div>
   </div>
 
-  <div class="manual-note">各ツールの詳しい使い方は、下のマニュアルからご確認ください。</div>
-
-  <a class="manual-card" href="Shizaichou_manual.html">
-    <span class="manual-icon">📖</span>
-    <div class="manual-body">
-      <div class="manual-title">資源帳マニュアル</div>
-      <div class="manual-desc">各機能の詳しい使い方・説明</div>
+  <!-- 準備中カード（新ツール予定地） -->
+  <div class="tool-card tool-card--coming">
+    <div class="cat-area">
+      <div class="cat-ph">💤</div>
     </div>
-    <span class="manual-link">開く →</span>
-  </a>
-
-  <a class="manual-card" href="keikoroku_manual.html">
-    <span class="manual-icon">📖</span>
-    <div class="manual-body">
-      <div class="manual-title">稽古録マニュアル</div>
-      <div class="manual-desc">各機能の詳しい使い方・説明</div>
+    <div class="card-body">
+      <div class="card-title">？？？</div>
+      <div class="card-desc">
+        新しい道具を準備しています。<br>お楽しみに。
+      </div>
+      <div class="card-links">
+        <span class="card-pending">準備中</span>
+      </div>
     </div>
-    <span class="manual-link">開く →</span>
-  </a>
+  </div>
 
-  <a class="manual-card" href="ichinokura_manual.html">
-    <span class="manual-icon">📖</span>
-    <div class="manual-body">
-      <div class="manual-title">愛蔵の一ノ倉マニュアル</div>
-      <div class="manual-desc">各機能の詳しい使い方・説明</div>
-    </div>
-    <span class="manual-link">開く →</span>
-  </a>
-
-  <a class="manual-card" href="shitakubeya_manual.html">
-    <span class="manual-icon">📖</span>
-    <div class="manual-body">
-      <div class="manual-title">出陣支度部屋マニュアル</div>
-      <div class="manual-desc">各機能の詳しい使い方・説明</div>
-    </div>
-    <span class="manual-link">開く →</span>
-  </a>
+  </div>
 </div>
 
 <!-- スマホ専用コンパクト更新バー -->
 <div class="sp-update-bar">
   <div class="sp-update-toggle" onclick="spUpdateToggle()" id="sp-update-btn">
     <span class="sp-update-label">最新更新</span>
-    <span class="sp-update-date">2026.06.25</span>
+    <span class="sp-update-date">2026.07.21</span>
     <span class="sp-update-badge">最新</span>
     <span class="sp-update-arrow">▼</span>
   </div>
   <div class="sp-update-body" id="sp-update-body">
     <div class="tl-content">
-      <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">資源帳</div>
+      <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
       <ul>
-        <li>金平糖（並・上）のグラフを追加しました</li>
-        <li>金平糖にも「前日から引き継ぐ」ボタンを追加しました</li>
-      </ul>
-      <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
-      <ul>
-        <li>過去の日付で記録を上書きするとき、確認のメッセージが出るようにしました。既存の記録と新しい記録の累積経験値・レベルを並べて見比べられます（今日の更新や、同じ値の入れ直しのときは、これまで通りメッセージは出ません）</li>
-        <li>記録を上書きするときに、メモが消えてしまうことがある問題を直しました。メモ欄が空のままなら前のメモをそのまま残し、入力があればその内容に更新します</li>
+        <li>累積経験値とレベルを表示しているグラフで、「レベル → 増加経験値 → 累積経験値」の順に表示を切り替えると、選択中の刀剣男士の累積経験値グラフがすべて非表示になる不具合を修正しました</li>
+        <li>グラフの表示モードによる一時的な非表示と、凡例を操作して手動で非表示にした状態を別々に扱うよう改善しました。ほかの表示切替順や、凡例の表示設定にも影響がないことを確認しています</li>
       </ul>
     </div>
   </div>
 </div>
 <div class="sp-changelog-link">
   <a href="changelog.html">すべての更新履歴 →</a>
+  <a class="survey-card survey-sp" href="#" target="_blank" rel="noopener">
+    <div class="survey-icon">📋</div>
+    <div class="survey-body">
+      <div class="survey-title-row">
+        <span class="survey-title">アンケート</span>
+        <span class="survey-badge">実施中</span>
+      </div>
+      <div class="survey-desc"></div>
+    </div>
+    <span class="survey-arrow">→</span>
+  </a>
 </div>
 <div class="col-right">
-  <div class="info-panel">
-    <div class="info-heading">＊ 説 明 書 ＊</div>
+  <div class="info-panel is-open" id="info-panel">
+    <div class="info-heading-row" onclick="infoPanelToggle()">
+      <div class="info-heading">＊ 説 明 書 ＊</div>
+      <span class="info-heading-arrow">▼</span>
+    </div>
+
+    <div class="info-panel-body">
 
     <!-- データ入力について -->
-    <div class="info-block">
-      <div class="info-label">📖 このアプリについて</div>
+    <div class="info-block fold-block is-open" data-fold-id="about">
+      <div class="fold-head" onclick="infoBlockToggle(this, event)">
+        <div class="fold-head-main">
+          <div class="info-label">📖 このアプリについて</div>
+          <div class="fold-digest">ゲームと連動しない、すべて手入力のツールです</div>
+        </div>
+        <span class="fold-arrow">▼</span>
+      </div>
+      <div class="fold-body"><div class="fold-body-inner">
       <div class="info-text">
         ゲーム内のデータを自動取得することはありません。<br>
         <em>"全て審神者本人の手入力"</em>によって記録していくツールです。
       </div>
+      </div></div>
     </div>
 
     <div class="info-divider"></div>
 
     <!-- データ保存・バックアップ -->
-    <div class="info-block">
-      <div class="info-label">💾 データの保存について</div>
+    <div class="info-block fold-block is-open" data-fold-id="save">
+      <div class="fold-head" onclick="infoBlockToggle(this, event)">
+        <div class="fold-head-main">
+          <div class="info-label">💾 データの保存について</div>
+          <div class="fold-digest">データは端末内のみに保存。<em>定期的なバックアップを必ず</em>お願いします</div>
+        </div>
+        <span class="fold-arrow">▼</span>
+      </div>
+      <div class="fold-body"><div class="fold-body-inner">
       <div class="info-text">
         データはお使いの端末のブラウザ内にのみ保存されます。<br>
         管理人がデータを確認・アクセスすることは<em>一切ありません</em>のでご安心ください。
@@ -929,6 +1071,11 @@ footer {
         ※「イベント・メモのデータ」と「グラフのデータ」は<br>
         　<em>別の場所</em>でそれぞれインポート・エクスポートされます。
       </div>
+      <div class="info-note" style="margin-top:8px;">
+        Google同期のログインは、Googleの仕様により<em>約1時間で接続が切れます</em>。<br>
+        切れた場合は「⚠ 再接続」ボタンから再接続できます。<br>
+        記録は端末に保存されているため、失われることはありません。
+      </div>
       <div class="info-warn" style="margin-top:10px;">
         <div class="warn-head">⚠ バックアップのお願い</div>
         <div class="warn-text">
@@ -936,24 +1083,40 @@ footer {
           定期的なバックアップを必ず行ってください。
         </div>
       </div>
+      </div></div>
     </div>
 
     <div class="info-divider"></div>
 
     <!-- 互換性 -->
-    <div class="info-block">
-      <div class="info-label">🔄 ツール間の互換性</div>
+    <div class="info-block fold-block is-open" data-fold-id="compat">
+      <div class="fold-head" onclick="infoBlockToggle(this, event)">
+        <div class="fold-head-main">
+          <div class="info-label">🔄 ツール間の互換性</div>
+          <div class="fold-digest">「イベント・メモのデータ」は資源帳⇄稽古録で共通です</div>
+        </div>
+        <span class="fold-arrow">▼</span>
+      </div>
+      <div class="fold-body"><div class="fold-body-inner">
       <div class="info-text">
         「イベント・メモのデータ」は<em>資源帳・稽古録で共通</em>して使えます。<br>
         一方のアプリでエクスポートしたデータを、もう一方にインポートすることが可能です。
       </div>
+      </div></div>
     </div>
 
     <div class="info-divider"></div>
 
     <!-- 資源帳について -->
-    <div class="info-block">
-      <div class="info-label">📊 資源帳 — Excelデータの読み込み</div>
+    <div class="info-block fold-block is-open" data-fold-id="excel">
+      <div class="fold-head" onclick="infoBlockToggle(this, event)">
+        <div class="fold-head-main">
+          <div class="info-label">📊 資源帳 — Excelデータの読み込み</div>
+          <div class="fold-digest">Excelに付けていた資源の記録を取り込める場合があります</div>
+        </div>
+        <span class="fold-arrow">▼</span>
+      </div>
+      <div class="fold-body"><div class="fold-body-inner">
       <div class="info-text">
         これまでExcelに記録していた資源データをグラフに取り込める場合があります。
       </div>
@@ -962,13 +1125,21 @@ footer {
         「データ一覧」タブから「Excel読み込み」を実行できます。<br>
         ※必ず読み込めるわけではありません。
       </div>
+      </div></div>
     </div>
 
     <div class="info-divider"></div>
 
     <!-- 推奨環境 -->
-    <div class="info-block">
-      <div class="info-label">🌐 推奨ブラウザ</div>
+    <div class="info-block fold-block is-open" data-fold-id="browser">
+      <div class="fold-head" onclick="infoBlockToggle(this, event)">
+        <div class="fold-head-main">
+          <div class="info-label">🌐 推奨ブラウザ</div>
+          <div class="fold-digest">アプリ内ブラウザ（WebView）では<em>Google同期が動きません</em></div>
+        </div>
+        <span class="fold-arrow">▼</span>
+      </div>
+      <div class="fold-body"><div class="fold-body-inner">
       <ul class="info-list">
         <li>PC：Chrome / Edge / Firefox</li>
         <li>スマートフォン：Chrome / Firefox / Safari</li>
@@ -982,161 +1153,261 @@ footer {
           同期の代わりに「データ一覧」タブのインポート・エクスポート機能もご活用ください。
         </div>
       </div>
+      </div></div>
     </div>
 
+    </div><!-- /info-panel-body -->
   </div>
+  <script>
+  /* ---- 説明書の折りたたみ（開閉状態を localStorage に記憶） ----
+     初回訪問や、記憶に無い新ブロックは「開いた状態」で表示されます。 */
+  const INFO_FOLD_KEY = 'saniwa_info_fold_v1';
+  function infoFoldState() {
+    try { return JSON.parse(localStorage.getItem(INFO_FOLD_KEY) || 'null') || {}; }
+    catch(e) { return {}; }
+  }
+  function infoFoldSave() {
+    const panel = document.getElementById('info-panel');
+    const blocks = {};
+    panel.querySelectorAll('.fold-block').forEach(function(b){
+      blocks[b.dataset.foldId] = b.classList.contains('is-open');
+    });
+    try {
+      localStorage.setItem(INFO_FOLD_KEY, JSON.stringify({
+        panel: panel.classList.contains('is-open'),
+        blocks: blocks
+      }));
+    } catch(e) {}
+  }
+  function infoPanelToggle() {
+    document.getElementById('info-panel').classList.toggle('is-open');
+    infoFoldSave();
+  }
+  function infoBlockToggle(el, ev) {
+    if (ev) ev.stopPropagation();
+    el.closest('.fold-block').classList.toggle('is-open');
+    infoFoldSave();
+  }
+  /* 保存された状態をちらつき無しで適用（このscriptはパネル直後に置くこと） */
+  (function(){
+    const st = infoFoldState();
+    const panel = document.getElementById('info-panel');
+    if (st.panel === false) panel.classList.remove('is-open');
+    if (st.blocks) {
+      panel.querySelectorAll('.fold-block').forEach(function(b){
+        if (st.blocks[b.dataset.foldId] === false) b.classList.remove('is-open');
+      });
+    }
+  })();
+  </script>
   <div class="update-panel">
     <div class="update-heading">＊ 更 新 情 報 ＊</div>
     <div class="timeline">
 
-      <!-- 1件目：最新・最初から開く -->
-      <div class="tl-entry is-latest" id="tl-0">
-        <div class="tl-header" onclick="tlToggle('tl-0')">
-          <span class="tl-date">2026.06.25</span>
+      <!-- 1件目：最新 -->
+      <div class="tl-entry is-latest" id="tl-new16" data-has-short="1">
+        <div class="tl-header" onclick="tlToggle('tl-new16')">
+          <span class="tl-date">2026.07.21</span>
           <span class="tl-badge">最新</span>
           <span class="tl-arrow">▼</span>
         </div>
+        <div class="tl-short">
+          <div class="tl-short-inner">稽古録：累積経験値グラフで「レベル → 増加経験値 → 累積経験値」の順に切り替えると、グラフが表示されなくなる不具合を修正しました。</div>
+          <span class="tl-more" onclick="tlMoreOpen(event,'tl-new16')">▼ 詳しく見る</span>
+        </div>
         <div class="tl-body">
           <div class="tl-content">
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">資源帳</div>
-            <ul>
-              <li>金平糖（並・上）のグラフを追加しました</li>
-              <li>金平糖にも「前日から引き継ぐ」ボタンを追加しました</li>
-            </ul>
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
-            <ul>
-              <li>過去の日付で記録を上書きするとき、確認のメッセージが出るようにしました。既存の記録と新しい記録の累積経験値・レベルを並べて見比べられます（今日の更新や、同じ値の入れ直しのときは、これまで通りメッセージは出ません）</li>
-              <li>記録を上書きするときに、メモが消えてしまうことがある問題を直しました。メモ欄が空のままなら前のメモをそのまま残し、入力があればその内容に更新します</li>
-            </ul>
+      <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+      <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
+      <ul>
+        <li>累積経験値とレベルを表示しているグラフで、「レベル → 増加経験値 → 累積経験値」の順に表示を切り替えると、選択中の刀剣男士の累積経験値グラフがすべて非表示になる不具合を修正しました</li>
+        <li>グラフの表示モードによる一時的な非表示と、凡例を操作して手動で非表示にした状態を別々に扱うよう改善しました。ほかの表示切替順や、凡例の表示設定にも影響がないことを確認しています</li>
+      </ul>
           </div>
         </div>
       </div>
 
-      <!-- 2件目：折りたたみ -->
-      <div class="tl-entry" id="tl-1">
-        <div class="tl-header" onclick="tlToggle('tl-1')">
-          <span class="tl-date">2026.06.16</span>
+      <!-- 2件目：折りたたみ（前回の最新）-->
+      <div class="tl-entry" id="tl-new15">
+        <div class="tl-header" onclick="tlToggle('tl-new15')">
+          <span class="tl-date">2026.07.20</span>
           <span class="tl-arrow">▼</span>
         </div>
         <div class="tl-body">
           <div class="tl-content">
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">邂逅録</div>
-            <ul>
-              <li>「選んだ男士」を自由に並べ替えられるようにしました。▲▼で手動入れ替えができるほか、記録順／名前順／種類順／No順／件数順でのソートにも対応しています。並べた順番を覚えておく「カスタム順」も使えます</li>
-              <li>同じ名前の男士を、自動でまとめて表示するようにしました（設定で切り替えられます）</li>
-              <li>件数の数字をタップして、直接入力できるようにしました。±ボタンでは記録が消えないように変更したので、消したいときはゴミ箱から行ってください</li>
-              <li>「お迎え男士（🌸）」を登録できるようにしました。欲しい子に目印を付けられます</li>
-              <li>集計の表示名を分かりやすく整え、切り替えバーの初期表示なども改善しました</li>
-            </ul>
+      <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
+      <ul>
+        <li>サイドバーに「⚔ 支度部屋の部隊で絞り込み」を追加しました。部隊を選ぶと、その部隊に編成中の男士だけを表示できます</li>
+        <li>同じ刀を複数持っていても、編成に入っている一振りだけが表示されます。部隊を変えても絵文字の付け替えは不要になりました</li>
+        <li>支度部屋で編成を変えると自動で反映されます（別タブで開いていてもその場で更新されます）</li>
+      </ul>
+      <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">出陣支度部屋</div>
+      <ul>
+        <li>「📖 この部隊を稽古録で開く」ボタンを追加しました。ワンタップで絞り込み済みの稽古録が開きます</li>
+      </ul>
+      <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">更新履歴ページ</div>
+      <ul>
+        <li>短い説明→詳しい説明の2段階で読めるようにしました。月ごとの開閉と一括ボタンも付きました</li>
+      </ul>
           </div>
         </div>
       </div>
 
       <!-- 3件目：折りたたみ -->
-      <div class="tl-entry" id="tl-2">
-        <div class="tl-header" onclick="tlToggle('tl-2')">
-          <span class="tl-date">2026.06.15</span>
+      <div class="tl-entry" id="tl-new14">
+        <div class="tl-header" onclick="tlToggle('tl-new14')">
+          <span class="tl-date">2026.07.19</span>
           <span class="tl-arrow">▼</span>
         </div>
         <div class="tl-body">
           <div class="tl-content">
-            <div style="font-size:11px;color:#e8c878;font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">出陣支度部屋</div>
-            <ul>
-              <li>通常装備リストを、装備の有無で絞り込めるようにしました。刀装・馬・お守り・宝物それぞれをタップすると「装備あり→なし→解除」の3段階で切り替えられます</li>
-              <li>左側の「並び替え・絞り込み」を折りたためるようにしました。並び替え／刀種／状態／絵文字マーク／装備の各見出しをクリックで開閉でき、畳んだときは見出しに今の選択（例：「太刀」「極のみ」）が表示されます</li>
-              <li>表示列（モードバー）の位置を設定で選べるようにしました（PCのみ）。「ヘッダー下のバー（従来）／ヘッダー内のタイトル横／ヘッダー右側」から選べ、ヘッダー内に置くときは注記の位置（表示しない／トグルの左／トグルの右）も選べます</li>
-              <li>白山吉光（極）・南海太郎朝尊（極）のマスターデータを追加しました（白山吉光の生存120、南海太郎朝尊の偵察91）</li>
-              <li>閾値チェックにプリセットを追加しました。閾値エディタ上部のプルダウンから「大阪城・高速槍先制（機動）」を選べます</li>
-              <li>閾値チェックを部隊ごとに登録・管理できるようにしました（これまでは全部隊で共通表示でした）</li>
-            </ul>
+      <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
+      <ul>
+        <li>増加経験値のグラフで、記録が数日空いたときは、その期間を「1日あたり」に均して表示するようにしました（3つのグラフ共通）。均した区間は、点にふれると何日ぶんの平均か・その合計をツールチップで確認できます</li>
+        <li>「Exp変化なし ☑」を追加しました。経験値に変化がなかった日を、日付ごとに1件だけの記録としてまとめて残せます。ステータスバーの切り替えと、直近7日ぶんのチップからチェックできます。この記録はグラフの線をつなぐためだけに使われ、グラフに点は増えません（初めて使うときは説明が表示されます）</li>
+        <li>今日つけた記録に、小さな緑の点マークが付くようになりました（個別の記録のみ）。設定で「✅」に変えたり、非表示にしたりできます</li>
+      </ul>
+      <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">トップページ</div>
+      <ul>
+        <li>説明書を折りたためるようにしました。「＊ 説 明 書 ＊」の見出しで全体を、各項目の見出しで項目ごとに開閉できます。閉じた項目は要点が1行だけ見え、開閉の状態は次に来たときも引き継がれます</li>
+      </ul>
           </div>
         </div>
       </div>
+
+      
 
       <!-- すべての更新履歴 -->
       <a href="changelog.html" class="tl-all-link">すべての更新履歴 →</a>
 
     </div><!-- /timeline -->
   </div>
+
+  <!-- お返事（更新履歴とあわせて読んでほしいもの） -->
+  <a class="reply-mini" href="reply.html">
+    <div class="reply-mini-icon">
+      <!-- reply_icon.png を同じフォルダに入れると表示されます -->
+      <img src="reply_icon.png" alt="お返事" onerror="this.style.display='none'">
+    </div>
+    <div class="reply-mini-body">
+      <div class="reply-mini-title">お返事</div>
+      <div class="reply-mini-desc">
+        いただいたバグ報告やご要望に、管理人がお返事する場所です。<br>
+        メールアドレスのないお声には、こちらでお答えします。
+      </div>
+    </div>
+    <span class="reply-mini-link">開く →</span>
+  </a>
+
+  <!-- アンケート（SURVEY_URL 設定時のみ表示） -->
+  <a class="survey-card survey-pc" href="#" target="_blank" rel="noopener">
+    <div class="survey-icon">📋</div>
+    <div class="survey-body">
+      <div class="survey-title-row">
+        <span class="survey-title">アンケート</span>
+        <span class="survey-badge">実施中</span>
+      </div>
+      <div class="survey-desc"></div>
+    </div>
+    <span class="survey-arrow">→</span>
+  </a>
+
 </div>
+<!-- 下部連絡先（3列グリッド） -->
+<div class="contacts">
+
 <!-- Waveboxパネル -->
-<a class="wavebox-panel" href="https://wavebox.me/wave/aiw6jfvnmqcd7mn7/" target="_blank" rel="noopener">
-  <div class="wavebox-icon-area">
+<a class="contact-panel" href="https://wavebox.me/wave/aiw6jfvnmqcd7mn7/" target="_blank" rel="noopener">
+  <div class="contact-icon-area">
     <!-- wavebox_icon.png を同じフォルダに入れると表示されます -->
     <img src="wavebox_icon.png" alt="Wavebox" onerror="this.style.display='none'">
   </div>
-  <div class="wavebox-body">
-    <div class="wavebox-title">Wavebox</div>
-    <div class="wavebox-desc">
-      絵文字やメッセージを匿名で送ることができます。<br>
+  <div class="contact-body">
+    <div class="contact-title">Wavebox</div>
+    <div class="contact-desc">
+      絵文字を匿名で送ることができます。<br>
       応援はこちらからどうぞ。
     </div>
+    <span class="contact-link">開く →</span>
   </div>
-  <span class="wavebox-link">開く →</span>
 </a>
 <!-- Twitterパネル -->
-<a class="twitter-panel" href="https://twitter.com/suwasuwamochi00" target="_blank" rel="noopener">
-  <div class="twitter-icon-area">
+<a class="contact-panel" href="https://twitter.com/suwasuwamochi00" target="_blank" rel="noopener">
+  <div class="contact-icon-area">
     <!-- twitter_icon.png を同じフォルダに入れると表示されます -->
     <img src="twitter_icon.png" alt="Twitter / X" onerror="this.style.display='none'">
   </div>
-  <div class="twitter-body">
-    <div class="twitter-title">Twitter / X</div>
-    <div class="twitter-desc">
+  <div class="contact-body">
+    <div class="contact-title">Twitter / X</div>
+    <div class="contact-desc">
       管理人が思う今後のここの更新予定や開発メモなどをポストしています。<br>
-      必ず機能追加するわけではありません。
+      必ず機能追加の話をするわけではありません。
     </div>
+    <span class="contact-link">開く →</span>
   </div>
-  <span class="twitter-link">開く →</span>
 </a>
-<a class="mail-panel" href="contact.html">
-  <div class="mail-icon-area">
+<a class="contact-panel" href="contact.html">
+  <div class="contact-icon-area">
     <!-- mail_icon.png を同じフォルダに入れると表示されます -->
     <img src="mail_icon.png" alt="メールフォーム" onerror="this.style.display='none'">
   </div>
-  <div class="mail-body">
-    <div class="mail-title">メールフォーム</div>
-    <div class="mail-desc">
+  <div class="contact-body">
+    <div class="contact-title">メールフォーム</div>
+    <div class="contact-desc">
       ご意見・ご要望などはこちらからお送りください。
     </div>
+    <span class="contact-link">開く →</span>
   </div>
-  <span class="mail-link">開く →</span>
 </a>
 <!-- Googleフォームパネル -->
-<a class="google-panel" href="https://docs.google.com/forms/d/e/1FAIpQLSffDZEvuzFvYQcAuFn5O3lSacRS2FAHpfbz_4xbZppf-ElOuw/viewform?usp=dialog" target="_blank" rel="noopener">
-  <div class="google-icon-area">
+<a class="contact-panel" href="https://docs.google.com/forms/d/e/1FAIpQLSffDZEvuzFvYQcAuFn5O3lSacRS2FAHpfbz_4xbZppf-ElOuw/viewform?usp=dialog" target="_blank" rel="noopener">
+  <div class="contact-icon-area">
     <!-- google_icon.png を同じフォルダに入れると表示されます -->
     <img src="google_icon.png" alt="Googleフォーム" onerror="this.style.display='none'">
   </div>
-  <div class="google-body">
-    <div class="google-title">Googleフォーム</div>
-    <div class="google-desc">
+  <div class="contact-body">
+    <div class="contact-title">Googleフォーム</div>
+    <div class="contact-desc">
       メールフォームと同じ内容をGoogleフォームからお送りいただけます。<br>
       お好きな方をご利用ください。
     </div>
+    <span class="contact-link">開く →</span>
   </div>
-  <span class="google-link">開く →</span>
 </a>
-<a class="neko-panel" href="../index.html">
-  <div class="neko-icon-area">
+<a class="contact-panel" href="../index.html">
+  <div class="contact-icon-area">
     <!-- necomomi.png を同じフォルダに入れると表示されます -->
     <img src="necomomi.png" alt="猫の休憩所" onerror="this.style.display='none'">
   </div>
-  <div class="neko-body">
-    <div class="neko-title">猫の休憩所</div>
-    <div class="neko-desc">
+  <div class="contact-body">
+    <div class="contact-title">猫の休憩所</div>
+    <div class="contact-desc">
       他の一般的なツールが置いてあります。試作品です。<br>
       ちょっと寄ってみてください。
     </div>
+    <span class="contact-link">開く →</span>
   </div>
-  <span class="neko-link">開く →</span>
 </a>
+
+</div>
 
 </div>
 </div>
 <footer>
-  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。
+  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari hatano
 </footer>
+<script>
+/* アンケートカードの表示（設定はファイル上部の「★ アンケート設定」） */
+(function(){
+  if (typeof SURVEY_URL === 'undefined' || !SURVEY_URL) return;
+  document.querySelectorAll('.survey-card').forEach(function(card){
+    card.href = SURVEY_URL;
+    var d = card.querySelector('.survey-desc');
+    if (d) d.textContent = (typeof SURVEY_DESC !== 'undefined' && SURVEY_DESC) ? SURVEY_DESC : 'アンケートにご協力ください';
+    card.classList.add('is-active');
+  });
+})();
+</script>
 </body>
 <script>
 function spUpdateToggle() {
@@ -1146,11 +1417,62 @@ function spUpdateToggle() {
   body.classList.toggle('is-open');
 }
 
+/* ---- 更新エントリ：3段階（閉→短文→詳しく→閉） ---- */
+var TL_STATES = ['st-closed', 'st-short', 'st-full'];
+function tlSetState(entry, st) {
+  TL_STATES.forEach(function(s){ entry.classList.remove(s); });
+  if (st !== 'st-closed') entry.classList.add(st);
+}
+function tlGetState(entry) {
+  if (entry.classList.contains('st-full')) return 'st-full';
+  if (entry.classList.contains('st-short')) return 'st-short';
+  return 'st-closed';
+}
 function tlToggle(id) {
   const entry = document.getElementById(id);
-  const isLatest = entry.classList.contains('is-latest');
-  if (isLatest) return; // 最新は常に開いたまま
-  entry.classList.toggle('is-open');
+  const hasShort = entry.getAttribute('data-has-short') === '1';
+  const cur = tlGetState(entry);
+  let next;
+  if (hasShort) {
+    next = cur === 'st-closed' ? 'st-short' : cur === 'st-short' ? 'st-full' : 'st-closed';
+  } else {
+    next = cur === 'st-closed' ? 'st-full' : 'st-closed';
+  }
+  tlSetState(entry, next);
 }
+function tlMoreOpen(ev, id) {
+  ev.stopPropagation();
+  tlSetState(document.getElementById(id), 'st-full');
+}
+
+/* ---- テーマ切り替え（reply.html と共通のしくみ） ---- */
+const THEME_KEY = 'reply_theme_v1';
+function saveTheme() {
+  try {
+    localStorage.setItem(THEME_KEY, JSON.stringify({
+      hue: document.documentElement.dataset.hue,
+      mode: document.documentElement.dataset.mode
+    }));
+  } catch(e) {}
+}
+function updateThemeButtons() {
+  const hue = document.documentElement.dataset.hue;
+  const mode = document.documentElement.dataset.mode;
+  const bh = document.getElementById('btn-hue');
+  const bm = document.getElementById('btn-mode');
+  if (bh) bh.textContent = '色：' + (hue === 'blue' ? '青系' : '赤系');
+  if (bm) bm.textContent = '明るさ：' + (mode === 'dark' ? '暗い' : '明るい');
+}
+function toggleHue() {
+  const d = document.documentElement.dataset;
+  d.hue = (d.hue === 'blue') ? 'red' : 'blue';
+  saveTheme(); updateThemeButtons();
+}
+function toggleMode() {
+  const d = document.documentElement.dataset;
+  d.mode = (d.mode === 'dark') ? 'light' : 'dark';
+  saveTheme(); updateThemeButtons();
+}
+document.addEventListener('DOMContentLoaded', updateThemeButtons);
 </script>
 </html>

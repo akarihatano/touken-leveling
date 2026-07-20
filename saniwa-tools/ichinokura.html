@@ -194,6 +194,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans JP',sans-serif;
 .emoji-opt.sel{border:2px solid var(--ac);background:var(--acBg);}
 .emoji-opt:hover{background:var(--bg2);}
 .ncolor-in{width:40px;height:32px;border:0.5px solid var(--bd2);border-radius:7px;background:var(--bgC);cursor:pointer;padding:2px;}
+.col-palette{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.col-swatch{width:26px;height:26px;border-radius:6px;border:2px solid var(--bd2);cursor:pointer;padding:0;transition:transform .1s;}
+.col-swatch:hover{transform:scale(1.12);}
+.col-swatch.sel{border-color:var(--tx);box-shadow:0 0 0 2px var(--ac);}
 .nmark-tab{display:flex;gap:4px;margin-bottom:8px;}
 .nmark-tab button{flex:1;padding:5px;border:0.5px solid var(--bd2);border-radius:7px;background:var(--bgC);color:var(--tx3);font-size:12px;cursor:pointer;font-family:inherit;}
 .nmark-tab button.on{background:var(--bgH);color:var(--hTx);border-color:var(--bgH);font-weight:500;}
@@ -821,7 +825,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans JP',sans-serif;
         <button type="button" class="calpick-btn cal-pick-btn" id="ev-end-text" onclick="openCalPicker('ev-end',this)">日付を選択</button>
       </div>
       <div class="frow"><div class="flbl">色</div>
-        <input type="color" class="ncolor-in" id="ev-color" value="#c9a84c" style="width:60px;height:34px;">
+        <input type="color" class="ncolor-in" id="ev-color" value="#c9a84c" style="width:60px;height:34px;" oninput="syncSwatchSel('ev-color')">
+      </div>
+      <div class="frow"><div class="flbl">色見本</div>
+        <div id="ev-color-palette" class="col-palette"></div>
       </div>
       <div class="frow"><div class="flbl">備考</div><textarea class="fta" id="ev-memo"></textarea></div>
     </div>
@@ -850,9 +857,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans JP',sans-serif;
           <div id="nmark-emoji-box">
             <div class="emoji-row" id="note-emoji-row"></div>
           </div>
-          <div id="nmark-color-box" style="display:none;align-items:center;gap:8px;">
-            <input type="color" class="ncolor-in" id="note-color" value="#c9a84c">
+          <div id="nmark-color-box" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;">
+            <input type="color" class="ncolor-in" id="note-color" value="#c9a84c" oninput="syncSwatchSel('note-color')">
             <span style="font-size:11px;color:var(--tx3);">カレンダーに色ドットで表示されます</span>
+            <div id="note-color-palette" class="col-palette" style="width:100%;"></div>
           </div>
         </div>
       </div>
@@ -1908,6 +1916,7 @@ function clickDay(ds) {
     document.getElementById('note-color').value = '#c9a84c';
     setNoteMarkType('emoji');
   }
+  syncSwatchSel('note-color');
   renderNoteEmojiRow();
   openOv('ov-note');
 }
@@ -2146,6 +2155,7 @@ function openAddEvent() {
   document.getElementById('ev-end-text').textContent = todayStr();
   document.getElementById('ev-memo').value = '';
   document.getElementById('ev-color').value = '#c9a84c';
+  syncSwatchSel('ev-color');
   openOv('ov-event');
 }
 
@@ -2188,6 +2198,7 @@ function openAddNote() {
   _noteEmoji = '📝';
   document.getElementById('note-color').value = '#c9a84c';
   setNoteMarkType('emoji');
+  syncSwatchSel('note-color');
   renderNoteEmojiRow();
   openOv('ov-note');
 }
@@ -2718,6 +2729,7 @@ function openEditEvent(id) {
   document.getElementById('ev-end-text').textContent = evEnd(ev) || '日付を選択';
   document.getElementById('ev-memo').value  = ev.memo  || '';
   document.getElementById('ev-color').value = ev.color || '#c9a84c';
+  syncSwatchSel('ev-color');
   openOv('ov-event');
 }
 
@@ -2745,6 +2757,7 @@ function openEditNote(date) {
     document.getElementById('note-color').value = '#c9a84c';
     setNoteMarkType('emoji');
   }
+  syncSwatchSel('note-color');
   renderNoteEmojiRow();
   openOv('ov-note');
 }
@@ -2774,6 +2787,13 @@ window.addEventListener('scroll', function() {
 });
 
 // ── 初期化 ──────────────────────────────────────────────
+// ── 色見本パレット（期間メモ・日メモ共通）──────────────
+var EV_PALETTE=['#e05555','#e8864a','#dba820','#a8d060','#52c878','#3dc8d4','#5b9fe8','#6a7fe0','#9b6cd8','#c07fd8','#e87fb0','#b0805a'];
+function swatchesHTML(id){return EV_PALETTE.map(function(c){return '<button type="button" class="col-swatch" style="background:'+c+'" onclick="setEvCol(\''+id+'\',\''+c+'\',this)" title="'+c+'"></button>';}).join('');}
+function setEvCol(id,c,btn){var el=document.getElementById(id);if(el)el.value=c;if(btn&&btn.parentNode){[].forEach.call(btn.parentNode.children,function(b){b.classList.remove('sel');});btn.classList.add('sel');}}
+/* 色入力の現在値と一致する見本に .sel を付ける（一致なしなら全解除）。コンテナidは「<入力id>-palette」規約 */
+function syncSwatchSel(id){var el=document.getElementById(id),pal=document.getElementById(id+'-palette');if(!el||!pal)return;[].forEach.call(pal.children,function(b){b.classList.toggle('sel',(b.title||'').toLowerCase()===(el.value||'').toLowerCase());});}
+
 function init() {
   load();
   applyTheme(UD.settings.theme || 'ai-light');
@@ -2840,6 +2860,11 @@ function init() {
       if (aiyoEl) aiyoEl.setAttribute('inputmode', 'numeric');
     }
   } catch (e) {}
+  /* 色見本パレットを流し込み（期間メモ・日メモ） */
+  var _evp = document.getElementById('ev-color-palette');
+  if (_evp) _evp.innerHTML = swatchesHTML('ev-color');
+  var _ntp = document.getElementById('note-color-palette');
+  if (_ntp) _ntp.innerHTML = swatchesHTML('note-color');
   /* 最後に開いたタブを復元 */
   var lastTab = UD.settings.lastTab || 'frag';
   switchTab(lastTab);

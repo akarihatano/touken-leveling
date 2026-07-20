@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>鍛刀録</title>
+<script>/* ダーク設定時に一瞬白く光るのを防ぐ（本文より先にテーマを当てる） */
+try{document.documentElement.setAttribute("data-theme",localStorage.getItem("tantouroku_theme")||"light");}catch(e){}</script>
+<script src="https://accounts.google.com/gsi/client" async></script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E">
 <style>
 :root{
@@ -15,7 +18,6 @@
   --fuda-matsu-bg:#edf4e1; --fuda-matsu:#3b6d11;
   --fuda-take-bg:#e1f5ee; --fuda-take:#0f6e56;
   --fuda-ume-bg:#fbeaf0; --fuda-ume:#993556;
-  --tetsu-bg:#faeeda; --tetsu:#854f0b;
   --sakura-bg:#fbeaf0; --sakura:#993556;
   --radius:10px; --radius-s:7px;
 }
@@ -28,7 +30,6 @@ html[data-theme="dark"]{
   --fuda-matsu-bg:#243219; --fuda-matsu:#9fd16a;
   --fuda-take-bg:#16352c; --fuda-take:#6fc9ad;
   --fuda-ume-bg:#37212a; --fuda-ume:#d98aa6;
-  --tetsu-bg:#3a2e1a; --tetsu:#d9a85a;
   --sakura-bg:#37212a; --sakura:#d98aa6;
 }
 *{box-sizing:border-box}
@@ -40,29 +41,58 @@ header{display:flex;align-items:center;gap:11px;padding:14px 2px}
 .logo{font-size:24px;line-height:1}
 .htitle{font-size:19px;font-weight:700;line-height:1.15}
 .hsub{font-size:11.5px;color:var(--text3)}
-.hbtns{margin-left:auto;display:flex;gap:7px}
+.hbtns{margin-left:auto;display:flex;gap:7px;align-items:center}
+.hclock{font-size:13px;color:var(--text2);font-variant-numeric:tabular-nums;letter-spacing:.02em;white-space:nowrap}
+.hclock .sec{font-size:11px;color:var(--text3)}
+@media(max-width:374px){.hclock .sec{display:none}}
 .iconbtn{background:var(--surface);border:1px solid var(--line2);color:var(--text2);
   border-radius:var(--radius-s);padding:7px 11px;font-size:15px;cursor:pointer;line-height:1}
 .iconbtn:hover{border-color:var(--info-line)}
+/* 同期ボタン（ヘッダー） */
+.syncbtn{background:var(--surface);border:1px solid var(--line2);color:var(--text2);
+  border-radius:var(--radius-s);padding:7px 10px;font-size:12.5px;cursor:pointer;line-height:1;
+  font-family:inherit;white-space:nowrap}
+.syncbtn:hover{border-color:var(--info-line)}
+.syncbtn.on{color:var(--ok);border-color:var(--ok)}
+.syncbtn.warn{color:var(--warn);border-color:var(--warn);background:var(--warn-bg);font-weight:600}
+/* トースト */
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(12px);
+  background:var(--text);color:var(--surface);font-size:13px;padding:10px 16px;border-radius:99px;
+  max-width:88vw;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:80}
+#toast.show{opacity:.95;transform:translateX(-50%) translateY(0);pointer-events:auto}
+#toast .toast-act{border:0;background:none;font-family:inherit;font-size:13px;font-weight:700;
+  color:var(--surface);text-decoration:underline;cursor:pointer;margin-left:8px;padding:2px 2px}
+/* 履歴の月見出し・登録レシピ名タグ */
+.month-h{font-size:13px;font-weight:600;color:var(--text2);margin:16px 0 4px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+.month-h:first-of-type{margin-top:2px}
+.tag.preset{background:var(--info-bg);color:var(--info)}
+/* モーダル */
+.modal-box{background:var(--surface);width:100%;max-width:420px;border-radius:14px;padding:18px 18px 16px;margin:12px}
+.modal-title{font-size:15px;font-weight:600;margin-bottom:9px}
+.modal-desc{font-size:12.5px;color:var(--text2);line-height:1.75;margin-bottom:11px}
+.modal-info{background:var(--surface2);border-radius:var(--radius-s);padding:9px 12px;
+  font-size:11.5px;color:var(--text2);line-height:1.85;margin-bottom:13px}
+.modal-chk{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text2);margin-bottom:14px;cursor:pointer}
+.modal-act{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.btn.danger{background:var(--warn-bg);color:var(--warn);font-weight:600}
 .tabs{display:flex;gap:2px;background:var(--surface2);border:1px solid var(--line);
   border-radius:var(--radius);padding:5px;overflow-x:auto;margin-bottom:18px}
 .tab{flex:0 0 auto;border:0;background:none;color:var(--text2);font-size:13.5px;cursor:pointer;
   padding:8px 13px;border-radius:var(--radius-s);white-space:nowrap;font-family:inherit}
 .tab:hover{color:var(--text)}
 .tab.active{background:var(--info-bg);color:var(--info);font-weight:600}
-.badge{display:inline-block;min-width:17px;text-align:center;font-size:10.5px;font-weight:700;
-  background:#c2410c;color:#fff;border-radius:99px;padding:1px 5px;margin-left:4px;vertical-align:1px}
-html[data-theme="dark"] .badge{background:#d96a3a}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin-bottom:14px}
 .lbl{font-size:12px;color:var(--text2);display:block;margin-bottom:6px}
 .row{margin-bottom:15px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+/* 400px以下では2列を諦めて縦に積む（日付入力は最低幅が広く、2列だと枠を押し広げるため） */
+@media(max-width:400px){.grid2{grid-template-columns:1fr}}
 input[type=date],input[type=time],input[type=datetime-local],input.txt{font-family:inherit;font-size:14px;color:var(--text);
-  background:var(--surface);border:1px solid var(--line2);border-radius:var(--radius-s);padding:8px 10px;width:100%}
+  background:var(--surface);border:1px solid var(--line2);border-radius:var(--radius-s);padding:8px 10px;width:100%;min-width:0}
 input:focus{outline:2px solid var(--info-line);outline-offset:0;border-color:var(--info)}
-.seg{display:inline-flex;border:1px solid var(--line2);border-radius:var(--radius-s);overflow:hidden}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:var(--radius-s);overflow:hidden;max-width:100%}
 .seg button{border:0;background:none;font-family:inherit;font-size:13.5px;color:var(--text2);
-  padding:8px 16px;cursor:pointer;border-left:1px solid var(--line)}
+  padding:8px 16px;cursor:pointer;border-left:1px solid var(--line);min-width:0;white-space:nowrap}
 .seg button:first-child{border-left:0}
 .seg button.on{background:var(--info-bg);color:var(--info);font-weight:600}
 .pills{display:flex;gap:7px;flex-wrap:wrap}
@@ -73,7 +103,7 @@ input:focus{outline:2px solid var(--info-line);outline-offset:0;border-color:var
 .pill.fuda-matsu.on{background:var(--fuda-matsu-bg);color:var(--fuda-matsu);border-color:var(--fuda-matsu)}
 .pill.fuda-take.on{background:var(--fuda-take-bg);color:var(--fuda-take);border-color:var(--fuda-take)}
 .pill.fuda-ume.on{background:var(--fuda-ume-bg);color:var(--fuda-ume);border-color:var(--fuda-ume)}
-.recipe{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.recipe{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
 .recipe .cell input{text-align:center;font-size:16px;padding:9px 4px}
 .recipe .cap{text-align:center;font-size:11px;color:var(--text3);margin-top:4px}
 .stepper{display:inline-flex;align-items:center;border:1px solid var(--line2);border-radius:var(--radius-s);overflow:hidden}
@@ -99,13 +129,16 @@ input:focus{outline:2px solid var(--info-line);outline-offset:0;border-color:var
 .res-head .sum{margin-left:auto;font-size:12.5px;font-weight:600;padding:2px 11px;border-radius:var(--radius-s)}
 .sum.ok{background:var(--ok-bg);color:var(--ok)}
 .sum.bad{background:var(--warn-bg);color:var(--warn)}
-.resrow{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.pick{flex:1;text-align:left;background:var(--surface);border:1px solid var(--line2);border-radius:var(--radius-s);
-  font-family:inherit;font-size:13.5px;color:var(--text);padding:8px 10px;cursor:pointer;display:flex;align-items:center}
+.resrow{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+/* 男士名の欄が潰れないよう、170pxを下回るなら行を折り返す（375pxは1行、それ以下は2行） */
+.pick{flex:1 1 170px;min-width:0;text-align:left;background:var(--surface);border:1px solid var(--line2);border-radius:var(--radius-s);
+  font-family:inherit;font-size:13.5px;color:var(--text);padding:8px 10px;cursor:pointer;display:flex;align-items:center;gap:2px}
 .pick.empty{color:var(--text3)}
-.pick .ar{margin-left:auto;color:var(--text3)}
-.pick .ty{font-size:11px;color:var(--text3);margin-left:7px}
-.regtime{font-size:11.5px;color:var(--text2);min-width:74px;text-align:right}
+.pick .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.pick .mk{flex:0 0 auto;font-size:11.5px;margin-right:3px}
+.pick .mk.star{color:var(--info)}
+.pick .ar{margin-left:auto;color:var(--text3);flex:0 0 auto;padding-left:4px}
+.pick .ty{font-size:11px;color:var(--text3);margin-left:7px;flex:0 0 auto}
 .xbtn{border:0;background:none;color:var(--text3);font-size:18px;cursor:pointer;padding:2px 4px;line-height:1}
 .xbtn:hover{color:var(--warn)}
 .addbtn{display:inline-flex;align-items:center;gap:5px;font-size:13px;padding:8px 14px;border:1px dashed var(--line2);
@@ -116,7 +149,6 @@ input:focus{outline:2px solid var(--info-line);outline-offset:0;border-color:var
 .btn.ghost{background:var(--surface);border-color:var(--line2);color:var(--text2)}
 .btn.ghost:hover{border-color:var(--info-line)}
 .btn.primary{background:var(--info);color:#fff;font-weight:600}
-.btn.tetsu{background:var(--tetsu-bg);color:var(--tetsu);font-weight:600}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .bcard{border:1px solid var(--line);border-radius:var(--radius-s);padding:12px 14px;margin-bottom:10px;background:var(--surface)}
 .bhead{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
@@ -132,35 +164,6 @@ input:focus{outline:2px solid var(--info-line);outline-offset:0;border-color:var
 .note{font-size:12px;color:var(--text3);line-height:1.7}
 .editbanner{background:var(--warn-bg);color:var(--warn);font-size:13px;padding:9px 14px;border-radius:var(--radius-s);margin-bottom:14px;display:flex;align-items:center;gap:8px}
 
-/* 鍛刀中トレイ */
-.forge{border:1px solid var(--line2);border-radius:var(--radius);overflow:hidden;margin-bottom:11px}
-.forge.open{border:2px solid var(--info-line)}
-.fhead{padding:12px 14px;cursor:pointer}
-.forge.open .fhead{background:var(--info-bg)}
-.fhead-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.fhead .fname{font-size:14px;font-weight:600}
-.forge.open .fhead .fname{color:var(--info)}
-.fhead-sub{display:flex;align-items:center;gap:13px;flex-wrap:wrap;padding-left:25px;margin-top:6px}
-.fhead-sub .cd{font-size:12px}
-.cd.counting{color:var(--info);font-weight:600}
-.cd.ready{color:var(--ok);font-weight:600}
-.cd.await{color:var(--text3)}
-.fbody{padding:4px 14px 14px;background:var(--surface)}
-.slot{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:0.5px solid var(--line);flex-wrap:wrap}
-.slot:last-child{border-bottom:0}
-.slot .sn{font-size:11px;color:var(--text3);width:34px}
-.slot .obs{display:inline-flex;align-items:center;gap:4px}
-.slot .obs .u{font-size:10px;color:var(--text3)}
-.ministep{display:inline-flex;align-items:center;border:1px solid var(--line2);border-radius:var(--radius-s);overflow:hidden}
-.ministep button{border:0;background:none;color:var(--text2);font-family:inherit;font-size:12px;padding:4px 7px;cursor:pointer;line-height:1}
-.ministep .v{padding:4px 6px;font-size:13px;font-weight:600;min-width:26px;text-align:center;border-left:1px solid var(--line);border-right:1px solid var(--line)}
-.slot .scd{font-size:11px;min-width:104px;line-height:1.35}
-.slot .pick.mini{padding:6px 9px;font-size:12px}
-.slot .mei-done{flex:1;font-size:13px}
-.tetsubtn{font-size:11px;padding:6px 9px;border-radius:var(--radius-s);background:var(--tetsu-bg);color:var(--tetsu);border:0;font-family:inherit;cursor:pointer;white-space:nowrap}
-.confirmed{font-size:11px;color:var(--ok);white-space:nowrap}
-.ffoot{display:flex;gap:9px;justify-content:flex-end;flex-wrap:wrap;margin-top:13px;padding-top:11px;border-top:0.5px dashed var(--line)}
-.fname-edit{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
 .toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:14px}
 .sortseg{display:inline-flex;border:1px solid var(--line2);border-radius:var(--radius-s);overflow:hidden}
 .sortseg button{border:0;background:none;font-family:inherit;font-size:12px;color:var(--text2);padding:6px 12px;cursor:pointer;border-left:1px solid var(--line)}
@@ -174,6 +177,10 @@ input:focus{outline:2px solid var(--info-line);outline-offset:0;border-color:var
 .sheet-head{padding:14px 16px 10px;border-bottom:1px solid var(--line)}
 .sheet-head h3{margin:0 0 10px;font-size:15px}
 .sheet-search{width:100%;font-family:inherit;font-size:15px;padding:10px 12px;border:1px solid var(--line2);border-radius:var(--radius-s);background:var(--surface);color:var(--text)}
+.pk-types{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.pk-chip{border:1px solid var(--line2);background:var(--surface);color:var(--text2);font-family:inherit;
+  font-size:12px;padding:5px 10px;border-radius:99px;cursor:pointer;line-height:1.3}
+.pk-chip.on{background:var(--info-bg);color:var(--info);border-color:var(--info-line);font-weight:600}
 .sheet-body{overflow-y:auto;padding:8px 10px 16px}
 .grp-lbl{font-size:11px;color:var(--text3);padding:10px 6px 4px;position:sticky;top:0;background:var(--surface)}
 .mitem{display:flex;align-items:center;width:100%;text-align:left;border:0;background:none;font-family:inherit;color:var(--text);font-size:14px;padding:9px 10px;border-radius:var(--radius-s);cursor:pointer}
@@ -212,6 +219,12 @@ html[data-theme="dark"] .sub .fill{background:#34577a}
 .pickup-hi{background:var(--info-bg);border-radius:var(--radius-s);padding:10px 12px;margin-bottom:16px}
 .pickup-hi .pl{font-size:12px;color:var(--info)}
 .pickup-hi .pv{font-size:20px;font-weight:600;color:var(--info)}
+/* ── 小画面の微調整（後勝ちさせるため、あえてCSSの最後に置く） ── */
+@media(max-width:400px){
+  /* 数量ボタンを少しだけ詰めて、浮いた分を男士名の表示幅に回す */
+  .stepper button{padding:6px 9px}
+  .stepper .val{min-width:34px;padding:6px 8px}
+}
 </style>
 </head>
 <body>
@@ -219,12 +232,11 @@ html[data-theme="dark"] .sub .fill{background:#34577a}
   <header>
     <span class="logo">🔥</span>
     <div><div class="htitle">鍛刀録</div><div class="hsub">鍛刀の記録と集計</div></div>
-    <div class="hbtns"><button class="iconbtn" id="themeBtn" title="表示切替" aria-label="表示切替">🌙</button></div>
+    <div class="hbtns"><span class="hclock" id="hdrClock"></span><button class="syncbtn" id="syncBtn">☁ 未接続</button><button class="syncbtn" id="syncDownBtn" style="display:none" title="クラウドから読み込む">⬇</button><button class="iconbtn" id="themeBtn" title="表示切替" aria-label="表示切替">🌙</button></div>
   </header>
   <nav class="tabs" id="tabs">
     <button class="tab" data-tab="shukei">📊 集計</button>
     <button class="tab" data-tab="kiroku">🔥 記録</button>
-    <button class="tab" data-tab="tantouchu">⏳ 鍛刀中<span class="badge" id="trayBadge" style="display:none"></span></button>
     <button class="tab" data-tab="rireki">📜 履歴</button>
     <button class="tab" data-tab="settei">⚙ 設定</button>
   </nav>
@@ -234,72 +246,138 @@ html[data-theme="dark"] .sub .fill{background:#34577a}
 <div class="overlay" id="pickerOverlay">
   <div class="sheet" role="dialog" aria-modal="true" aria-label="男士を選ぶ">
     <div class="sheet-head"><h3 id="pickerTitle">男士を選ぶ</h3>
-      <input class="sheet-search" id="pickerSearch" placeholder="名前・読みで検索" autocomplete="off"></div>
+      <input class="sheet-search" id="pickerSearch" placeholder="名前・読みで検索" autocomplete="off">
+      <div class="pk-types" id="pickerTypes"></div></div>
     <div class="sheet-body" id="pickerList"></div>
     <div class="sheet-foot"><button class="btn ghost" id="pickerCancel">閉じる</button></div>
   </div>
 </div>
 
+<div class="overlay" id="modalOverlay" style="align-items:center">
+  <div class="modal-box" id="modalBox" role="dialog" aria-modal="true"></div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
 <script>
 "use strict";
 
 /* =========================================================================
-   男士マスタ（仮データ）— あとで本物のマスタに差し替え
-   [番号, 名前, 読み, 刀種, レア, 規定鍛刀時間("H:MM:SS" / 不明は"")]
+   男士マスタ（基底刀 127振・稽古録の図鑑と同じ）
+   [図鑑No, 名前, 読み, 刀種] ※極は鍛刀では出ないため収録しない
    ========================================================================= */
 const TANTOU_MASTER_SEED = [
-  [1,"今剣","いまのつるぎ","短刀",2,""],[2,"厚藤四郎","あつしとうしろう","短刀",3,""],
-  [3,"乱藤四郎","みだれとうしろう","短刀",3,""],[4,"平野藤四郎","ひらのとうしろう","短刀",4,""],
-  [5,"五虎退","ごこたい","短刀",3,""],[6,"前田藤四郎","まえだとうしろう","短刀",3,""],
-  [7,"薬研藤四郎","やげんとうしろう","短刀",3,""],[8,"鯰尾藤四郎","なまずおとうしろう","脇差",3,""],
-  [9,"堀川国広","ほりかわくにひろ","脇差",3,""],[10,"浦島虎徹","うらしまこてつ","脇差",4,""],
-  [11,"にっかり青江","にっかりあおえ","脇差",4,""],[12,"加州清光","かしゅうきよみつ","打刀",3,""],
-  [13,"大和守安定","やまとのかみやすさだ","打刀",3,""],[14,"山姥切国広","やまんばぎりくにひろ","打刀",4,""],
-  [15,"歌仙兼定","かせんかねさだ","打刀",3,""],[16,"和泉守兼定","いずみのかみかねさだ","打刀",3,""],
-  [17,"蜂須賀虎徹","はちすかこてつ","打刀",4,""],[18,"陸奥守吉行","むつのかみよしゆき","打刀",4,""],
-  [19,"へし切長谷部","へしきりはせべ","打刀",4,""],[20,"豊前江","ぶぜんごう","打刀",3,""],
-  [21,"篭手切江","こてぎりごう","打刀",3,""],[22,"松井江","まついごう","打刀",3,""],
-  [23,"桑名江","くわなごう","打刀",3,""],[24,"同田貫正国","どうだぬきまさくに","太刀",3,""],
-  [25,"大般若長光","だいはんにゃながみつ","太刀",4,""],[26,"三日月宗近","みかづきむねちか","太刀",5,""],
-  [27,"鶴丸国永","つるまるくになが","太刀",5,""],[28,"髭切","ひげきり","太刀",5,""],
-  [29,"膝丸","ひざまる","太刀",5,""],[30,"蜻蛉切","とんぼきり","槍",4,""],
+  [0,"童子切安綱 剥落","どうじぎりやすつな はくらく","太刀"],[3,"三日月宗近","みかづきむねちか","太刀"],
+  [5,"小狐丸","こぎつねまる","太刀"],[7,"石切丸","いしきりまる","大太刀"],
+  [9,"岩融","いわとおし","薙刀"],[11,"今剣","いまのつるぎ","短刀"],
+  [13,"大典太光世","おおでんたみつよ","太刀"],[15,"ソハヤノツルキ","そはやのつるぎ","太刀"],
+  [17,"数珠丸恒次","じゅずまるつねつぐ","太刀"],[19,"にっかり青江","にっかりあおえ","脇差"],
+  [21,"鬼丸国綱","おにまるくにつな","太刀"],[23,"鳴狐","なきぎつね","打刀"],
+  [25,"一期一振","いちごひとふり","太刀"],[27,"鯰尾藤四郎","なまずおとうしろう","脇差"],
+  [29,"骨喰藤四郎","ほねばみとうしろう","脇差"],[31,"平野藤四郎","ひらのとうしろう","短刀"],
+  [33,"厚藤四郎","あつしとうしろう","短刀"],[35,"後藤藤四郎","ごとうとうしろう","短刀"],
+  [37,"信濃藤四郎","しなのとうしろう","短刀"],[39,"前田藤四郎","まえだとうしろう","短刀"],
+  [41,"秋田藤四郎","あきたとうしろう","短刀"],[43,"博多藤四郎","はかたとうしろう","短刀"],
+  [45,"乱藤四郎","みだれとうしろう","短刀"],[47,"五虎退","ごこたい","短刀"],
+  [49,"薬研藤四郎","やげんとうしろう","短刀"],[51,"包丁藤四郎","ほうちょうとうしろう","短刀"],
+  [53,"大包平","おおかねひら","太刀"],[55,"鶯丸","うぐいすまる","太刀"],
+  [57,"明石国行","あかしくにゆき","太刀"],[59,"蛍丸","ほたるまる","大太刀"],
+  [61,"愛染国俊","あいぜんくにとし","短刀"],[63,"千子村正","せんごむらまさ","打刀"],
+  [65,"蜻蛉切","とんぼきり","槍"],[67,"物吉貞宗","ものよしさだむね","脇差"],
+  [69,"太鼓鐘貞宗","たいこがねさだむね","短刀"],[71,"亀甲貞宗","きっこうさだむね","打刀"],
+  [73,"燭台切光忠","しょくだいきりみつただ","太刀"],[75,"大般若長光","だいはんにゃながみつ","太刀"],
+  [77,"小竜景光","こりゅうかげみつ","太刀"],[79,"江雪左文字","こうせつさもんじ","太刀"],
+  [81,"宗三左文字","そうざさもんじ","打刀"],[83,"小夜左文字","さよさもんじ","短刀"],
+  [85,"加州清光","かしゅうきよみつ","打刀"],[87,"大和守安定","やまとのかみやすさだ","打刀"],
+  [89,"歌仙兼定","かせんかねさだ","打刀"],[91,"和泉守兼定","いずみのかみかねさだ","打刀"],
+  [93,"陸奥守吉行","むつのかみよしゆき","打刀"],[95,"山姥切国広","やまんばぎりくにひろ","打刀"],
+  [97,"山伏国広","やまぶしくにひろ","太刀"],[99,"堀川国広","ほりかわくにひろ","脇差"],
+  [101,"蜂須賀虎徹","はちすかこてつ","打刀"],[103,"浦島虎徹","うらしまこてつ","脇差"],
+  [105,"長曽祢虎徹","ながそねこてつ","打刀"],[107,"髭切","ひげきり","太刀"],
+  [112,"膝丸","ひざまる","太刀"],[116,"大倶利伽羅","おおくりから","打刀"],
+  [118,"へし切長谷部","へしきりはせべ","打刀"],[120,"不動行光","ふどうゆきみつ","短刀"],
+  [122,"獅子王","ししおう","太刀"],[124,"小烏丸","こがらすまる","太刀"],
+  [126,"抜丸","ぬけまる","太刀"],[128,"同田貫正国","どうだぬきまさくに","打刀"],
+  [130,"鶴丸国永","つるまるくになが","太刀"],[132,"太郎太刀","たろうたち","大太刀"],
+  [134,"次郎太刀","じろうたち","大太刀"],[136,"日本号","にほんごう","槍"],
+  [138,"御手杵","おてぎね","槍"],[140,"巴形薙刀","ともえがたなぎなた","薙刀"],
+  [142,"毛利藤四郎","もうりとうしろう","短刀"],[144,"篭手切江","こてぎりごう","脇差"],
+  [146,"謙信景光","けんしんかげみつ","短刀"],[148,"小豆長光","あずきながみつ","太刀"],
+  [150,"日向正宗","ひゅうがまさむね","短刀"],[152,"静形薙刀","しずかがたなぎなた","薙刀"],
+  [154,"南泉一文字","なんせんいちもんじ","打刀"],[156,"千代金丸","ちよがねまる","太刀"],
+  [158,"山姥切長義","やまんばぎりちょうぎ","打刀"],[160,"豊前江","ぶぜんごう","打刀"],
+  [162,"祢々切丸","ねねきりまる","大太刀"],[164,"白山吉光","はくさんよしみつ","剣"],
+  [166,"南海太郎朝尊","なんかいたろうちょうそん","打刀"],[168,"肥前忠広","ひぜんただひろ","脇差"],
+  [170,"北谷菜切","ちゃたんなきり","短刀"],[172,"桑名江","くわなごう","打刀"],
+  [174,"水心子正秀","すいしんしまさひで","打刀"],[176,"源清麿","みなもときよまろ","打刀"],
+  [178,"松井江","まついごう","打刀"],[180,"山鳥毛","さんちょうもう","太刀"],
+  [182,"古今伝授の太刀","こきんでんじゅのたち","太刀"],[184,"地蔵行平","じぞうゆきひら","打刀"],
+  [186,"治金丸","ちがねまる","脇差"],[188,"日光一文字","にっこういちもんじ","太刀"],
+  [190,"太閤左文字","たいこうさもんじ","短刀"],[192,"五月雨江","さみだれごう","打刀"],
+  [194,"大千鳥十文字槍","おおちどりじゅうもんじやり","槍"],[196,"泛塵","はんじん","脇差"],
+  [198,"一文字則宗","いちもんじのりむね","太刀"],[200,"村雲江","むらくもごう","打刀"],
+  [202,"姫鶴一文字","ひめつるいちもんじ","太刀"],[204,"福島光忠","ふくしまみつただ","太刀"],
+  [206,"七星剣","しちせいけん","剣"],[208,"丙子椒林剣","へいししょうりんけん","剣"],
+  [210,"稲葉江","いなばごう","打刀"],[212,"笹貫","ささぬき","太刀"],
+  [214,"人間無骨","にんげんむこつ","槍"],[216,"八丁念仏","はっちょうねんぶつ","太刀"],
+  [218,"石田正宗","いしだまさむね","打刀"],[220,"実休光忠","じっきゅうみつただ","太刀"],
+  [222,"京極正宗","きょうごくまさむね","短刀"],[224,"孫六兼元","まごろくかねもと","打刀"],
+  [226,"後家兼光","ごけかねみつ","打刀"],[228,"火車切","かしゃぎり","脇差"],
+  [230,"富田江","とみたごう","打刀"],[232,"大慶直胤","たいけいなおたね","打刀"],
+  [234,"九鬼正宗","くきまさむね","短刀"],[236,"雲生","うんしょう","太刀"],
+  [238,"道誉一文字","どうよいちもんじ","太刀"],[240,"雲次","うんじ","太刀"],
+  [242,"面影","おもかげ","太刀"],[244,"古備前信房","こびぜんのぶふさ","太刀"],
+  [246,"倶利伽羅江","くりからごう","短刀"],[248,"三郎国宗","さぶろうくにむね","太刀"],
+  [250,"安宅切","あたぎぎり","打刀"],[252,"二筋樋貞宗","ふたすじひさだむね","打刀"],
+  [254,"雲重","うんじゅう","打刀"],[256,"柏太刀","かしわだち","大太刀"],
+  [258,"波平行安","なみのひらゆきやす","太刀"]
 ];
-const MASTER = TANTOU_MASTER_SEED.map(a=>({no:a[0],mei:a[1],yomi:a[2],type:a[3],rarity:a[4],time:a[5]}));
+const MASTER = TANTOU_MASTER_SEED.map(a=>({no:a[0],mei:a[1],yomi:a[2],type:a[3]}));
 const MASTER_BY_MEI = Object.fromEntries(MASTER.map(m=>[m.mei,m]));
-const TYPE_ORDER = ["短刀","脇差","打刀","太刀","大太刀","槍","薙刀","剣","弓","銃","その他"];
+const TYPE_ORDER = ["短刀","脇差","打刀","太刀","大太刀","槍","薙刀","剣"];
 function typeRank(t){const i=TYPE_ORDER.indexOf(t);return i<0?99:i;}
-function stars(n){return "★".repeat(n||0);}
 const FUDA={none:"なし",fuji:"富士",matsu:"松",take:"竹",ume:"梅"};
 const FUDA_CLS={fuji:"f-fuji",matsu:"f-matsu",take:"f-take",ume:"f-ume"};
-const FORGE_DEFAULTS=["第一鍛刀場","第二鍛刀場","第三鍛刀場","第四鍛刀場"];
 
 /* =========================== 状態 =========================== */
 const LS_DATA="tantouroku_v1",LS_TAB="tantouroku_tab",LS_THEME="tantouroku_theme";
+let _appReady=false;
 let DB=load();
 function load(){
   let r=null; try{r=JSON.parse(localStorage.getItem(LS_DATA));}catch(e){}
+  return normalize(r);
+}
+// 受け取ったデータ（ローカル／クラウド問わず）を正しい形に整える
+function normalize(r){
   if(!r||!Array.isArray(r.batches)) r={batches:[]};
   if(!Array.isArray(r.wishlist)) r.wishlist=[];
-  if(!r.settings) r.settings={trayShowAll:false,notify:false};
+  if(!r.settings) r.settings={};
+  // 登録レシピ（名前付きプリセット）
+  if(!Array.isArray(r.recipes)) r.recipes=[];
+  r.recipes=r.recipes.filter(p=>p&&p.name).map(p=>({id:p.id||uid(),name:String(p.name).slice(0,20),
+    charcoal:+p.charcoal||0,steel:+p.steel||0,coolant:+p.coolant||0,whetstone:+p.whetstone||0}));
+  if(typeof r.updatedAt!=="number") r.updatedAt=r.updatedAt?Number(r.updatedAt)||0:0;
+  delete r.settings.trayShowAll; delete r.settings.notify;
   r.batches.forEach(b=>{
-    if(b.forgeName===undefined) b.forgeName="";
-    if(b.startTime===undefined) b.startTime="";
     if(b.eventStart===undefined) b.eventStart="";
     if(b.eventEnd===undefined) b.eventEnd="";
-    (b.slots||[]).forEach(s=>{
-      if(s.observedSec===undefined){ s.observedSec=null; }
-      if(s.rushed===undefined) s.rushed=false;
-      if(s.notified===undefined) s.notified=false;
-      delete s.observed;
-    });
+    // 旧バージョンの「鍛刀中」は履歴へ（結果未入力のまま。編集で男士を入れられます）
+    b.state="done";
+    b.slots=(b.slots||[]).filter(s=>s&&s.mei).map(s=>({id:s.id||uid(),mei:s.mei}));
+    delete b.forgeName; delete b.startTime;
+    // 整合修復：鍛刀数が不正、またはスロット数が鍛刀数を超えている旧データを直す
+    if(typeof b.count!=="number"||b.count<1)b.count=Math.max(1,b.slots.length);
+    if(b.slots.length>b.count)b.count=b.slots.length;
   });
   return r;
 }
-function save(){try{localStorage.setItem(LS_DATA,JSON.stringify(DB));}catch(e){alert("保存に失敗しました。容量をご確認ください。");}}
+function save(){
+  if(_appReady)DB.updatedAt=Date.now();
+  try{localStorage.setItem(LS_DATA,JSON.stringify(DB));}catch(e){alert("保存に失敗しました。容量をご確認ください。");}
+  if(_appReady)scheduleAutoSync();
+}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 function nowISO(){return new Date().toISOString();}
 function activeBatches(){return DB.batches.filter(b=>!b.deleted);}
-function forgingBatches(){return activeBatches().filter(b=>b.state==="forging");}
 
 /* =========================== ユーティリティ =========================== */
 function el(html){const t=document.createElement("template");t.innerHTML=html.trim();return t.content.firstChild;}
@@ -309,13 +387,7 @@ function fmtDateTime(iso){if(!iso)return"";const m=iso.match(/^(\d{4})-(\d{2})-(
 function fmtDateOnly(d){if(!d)return"";const m=d.match(/^(\d{4})-(\d{2})-(\d{2})/);return m?`${m[1]}/${m[2]}/${m[3]}`:d;}
 function todayLocalDate(){const d=new Date();return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;}
 function nowLocalTime(){const d=new Date();return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;}
-function nowLocalDateTime(){return `${todayLocalDate()}T${nowLocalTime()}`;}
-function fmtDur(sec){sec=Math.max(0,Math.floor(sec));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return h>0?`${h}:${pad2(m)}:${pad2(s)}`:`${pad2(m)}:${pad2(s)}`;}
-function fmtClock(ms){const d=new Date(ms),now=new Date();const t=`${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
-  if(d.toDateString()===now.toDateString())return t;
-  const tm=new Date(now);tm.setDate(now.getDate()+1);
-  if(d.toDateString()===tm.toDateString())return"翌 "+t;
-  return `${d.getMonth()+1}/${d.getDate()} ${t}`;}
+
 
 /* =========================== 記録フォーム =========================== */
 let form=blankForm();
@@ -327,15 +399,13 @@ function resultsTotal(){return form.results.reduce((s,r)=>s+(r.mei?(r.qty||0):0)
 /* =========================== ルーティング =========================== */
 const VIEW=document.getElementById("view");
 let currentTab=localStorage.getItem(LS_TAB)||"kiroku";
+if(!["shukei","kiroku","rireki","settei"].includes(currentTab))currentTab="kiroku";
 function setTab(t){currentTab=t;localStorage.setItem(LS_TAB,t);render();}
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.tab)));
 function render(scrollTop=true){
   document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===currentTab));
-  const pend=forgingBatches().length;const badge=document.getElementById("trayBadge");
-  badge.style.display=pend?"inline-block":"none";badge.textContent=pend;
   if(currentTab==="kiroku")renderKiroku();
   else if(currentTab==="rireki")renderRireki();
-  else if(currentTab==="tantouchu")renderTantouchu();
   else if(currentTab==="shukei")renderShukei();
   else if(currentTab==="settei")renderSettei();
   if(scrollTop)window.scrollTo(0,0);
@@ -353,10 +423,15 @@ function renderKiroku(){
   card.appendChild(el(`<div style="font-size:15px;font-weight:600;margin-bottom:16px">${editing?"鍛刀を編集":"鍛刀を記録"}</div>`));
 
   const top=el(`<div class="grid2 row"></div>`);
-  const dcol=el(`<div></div>`);dcol.appendChild(el(`<label class="lbl">鍛刀日時</label>`));
-  const dwrap=el(`<div style="display:flex;gap:7px"></div>`);
-  const di=el(`<input type="date" style="flex:1">`);di.value=form.date;di.onchange=()=>form.date=di.value;
-  const ti=el(`<input type="time" style="width:96px">`);ti.value=form.time;ti.onchange=()=>form.time=ti.value;
+  const dcol=el(`<div></div>`);
+  const dlblrow=el(`<div style="display:flex;align-items:baseline;gap:10px"></div>`);
+  dlblrow.appendChild(el(`<label class="lbl">鍛刀日時</label>`));
+  const nowBtn=el(`<button class="linkbtn" style="margin-bottom:7px">⟳ 今に合わせる</button>`);
+  nowBtn.onclick=()=>{form.date=todayLocalDate();form.time=nowLocalTime();renderKiroku();};
+  dlblrow.appendChild(nowBtn);dcol.appendChild(dlblrow);
+  const dwrap=el(`<div style="display:flex;gap:7px;flex-wrap:wrap"></div>`);
+  const di=el(`<input type="date" style="flex:1 1 130px;min-width:0">`);di.value=form.date;di.onchange=()=>form.date=di.value;
+  const ti=el(`<input type="time" style="flex:0 1 96px;min-width:0">`);ti.value=form.time;ti.onchange=()=>form.time=ti.value;
   dwrap.append(di,ti);dcol.appendChild(dwrap);top.appendChild(dcol);
   const mcol=el(`<div></div>`);mcol.appendChild(el(`<label class="lbl">種別</label>`));
   const seg=el(`<div class="seg"></div>`);const bn=el(`<button>通常</button>`),be=el(`<button>イベント</button>`);
@@ -368,14 +443,14 @@ function renderKiroku(){
     const eb=el(`<div class="eventbox row"></div>`);
     eb.appendChild(el(`<label class="lbl">⭐ 目玉男士（このイベントの目玉を選ぶ）</label>`));
     const pk=el(`<button class="pick ${form.pickup?"":"empty"}"></button>`);
-    pk.innerHTML=form.pickup?`${esc(form.pickup)}<span class="ar">▾</span>`:`選択してください<span class="ar">▾</span>`;
+    pk.innerHTML=form.pickup?`<span class="nm">${esc(form.pickup)}</span><span class="ar">▾</span>`:`<span class="nm">選択してください</span><span class="ar">▾</span>`;
     pk.onclick=()=>openPicker("目玉男士を選ぶ",mei=>{form.pickup=mei;renderKiroku();});
     eb.appendChild(pk);
     eb.appendChild(el(`<label class="lbl" style="margin-top:11px">イベント期間</label>`));
     const pw=el(`<div style="display:flex;gap:8px;align-items:center"></div>`);
-    const es=el(`<input type="date" style="flex:1">`);es.value=form.eventStart;es.onchange=()=>form.eventStart=es.value;
-    const ee=el(`<input type="date" style="flex:1">`);ee.value=form.eventEnd;ee.onchange=()=>form.eventEnd=ee.value;
-    pw.append(es,el(`<span style="color:var(--info)">〜</span>`),ee);eb.appendChild(pw);
+    const es=el(`<input type="date" style="flex:1 1 0;min-width:0">`);es.value=form.eventStart;es.onchange=()=>form.eventStart=es.value;
+    const ee=el(`<input type="date" style="flex:1 1 0;min-width:0">`);ee.value=form.eventEnd;ee.onchange=()=>form.eventEnd=ee.value;
+    pw.append(es,el(`<span style="color:var(--info);flex:0 0 auto">〜</span>`),ee);eb.appendChild(pw);
     card.appendChild(eb);
   }else{
     const sb=el(`<div class="sakurabox row"></div>`);
@@ -395,6 +470,32 @@ function renderKiroku(){
   }
 
   const rc=el(`<div class="row"></div>`);rc.appendChild(el(`<label class="lbl">レシピ</label>`));
+  // 登録レシピ（プルダウンで選ぶと4値が入る。4値が一致していれば自動で選択表示）
+  const matched=matchedPreset();
+  const pr=el(`<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:9px"></div>`);
+  const psel=el(`<select class="txt" style="flex:1 1 170px;width:auto;min-width:0;padding:8px"></select>`);
+  psel.appendChild(el(`<option value="">登録レシピから選ぶ…</option>`));
+  DB.recipes.forEach(p=>{
+    const o=el(`<option value="${p.id}"></option>`);
+    o.textContent=`${p.name}（${p.charcoal}/${p.steel}/${p.coolant}/${p.whetstone}）`;
+    psel.appendChild(o);
+  });
+  psel.value=matched?matched.id:"";
+  psel.onchange=()=>{const p=DB.recipes.find(x=>x.id===psel.value);if(!p)return;
+    form.recipe={charcoal:String(p.charcoal),steel:String(p.steel),coolant:String(p.coolant),whetstone:String(p.whetstone)};
+    renderKiroku();};
+  pr.appendChild(psel);
+  if(matched){
+    const del=el(`<button class="linkbtn del" title="この登録レシピを削除">🗑</button>`);
+    del.onclick=()=>{if(confirm(`登録レシピ「${matched.name}」を削除しますか？（記録は消えません）`)){
+      DB.recipes=DB.recipes.filter(p=>p.id!==matched.id);save();renderKiroku();}};
+    pr.appendChild(del);
+  }else{
+    const reg=el(`<button class="linkbtn">☆ 今の値を登録</button>`);
+    reg.onclick=openRecipeSaveModal;
+    pr.appendChild(reg);
+  }
+  rc.appendChild(pr);
   const grid=el(`<div class="recipe"></div>`);
   [["charcoal","木炭"],["steel","玉鋼"],["coolant","冷却材"],["whetstone","砥石"]].forEach(([k,lab])=>{
     const cell=el(`<div class="cell"></div>`);const inp=el(`<input class="txt" inputmode="numeric" maxlength="4">`);
@@ -431,13 +532,12 @@ function renderKiroku(){
   form.results.forEach((r,idx)=>{
     const row=el(`<div class="resrow"></div>`);const m=r.mei?MASTER_BY_MEI[r.mei]:null;
     const pk=el(`<button class="pick ${r.mei?"":"empty"}"></button>`);
-    pk.innerHTML=r.mei?`${esc(r.mei)}${m?`<span class="ty">${m.type} ${stars(m.rarity)}</span>`:""}<span class="ar">▾</span>`:`選択してください<span class="ar">▾</span>`;
+    const isPk=form.mode==="event"&&r.mei&&r.mei===form.pickup;
+    const isWl=r.mei&&DB.wishlist.includes(r.mei);
+    const marks=`${isPk?`<span class="mk star">★</span>`:""}${isWl?`<span class="mk sakura">🌸</span>`:""}`;
+    pk.innerHTML=r.mei?`${marks}<span class="nm">${esc(r.mei)}</span>${m?`<span class="ty">${m.type}</span>`:""}<span class="ar">▾</span>`:`<span class="nm">選択してください</span><span class="ar">▾</span>`;
     pk.onclick=()=>openPicker("男士を選ぶ",mei=>{r.mei=mei;renderKiroku();});
     row.appendChild(pk);
-    if(form.mode==="event"&&r.mei&&r.mei===form.pickup)row.appendChild(el(`<span class="tag star">★目玉</span>`));
-    if(DB.wishlist.includes(r.mei))row.appendChild(el(`<span class="tag" style="background:var(--sakura-bg);color:var(--sakura)">🌸</span>`));
-    const reg=m&&m.time?`規定 ${m.time}`:(r.mei?"規定 —":"—");
-    row.appendChild(el(`<span class="regtime">${reg}</span>`));
     const qs=el(`<div class="stepper"></div>`);
     const qm=el(`<button>−</button>`),qv=el(`<span class="val">${r.qty}</span>`),qp=el(`<button>＋</button>`);
     qm.onclick=()=>{r.qty=Math.max(1,(r.qty||1)-1);renderKiroku();};
@@ -455,22 +555,58 @@ function renderKiroku(){
   card.appendChild(add);
 
   const act=el(`<div class="actions"></div>`);
-  const sf=el(`<button class="btn ghost">⏳ 鍛刀中として保存</button>`);sf.onclick=()=>submit("forging");
-  const sd=el(`<button class="btn primary">✓ 完了として登録</button>`);
-  sd.disabled=!okSum||form.results.some(r=>r.qty&&!r.mei)||total===0;sd.onclick=()=>submit("done");
-  act.append(sf,sd);card.appendChild(act);
-  if(!okSum&&total>0)card.appendChild(el(`<div class="note" style="text-align:right;margin-top:6px">完了登録は合計を鍛刀数（${form.count}）に合わせてください。</div>`));
+  const sd=el(`<button class="btn primary">✓ ${editing?"保存する":"登録する"}</button>`);
+  sd.disabled=!okSum||form.results.some(r=>r.qty&&!r.mei)||total===0;sd.onclick=submit;
+  act.append(sd);card.appendChild(act);
+  if(!okSum&&total>0)card.appendChild(el(`<div class="note" style="text-align:right;margin-top:6px">登録は合計を鍛刀数（${form.count}）に合わせてください。</div>`));
   VIEW.appendChild(card);
 }
 
-function buildSlots(state){
+function buildSlots(){
   const slots=[];
-  form.results.forEach(r=>{if(r.mei){for(let i=0;i<(r.qty||0);i++){const m=MASTER_BY_MEI[r.mei];
-    slots.push({id:uid(),mei:r.mei,time:m&&m.time?m.time:"",observedSec:null,rushed:false,notified:false});}}});
-  if(state==="forging"){while(slots.length<form.count)slots.push({id:uid(),mei:null,time:"",observedSec:null,rushed:false,notified:false});}
-  return slots.slice(0,Math.max(form.count,slots.length));
+  form.results.forEach(r=>{if(r.mei){for(let i=0;i<(r.qty||0);i++)slots.push({id:uid(),mei:r.mei});}});
+  return slots;
 }
-function submit(state){
+/* ── 登録レシピ ── */
+// フォームの4値と一致する登録レシピ（プルダウンの自動選択・集計での名前表示に使う）
+function matchedPreset(recipe){
+  const r=recipe||form.recipe;
+  const c=+r.charcoal||0,s=+r.steel||0,co=+r.coolant||0,w=+r.whetstone||0;
+  if(!c&&!s&&!co&&!w)return null;
+  return DB.recipes.find(p=>p.charcoal===c&&p.steel===s&&p.coolant===co&&p.whetstone===w)||null;
+}
+function openRecipeSaveModal(){
+  const c=+form.recipe.charcoal||0,s=+form.recipe.steel||0,co=+form.recipe.coolant||0,w=+form.recipe.whetstone||0;
+  if(!c&&!s&&!co&&!w){alert("レシピの値を入れてから登録してください。");return;}
+  showModal(`<div class="modal-title">☆ レシピを登録</div>
+    <div class="modal-desc">${c} / ${s} / ${co} / ${w} に名前を付けて保存します。次からプルダウンで呼び出せます。</div>
+    <input class="txt" id="presetName" maxlength="20" placeholder="例：目玉狙い、恒常太刀" autocomplete="off">
+    <div class="modal-act" style="margin-top:14px">
+      <button class="btn ghost" id="presetCancel">キャンセル</button>
+      <button class="btn primary" id="presetSave">保存する</button>
+    </div>`);
+  const inp=document.getElementById("presetName");inp.focus();
+  document.getElementById("presetCancel").onclick=closeModal;
+  const doSave=()=>{
+    const name=inp.value.trim();
+    if(!name){inp.focus();return;}
+    const dup=DB.recipes.find(p=>p.name===name);
+    if(dup){
+      if(!confirm(`「${name}」は登録済みです。値を上書きしますか？`))return;
+      dup.charcoal=c;dup.steel=s;dup.coolant=co;dup.whetstone=w;
+    }else{
+      DB.recipes.push({id:uid(),name,charcoal:c,steel:s,coolant:co,whetstone:w});
+    }
+    save();closeModal();toast(`レシピ「${name}」を登録しました`);renderKiroku();
+  };
+  document.getElementById("presetSave").onclick=doSave;
+  inp.addEventListener("keydown",e=>{if(e.key==="Enter")doSave();});
+}
+function submit(){
+  // 整合ガード：ボタンのdisabledに頼らず、保存直前にも必ず検査する
+  const total=resultsTotal();
+  if(form.results.some(r=>r.qty&&!r.mei)){alert("男士が選ばれていない行があります。選ぶか、×で行を削除してください。");return;}
+  if(total!==form.count){alert(`結果の合計（${total}振）が鍛刀数（${form.count}振）と合っていません。`);return;}
   if(!form.recipe.charcoal&&!form.recipe.steel&&!form.recipe.coolant&&!form.recipe.whetstone){
     if(!confirm("レシピが空欄です。このまま保存しますか？"))return;}
   const datetime=form.date&&form.time?`${form.date}T${form.time}`:(form.date?`${form.date}T00:00`:"");
@@ -479,14 +615,30 @@ function submit(state){
     datetime,mode:form.mode,pickup:form.mode==="event"?form.pickup:"",
     eventStart:form.mode==="event"?form.eventStart:"",eventEnd:form.mode==="event"?form.eventEnd:"",
     recipe:{charcoal:+form.recipe.charcoal||0,steel:+form.recipe.steel||0,coolant:+form.recipe.coolant||0,whetstone:+form.recipe.whetstone||0},
-    fuda:form.fuda,count:form.count,state,slots:buildSlots(state),
-    forgeName:exist&&exist.forgeName?exist.forgeName:(state==="forging"?freeForgeName():""),
-    startTime:exist&&exist.startTime?exist.startTime:(state==="forging"?nowLocalDateTime():"")};
+    fuda:form.fuda,count:form.count,state:"done",slots:buildSlots()};
   if(form.editingId){const i=DB.batches.findIndex(b=>b.id===form.editingId);if(i>=0)DB.batches[i]=batch;else DB.batches.push(batch);}
   else DB.batches.push(batch);
-  save();form=blankForm();setTab(state==="done"?"rireki":"tantouchu");
+  save();
+  if(form.editingId){
+    // 編集の保存 → 履歴へ戻る
+    form=blankForm();setTab("rireki");toast("保存しました");
+  }else{
+    // 新規登録 → 条件（種別・目玉・期間・レシピ・お札・鍛刀数）を残して結果だけ空にし、
+    // 記録タブに留まる（イベント鍛刀で百回単位を回すときの連続入力用）
+    form.date=todayLocalDate();form.time=nowLocalTime();
+    form.results=[{mei:"",qty:1}];
+    renderKiroku();window.scrollTo(0,0);
+    toast(`登録しました（${batch.count}振）。続けて記録できます`);
+  }
 }
-function freeForgeName(){const used=new Set(forgingBatches().map(b=>b.forgeName));return FORGE_DEFAULTS.find(n=>!used.has(n))||FORGE_DEFAULTS[0];}
+// 履歴の「🔁 同じ条件でもう一回」：条件だけ写した新規記録としてフォームへ
+function copyIntoForm(b){
+  form={editingId:null,date:todayLocalDate(),time:nowLocalTime(),mode:b.mode||"normal",pickup:b.pickup||"",
+    eventStart:b.eventStart||"",eventEnd:b.eventEnd||"",
+    recipe:{charcoal:String(b.recipe.charcoal||""),steel:String(b.recipe.steel||""),coolant:String(b.recipe.coolant||""),whetstone:String(b.recipe.whetstone||"")},
+    fuda:b.fuda||"none",count:b.count||1,results:[{mei:"",qty:1}]};
+  setTab("kiroku");
+}
 function loadIntoForm(b){
   const counts={};(b.slots||[]).forEach(s=>{if(s.mei)counts[s.mei]=(counts[s.mei]||0)+1;});
   const results=Object.keys(counts).map(mei=>({mei,qty:counts[mei]}));
@@ -511,15 +663,49 @@ function resultSummary(b){const counts={};(b.slots||[]).forEach(s=>{if(s.mei)cou
   return keys.map(m=>`<span class="mei">${esc(m)}</span>×${counts[m]}`).join("　");}
 
 /* =========================== 履歴タブ =========================== */
+let rkFilter={mode:"all",from:"",to:""};
+let rkLimit=50; // 一度に見せる件数（「もっと見る」で+50）
+function monthOf(b){const m=(b.datetime||"").match(/^(\d{4})-(\d{2})/);return m?`${m[1]}年${+m[2]}月`:"日付なし";}
 function renderRireki(){
   VIEW.innerHTML="";
-  const done=activeBatches().filter(b=>b.state==="done").sort((a,b)=>(b.datetime||"").localeCompare(a.datetime||""));
-  if(!done.length){VIEW.appendChild(el(`<div class="card"><div class="empty">まだ記録がありません。<br>「🔥 記録」から鍛刀を登録すると、ここに残ります。</div></div>`));return;}
+  const all=activeBatches().filter(b=>b.state==="done").sort((a,b)=>(b.datetime||"").localeCompare(a.datetime||""));
+  if(!all.length){VIEW.appendChild(el(`<div class="card"><div class="empty">まだ記録がありません。<br>「🔥 記録」から鍛刀を登録すると、ここに残ります。</div></div>`));return;}
   const card=el(`<div class="card"></div>`);
-  card.appendChild(el(`<div style="font-size:15px;font-weight:600;margin-bottom:14px">履歴（${done.length}件）</div>`));
-  done.forEach(b=>{
+
+  // 絞り込みバー（種別・期間）
+  const done=all.filter(b=>{
+    if(rkFilter.mode!=="all"&&b.mode!==rkFilter.mode)return false;
+    const d=dateOf(b);
+    if(rkFilter.from&&d&&d<rkFilter.from)return false;
+    if(rkFilter.to&&d&&d>rkFilter.to)return false;
+    return true;
+  });
+  card.appendChild(el(`<div style="font-size:15px;font-weight:600;margin-bottom:12px">履歴（${done.length}件${done.length!==all.length?` / 全${all.length}件`:""}）</div>`));
+  const fb=el(`<div class="toolbar" style="background:var(--surface2);border-radius:var(--radius-s);padding:10px 12px;margin-bottom:14px"></div>`);
+  const modeSel=el(`<select class="txt" style="width:auto;padding:6px 8px"><option value="all">種別：すべて</option><option value="normal">通常</option><option value="event">イベント</option></select>`);
+  modeSel.value=rkFilter.mode;modeSel.onchange=()=>{rkFilter.mode=modeSel.value;rkLimit=50;renderRireki();};
+  fb.appendChild(modeSel);
+  const fromI=el(`<input type="date" style="width:auto">`);fromI.value=rkFilter.from;fromI.onchange=()=>{rkFilter.from=fromI.value;rkLimit=50;renderRireki();};
+  const toI=el(`<input type="date" style="width:auto">`);toI.value=rkFilter.to;toI.onchange=()=>{rkFilter.to=toI.value;rkLimit=50;renderRireki();};
+  fb.appendChild(el(`<span class="note">期間</span>`));fb.append(fromI,el(`<span class="note">〜</span>`),toI);
+  card.appendChild(fb);
+
+  if(!done.length){card.appendChild(el(`<div class="empty">条件に合う記録がありません。絞り込みを見直してください。</div>`));VIEW.appendChild(card);return;}
+
+  // 月見出し付きで、rkLimit件まで表示
+  const shown=done.slice(0,rkLimit);
+  let lastMonth=null;
+  shown.forEach(b=>{
+    const mon=monthOf(b);
+    if(mon!==lastMonth){
+      const cnt=done.filter(x=>monthOf(x)===mon).length;
+      card.appendChild(el(`<div class="month-h">${mon}<span class="note">　${cnt}件</span></div>`));
+      lastMonth=mon;
+    }
     const c=el(`<div class="bcard"></div>`);const head=el(`<div class="bhead"></div>`);
     head.appendChild(el(`<span class="recipe-txt">${recipeTxt(b.recipe)}</span>`));
+    const pn=matchedPreset(b.recipe);
+    if(pn)head.appendChild(el(`<span class="tag preset">☆${esc(pn.name)}</span>`));
     head.appendChild(el(`<span style="display:contents">${batchTags(b)}</span>`));
     head.appendChild(el(`<span class="when">${fmtDateTime(b.datetime)}</span>`));
     c.appendChild(head);
@@ -527,212 +713,29 @@ function renderRireki(){
       c.appendChild(el(`<div class="note" style="margin-top:5px">期間：${fmtDateOnly(b.eventStart)||"?"} 〜 ${fmtDateOnly(b.eventEnd)||"?"}</div>`));
     c.appendChild(el(`<div class="bres">${resultSummary(b)}</div>`));
     const act=el(`<div class="brow-actions"></div>`);
+    const rp=el(`<button class="linkbtn" title="この条件を写した新しい記録を作る">🔁 同じ条件でもう一回</button>`);rp.onclick=()=>copyIntoForm(b);
     const ed=el(`<button class="linkbtn">✎ 編集</button>`);ed.onclick=()=>loadIntoForm(b);
-    const dl=el(`<button class="linkbtn del">🗑 削除</button>`);dl.onclick=()=>{if(confirm("この記録を削除しますか？")){b.deleted=true;b.updatedAt=nowISO();save();render();}};
-    act.append(ed,dl);c.appendChild(act);card.appendChild(c);
+    const dl=el(`<button class="linkbtn del">🗑 削除</button>`);
+    dl.onclick=()=>{
+      b.deleted=true;b.updatedAt=nowISO();save();render(false);
+      toastUndo("削除しました","元に戻す",()=>{b.deleted=false;b.updatedAt=nowISO();save();render(false);});
+    };
+    act.append(rp,ed,dl);c.appendChild(act);card.appendChild(c);
   });
-  VIEW.appendChild(card);
-}
-
-/* =========================== 鍛刀中トレイ =========================== */
-let traySort=localStorage.getItem("tantouroku_traysort")||"time"; // time | name
-let trayOpen=new Set();
-let trayRefs=[]; // {batch, slot, idx, el(span), lastKind}
-
-function startMs(b){const t=b.startTime||b.createdAt;const d=new Date(t);return isNaN(d)?Date.now():d.getTime();}
-function slotState(b,s){
-  if(s.mei)return {kind:"confirmed"};
-  if(s.observedSec==null&&!s.rushed)return {kind:"await"};
-  if(s.rushed)return {kind:"ready",comp:Date.now()};
-  const comp=startMs(b)+s.observedSec*1000;
-  if(Date.now()>=comp)return {kind:"ready",comp};
-  return {kind:"counting",comp,rem:comp-Date.now()};
-}
-function forgeHeaderInfo(b){
-  let anyCount=false,maxComp=0,anyReady=false,allConfirmed=true;
-  (b.slots||[]).forEach(s=>{const st=slotState(b,s);
-    if(st.kind!=="confirmed")allConfirmed=false;
-    if(st.kind==="counting"){anyCount=true;if(st.comp>maxComp)maxComp=st.comp;}
-    if(st.kind==="ready"){anyReady=true;if(st.comp>maxComp)maxComp=st.comp;}
-  });
-  if(anyCount)return {cls:"counting",text:`⏱ 最遅 残り ${fmtDur((maxComp-Date.now())/1000)}`,sub:`${fmtClock(maxComp)} 全完成`};
-  if(anyReady)return {cls:"ready",text:"受取待ち（完成）",sub:""};
-  if(allConfirmed&&b.slots.length)return {cls:"ready",text:"全て確定済み",sub:""};
-  return {cls:"await",text:"観測時間 未入力",sub:""};
-}
-function confirmedCount(b){return (b.slots||[]).filter(s=>s.mei).length;}
-function forgeSortKey(b){
-  const info=forgeHeaderInfo(b);
-  if(info.cls==="ready")return [0,0];
-  if(info.cls==="counting"){let mc=0;(b.slots||[]).forEach(s=>{const st=slotState(b,s);if(st.kind==="counting"&&st.comp>mc)mc=st.comp;});return [1,mc];}
-  return [2,0];
-}
-
-function renderTantouchu(){
-  VIEW.innerHTML="";trayRefs=[];
-  let forges=forgingBatches();
-  if(traySort==="name")forges=forges.slice().sort((a,b)=>(a.forgeName||"").localeCompare(b.forgeName||"","ja"));
-  else forges=forges.slice().sort((a,b)=>{const ka=forgeSortKey(a),kb=forgeSortKey(b);return ka[0]-kb[0]||ka[1]-kb[1];});
-
-  const card=el(`<div class="card"></div>`);
-  card.appendChild(el(`<div style="font-size:15px;font-weight:600;margin-bottom:4px"><span>🔥 鍛刀中（使用中 ${forges.length} 枠）</span></div>`));
-  card.appendChild(el(`<p class="note" style="margin:0 0 14px">観測時間（ゲームに出た鍛刀時間）を入れると、開始時刻から完成予定を逆算してカウントダウンします。待たずに片付けるときは手伝い札で即完成。</p>`));
-
-  const tb=el(`<div class="toolbar"></div>`);
-  tb.appendChild(el(`<span class="note">並び替え</span>`));
-  const ss=el(`<div class="sortseg"></div>`);
-  const stime=el(`<button>残り時間順</button>`),sname=el(`<button>名前順</button>`);
-  stime.classList.toggle("on",traySort==="time");sname.classList.toggle("on",traySort==="name");
-  stime.onclick=()=>{traySort="time";localStorage.setItem("tantouroku_traysort","time");renderTantouchu();};
-  sname.onclick=()=>{traySort="name";localStorage.setItem("tantouroku_traysort","name");renderTantouchu();};
-  ss.append(stime,sname);tb.appendChild(ss);card.appendChild(tb);
-
-  if(!forges.length)card.appendChild(el(`<div class="empty">鍛刀中の記録はありません。<br>「🔥 記録」で「鍛刀中として保存」すると、ここに鍛刀場として並びます。</div>`));
-  forges.forEach(b=>card.appendChild(forgeCard(b)));
-
-  if(DB.settings.trayShowAll){
-    const used=new Set(forges.map(b=>b.forgeName));
-    FORGE_DEFAULTS.filter(n=>!used.has(n)).forEach(n=>{
-      card.appendChild(el(`<div class="bcard" style="opacity:.6"><div class="bhead"><span class="fname" style="font-size:14px;font-weight:600">${n}</span><span class="note" style="margin-left:auto">空き</span></div></div>`));
-    });
+  if(done.length>rkLimit){
+    const more=el(`<button class="btn ghost" style="width:100%;margin-top:6px">もっと見る（残り ${done.length-rkLimit}件）</button>`);
+    more.onclick=()=>{rkLimit+=50;renderRireki();};
+    card.appendChild(more);
   }
   VIEW.appendChild(card);
 }
-
-function forgeCard(b){
-  const open=trayOpen.has(b.id);
-  const info=forgeHeaderInfo(b);const cc=confirmedCount(b);
-  const fc=el(`<div class="forge ${open?"open":""}"></div>`);
-
-  const head=el(`<div class="fhead"></div>`);
-  const top=el(`<div class="fhead-top"></div>`);
-  top.appendChild(el(`<span style="font-size:15px;color:var(--text2)">${open?"▾":"▸"}</span>`));
-  top.appendChild(el(`<span class="fname">${esc(b.forgeName||"鍛刀場")}</span>`));
-  top.appendChild(el(`<span style="display:contents">${batchTags(b)}</span>`));
-  head.appendChild(top);
-  const sub=el(`<div class="fhead-sub"></div>`);
-  const cd=el(`<span class="cd ${info.cls}">${info.text}</span>`);
-  sub.appendChild(cd);
-  if(info.sub)sub.appendChild(el(`<span class="note">${info.sub}</span>`));
-  sub.appendChild(el(`<span style="margin-left:auto;font-size:12px;color:var(--text2)">${cc} / ${b.count} 確定</span>`));
-  head.appendChild(sub);
-  head.onclick=()=>{if(open)trayOpen.delete(b.id);else trayOpen.add(b.id);renderTantouchu();};
-  fc.appendChild(head);
-
-  if(open){
-    const body=el(`<div class="fbody"></div>`);
-    body.onclick=e=>e.stopPropagation();
-
-    const fe=el(`<div class="fname-edit"></div>`);
-    fe.appendChild(el(`<span class="note">鍛刀場名</span>`));
-    const ni=el(`<input class="txt" style="width:150px" maxlength="20">`);ni.value=b.forgeName||"";
-    ni.onchange=()=>{b.forgeName=ni.value.trim()||b.forgeName;b.updatedAt=nowISO();save();renderTantouchu();};
-    fe.appendChild(ni);
-    const rs=el(`<button class="linkbtn">第○鍛刀場に戻す</button>`);
-    rs.onclick=()=>{b.forgeName=freeForgeName();b.updatedAt=nowISO();save();renderTantouchu();};
-    fe.appendChild(rs);
-    body.appendChild(fe);
-
-    const se=el(`<div class="fname-edit" style="margin-top:-2px"></div>`);
-    se.appendChild(el(`<span class="note">開始時刻</span>`));
-    const si=el(`<input type="datetime-local" style="width:210px">`);si.value=b.startTime||nowLocalDateTime();
-    si.onchange=()=>{b.startTime=si.value;b.updatedAt=nowISO();save();renderTantouchu();};
-    se.appendChild(si);body.appendChild(se);
-
-    (b.slots||[]).forEach((s,i)=>body.appendChild(slotRow(b,s,i)));
-
-    const foot=el(`<div class="ffoot"></div>`);
-    const remain=(b.slots||[]).filter(s=>!s.mei).length;
-    if(remain){
-      const tf=el(`<button class="btn tetsu">🎴 手伝い札で残り${remain}振を完成</button>`);
-      tf.onclick=()=>{(b.slots||[]).forEach(s=>{if(!s.mei)s.rushed=true;});b.updatedAt=nowISO();save();renderTantouchu();};
-      foot.appendChild(tf);
-    }
-    const allDone=(b.slots||[]).length&&(b.slots||[]).every(s=>s.mei);
-    const done=el(`<button class="btn primary">✓ 全部確定して完了へ</button>`);done.disabled=!allDone;
-    done.onclick=()=>{b.state="done";b.updatedAt=nowISO();save();setTab("rireki");};
-    foot.appendChild(done);
-    const dl=el(`<button class="btn ghost">🗑 削除</button>`);
-    dl.onclick=()=>{if(confirm("この鍛刀場の記録を削除しますか？")){b.deleted=true;b.updatedAt=nowISO();trayOpen.delete(b.id);save();renderTantouchu();}};
-    foot.appendChild(dl);
-    body.appendChild(foot);
-    fc.appendChild(body);
-  }
-  return fc;
-}
-
-function slotRow(b,s,i){
-  const st=slotState(b,s);const row=el(`<div class="slot"></div>`);
-  row.appendChild(el(`<span class="sn">${i+1}振</span>`));
-
-  if(s.mei){
-    row.appendChild(el(`<span class="confirmed">✓ 確定</span>`));
-    const m=MASTER_BY_MEI[s.mei];
-    const md=el(`<span class="mei-done">${esc(s.mei)}${m?`<span class="ty" style="font-size:11px;color:var(--text3);margin-left:6px">${m.type} ${stars(m.rarity)}</span>`:""}</span>`);
-    if(b.mode==="event"&&s.mei===b.pickup)md.appendChild(el(`<span class="tag star" style="margin-left:6px">★目玉</span>`));
-    if(DB.wishlist.includes(s.mei))md.appendChild(el(`<span class="tag" style="margin-left:6px;background:var(--sakura-bg);color:var(--sakura)">🌸</span>`));
-    row.appendChild(md);
-    const un=el(`<button class="linkbtn">取消</button>`);un.onclick=()=>{s.mei=null;b.updatedAt=nowISO();save();renderTantouchu();};
-    row.appendChild(un);
-    return row;
-  }
-
-  // 観測時間 ステッパー（時 / 分10分刻み）
-  const sec=s.observedSec||0;const h=Math.floor(sec/3600),mn=Math.floor(sec%3600/60);
-  const obs=el(`<span class="obs"></span>`);
-  const hstep=el(`<span class="ministep"></span>`);
-  const hm=el(`<button>−</button>`),hv=el(`<span class="v">${h}</span>`),hp=el(`<button>＋</button>`);
-  hm.onclick=()=>setObs(b,s,Math.max(0,h-1),mn);hp.onclick=()=>setObs(b,s,Math.min(23,h+1),mn);
-  hstep.append(hm,hv,hp);
-  const mstep=el(`<span class="ministep"></span>`);
-  const mm=el(`<button>−</button>`),mv=el(`<span class="v">${pad2(mn)}</span>`),mp=el(`<button>＋</button>`);
-  mm.onclick=()=>setObs(b,s,h,Math.max(0,mn-10));mp.onclick=()=>setObs(b,s,h,Math.min(50,mn+10));
-  mstep.append(mm,mv,mp);
-  obs.append(el(`<span class="u">時</span>`),hstep,el(`<span class="u">分</span>`),mstep);
-  row.appendChild(obs);
-
-  // 状態・カウントダウン
-  const scd=el(`<span class="scd"></span>`);
-  if(st.kind==="await")scd.innerHTML=`<span class="cd await">時間未入力</span>`;
-  else if(st.kind==="ready")scd.innerHTML=`<span class="cd ready">✓ 受取待ち</span>`;
-  else scd.innerHTML=`<span class="cd counting">残り ${fmtDur(st.rem/1000)}</span><br><span class="note">${fmtClock(st.comp)}完成</span>`;
-  row.appendChild(scd);
-  trayRefs.push({b,s,el:scd});
-
-  // 男士確定 or 手伝い札
-  const ready=(st.kind==="ready");
-  if(ready){
-    const pk=el(`<button class="pick mini" style="flex:1">男士を確定 <span class="ar" style="margin-left:auto">▾</span></button>`);
-    pk.onclick=()=>openPicker("男士を確定",mei=>{s.mei=mei;b.updatedAt=nowISO();save();renderTantouchu();});
-    row.appendChild(pk);
-  }else{
-    row.appendChild(el(`<span style="flex:1"></span>`));
-    const tf=el(`<button class="tetsubtn">🎴 手伝い札</button>`);
-    tf.onclick=()=>{s.rushed=true;b.updatedAt=nowISO();save();renderTantouchu();};
-    row.appendChild(tf);
-  }
-  return row;
-}
-function setObs(b,s,h,mn){s.observedSec=h*3600+mn*60;b.updatedAt=nowISO();save();renderTantouchu();}
-
-/* 毎秒：カウントダウン更新（種別が変わったら再描画） */
-function trayTick(){
-  if(currentTab!=="tantouchu")return;
-  let needRe=false;
-  for(const r of trayRefs){const st=slotState(r.b,r.s);
-    if(st.kind==="counting"){r.el.innerHTML=`<span class="cd counting">残り ${fmtDur(st.rem/1000)}</span><br><span class="note">${fmtClock(st.comp)}完成</span>`;}
-    else{needRe=true;}
-    if(st.kind==="ready"&&!r.s.notified&&DB.settings.notify){fireNotify(r.b,r.s);r.s.notified=true;save();}
-  }
-  if(needRe)renderTantouchu();
-}
-function fireNotify(b,s){try{if(window.Notification&&Notification.permission==="granted")
-  new Notification("鍛刀完成",{body:`${b.forgeName||"鍛刀場"} の鍛刀が1振完成しました`});}catch(e){}}
-setInterval(trayTick,1000);
 
 /* =========================== 集計タブ =========================== */
 let shukeiView=localStorage.getItem("tantouroku_sview")||"recipe"; // recipe | mei
 let shukeiMergeFuda=localStorage.getItem("tantouroku_smerge")==="1";
+let shRecipeSort=localStorage.getItem("tantouroku_rsort")||"trials"; // trials | recent | value
+let shRecipeQuery="";
+let shMeiQuery="";
 let shFilter={mode:"all",fuda:"all",from:"",to:""};
 let shSelRecipe=null, shSelMei=null;
 
@@ -759,6 +762,7 @@ function aggRecipes(){
     if(!map[k])map[k]={key:k,recipe:b.recipe,mode:b.mode,fuda:shukeiMergeFuda?null:(b.fuda||"none"),
       trials:0,byMei:{},byType:{},pickups:{}};
     const g=map[k];
+    if((b.datetime||"")>(g.lastUsed||""))g.lastUsed=b.datetime||"";
     if(b.mode==="event"&&b.pickup)g.pickups[b.pickup]=(g.pickups[b.pickup]||0)+1;
     (b.slots||[]).forEach(s=>{if(!s.mei)return;
       g.trials++;g.byMei[s.mei]=(g.byMei[s.mei]||0)+1;
@@ -834,18 +838,46 @@ function renderShukei(){
 }
 
 function renderShRecipe(card){
-  const groups=aggRecipes();
+  let groups=aggRecipes();
   if(!groups.length){card.appendChild(el(`<div class="empty">条件に合う記録がありません。絞り込みを見直してください。</div>`));return;}
-  if(!shSelRecipe||!groups.find(g=>g.key===shSelRecipe))shSelRecipe=groups[0].key;
+
+  // 並び替え
+  if(shRecipeSort==="recent")groups.sort((a,b)=>(b.lastUsed||"").localeCompare(a.lastUsed||""));
+  else if(shRecipeSort==="value")groups.sort((a,b)=>a.recipe.charcoal-b.recipe.charcoal||a.recipe.steel-b.recipe.steel||a.recipe.coolant-b.recipe.coolant||a.recipe.whetstone-b.recipe.whetstone);
+  // "trials"はaggRecipesの既定（試行回数順）のまま
+
+  // 検索（レシピ値・登録レシピ名にマッチ）
+  const q=shRecipeQuery.trim().toLowerCase();
+  const view=q?groups.filter(g=>{
+    const p=matchedPreset(g.recipe);
+    return recipeLabel(g).replace(/ /g,"").toLowerCase().includes(q.replace(/ /g,""))
+      ||(p&&p.name.toLowerCase().includes(q));
+  }):groups;
+
+  if(!shSelRecipe||!view.find(g=>g.key===shSelRecipe))shSelRecipe=view.length?view[0].key:null;
   const sel=groups.find(g=>g.key===shSelRecipe);
 
   const grid=el(`<div class="agg-grid"></div>`);
   const left=el(`<div></div>`);
-  left.appendChild(el(`<p class="rlist-lbl">レシピ一覧（試行回数順）</p>`));
-  groups.forEach(g=>{
+  const lh=el(`<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:7px"></div>`);
+  lh.appendChild(el(`<p class="rlist-lbl" style="margin:0">レシピ一覧</p>`));
+  const ss=el(`<select class="txt" style="width:auto;padding:5px 7px;font-size:12px"></select>`);
+  [["trials","試行回数順"],["recent","最近使った順"],["value","レシピ値順"]].forEach(([v,l])=>ss.appendChild(el(`<option value="${v}">${l}</option>`)));
+  ss.value=shRecipeSort;ss.onchange=()=>{shRecipeSort=ss.value;localStorage.setItem("tantouroku_rsort",shRecipeSort);renderShukei();};
+  lh.appendChild(ss);left.appendChild(lh);
+  const sr=el(`<input class="txt" placeholder="🔍 値・レシピ名で検索" style="margin-bottom:9px;padding:7px 10px;font-size:13px" autocomplete="off">`);
+  sr.value=shRecipeQuery;
+  sr.oninput=()=>{shRecipeQuery=sr.value;renderShukei();
+    // 再描画で検索欄からフォーカスが外れるため戻す
+    const n=VIEW.querySelector(".agg-grid input.txt");if(n){n.focus();n.setSelectionRange(n.value.length,n.value.length);}};
+  left.appendChild(sr);
+  if(!view.length){left.appendChild(el(`<div class="empty" style="padding:18px 6px">「${esc(shRecipeQuery)}」に合うレシピがありません。</div>`));}
+  view.forEach(g=>{
     const r=el(`<div class="rrow ${g.key===shSelRecipe?"on":""}"></div>`);
     r.appendChild(el(`<div class="rv">${recipeLabel(g)}</div>`));
     const meta=el(`<div class="rmeta"></div>`);
+    const p=matchedPreset(g.recipe);
+    if(p)meta.appendChild(el(`<span class="tag preset">☆${esc(p.name)}</span>`));
     meta.appendChild(el(`<span style="display:contents">${recipeMetaTags(g)}</span>`));
     meta.appendChild(el(`<span class="cnt">${g.trials}振</span>`));
     r.appendChild(meta);
@@ -855,6 +887,7 @@ function renderShRecipe(card){
   grid.appendChild(left);
 
   const right=el(`<div></div>`);
+  if(!sel){grid.appendChild(right);card.appendChild(grid);return;}
   const types=Object.keys(sel.byType).sort((a,b)=>typeRank(a)-typeRank(b));
   const topType=types.slice().sort((a,b)=>sel.byType[b].count-sel.byType[a].count)[0];
 
@@ -883,7 +916,7 @@ function renderShRecipe(card){
       const c=t.byMei[mei];const m=MASTER_BY_MEI[mei];const p=pct(c,sel.trials);
       const isPk=sel.mode==="event"&&Object.keys(sel.pickups).includes(mei);
       const it=el(`<div></div>`);
-      it.appendChild(el(`<div class="sh"><span>${esc(mei)}${isPk?' <span class="tag star" style="margin-left:4px">★目玉</span>':""}</span><span class="ty">${m?stars(m.rarity):""}</span><span class="sp">${c}振 ・ ${p}%</span></div>`));
+      it.appendChild(el(`<div class="sh"><span>${esc(mei)}${isPk?' <span class="tag star" style="margin-left:4px">★目玉</span>':""}</span><span class="sp">${c}振 ・ ${p}%</span></div>`));
       it.appendChild(el(`<div class="track"><div class="fill" style="width:${p}%"></div></div>`));
       sub.appendChild(it);
     });
@@ -896,27 +929,42 @@ function renderShRecipe(card){
 function renderShMei(card){
   const list=aggMei();
   if(!list.length){card.appendChild(el(`<div class="empty">条件に合う記録がありません。</div>`));return;}
-  if(!shSelMei||!list.find(x=>x.mei===shSelMei))shSelMei=list[0].mei;
+
+  // 検索（名前・読み・刀種）
+  const q=shMeiQuery.trim().toLowerCase();
+  const view=q?list.filter(x=>{const m=MASTER_BY_MEI[x.mei];
+    return x.mei.toLowerCase().includes(q)||(m&&((m.yomi||"").includes(q)||(m.type||"").includes(q)));
+  }):list;
+
+  if(!shSelMei||!view.find(x=>x.mei===shSelMei))shSelMei=view.length?view[0].mei:null;
   const sel=list.find(x=>x.mei===shSelMei);
 
   const grid=el(`<div class="agg-grid"></div>`);
   const left=el(`<div></div>`);
   left.appendChild(el(`<p class="rlist-lbl">男士一覧（入手数順）</p>`));
-  list.forEach(x=>{const m=MASTER_BY_MEI[x.mei];
+  const sr=el(`<input class="txt" placeholder="🔍 名前・読み・刀種で検索" style="margin-bottom:9px;padding:7px 10px;font-size:13px" autocomplete="off">`);
+  sr.value=shMeiQuery;
+  sr.oninput=()=>{shMeiQuery=sr.value;renderShukei();
+    const n=VIEW.querySelector(".agg-grid input.txt");if(n){n.focus();n.setSelectionRange(n.value.length,n.value.length);}};
+  left.appendChild(sr);
+  if(!view.length)left.appendChild(el(`<div class="empty" style="padding:18px 6px">「${esc(shMeiQuery)}」に合う男士がいません。</div>`));
+  view.forEach(x=>{const m=MASTER_BY_MEI[x.mei];
     const r=el(`<div class="rrow ${x.mei===shSelMei?"on":""}" style="display:flex;align-items:center;gap:8px"></div>`);
     r.appendChild(el(`<span style="font-size:13px;font-weight:600">${esc(x.mei)}</span>`));
-    if(m)r.appendChild(el(`<span class="note">${m.type} ${stars(m.rarity)}</span>`));
+    if(m)r.appendChild(el(`<span class="note">${m.type}</span>`));
     r.appendChild(el(`<span class="cnt" style="margin-left:auto">${x.total}振</span>`));
     r.onclick=()=>{shSelMei=x.mei;renderShukei();};
     left.appendChild(r);
   });
   grid.appendChild(left);
 
-  const right=el(`<div></div>`);const m=MASTER_BY_MEI[sel.mei];
+  const right=el(`<div></div>`);
+  if(!sel){grid.appendChild(right);card.appendChild(grid);return;}
+  const m=MASTER_BY_MEI[sel.mei];
   const recs=Object.values(sel.byRecipe).sort((a,b)=>b.count-a.count);
   const metrics=el(`<div class="metrics"></div>`);
   metrics.appendChild(el(`<div class="metric"><div class="ml">入手数</div><div class="mv">${sel.total}<span style="font-size:13px;font-weight:400;color:var(--text2)"> 振</span></div></div>`));
-  metrics.appendChild(el(`<div class="metric"><div class="ml">刀種</div><div class="mv sm">${m?m.type+" "+stars(m.rarity):"—"}</div></div>`));
+  metrics.appendChild(el(`<div class="metric"><div class="ml">刀種</div><div class="mv sm">${m?m.type:"—"}</div></div>`));
   metrics.appendChild(el(`<div class="metric"><div class="ml">出たレシピ</div><div class="mv">${recs.length}<span style="font-size:13px;font-weight:400;color:var(--text2)"> 種</span></div></div>`));
   right.appendChild(metrics);
 
@@ -950,45 +998,494 @@ function renderSettei(){
   lb.onclick=()=>{setTheme("light");renderSettei();};db.onclick=()=>{setTheme("dark");renderSettei();};
   seg.append(lb,db);t.appendChild(seg);card.appendChild(t);
 
-  const tr=el(`<div class="row"></div>`);tr.appendChild(el(`<label class="lbl">鍛刀中トレイ</label>`));
-  const seg2=el(`<div class="seg"></div>`);const u=el(`<button>使用中のみ</button>`),a=el(`<button>4枠 常時表示</button>`);
-  u.classList.toggle("on",!DB.settings.trayShowAll);a.classList.toggle("on",DB.settings.trayShowAll);
-  u.onclick=()=>{DB.settings.trayShowAll=false;save();renderSettei();};
-  a.onclick=()=>{DB.settings.trayShowAll=true;save();renderSettei();};
-  seg2.append(u,a);tr.appendChild(seg2);card.appendChild(tr);
-
-  const nr=el(`<div class="row"></div>`);nr.appendChild(el(`<label class="lbl">鍛刀完了の通知（PC向け・要許可）</label>`));
-  const nb=el(`<button class="btn ghost">${DB.settings.notify?"通知 ON":"通知をオンにする"}</button>`);
-  nb.onclick=()=>{
-    if(DB.settings.notify){DB.settings.notify=false;save();renderSettei();return;}
-    if(!window.Notification){alert("この端末は通知に対応していません。");return;}
-    Notification.requestPermission().then(p=>{if(p==="granted"){DB.settings.notify=true;save();}else{alert("通知が許可されませんでした。");}renderSettei();});
-  };
-  nr.appendChild(nb);
-  nr.appendChild(el(`<p class="note" style="margin-top:6px">鍛刀録を開いている間だけ通知します。スマホでは動かないことがあるので、画面のカウントダウンが基本です。</p>`));
-  card.appendChild(nr);
-
-  const d=el(`<div class="row"></div>`);d.appendChild(el(`<label class="lbl">データ（バックアップ）</label>`));
+  const d=el(`<div class="row"></div>`);d.appendChild(el(`<label class="lbl">データ</label>`));
   const bar=el(`<div style="display:flex;gap:10px;flex-wrap:wrap"></div>`);
+  const csv=el(`<button class="btn ghost">📄 CSV書き出し（Excel用）</button>`);csv.onclick=exportCSV;
   const exp=el(`<button class="btn ghost">⬇ 書き出し（JSON）</button>`);exp.onclick=exportJSON;
   const imp=el(`<button class="btn ghost">⬆ 読み込み（JSON）</button>`);imp.onclick=()=>document.getElementById("importFile").click();
-  bar.append(exp,imp);d.appendChild(bar);
+  bar.append(csv,exp,imp);d.appendChild(bar);
+  d.appendChild(el(`<p class="note" style="margin-top:6px">CSVは1振＝1行の集計用データです（結果未入力の記録は含まれません）。JSONはバックアップ・復元用です。</p>`));
   d.appendChild(el(`<input type="file" id="importFile" accept="application/json,.json" style="display:none">`));
   card.appendChild(d);
 
+  const g=el(`<div class="row"></div>`);g.appendChild(el(`<label class="lbl">Google Drive同期（バックアップ）</label>`));
+  const gs=el(`<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"></div>`);
+  if(_gdReconnect){
+    gs.appendChild(el(`<span class="tag" style="background:var(--warn-bg);color:var(--warn)">接続が切れています</span>`));
+    const rc=el(`<button class="btn danger">⚠ 再接続</button>`);rc.onclick=gdSignIn;gs.append(rc);
+    const so=el(`<button class="btn ghost">ログアウト</button>`);so.onclick=gdSignOut;gs.append(so);
+  }else if(!_gdToken){
+    const si=el(`<button class="btn primary">☁ Googleでログイン</button>`);si.onclick=gdSignIn;gs.append(si);
+  }else{
+    gs.appendChild(el(`<span class="tag" style="background:var(--ok-bg);color:var(--ok)">ログイン中</span>`));
+    const up=el(`<button class="btn ghost">⬆ クラウドへ保存</button>`);up.onclick=gdSyncUpWithCheck;
+    const dn=el(`<button class="btn ghost">⬇ クラウドから読み込む</button>`);dn.onclick=()=>gdSyncDown();
+    const so=el(`<button class="btn ghost">ログアウト</button>`);so.onclick=gdSignOut;
+    gs.append(up,dn,so);
+  }
+  g.appendChild(gs);
+  if(_gdToken){
+    const md=el(`<div style="display:flex;align-items:center;gap:10px;margin-top:11px;flex-wrap:wrap"></div>`);
+    md.appendChild(el(`<span class="note">保存のしかた</span>`));
+    const seg3=el(`<div class="seg"></div>`);
+    const mm=el(`<button>手動</button>`),ma=el(`<button>自動</button>`);
+    const mode=DB.settings.syncMode||"manual";
+    mm.classList.toggle("on",mode!=="auto");ma.classList.toggle("on",mode==="auto");
+    mm.onclick=()=>{DB.settings.syncMode="manual";save();renderSettei();};
+    ma.onclick=()=>{DB.settings.syncMode="auto";save();renderSettei();updateSyncBtn();};
+    seg3.append(mm,ma);md.appendChild(seg3);g.appendChild(md);
+    g.appendChild(el(`<p class="note" style="margin-top:6px">自動＝記録を変えるたびにクラウドへ保存します。手動＝ボタンを押したときだけ保存します。</p>`));
+  }
+  g.appendChild(el(`<p class="note" style="margin-top:6px">記録はこの端末に保存されます。Google Drive同期は、その控えを取っておくための機能です。</p>`));
+  card.appendChild(g);
+
   card.appendChild(el(`<p class="note" style="margin-top:18px">
-    ・男士マスタは現在<b>仮データ</b>です。本物に差し替えると、選べる男士と規定鍛刀時間が反映されます。<br>
-    ・Google Drive同期は次の段階で追加予定です。<br>
-    ・記録件数：${activeBatches().length}件（完了 ${activeBatches().filter(b=>b.state==="done").length} ／ 鍛刀中 ${forgingBatches().length}）／ お迎え男士 ${DB.wishlist.length}件
+    ・男士マスタ：基底刀 ${MASTER.length}振を収録（極は鍛刀では出ないため含みません）。<br>
+    ・記録件数：${activeBatches().length}件 ／ お迎え男士 ${DB.wishlist.length}件
   </p>`));
   VIEW.appendChild(card);
   document.getElementById("importFile").onchange=importJSON;
 }
+/* =========================================================================
+   Google Drive 同期（稽古録と同じ方式：全体保存＋先回り更新＋⚠再接続）
+   ・記録は端末に保存。クラウドはその控え（マージはせず、丸ごと保存／丸ごと読込）
+   ========================================================================= */
+const GD_CLIENT_ID="1020015092975-eheh7mf0vjv55a7lufvbc1mi50ele8bv.apps.googleusercontent.com";
+const GD_SCOPE="https://www.googleapis.com/auth/drive.appdata";
+const GD_FILENAME="tantouroku_data.json";
+const GD_STALE_MS=50*60*1000; // 先回り更新のしきい値（50分）
+let _gdToken=null,_gdFileId=null,_gdReconnect=false,_gdTokenAt=0;
+let _lastSyncTime=null,_autoSyncTimer=null,_gdRefreshP=null,_startupDlgData=null;
+(function(){try{
+  const t=sessionStorage.getItem("gd_token_tantou");if(t)_gdToken=t;
+  const a=parseInt(sessionStorage.getItem("gd_token_at_tantou"));if(a)_gdTokenAt=a;
+  const s=localStorage.getItem("tantouroku_lastsync");if(s)_lastSyncTime=new Date(s);
+}catch(e){}})();
+
+// トークン受け取りの一本化（通常ログイン・サイレント更新・遅着復帰の全てがここを通る）
+function _gdAcceptToken(tok){
+  _gdToken=tok;_gdTokenAt=Date.now();_gdReconnect=false;
+  try{sessionStorage.setItem("gd_token_tantou",tok);
+    sessionStorage.setItem("gd_token_at_tantou",String(_gdTokenAt));}catch(e){}
+  updateSyncBtn();
+}
+// 接続切れ状態へ（ログアウトにはしない。データはローカルに無事）
+function _gdEnterReconnect(){
+  if(_gdReconnect)return; // トースト・UI更新の連発防止
+  _gdToken=null;_gdTokenAt=0;_gdReconnect=true;
+  try{sessionStorage.removeItem("gd_token_tantou");
+    sessionStorage.removeItem("gd_token_at_tantou");}catch(e){}
+  updateSyncBtn();if(currentTab==="settei")renderSettei();
+  toast("接続が切れました。「⚠ 再接続」で戻れます");
+}
+// タイムアウト後に遅れて届いたトークンで復帰
+function _gdLateRecover(){toast("Googleに再接続しました");if(currentTab==="settei")renderSettei();gdStartupCheck();}
+function gdTokenStale(){
+  if(!_gdToken)return false;
+  if(!_gdTokenAt)return true; // 取得時刻が不明＝古い扱い（安全側）
+  return (Date.now()-_gdTokenAt)>GD_STALE_MS;
+}
+async function waitForGoogleAccounts(maxWaitMs=5000){
+  const st=Date.now();
+  while(!window.google||!window.google.accounts||!window.google.accounts.oauth2){
+    if(Date.now()-st>maxWaitMs)throw new Error("Google Sign-In library timeout");
+    await new Promise(r=>setTimeout(r,100));
+  }
+}
+function gdSignIn(){
+  if(isInAppBrowser()){showInAppNotice();return;}
+  if(!window.google||!window.google.accounts||!window.google.accounts.oauth2){
+    waitForGoogleAccounts().then(()=>gdSignIn())
+      .catch(()=>toast("Googleの読み込みに失敗しました（リロードしてください）"));
+    return;
+  }
+  const client=google.accounts.oauth2.initTokenClient({
+    client_id:GD_CLIENT_ID,scope:GD_SCOPE,
+    callback:(resp)=>{
+      if(resp.error){toast("Googleログイン失敗："+resp.error);return;}
+      _gdAcceptToken(resp.access_token);
+      toast("Googleログインしました");
+      if(currentTab==="settei")renderSettei();
+      gdStartupCheck();
+    },
+    error_callback:(err)=>{toast("Googleログインを中止しました");}
+  });
+  client.requestAccessToken();
+}
+/* ── アプリ内ブラウザ（X・LINEなどの内蔵ブラウザ）検知 ──
+   Googleログインは内蔵ブラウザからは拒否されるため、同期を使おうとしたときだけ案内する。
+   記録するだけなら問題なく使えるので、普段は何も出さない。 */
+function isInAppBrowser(){
+  const ua=navigator.userAgent||"";
+  if(/FBAN|FBAV|FB_IAB|Instagram|Line\/|Twitter|TwitterAndroid|MicroMessenger|KAKAOTALK|Pinterest|Snapchat|TikTok/i.test(ua))return true;
+  // iOSでSafari以外のWebView（アプリ内ブラウザ）：Safari表記が無いWebKit
+  if(/iPhone|iPad|iPod/i.test(ua)&&/AppleWebKit/i.test(ua)&&!/Safari/i.test(ua)&&!/CriOS|FxiOS|EdgiOS/i.test(ua))return true;
+  return false;
+}
+function showInAppNotice(){
+  showModal(`<div class="modal-title">⚠ このブラウザではGoogleログインできません</div>
+    <div class="modal-desc">SNSアプリの中のブラウザで開いているようです。Google側の仕様で、ここからはログインできません。</div>
+    <div class="modal-info">画面の「…」メニューなどから<b>Safari / Chromeで開く</b>を選んで、そちらで開き直してください。<br>
+      鍛刀の記録そのものは、このままでも使えます（ただし記録はこのブラウザの中だけに保存されます）。</div>
+    <div class="modal-act"><button class="btn primary" id="inappOk">わかりました</button></div>`);
+  document.getElementById("inappOk").onclick=closeModal;
+}
+function gdSignOut(){
+  if(_gdToken&&window.google&&google.accounts&&google.accounts.oauth2){
+    try{google.accounts.oauth2.revoke(_gdToken,()=>{});}catch(e){}
+  }
+  _gdToken=null;_gdFileId=null;_gdTokenAt=0;_gdReconnect=false;
+  try{sessionStorage.removeItem("gd_token_tantou");
+    sessionStorage.removeItem("gd_token_at_tantou");}catch(e){}
+  updateSyncBtn();if(currentTab==="settei")renderSettei();
+  toast("Googleログアウトしました");
+}
+// サイレント更新：prompt:'' で画面なしの取り直しを試みる。
+// タイムアウトは「呼び出し元が待つのをやめる」ためだけで、受け取り口は締め切らない。
+// 遅れて届いたトークンは _gdLateRecover() で受領し、ログインを復帰させる。
+function gdSilentRefresh(){
+  if(_gdRefreshP)return _gdRefreshP; // すでに実行中なら相乗り（窓の連発防止）
+  _gdRefreshP=new Promise((resolve,reject)=>{
+    if(!window.google||!window.google.accounts||!window.google.accounts.oauth2){
+      _gdRefreshP=null;reject(new Error("Library not loaded"));return;
+    }
+    let settled=false;
+    const timer=setTimeout(()=>{
+      if(!settled){settled=true;_gdRefreshP=null;reject(new Error("timeout"));}
+    },10000);
+    try{
+      const client=google.accounts.oauth2.initTokenClient({
+        client_id:GD_CLIENT_ID,scope:GD_SCOPE,
+        callback:(resp)=>{
+          clearTimeout(timer);
+          if(resp.error){if(!settled){settled=true;_gdRefreshP=null;reject(new Error(resp.error));}return;}
+          _gdAcceptToken(resp.access_token);
+          if(settled){_gdLateRecover();}                       // 遅着復帰
+          else{settled=true;_gdRefreshP=null;resolve(_gdToken);}
+        },
+        error_callback:(err)=>{
+          clearTimeout(timer);
+          if(!settled){settled=true;_gdRefreshP=null;reject(new Error((err&&err.type)||"silent_failed"));}
+        }
+      });
+      client.requestAccessToken({prompt:""});
+    }catch(e){
+      clearTimeout(timer);
+      if(!settled){settled=true;_gdRefreshP=null;reject(e);}
+    }
+  });
+  return _gdRefreshP;
+}
+async function gdFetch(url,opts,isRetry){
+  try{
+    const o=Object.assign({},opts,{headers:Object.assign({},opts.headers,{"Authorization":"Bearer "+_gdToken})});
+    const res=await fetch(url,o);
+    if(res.status===401&&!isRetry){
+      if(_gdReconnect)throw new Error("401 Unauthorized"); // 再接続待ち中は再試行しない
+      try{
+        await gdSilentRefresh();
+        return gdFetch(url,opts,true);
+      }catch(refreshErr){
+        _gdEnterReconnect(); // ログアウトにはせず「⚠ 再接続」状態へ
+        throw new Error("401 Unauthorized");
+      }
+    }
+    return res;
+  }catch(e){
+    console.error("[GD]",e);
+    throw e;
+  }
+}
+async function gdFindFile(){
+  try{
+    const res=await gdFetch(
+      `https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name='${GD_FILENAME}'&fields=files(id,name)`,{headers:{}});
+    if(!res.ok)return null;
+    const d=await res.json();
+    return d.files&&d.files.length?d.files[0].id:null;
+  }catch(e){return null;}
+}
+function isCloudData(d){return !!d&&Array.isArray(d.batches);}
+// クラウドのデータを丸ごと適用（updatedAtはクラウドの値を保持）
+// 設定（同期モード・確認の要否）は端末ごとの好みなので、この端末の設定を残す
+function applyCloudData(d){
+  const mySettings=Object.assign({},DB.settings);
+  DB=normalize(d);
+  DB.settings=mySettings;
+  localStorage.setItem(LS_DATA,JSON.stringify(DB)); // save()を通さない（updatedAtを上書きしないため）
+  render(false);
+}
+async function gdSyncUp(silent=false){
+  if(!_gdToken){toast("先にGoogleログインしてください");return false;}
+  if(!silent&&gdTokenStale()){try{await gdSilentRefresh();}catch(e){_gdEnterReconnect();return false;}}
+  try{
+    if(!silent)toast("クラウドへ保存中…");
+    const fid=_gdFileId||(await gdFindFile());
+    const body=JSON.stringify(DB);
+    if(fid){
+      const up=await gdFetch(`https://www.googleapis.com/upload/drive/v3/files/${fid}?uploadType=media`,
+        {method:"PATCH",headers:{"Content-Type":"application/json"},body});
+      if(!up.ok)throw new Error("upload failed: "+up.status);
+      _gdFileId=fid;
+    }else{
+      const meta={name:GD_FILENAME,parents:["appDataFolder"]};
+      const form=new FormData();
+      form.append("metadata",new Blob([JSON.stringify(meta)],{type:"application/json"}));
+      form.append("file",new Blob([body],{type:"application/json"}));
+      const res=await gdFetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
+        {method:"POST",headers:{},body:form});
+      if(!res.ok)throw new Error("create failed: "+res.status);
+      const d=await res.json();
+      if(!d||!d.id)throw new Error("create failed: no file id");
+      _gdFileId=d.id;
+    }
+    if(!silent)toast("クラウドへ保存しました ↑");
+    onSyncDone();
+    return true;
+  }catch(e){
+    toast("保存失敗："+(e.message||e));
+    return false;
+  }
+}
+async function gdSyncDown(){
+  if(!_gdToken){toast("先にGoogleログインしてください");return false;}
+  if(gdTokenStale()){try{await gdSilentRefresh();}catch(e){_gdEnterReconnect();return false;}}
+  try{
+    toast("クラウドから読み込み中…");
+    const fid=await gdFindFile();
+    if(!fid){ // クラウドにファイルなし＝初回。ローカルを保存しておく
+      const ok=await gdSyncUp(true);
+      toast(ok===false?"クラウドへの保存に失敗しました":"クラウドに初回バックアップしました");
+      return ok!==false;
+    }
+    _gdFileId=fid;
+    const res=await gdFetch(`https://www.googleapis.com/drive/v3/files/${fid}?alt=media`,{headers:{}});
+    if(!res.ok)throw new Error("download failed: "+res.status);
+    let d;
+    try{d=await res.json();}catch(pe){toast("クラウドのデータを読み取れませんでした（この端末の記録を使います）");return false;}
+    if(!isCloudData(d)){toast("クラウドのデータが読み込めない形式でした（この端末の記録を使います）");return false;}
+    applyCloudData(d);
+    onSyncDone();
+    toast("クラウドから読み込みました ↓");
+    return true;
+  }catch(e){
+    toast("同期失敗："+(e.message||e));
+    return false;
+  }
+}
+// 起動時・ログイン時のクラウド差分チェック
+async function gdStartupCheck(){
+  if(!_gdToken)return;
+  try{
+    const fid=await gdFindFile();
+    if(!fid){const ok=await gdSyncUp(true);if(ok)toast("クラウドに初回バックアップしました");return;}
+    _gdFileId=fid;
+    const res=await gdFetch(`https://www.googleapis.com/drive/v3/files/${fid}?alt=media`,{headers:{}});
+    if(!res.ok)return; // 取れなければ黙って続行（ローカルを使用）
+    let d;try{d=await res.json();}catch(pe){return;}
+    if(!isCloudData(d))return;
+    const localT=DB.updatedAt||0,cloudT=d.updatedAt||0;
+    const localCount=(DB.batches||[]).length,cloudCount=d.batches.length;
+    const disabled=!!DB.settings.startupCheckDisabled;
+    const auto=(DB.settings.syncMode||"manual")==="auto";
+    if(cloudT===localT){
+      // 同期済み。ただしローカルが空でクラウドに記録があるならクラウド優先（updatedAt未記録同士の保険）
+      if(localCount===0&&cloudCount>0){
+        if(disabled){applyCloudData(d);onSyncDone();toast("クラウドのデータを読み込みました");}
+        else showStartupSyncDialog("newer",d,cloudT,localT);
+      }
+      return;
+    }
+    if(cloudT>localT){
+      if(disabled){applyCloudData(d);onSyncDone();toast("クラウドの新しいデータを読み込みました");}
+      else showStartupSyncDialog("newer",d,cloudT,localT);
+    }else{
+      if(auto){const ok=await gdSyncUp(true);if(ok)toast("この端末のデータをクラウドに保存しました");}
+      else if(!disabled){showStartupSyncDialog("older",d,cloudT,localT);}
+    }
+  }catch(e){console.warn("[gdStartupCheck]",e);}
+}
+function _fmtDlgTime(t){return t?new Date(t).toLocaleString("ja-JP",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"}):"（記録なし）";}
+function showStartupSyncDialog(kind,d,cloudT,localT){
+  _startupDlgData=d;
+  const newer=kind==="newer";
+  const title=newer?"☁ クラウドに新しいデータがあります":"⚠ この端末の方が新しいようです";
+  const desc=newer
+    ?"別の端末などでクラウド側が更新されています。このデータを読み込みますか？"
+    :"この端末のデータの方が新しいようです。クラウド（古い方）を読み込むと、この端末の新しい記録が失われます。";
+  showModal(`<div class="modal-title">${title}</div>
+    <div class="modal-desc">${desc}</div>
+    <div class="modal-info">この端末の更新：${_fmtDlgTime(localT)}<br>クラウドの更新：${_fmtDlgTime(cloudT)}</div>
+    <label class="modal-chk"><input type="checkbox" id="startupNeverChk"> 今後この確認を表示しない</label>
+    <div class="modal-act">
+      <button class="btn ghost" id="dlgKeep">${newer?"今はこの端末のまま":"この端末を保持（推奨）"}</button>
+      <button class="btn ${newer?"primary":"danger"}" id="dlgLoad">${newer?"読み込む（推奨）":"クラウドを読み込む"}</button>
+    </div>`);
+  document.getElementById("dlgKeep").onclick=()=>{_startupSaveNeverChk();closeModal();_startupDlgData=null;};
+  document.getElementById("dlgLoad").onclick=()=>{
+    _startupSaveNeverChk();closeModal();
+    if(_startupDlgData){applyCloudData(_startupDlgData);onSyncDone();toast("クラウドから読み込みました");}
+    _startupDlgData=null;
+  };
+}
+function _startupSaveNeverChk(){
+  const c=document.getElementById("startupNeverChk");
+  if(c&&c.checked){DB.settings.startupCheckDisabled=true;save();}
+}
+// 手動保存前のタイムスタンプ警告（クラウドの方が新しければ上書きを止める）
+async function gdGetCloudModified(){
+  if(!_gdToken||!_gdFileId)return null;
+  try{
+    const res=await gdFetch(`https://www.googleapis.com/drive/v3/files/${_gdFileId}?fields=modifiedTime`,{headers:{}});
+    if(!res.ok)return null;
+    const d=await res.json();
+    return d.modifiedTime?new Date(d.modifiedTime):null;
+  }catch(e){return null;}
+}
+async function gdSyncUpWithCheck(){
+  if(!_gdToken){toast("先にGoogleログインしてください");return;}
+  if(gdTokenStale()){try{await gdSilentRefresh();}catch(e){_gdEnterReconnect();return;}}
+  if(DB.settings.syncWarnDisabled){await gdSyncUp();return;}
+  if(!_gdFileId)_gdFileId=await gdFindFile();
+  const cloudMod=await gdGetCloudModified();
+  if(cloudMod&&_lastSyncTime&&cloudMod>_lastSyncTime){showTimestampWarn(cloudMod);}
+  else{await gdSyncUp();}
+}
+function showTimestampWarn(cloudMod){
+  const l=_lastSyncTime?_fmtDlgTime(_lastSyncTime.getTime()):"（不明）";
+  showModal(`<div class="modal-title">⚠ クラウドに新しいデータがあります</div>
+    <div class="modal-desc">クラウドのデータが手元より新しいようです。このまま上書き保存すると、クラウド側の変更が失われます。</div>
+    <div class="modal-info">手元の最終同期：${l}<br>クラウドの更新：${_fmtDlgTime(cloudMod.getTime())}</div>
+    <label class="modal-chk"><input type="checkbox" id="warnNeverChk"> 今後この警告を表示しない</label>
+    <div class="modal-act">
+      <button class="btn ghost" id="warnCancel">キャンセル</button>
+      <button class="btn danger" id="warnGo">上書きして保存</button>
+    </div>`);
+  document.getElementById("warnCancel").onclick=closeModal;
+  document.getElementById("warnGo").onclick=async()=>{
+    const c=document.getElementById("warnNeverChk");
+    if(c&&c.checked){DB.settings.syncWarnDisabled=true;save();}
+    closeModal();await gdSyncUp();
+  };
+}
+// ヘッダーの⬇用：読み込む前にクラウドと手元の新旧を確かめる
+// （クラウドの方が古いのに読み込むと手元の新しい記録が消えるため、その時だけ確認を挟む）
+async function gdSyncDownWithCheck(){
+  if(!_gdToken){toast("先にGoogleログインしてください");return;}
+  if(gdTokenStale()){try{await gdSilentRefresh();}catch(e){_gdEnterReconnect();return;}}
+  try{
+    const fid=await gdFindFile();
+    if(!fid){toast("クラウドにまだデータがありません（⬆で保存できます）");return;}
+    _gdFileId=fid;
+    const res=await gdFetch(`https://www.googleapis.com/drive/v3/files/${fid}?alt=media`,{headers:{}});
+    if(!res.ok)throw new Error("download failed: "+res.status);
+    let d;try{d=await res.json();}catch(pe){toast("クラウドのデータを読み取れませんでした");return;}
+    if(!isCloudData(d)){toast("クラウドのデータが読み込めない形式でした");return;}
+    const localT=DB.updatedAt||0,cloudT=d.updatedAt||0;
+    if(cloudT===localT){toast("クラウドと同じ内容です（同期済み）");onSyncDone();return;}
+    if(cloudT<localT){showStartupSyncDialog("older",d,cloudT,localT);return;} // 手元の方が新しい→確認
+    applyCloudData(d);onSyncDone();toast("クラウドから読み込みました ↓");
+  }catch(e){toast("読み込み失敗："+(e.message||e));}
+}
+function onSyncDone(){
+  _lastSyncTime=new Date();
+  try{localStorage.setItem("tantouroku_lastsync",_lastSyncTime.toISOString());}catch(e){}
+  updateSyncBtn();
+}
+// 自動保存（記録を変えた4秒後にまとめてクラウドへ）
+function scheduleAutoSync(){
+  if((DB.settings.syncMode||"manual")!=="auto"||!_gdToken)return;
+  clearTimeout(_autoSyncTimer);
+  _autoSyncTimer=setTimeout(()=>{gdSyncUp(true);},4000);
+}
+function fmtSyncTime(d){
+  if(!d)return"";
+  const diff=Math.floor((Date.now()-d.getTime())/60000);
+  if(diff<1)return"たった今";
+  if(diff<60)return `${diff}分前`;
+  return d.toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"});
+}
+// ヘッダーの同期ボタン（⬆保存・⬇読み込み。⚠再接続もここから直接押せる）
+function updateSyncBtn(){
+  const b=document.getElementById("syncBtn"),dn=document.getElementById("syncDownBtn");
+  if(!b)return;
+  b.className="syncbtn";
+  if(_gdReconnect){
+    b.textContent="⚠ 再接続";b.classList.add("warn");b.title="接続が切れています。押すとGoogleに繋ぎ直します";b.onclick=gdSignIn;
+    if(dn)dn.style.display="none";
+    return;
+  }
+  if(!_gdToken){
+    b.textContent="☁ 未接続";b.title="Google Driveと同期する";b.onclick=gdSignIn;
+    if(dn)dn.style.display="none";
+    return;
+  }
+  b.classList.add("on");
+  const auto=(DB.settings.syncMode||"manual")==="auto";
+  b.textContent=auto?"☁ 同期済":"⬆ 保存";
+  b.title=(_lastSyncTime?"最終同期："+fmtSyncTime(_lastSyncTime)+"／":"")+"クラウドへ保存";
+  b.onclick=auto?()=>{gdSyncUp();}:gdSyncUpWithCheck;
+  if(dn){dn.style.display="";dn.classList.add("on");dn.onclick=gdSyncDownWithCheck;}
+}
+/* トースト・モーダル */
+let _toastTimer=null;
+function toast(msg){
+  const t=document.getElementById("toast");if(!t)return;
+  t.textContent=msg;t.classList.add("show");
+  clearTimeout(_toastTimer);_toastTimer=setTimeout(()=>t.classList.remove("show"),2600);
+}
+// アクション付きトースト（削除の「元に戻す」など）。少し長めに出す
+function toastUndo(msg,label,fn){
+  const t=document.getElementById("toast");if(!t)return;
+  t.textContent="";
+  t.appendChild(document.createTextNode(msg+" "));
+  const b=document.createElement("button");
+  b.className="toast-act";b.textContent=label;
+  b.onclick=()=>{t.classList.remove("show");clearTimeout(_toastTimer);fn();};
+  t.appendChild(b);
+  t.classList.add("show");
+  clearTimeout(_toastTimer);_toastTimer=setTimeout(()=>t.classList.remove("show"),6000);
+}
+function showModal(html){
+  const ov=document.getElementById("modalOverlay"),bx=document.getElementById("modalBox");
+  bx.innerHTML=html;ov.classList.add("show");
+}
+function closeModal(){
+  const ov=document.getElementById("modalOverlay");
+  ov.classList.remove("show");
+  document.getElementById("modalBox").innerHTML=""; // 閉じた画面の中身を残さない
+}
+
+/* =========================== 書き出し・読み込み =========================== */
 function exportJSON(){const blob=new Blob([JSON.stringify(DB,null,2)],{type:"application/json"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`tantouroku_${todayLocalDate()}.json`;a.click();URL.revokeObjectURL(a.href);}
+function csvCell(v){v=String(v==null?"":v);return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}
+function buildCSV(){
+  const head=["日時","種別","イベント開始","イベント終了","目玉男士","木炭","玉鋼","冷却材","砥石","お札","鍛刀数","何振目","男士","刀種"];
+  const rows=[head];
+  activeBatches().filter(b=>b.state==="done")
+    .sort((a,b)=>(a.datetime||"").localeCompare(b.datetime||""))
+    .forEach(b=>{(b.slots||[]).forEach((s,i)=>{
+      const m=MASTER_BY_MEI[s.mei];
+      rows.push([fmtDateTime(b.datetime),b.mode==="event"?"イベント":"通常",
+        fmtDateOnly(b.eventStart),fmtDateOnly(b.eventEnd),b.pickup||"",
+        b.recipe.charcoal,b.recipe.steel,b.recipe.coolant,b.recipe.whetstone,
+        FUDA[b.fuda||"none"]||"なし",b.count,i+1,s.mei,m?m.type:""]);
+    });});
+  return "\uFEFF"+rows.map(r=>r.map(csvCell).join(",")).join("\r\n");
+}
+function exportCSV(){
+  const csv=buildCSV();
+  if(csv.split("\r\n").length<2){alert("書き出せる記録がまだありません。");return;}
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`tantouroku_${todayLocalDate()}.csv`;a.click();URL.revokeObjectURL(a.href);}
 function importJSON(e){const f=e.target.files[0];if(!f)return;const rd=new FileReader();
   rd.onload=()=>{try{const o=JSON.parse(rd.result);if(!o||!Array.isArray(o.batches))throw 0;
-    if(confirm("読み込んだデータで現在の記録を置き換えますか？（現在のデータは消えます）")){localStorage.setItem(LS_DATA,JSON.stringify(o));DB=load();render();}
+    if(confirm("読み込んだデータで現在の記録を置き換えますか？（現在のデータは消えます）")){
+      DB=normalize(o);DB.updatedAt=Date.now(); // 読み込んだものを「今の最新」として扱う
+      localStorage.setItem(LS_DATA,JSON.stringify(DB));
+      render();updateSyncBtn();scheduleAutoSync();
+    }
   }catch(_){alert("読み込めませんでした。鍛刀録の書き出しJSONか確認してください。");}};
   rd.readAsText(f);e.target.value="";}
 
@@ -996,17 +1493,28 @@ function importJSON(e){const f=e.target.files[0];if(!f)return;const rd=new FileR
 let pickerCb=null;
 const ov=document.getElementById("pickerOverlay"),pkList=document.getElementById("pickerList"),
       pkSearch=document.getElementById("pickerSearch"),pkTitle=document.getElementById("pickerTitle");
-function openPicker(title,cb){pickerCb=cb;pkTitle.textContent=title;pkSearch.value="";renderPicker("");ov.classList.add("show");setTimeout(()=>pkSearch.focus(),50);}
+let pickerType="all"; // 刀種チップ（開くたびに「すべて」へ戻す）
+function openPicker(title,cb){pickerCb=cb;pkTitle.textContent=title;pkSearch.value="";pickerType="all";
+  renderPickerTypes();renderPicker("");ov.classList.add("show");setTimeout(()=>pkSearch.focus(),50);}
 function closePicker(){ov.classList.remove("show");pickerCb=null;}
+function renderPickerTypes(){
+  const box=document.getElementById("pickerTypes");box.innerHTML="";
+  ["all",...TYPE_ORDER].forEach(t=>{
+    const c=el(`<button class="pk-chip ${pickerType===t?"on":""}">${t==="all"?"すべて":t}</button>`);
+    c.onclick=()=>{pickerType=t;renderPickerTypes();renderPicker(pkSearch.value);};
+    box.appendChild(c);
+  });
+}
 function renderPicker(q){q=(q||"").trim().toLowerCase();
-  const items=MASTER.filter(m=>!q||m.mei.toLowerCase().includes(q)||m.yomi.toLowerCase().includes(q))
-    .sort((a,b)=>typeRank(a.type)-typeRank(b.type)||b.rarity-a.rarity||a.no-b.no);
+  const items=MASTER.filter(m=>(pickerType==="all"||m.type===pickerType)
+      &&(!q||m.mei.toLowerCase().includes(q)||m.yomi.toLowerCase().includes(q)))
+    .sort((a,b)=>typeRank(a.type)-typeRank(b.type)||a.no-b.no);
   pkList.innerHTML="";
   if(!items.length){pkList.appendChild(el(`<div class="empty">該当する男士がいません。</div>`));return;}
   let last=null;
   items.forEach(m=>{if(m.type!==last){pkList.appendChild(el(`<div class="grp-lbl">${m.type}</div>`));last=m.type;}
     const wl=DB.wishlist.includes(m.mei)?"🌸 ":"";
-    const it=el(`<button class="mitem">${wl}${esc(m.mei)}<span class="ty">${stars(m.rarity)}${m.time?" ・ "+m.time:""}</span></button>`);
+    const it=el(`<button class="mitem">${wl}${esc(m.mei)}</button>`);
     it.onclick=()=>{const cb=pickerCb;closePicker();if(cb)cb(m.mei);};pkList.appendChild(it);});}
 pkSearch.addEventListener("input",()=>renderPicker(pkSearch.value));
 document.getElementById("pickerCancel").onclick=closePicker;
@@ -1017,8 +1525,41 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&ov.classList.contai
 function setTheme(t){document.documentElement.setAttribute("data-theme",t);localStorage.setItem(LS_THEME,t);
   document.getElementById("themeBtn").textContent=t==="dark"?"☀":"🌙";}
 document.getElementById("themeBtn").onclick=()=>{const c=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";setTheme(c);if(currentTab==="settei")renderSettei();};
+localStorage.removeItem("tantouroku_traysort"); // 旧・鍛刀中タブの名残を掃除
 setTheme(localStorage.getItem(LS_THEME)||"light");
 render();
+_appReady=true;
+updateSyncBtn();
+// 起動時のクラウドチェックは「トークンがまだ新しいとき」だけ。
+// 期限切れ・取得時刻不明のときは、操作なしのサイレント更新を撃たない
+// （操作を伴わないトークン要求は環境によって失敗するため）。
+// その場合は次に同期ボタンを押したとき（操作あり＝通りやすい）に先回り更新で取り直される。
+if(_gdToken&&!gdTokenStale()){
+  waitForGoogleAccounts(8000).then(()=>gdStartupCheck()).catch(()=>gdStartupCheck());
+}
+// ヘッダーの時計。長時間開きっぱなしでも破綻しないよう、
+// ・毎回 new Date() から計算（加算式にしない＝スリープ復帰でもズレない）
+// ・textContentの差し替えのみ（DOMは増えない）
+// ・タイマーは単一のsetInterval（ブラウザが裏でタブを間引いても、次の表示で正しい時刻に戻る）
+const _clockEl=document.getElementById("hdrClock");
+let _clockSecEl=null;
+function tickClock(){
+  if(!_clockEl)return;
+  const d=new Date();
+  const hm=`${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+  if(!_clockSecEl){
+    _clockEl.innerHTML=`<span class="hm"></span><span class="sec"></span>`;
+    _clockSecEl=_clockEl.querySelector(".sec");
+  }
+  _clockEl.querySelector(".hm").textContent=hm;
+  _clockSecEl.textContent=":"+pad2(d.getSeconds());
+}
+tickClock();
+setInterval(tickClock,1000);
+// 「○分前」の表示を1分ごとに更新
+setInterval(()=>{if(_gdToken&&_lastSyncTime)updateSyncBtn();},60000);
+document.getElementById("modalOverlay").addEventListener("click",e=>{
+  if(e.target===e.currentTarget)closeModal();});
 </script>
 </body>
 </html>

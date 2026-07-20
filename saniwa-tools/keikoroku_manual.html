@@ -15,14 +15,177 @@
   gtag('js', new Date());
   gtag('config', 'G-QM317D9ESN');
 </script>
+<script>
+/* テーマを描画前に適用（ちらつき防止） */
+(function(){
+  var hue = 'blue', mode = 'dark';
+  try {
+    var saved = JSON.parse(localStorage.getItem('reply_theme_v1') || 'null');
+    if (saved && (saved.hue === 'blue' || saved.hue === 'red')) hue = saved.hue;
+    if (saved && (saved.mode === 'dark' || saved.mode === 'light')) mode = saved.mode;
+  } catch(e) {}
+  document.documentElement.dataset.hue = hue;
+  document.documentElement.dataset.mode = mode;
+})();
+</script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a1a; }
+/* ============================================================
+   テーマ定義（4種）reply.html / changelog.html と共通のしくみ
+   青系×暗い＝縹色（初期） / 青系×明るい＝白群
+   赤系×暗い＝臙脂        / 赤系×明るい＝アゲート色
+   ============================================================ */
+:root,
+html[data-hue="blue"][data-mode="dark"] {
+  --bg: #354f6b;
+  --veil: rgba(53,79,107,.82);
+  --tx-heading: #dce9f5;
+  --tx-body: #c7d8ea;
+  --tx-em: #eef6fd;
+  --tx-faint: rgba(199,216,234,.55);
+  --tx-note: #a8bdd6;
+  --tx-note-em: #d8e8f8;
+  --note-border: rgba(159,189,216,.35);
+  --accent: #9fbdd8;
+  --accent-soft: rgba(159,189,216,.5);
+  --accent-faint: rgba(159,189,216,.14);
+  --chip-tx: #bcd6ee;
+  --chip-border: rgba(159,189,216,.3);
+  --chip-hover-tx: #e2f0fc;
+  --chip-hover-bg: rgba(159,189,216,.22);
+  --panel-bg: rgba(0,0,0,.30);
+  --panel-deep: rgba(0,0,0,.34);
+  --panel-border: rgba(200,220,245,.18);
+  --heading-border: rgba(200,220,245,.2);
+  --divider: rgba(200,220,245,.1);
+  --warn-bg: rgba(200,120,50,.15);
+  --warn-border: rgba(220,150,80,.35);
+  --warn-head: #e8b078;
+  --warn-tx: #d9ae85;
+  --hint-bg: rgba(42,170,122,.12);
+  --hint-border: rgba(42,170,122,.3);
+  --hint-head: #5adaaa;
+  --hint-tx: #a8e8d0;
+  --card-bg: rgba(0,0,0,.2);
+  --card-border: rgba(200,220,245,.14);
+  --footer-tx: rgba(220,235,250,.55);
+  --footer-bg: rgba(0,0,0,.4);
+}
+html[data-hue="blue"][data-mode="light"] {
+  --bg: #8caec0;
+  --veil: rgba(140,174,192,.82);
+  --tx-heading: #22363d;
+  --tx-body: #2e4750;
+  --tx-em: #132229;
+  --tx-faint: rgba(46,71,80,.6);
+  --tx-note: #3d5860;
+  --tx-note-em: #1c2f36;
+  --note-border: rgba(51,80,92,.4);
+  --accent: #33505c;
+  --accent-soft: rgba(51,80,92,.5);
+  --accent-faint: rgba(51,80,92,.12);
+  --chip-tx: #2e4a56;
+  --chip-border: rgba(51,80,92,.35);
+  --chip-hover-tx: #16272e;
+  --chip-hover-bg: rgba(51,80,92,.18);
+  --panel-bg: rgba(255,255,255,.45);
+  --panel-deep: rgba(255,255,255,.5);
+  --panel-border: rgba(60,90,105,.25);
+  --heading-border: rgba(60,90,105,.3);
+  --divider: rgba(60,90,105,.18);
+  --warn-bg: rgba(200,120,50,.14);
+  --warn-border: rgba(180,110,40,.5);
+  --warn-head: #8a4b12;
+  --warn-tx: #7a4517;
+  --hint-bg: rgba(42,170,122,.14);
+  --hint-border: rgba(30,130,90,.5);
+  --hint-head: #1d6f4e;
+  --hint-tx: #1f5c44;
+  --card-bg: rgba(255,255,255,.5);
+  --card-border: rgba(60,90,105,.25);
+  --footer-tx: rgba(28,47,54,.7);
+  --footer-bg: rgba(255,255,255,.35);
+}
+html[data-hue="red"][data-mode="dark"] {
+  --bg: #8b1a1a;
+  --veil: rgba(139,26,26,.82);
+  --tx-heading: #f0dcc0;
+  --tx-body: #f0dcc0;
+  --tx-em: #f8eecc;
+  --tx-faint: rgba(240,220,190,.6);
+  --tx-note: #d4b898;
+  --tx-note-em: #f0c870;
+  --note-border: rgba(255,200,120,.28);
+  --accent: #c8a84b;
+  --accent-soft: rgba(200,168,75,.5);
+  --accent-faint: rgba(200,168,75,.12);
+  --chip-tx: #e8c878;
+  --chip-border: rgba(200,168,75,.25);
+  --chip-hover-tx: #f8e8a0;
+  --chip-hover-bg: rgba(200,168,75,.2);
+  --panel-bg: rgba(0,0,0,.30);
+  --panel-deep: rgba(0,0,0,.34);
+  --panel-border: rgba(255,220,160,.17);
+  --heading-border: rgba(255,220,160,.2);
+  --divider: rgba(255,220,160,.1);
+  --warn-bg: rgba(200,120,50,.15);
+  --warn-border: rgba(220,150,80,.3);
+  --warn-head: #e8b870;
+  --warn-tx: #d4a870;
+  --hint-bg: rgba(42,170,122,.1);
+  --hint-border: rgba(42,170,122,.25);
+  --hint-head: #5adaaa;
+  --hint-tx: #a8e8d0;
+  --card-bg: rgba(0,0,0,.2);
+  --card-border: rgba(255,220,160,.12);
+  --footer-tx: rgba(240,220,190,.55);
+  --footer-bg: rgba(0,0,0,.4);
+}
+html[data-hue="red"][data-mode="light"] {
+  --bg: #e39182;
+  --veil: rgba(227,145,130,.82);
+  --tx-heading: #5a241a;
+  --tx-body: #6b2f22;
+  --tx-em: #3f1a12;
+  --tx-faint: rgba(90,36,26,.6);
+  --tx-note: #813a2b;
+  --tx-note-em: #4a1f16;
+  --note-border: rgba(129,58,43,.4);
+  --accent: #813a2b;
+  --accent-soft: rgba(129,58,43,.5);
+  --accent-faint: rgba(129,58,43,.12);
+  --chip-tx: #6e3225;
+  --chip-border: rgba(129,58,43,.35);
+  --chip-hover-tx: #3f1a12;
+  --chip-hover-bg: rgba(129,58,43,.16);
+  --panel-bg: rgba(255,255,255,.46);
+  --panel-deep: rgba(255,255,255,.5);
+  --panel-border: rgba(155,75,55,.28);
+  --heading-border: rgba(155,75,55,.32);
+  --divider: rgba(155,75,55,.2);
+  --warn-bg: rgba(200,120,50,.14);
+  --warn-border: rgba(180,110,40,.5);
+  --warn-head: #8a4b12;
+  --warn-tx: #7a4517;
+  --hint-bg: rgba(42,170,122,.14);
+  --hint-border: rgba(30,130,90,.5);
+  --hint-head: #1d6f4e;
+  --hint-tx: #1f5c44;
+  --card-bg: rgba(255,255,255,.5);
+  --card-border: rgba(155,75,55,.28);
+  --footer-tx: rgba(63,26,18,.7);
+  --footer-bg: rgba(255,255,255,.35);
+}
+
+body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: var(--bg); }
 
 /* ── 背景（トップページと共通）── */
 .bg {
   min-height: 100vh;
-  background-image: url('background.jpg');
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--veil), var(--veil)),
+    url('background.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -40,8 +203,8 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
 .wrapper { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; padding: 32px 20px 60px; }
 
 /* ── 戻るリンク ── */
-.back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-family: 'Noto Sans JP', sans-serif; color: rgba(240,220,190,.6); text-decoration: none; letter-spacing: .1em; transition: color .2s; margin-bottom: 16px; }
-.back-link:hover { color: #f0dcc0; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-family: 'Noto Sans JP', sans-serif; color: var(--tx-faint); text-decoration: none; letter-spacing: .1em; transition: color .2s; margin-bottom: 16px; }
+.back-link:hover { color: var(--tx-heading); }
 
 /* ── タイトル（トップの .site-title に準拠）── */
 .page-title-block {
@@ -55,55 +218,76 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
 }
 .page-title { font-size: 26px; font-weight: 700; letter-spacing: .15em; color: #2c1a10; display: flex; align-items: baseline; gap: 12px; }
 .page-title-sub { font-size: 12px; font-weight: 400; color: #6a4428; letter-spacing: .12em; font-family: 'Noto Sans JP', sans-serif; }
+.page-updated { font-size: 11px; color: #9a7050; letter-spacing: .1em; margin-top: 5px; font-family: 'Noto Sans JP', sans-serif; }
 
 /* ── 目次 ── */
-.toc-panel { background: rgba(0,0,0,.30); border: 1px solid rgba(255,220,160,.16); border-radius: 12px; padding: 18px 22px; margin-bottom: 20px; backdrop-filter: blur(3px); }
-.toc-heading { font-size: 11px; font-weight: 500; letter-spacing: .28em; color: #e9d2ad; margin-bottom: 12px; font-family: 'Noto Sans JP', sans-serif; }
+.toc-panel { background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 12px; padding: 18px 22px; margin-bottom: 20px; backdrop-filter: blur(3px); }
+.toc-heading { font-size: 11px; font-weight: 500; letter-spacing: .28em; color: var(--chip-tx); margin-bottom: 12px; font-family: 'Noto Sans JP', sans-serif; }
 .toc-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-.toc-btn { font-size: 12px; font-family: 'Noto Sans JP', sans-serif; color: #e8c878; background: rgba(200,168,75,.08); border: 1px solid rgba(200,168,75,.25); border-radius: 20px; padding: 5px 14px; cursor: pointer; text-decoration: none; transition: background .2s, color .2s; display: inline-block; letter-spacing: .05em; }
-.toc-btn:hover { background: rgba(200,168,75,.2); color: #f8e8a0; }
+.toc-btn { font-size: 12px; font-family: 'Noto Sans JP', sans-serif; color: var(--chip-tx); background: var(--accent-faint); border: 1px solid var(--chip-border); border-radius: 20px; padding: 5px 14px; cursor: pointer; text-decoration: none; transition: background .2s, color .2s; display: inline-block; letter-spacing: .05em; }
+.toc-btn:hover { background: var(--chip-hover-bg); color: var(--chip-hover-tx); }
 
 /* ── セクション（トップの .info-panel に準拠）── */
-.section { background: rgba(0,0,0,.34); border: 1px solid rgba(255,220,160,.18); border-radius: 12px; padding: 24px 26px; margin-bottom: 16px; backdrop-filter: blur(3px); scroll-margin-top: 16px; }
-.section-heading { font-size: 18px; font-weight: 700; letter-spacing: .14em; color: #f0dcc0; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,220,160,.2); display: flex; align-items: center; gap: 10px; }
-.label { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; letter-spacing: .18em; color: #c8a84b; background: rgba(200,168,75,.12); border: 1px solid rgba(200,168,75,.25); border-radius: 4px; padding: 3px 10px; margin-bottom: 8px; font-family: 'Noto Sans JP', sans-serif; }
-.text { font-size: 13px; line-height: 2.1; color: #f0dcc0; text-align: justify; font-family: 'Noto Sans JP', sans-serif; font-weight: 300; }
-.text em { font-style: normal; color: #f8eecc; font-weight: 500; }
-.note { font-size: 12px; line-height: 1.9; color: #d4b898; margin-top: 8px; padding-left: 12px; border-left: 2px solid rgba(255,200,120,.28); font-family: 'Noto Sans JP', sans-serif; }
-.note em { font-style: normal; color: #f0c870; font-weight: 500; }
-.divider { height: 1px; background: rgba(255,220,160,.1); margin: 16px 0; }
+.section { background: var(--panel-deep); border: 1px solid var(--panel-border); border-radius: 12px; padding: 24px 26px; margin-bottom: 16px; backdrop-filter: blur(3px); scroll-margin-top: 16px; }
+.section-heading { font-size: 18px; font-weight: 700; letter-spacing: .14em; color: var(--tx-heading); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--heading-border); display: flex; align-items: center; gap: 10px; }
+.label { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; letter-spacing: .18em; color: var(--accent); background: var(--accent-faint); border: 1px solid var(--chip-border); border-radius: 4px; padding: 3px 10px; margin-bottom: 8px; font-family: 'Noto Sans JP', sans-serif; }
+.text { font-size: 13px; line-height: 2.1; color: var(--tx-body); text-align: justify; font-family: 'Noto Sans JP', sans-serif; font-weight: 300; }
+.text em { font-style: normal; color: var(--tx-em); font-weight: 500; }
+.note { font-size: 12px; line-height: 1.9; color: var(--tx-note); margin-top: 8px; padding-left: 12px; border-left: 2px solid var(--note-border); font-family: 'Noto Sans JP', sans-serif; }
+.note em { font-style: normal; color: var(--tx-note-em); font-weight: 500; }
+.divider { height: 1px; background: var(--divider); margin: 16px 0; }
 .block { margin-bottom: 14px; }
 .block:last-child { margin-bottom: 0; }
 .list { list-style: none; padding: 0; margin: 0; }
-.list li { font-size: 13px; line-height: 2.0; color: #f0dcc0; font-family: 'Noto Sans JP', sans-serif; font-weight: 300; padding-left: 14px; position: relative; }
-.list li::before { content: '・'; position: absolute; left: 0; color: #c8a84b; opacity: .7; }
-.warn { background: rgba(200,120,50,.15); border: 1px solid rgba(220,150,80,.25); border-radius: 8px; padding: 10px 14px; margin-top: 8px; }
-.warn-head { font-size: 11px; font-weight: 600; color: #e8b870; letter-spacing: .1em; margin-bottom: 5px; font-family: 'Noto Sans JP', sans-serif; }
-.warn-text { font-size: 12px; line-height: 1.9; color: #d4a870; font-family: 'Noto Sans JP', sans-serif; }
-.hint { background: rgba(42,170,122,.1); border: 1px solid rgba(42,170,122,.25); border-radius: 8px; padding: 10px 14px; margin-top: 8px; }
-.hint-head { font-size: 11px; font-weight: 600; color: #5adaaa; letter-spacing: .1em; margin-bottom: 5px; font-family: 'Noto Sans JP', sans-serif; }
-.hint-text { font-size: 12px; line-height: 1.9; color: #a8e8d0; font-family: 'Noto Sans JP', sans-serif; }
+.list li { font-size: 13px; line-height: 2.0; color: var(--tx-body); font-family: 'Noto Sans JP', sans-serif; font-weight: 300; padding-left: 14px; position: relative; }
+.list li::before { content: '・'; position: absolute; left: 0; color: var(--accent); opacity: .7; }
+.warn { background: var(--warn-bg); border: 1px solid var(--warn-border); border-radius: 8px; padding: 10px 14px; margin-top: 8px; }
+.warn-head { font-size: 11px; font-weight: 600; color: var(--warn-head); letter-spacing: .1em; margin-bottom: 5px; font-family: 'Noto Sans JP', sans-serif; }
+.warn-text { font-size: 12px; line-height: 1.9; color: var(--warn-tx); font-family: 'Noto Sans JP', sans-serif; }
+.hint { background: var(--hint-bg); border: 1px solid var(--hint-border); border-radius: 8px; padding: 10px 14px; margin-top: 8px; }
+.hint-head { font-size: 11px; font-weight: 600; color: var(--hint-head); letter-spacing: .1em; margin-bottom: 5px; font-family: 'Noto Sans JP', sans-serif; }
+.hint-text { font-size: 12px; line-height: 1.9; color: var(--hint-tx); font-family: 'Noto Sans JP', sans-serif; }
 .sub-section { margin-top: 14px; }
-.sub-heading { font-size: 13px; font-weight: 500; color: #e8c878; letter-spacing: .08em; margin-bottom: 6px; font-family: 'Noto Sans JP', sans-serif; display: flex; align-items: center; gap: 6px; }
-.sub-heading::before { content: '▸'; color: rgba(200,168,75,.6); font-size: 10px; }
+.sub-heading { font-size: 13px; font-weight: 500; color: var(--chip-tx); letter-spacing: .08em; margin-bottom: 6px; font-family: 'Noto Sans JP', sans-serif; display: flex; align-items: center; gap: 6px; }
+.sub-heading::before { content: '▸'; color: var(--accent-soft); font-size: 10px; }
 .ki-table { width: 100%; border-collapse: collapse; font-family: 'Noto Sans JP', sans-serif; font-size: 12px; margin-top: 10px; }
-.ki-table th { background: rgba(200,168,75,.15); color: #e8c878; font-weight: 600; letter-spacing: .06em; padding: 7px 12px; text-align: left; border-bottom: 1px solid rgba(255,220,160,.2); }
-.ki-table td { color: #f0dcc0; padding: 7px 12px; border-bottom: 1px solid rgba(255,220,160,.08); font-weight: 300; }
+.ki-table th { background: var(--accent-faint); color: var(--chip-tx); font-weight: 600; letter-spacing: .06em; padding: 7px 12px; text-align: left; border-bottom: 1px solid var(--heading-border); }
+.ki-table td { color: var(--tx-body); padding: 7px 12px; border-bottom: 1px solid var(--divider); font-weight: 300; }
 .ki-table tr:last-child td { border-bottom: none; }
-.ki-table td.lv { font-variant-numeric: tabular-nums; color: #f8e8a0; }
-.ki-table .note-cell { font-size: 11px; color: #d4b898; }
+.ki-table td.lv { font-variant-numeric: tabular-nums; color: var(--chip-hover-tx); }
+.ki-table .note-cell { font-size: 11px; color: var(--tx-note); }
 .option-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin-top: 10px; }
-.option-card { background: rgba(0,0,0,.2); border: 1px solid rgba(255,220,160,.12); border-radius: 8px; padding: 10px 12px; }
-.option-title { font-size: 12px; font-weight: 600; color: #e8c878; margin-bottom: 3px; font-family: 'Noto Sans JP', sans-serif; }
-.option-desc { font-size: 11px; color: #c0a880; font-family: 'Noto Sans JP', sans-serif; font-weight: 300; line-height: 1.7; }
+.option-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 10px 12px; }
+.option-title { font-size: 12px; font-weight: 600; color: var(--chip-tx); margin-bottom: 3px; font-family: 'Noto Sans JP', sans-serif; }
+.option-desc { font-size: 11px; color: var(--tx-note); font-family: 'Noto Sans JP', sans-serif; font-weight: 300; line-height: 1.7; }
 
 /* ── フッター（トップと共通）── */
-footer { position: relative; z-index: 1; text-align: center; padding: 18px; font-size: 11px; color: rgba(240,220,190,.55); letter-spacing: .15em; font-family: 'Noto Sans JP', sans-serif; background: rgba(0,0,0,.4); }
+footer { position: relative; z-index: 1; text-align: center; padding: 18px; font-size: 11px; color: var(--footer-tx); letter-spacing: .15em; font-family: 'Noto Sans JP', sans-serif; background: var(--footer-bg); }
 
 /* ── トップへ戻るボタン ── */
-.scroll-top { position: fixed; bottom: 24px; right: 20px; z-index: 50; width: 40px; height: 40px; background: rgba(200,168,75,.2); border: 1px solid rgba(200,168,75,.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #c8a84b; font-size: 16px; transition: all .2s; text-decoration: none; opacity: 0; pointer-events: none; backdrop-filter: blur(2px); }
+.scroll-top { position: fixed; bottom: 24px; right: 20px; z-index: 50; width: 40px; height: 40px; background: var(--accent-faint); border: 1px solid var(--accent-soft); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--accent); font-size: 16px; transition: all .2s; text-decoration: none; opacity: 0; pointer-events: none; backdrop-filter: blur(2px); }
 .scroll-top.visible { opacity: 1; pointer-events: auto; }
-.scroll-top:hover { background: rgba(200,168,75,.35); }
+.scroll-top:hover { background: var(--chip-hover-bg); }
+
+/* テーマ切り替えボタン（reply.html と同じしくみ） */
+.theme-bar { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+.theme-btn {
+  appearance: none; border: 1px solid var(--panel-border); background: var(--panel-bg);
+  color: var(--tx-body); font-size: 12px; letter-spacing: .08em;
+  font-family: 'Noto Sans JP', sans-serif; padding: 6px 14px; border-radius: 999px;
+  cursor: pointer; transition: background .2s, color .2s, border-color .2s;
+}
+.theme-btn:hover { background: var(--chip-hover-bg); }
+
+/* ライン色の説明（案A：色味は固定、明るいテーマでは濃色に切替） */
+.lc-gold   { color: #c8a84b; }
+.lc-orange { color: #dab888; }
+.lc-green  { color: #2aaa7a; }
+.lc-gray   { color: #808080; }
+html[data-mode="light"] .lc-gold   { color: #8a6a1a; }
+html[data-mode="light"] .lc-orange { color: #96602a; }
+html[data-mode="light"] .lc-green  { color: #1c7a54; }
+html[data-mode="light"] .lc-gray   { color: #5c5c5c; }
 
 @media (max-width: 600px) {
   .wrapper { padding: 20px 14px 50px; }
@@ -122,6 +306,13 @@ footer { position: relative; z-index: 1; text-align: center; padding: 18px; font
 <a class="back-link" href="saniwa_top.html">← 審神者の道具箱へ戻る</a>
 <div class="page-title-block">
   <div class="page-title">稽古録 <span class="page-title-sub">説明書</span></div>
+  <div class="page-updated">最終更新：2026.07.10</div>
+</div>
+
+<!-- テーマ切り替え -->
+<div class="theme-bar">
+  <button type="button" class="theme-btn" id="btn-hue" onclick="toggleHue()">色：青系</button>
+  <button type="button" class="theme-btn" id="btn-mode" onclick="toggleMode()">明るさ：暗い</button>
 </div>
 
 <nav class="toc-panel" id="top">
@@ -184,10 +375,10 @@ footer { position: relative; z-index: 1; text-align: center; padding: 18px; font
   <div class="sub-section">
     <div class="sub-heading">カードの色とマーク</div>
     <div class="option-grid">
-      <div class="option-card"><div class="option-title" style="color:#c8a84b">金ライン（所持）</div><div class="option-desc">1振り登録済みの刀剣男士</div></div>
-      <div class="option-card"><div class="option-title" style="color:#dab888">橙ライン（複数所持）</div><div class="option-desc">2振り以上登録済み</div></div>
-      <div class="option-card"><div class="option-title" style="color:#2aaa7a">緑ライン（極）</div><div class="option-desc">極として登録済みの刀</div></div>
-      <div class="option-card"><div class="option-title" style="color:#808080">薄グレー（未所持）</div><div class="option-desc">まだ登録していない刀</div></div>
+      <div class="option-card"><div class="option-title lc-gold">金ライン（所持）</div><div class="option-desc">1振り登録済みの刀剣男士</div></div>
+      <div class="option-card"><div class="option-title lc-orange">橙ライン（複数所持）</div><div class="option-desc">2振り以上登録済み</div></div>
+      <div class="option-card"><div class="option-title lc-green">緑ライン（極）</div><div class="option-desc">極として登録済みの刀</div></div>
+      <div class="option-card"><div class="option-title lc-gray">薄グレー（未所持）</div><div class="option-desc">まだ登録していない刀</div></div>
     </div>
     <div class="note">カード右下の「×N」は登録している振り数です。同じ刀剣男士を複数振り登録できます。</div>
   </div>
@@ -220,7 +411,15 @@ footer { position: relative; z-index: 1; text-align: center; padding: 18px; font
       <li><em>No順</em>：刀帳番号順（デフォルト）</li>
       <li><em>種類</em>：短刀 → 脇差 → 打刀 → 太刀 → 大太刀 → 薙刀 → 槍 → 剣の順</li>
       <li><em>刀派</em>：刀派のあいうえお順（刀派なしは末尾）</li>
+      <li><em>Lv / Exp / 乱舞Lv</em>：レベル・累積経験値・乱舞レベルの順に並べます。同じボタンをもう一度タップすると<em>昇順⇄降順</em>が切り替わります</li>
+      <li><em>入手順</em>：顕現日（入手日）の順に並べます。こちらも再タップで新しい順⇄古い順を切り替えられます</li>
     </ul>
+    <div class="note">Lv・Exp・乱舞Lv・入手順のソート中は、同じ名前の男士を2振り以上持っていても、表示オプションに関わらず1振りずつ別カードで並びます。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">入手順の並べ替えモード（同じ日の入れ替え）</div>
+    <div class="text">入手順でソート中に「<em>↕ 並べ替えモード</em>」をONにすると、<em>同じ顕現日</em>の刀を矢印（グリッド ←→ ／ リスト ↑↓）で手動で入れ替えられます。同じ日に何振りもお迎えした日の順番を、自分の記憶どおりに整えられます（日付が違う刀は対象外です）。</div>
   </div>
   <div class="divider"></div>
   <div class="sub-section">
@@ -228,6 +427,7 @@ footer { position: relative; z-index: 1; text-align: center; padding: 18px; font
     <ul class="list">
       <li><em>刀種で絞り込み</em>：タップした刀種のみ表示（複数選択可）</li>
       <li><em>刀派で絞り込み</em>：選択した刀派のみ表示</li>
+      <li><em>絵文字で絞り込み</em>：⭐🌸🔥などの絵文字マークで絞り込みます。複数選ぶと、<em>どれかのマーク</em>が付いた一振りを持つ刀が表示されます</li>
       <li><em>所持フィルター</em>：「全て」「所持のみ」「未所持のみ」から選択</li>
     </ul>
   </div>
@@ -238,7 +438,24 @@ footer { position: relative; z-index: 1; text-align: center; padding: 18px; font
       <li><em>未所持の型を表示</em>：登録していない刀もカードに表示します（デフォルトON）</li>
       <li><em>空きスロット表示</em>：刀帳番号の「空き」スロットを薄く表示します</li>
       <li><em>極・特を個別カードで表示</em>：初と極を別カードで並べます。OFFにすると通常カードにまとめて表示します</li>
+      <li><em>乱舞レベルを表示</em>：リストや所持振り一覧に乱舞レベルを表示します</li>
+      <li><em>複数所持の刀を個別カードで表示</em>：同じ名前の男士を2振り以上持つとき、まとめず1振りずつ別カードで表示します</li>
       <li><em>グリッドカードの高さを揃える</em>：グリッド表示でカードの高さを均一にします</li>
+      <li><em>グラフ下の凡例を表示</em>：稽古録グラフの下に凡例を表示します（デフォルトOFF）</li>
+      <li><em>刀の設定画面：保存したら閉じる</em>：編集画面で保存すると同時に画面を閉じます</li>
+    </ul>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">グラフ視認性</div>
+    <div class="text">サイドバーの「グラフ視認性」から、グラフの見やすさを細かく調整できます。</div>
+    <ul class="list">
+      <li><em>ホバー時に線を強調する</em>：カーソルを近づけた刀の線が目立ちます</li>
+      <li><em>Lv線を控えめに表示する</em>：経験値の線を主役にして、Lv線を薄くします</li>
+      <li><em>線をなめらかにする</em>：折れ線をゆるやかなカーブで描きます</li>
+      <li><em>データポイントを常に表示する</em>：記録した日の点をいつも表示します</li>
+      <li><em>ツールチップを最も近い一振りのみ表示</em>：たくさん選んでいるとき、いちばん近い刀だけ表示します</li>
+      <li><em>ツールチップで最も近い一振りを太字にする</em>：どの刀の値か見分けやすくします</li>
     </ul>
   </div>
 </section>
@@ -255,6 +472,8 @@ footer { position: relative; z-index: 1; text-align: center; padding: 18px; font
       <div class="option-card"><div class="option-title">ニックネーム</div><div class="option-desc">刀名の代わりに表示する名前（省略可）</div></div>
       <div class="option-card"><div class="option-title">レベル</div><div class="option-desc">初: 1〜99 / 極: 1〜199<br>±ボタンで1ずつ変更可</div></div>
       <div class="option-card"><div class="option-title">累積経験値</div><div class="option-desc">ゲーム画面の値をそのまま入力</div></div>
+      <div class="option-card"><div class="option-title">乱舞レベル</div><div class="option-desc">乱舞レベルを記録できます。リストや所持振り一覧に表示（表示オプションでON/OFF可）</div></div>
+      <div class="option-card"><div class="option-title">顕現日（入手日）</div><div class="option-desc">この個体を入手した日（省略可）。「入手順」ソートで使われます</div></div>
       <div class="option-card"><div class="option-title">カラー</div><div class="option-desc">10色からリスト表示用の色を選択</div></div>
       <div class="option-card"><div class="option-title">絵文字マーク</div><div class="option-desc">⭐🌸🔥など15種から設定</div></div>
       <div class="option-card"><div class="option-title">タグ</div><div class="option-desc">スペース区切りで複数設定可</div></div>
@@ -278,6 +497,12 @@ footer { position: relative; z-index: 1; text-align: center; padding: 18px; font
   <div class="block">
     <div class="label">記録日付の指定</div>
     <div class="text">編集画面の「記録日付」欄で保存する日付を変更できます。デフォルトは今日（日本時間）です。<br>遡って記録したい場合は日付を変更してから保存してください。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="label">過去の日付を上書きするときの確認</div>
+    <div class="text">過去の日付にすでに記録があり、違う値で上書きしようとすると、確認のメッセージが表示されます。<em>既存の記録と新しい記録の累積経験値・レベルを並べて</em>見比べられるので、うっかり書き換えを防げます（今日の更新や、同じ値の入れ直しのときは表示されません）。</div>
+    <div class="note">上書きのとき、メモ欄が空のままなら前のメモはそのまま残ります。入力があればその内容に更新されます。</div>
   </div>
   <div class="divider"></div>
   <div class="block">
@@ -325,11 +550,33 @@ footer { position: relative; z-index: 1; text-align: center; padding: 18px; font
   </div>
   <div class="divider"></div>
   <div class="sub-section">
+    <div class="sub-heading">プリセット（部隊タブ）</div>
+    <div class="text">グラフに表示する男士の組み合わせを、<em>プリセット</em>としていくつも保存できます（最初は「第一部隊」があります）。タブを切り替えるだけで、見たいメンバーのグラフにすぐ移れます。</div>
+    <ul class="list">
+      <li><em>＋</em>：新しいプリセットを追加します</li>
+      <li><em>✏️</em>：選択中のプリセットの名前を変更します</li>
+      <li><em>◀ ▶</em>：プリセットの並び順を入れ替えます</li>
+      <li><em>×</em>：プリセットを削除します（最後の1つは削除できません）</li>
+    </ul>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">⇄ 支度部屋と同期</div>
+    <div class="text">プリセットタブの<em>「⇄ 支度部屋と同期」</em>から、出陣支度部屋で組んだ部隊を読み込めます。選んだ部隊のメンバーが<em>新しいプリセットとして追加</em>されるので、今あるプリセットが消える心配はありません。支度部屋で編成した部隊の成長を、そのままグラフで見比べられます。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-section">
     <div class="sub-heading">縦軸・表示期間の切り替え</div>
     <ul class="list">
-      <li><em>縦軸</em>：累積経験値 / レベル / 両方から選択</li>
+      <li><em>縦軸</em>：両方 / 累積経験値 / レベル / 増加経験値から選択</li>
+      <li><em>増加経験値</em>：記録と記録のあいだに増えた経験値を<em>棒グラフ</em>で表示します。「この期間にどれだけ稼いだか」がひと目でわかります（「この刀のあゆみ」でも使えます）</li>
       <li><em>表示期間</em>：全期間 / 1週間 / 1ヶ月 / 3ヶ月 / 6ヶ月</li>
     </ul>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-section">
+    <div class="sub-heading">グラフ下の凡例</div>
+    <div class="text">グラフ下の凡例は、ふだんは非表示になっています。表示したいときは、サイドバーの表示オプションで<em>「グラフ下の凡例を表示」</em>をONにしてください。</div>
   </div>
   <div class="divider"></div>
   <div class="sub-section">
@@ -399,7 +646,7 @@ footer { position: relative; z-index: 1; text-align: center; padding: 18px; font
   </div>
   <div class="sub-section">
     <div class="sub-heading">期間メモ</div>
-    <div class="text">連隊戦やキャンペーン期間など、複数日にわたる期間をグラフ上に<em>帯</em>で表示します。<br>名前・開始日・終了日・表示色を設定して追加します。プリセットから連隊戦などのイベント名を選ぶこともできます。</div>
+    <div class="text">連隊戦やキャンペーン期間など、複数日にわたる期間をグラフ上に<em>帯</em>で表示します。<br>名前・開始日・終了日・表示色を設定して追加します。プリセットから連隊戦などのイベント名を選ぶこともできます。<br>色は<em>色見本パレット</em>からワンタップで選べます。従来のカラーピッカー（色相バー・スポイト）での細かい指定もそのままお使いいただけます。</div>
     <div class="note">期間メモのラベル表示は<em>通常 / 非表示 / 縦書き</em>から選べます。</div>
   </div>
   <div class="divider"></div>
@@ -493,9 +740,36 @@ footer { position: relative; z-index: 1; text-align: center; padding: 18px; font
   </div>
   <div class="divider"></div>
   <div class="block">
+    <div class="sub-heading">スマホのヘッダー</div>
+    <ul class="list">
+      <li><em>常時2行</em>：2行目のボタン（📈 稽古録・設定・☁など）をいつも表示します（デフォルト）</li>
+      <li><em>⋯タップ展開</em>：ふだんは1行にして、⋯をタップしたときだけ2行目を開きます</li>
+    </ul>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="sub-heading">顕現日・メモの入力方法</div>
+    <ul class="list">
+      <li><em>装飾カレンダー</em>：年・月をドロップダウンで選べるカレンダーで入力します。「クリア（未設定に戻す）」ボタンもあります</li>
+      <li><em>ブラウザ標準</em>：お使いのブラウザの日付入力を使います</li>
+    </ul>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <div class="sub-heading">使い方（？）ボタン</div>
+    <div class="text">表示オプションの<em>「使い方（？）ボタンを表示する」</em>で、ヘッダーの「？」ボタンの表示・非表示を切り替えられます。「？」からはいつでも使い方ガイドを開けます。</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
     <div class="sub-heading">クラウド同期（Google Drive）</div>
     <div class="text">Google アカウントでログインすると、データを Google ドライブへ保存・読み込みできます。<br>PC 版はヘッダーに「↑ 保存」「↓ 読み込み」ボタンが表示されます。スマホ版は2行目の「☁」ボタンから操作します。</div>
+    <div class="text" style="margin-top:8px">同期のしかたは、設定の「同期モード」で選べます。</div>
+    <ul class="list" style="margin-top:8px">
+      <li><em>A案 手動</em>：ヘッダーのボタンで、自分のタイミングで保存・読み込みします（デフォルト）</li>
+      <li><em>B案 自動</em>：データを変更すると約4秒後に自動でクラウドへ保存し、アプリを開いたときに自動で読み込みます</li>
+    </ul>
     <div class="note">起動時にクラウドとローカルのデータを<em>自動でチェック</em>し、クラウドの方が新しい場合はお知らせします。誤って古いデータで上書きするのを防げます。</div>
+    <div class="note">Googleのログインは仕様上<em>約1時間</em>で切れますが、通常は自動でつなぎ直します。自動で復帰できなかったときはログアウトにはならず、<em>「⚠ 再接続」ボタン</em>がヘッダーに表示されるので、ワンタップで戻れます（記録は常に端末に残るので失われません）。</div>
     <div class="warn" style="margin-top:8px">
       <div class="warn-head">⚠ SNS アプリ内ブラウザでは同期できません</div>
       <div class="warn-text">X（Twitter）・LINE などのアプリ内ブラウザでは Google のセキュリティポリシーにより動作しません。Chrome・Safari などの外部ブラウザでご利用ください。</div>
@@ -572,11 +846,44 @@ footer { position: relative; z-index: 1; text-align: center; padding: 18px; font
 </section>
 
 </div></div>
-<footer>審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。</footer>
+<footer>審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari hatano</footer>
 <a class="scroll-top" id="scroll-top" href="#top" title="トップへ戻る">▲</a>
 <script>
 const scrollBtn = document.getElementById('scroll-top');
 window.addEventListener('scroll', () => { scrollBtn.classList.toggle('visible', window.scrollY > 300); }, { passive: true });
+
+/* ---- テーマ切り替え（reply.html と共通のしくみ） ---- */
+const THEME_KEY = 'reply_theme_v1';
+
+function saveTheme() {
+  try {
+    localStorage.setItem(THEME_KEY, JSON.stringify({
+      hue: document.documentElement.dataset.hue,
+      mode: document.documentElement.dataset.mode
+    }));
+  } catch(e) {}
+}
+function updateThemeButtons() {
+  const hue = document.documentElement.dataset.hue;
+  const mode = document.documentElement.dataset.mode;
+  const btnHue = document.getElementById('btn-hue');
+  const btnMode = document.getElementById('btn-mode');
+  if (btnHue)  btnHue.textContent  = '色：' + (hue === 'blue' ? '青系' : '赤系');
+  if (btnMode) btnMode.textContent = '明るさ：' + (mode === 'dark' ? '暗い' : '明るい');
+}
+function toggleHue() {
+  const cur = document.documentElement.dataset.hue;
+  document.documentElement.dataset.hue = (cur === 'blue') ? 'red' : 'blue';
+  saveTheme();
+  updateThemeButtons();
+}
+function toggleMode() {
+  const cur = document.documentElement.dataset.mode;
+  document.documentElement.dataset.mode = (cur === 'dark') ? 'light' : 'dark';
+  saveTheme();
+  updateThemeButtons();
+}
+document.addEventListener('DOMContentLoaded', updateThemeButtons);
 </script>
 </body>
 </html>

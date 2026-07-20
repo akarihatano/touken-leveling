@@ -55,6 +55,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
 .leg-dot{width:20px;height:3px;border-radius:2px;flex-shrink:0}
 .gleg{margin-top:6px;display:flex;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--t4)}
 .gleg-strip{display:flex;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--t4);margin-top:4px}
+.col-palette{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.col-swatch{width:26px;height:26px;border-radius:6px;border:2px solid var(--bd1);cursor:pointer;padding:0;transition:transform .1s}
+.col-swatch:hover{transform:scale(1.12)}
+.col-swatch.sel{border-color:var(--t1);box-shadow:0 0 0 2px var(--acc)}
 .xaxis-cust{cursor:pointer;margin-top:2px;padding-bottom:1px}
 .xaxis-cust-inner{display:flex;justify-content:space-between;font-size:10px;color:var(--t4)}
 .xaxis-cust-hint-row{display:flex;align-items:center;gap:8px;margin-top:2px;min-height:14px}
@@ -373,8 +377,8 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
     <div class="fld"><label class="lbl" style="color:#dba820">小判</label><div class="num-wrap"><input type="text" inputmode="numeric" id="i-ko" placeholder="0" oninput="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)"></div></div>
     <div class="fld"><label class="lbl" style="color:#c0804a">依頼札</label><div class="num-wrap"><input type="text" inputmode="numeric" id="i-r" placeholder="0" oninput="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)"></div></div>
     <div class="fld"><label class="lbl" style="color:#52c878">手伝い札</label><div class="num-wrap"><input type="text" inputmode="numeric" id="i-h" placeholder="0" oninput="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)"></div></div>
-    <div class="fld"><label class="lbl" style="color:#e87fb0">金平糖・並</label><div class="num-wrap"><input type="text" inputmode="numeric" id="i-kn" placeholder="0" oninput="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)"></div></div>
-    <div class="fld"><label class="lbl" style="color:#c89be8">金平糖・上</label><div class="num-wrap"><input type="text" inputmode="numeric" id="i-kj" placeholder="0" oninput="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)"></div></div>
+    <div class="fld"><label class="lbl" style="color:#e87fb0">根兵糖・並</label><div class="num-wrap"><input type="text" inputmode="numeric" id="i-kn" placeholder="0" oninput="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)"></div></div>
+    <div class="fld"><label class="lbl" style="color:#c89be8">根兵糖・上</label><div class="num-wrap"><input type="text" inputmode="numeric" id="i-kj" placeholder="0" oninput="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)"></div></div>
   </div>
   <div class="row" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--bd1)">
     <div class="fld"><label class="lbl" style="color:#7898e8">富士の札</label><div class="num-wrap"><input type="text" inputmode="numeric" id="i-ff" placeholder="0" oninput="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)"></div></div>
@@ -384,7 +388,7 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
   </div>
   <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
     <button id="btn-inherit-fuda"     class="io-btn" style="flex:1 1 calc(50% - 3px);padding:7px 6px;font-size:12px" onclick="inheritPrev('fuda')">↩ 札を引き継ぐ</button>
-    <button id="btn-inherit-konpeito" class="io-btn" style="flex:1 1 calc(50% - 3px);padding:7px 6px;font-size:12px" onclick="inheritPrev('konpeito')">↩ 金平糖を引き継ぐ</button>
+    <button id="btn-inherit-konpeito" class="io-btn" style="flex:1 1 calc(50% - 3px);padding:7px 6px;font-size:12px" onclick="inheritPrev('konpeito')">↩ 根兵糖を引き継ぐ</button>
     <button id="btn-inherit-all"      class="io-btn" style="flex:1 1 calc(50% - 3px);padding:7px 6px;font-size:12px" onclick="inheritPrev('all')">↩ 全資源を引き継ぐ</button>
     <button class="io-btn" style="flex:1 1 calc(50% - 3px);padding:7px 10px;font-size:12px;color:#d87070;border-color:rgba(216,112,112,0.3)" onclick="clearInputs()">✕ クリア</button>
   </div>
@@ -408,8 +412,9 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
       <div class="fld" style="grid-column:span 2"><label class="lbl">期間メモ名</label><input type="text" id="e-name" placeholder="例: 連隊戦"></div>
       <div class="fld"><label class="lbl">開始日</label><div class="cal-wrapper"><button type="button" class="cal-pick-btn" onclick="openCalPicker('e-s',this)"><span id="e-s-text">日付を選択</span><span style="font-size:14px;opacity:.6">📅</span></button><input type="hidden" id="e-s"></div></div>
       <div class="fld"><label class="lbl">終了日</label><div class="cal-wrapper"><button type="button" class="cal-pick-btn" onclick="openCalPicker('e-e',this)"><span id="e-e-text">日付を選択</span><span style="font-size:14px;opacity:.6">📅</span></button><input type="hidden" id="e-e"></div></div>
-      <div class="fld"><label class="lbl">色</label><input type="color" id="e-col" value="#5b9fe8" style="height:36px;width:100%"></div>
+      <div class="fld"><label class="lbl">色</label><input type="color" id="e-col" value="#5b9fe8" style="height:36px;width:100%" oninput="syncSwatchSel('e-col')"></div>
     </div>
+    <div class="fld" style="margin-top:2px"><label class="lbl">色見本（ワンタップ）</label><div id="e-col-palette" class="col-palette"></div></div>
     <p style="font-size:12px;color:var(--t4);margin:10px 0;padding-left:12px;border-left:2px solid rgba(255,200,120,.28);line-height:1.8">※この欄は手動入力、<br>期間メモ名プリセットを選択後も<br>その下の期間メモ名欄にて、追加手動入力が可能です。</p>
     <button onclick="addEv()">追加する</button>
   </div>
@@ -661,7 +666,7 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
     <div style="margin-top:20px;font-size:12px;color:var(--t4);line-height:1.9;background:var(--bg1);border:1px solid var(--bd1);border-radius:8px;padding:14px">
       <strong style="color:var(--t3);font-size:13px">Excel 読み込みについて</strong><br>
       • 1行目はヘッダー行（日付列は「日付」「date」または空欄で自動検出）<br>
-      • 列名：木炭 / 玉鋼 / 冷却材（冷却水でも可）/ 砥石 / 小判 / 依頼札 / 手伝い札 / 金平糖・並 / 金平糖・上<br>
+      • 列名：木炭 / 玉鋼 / 冷却材（冷却水でも可）/ 砥石 / 小判 / 依頼札 / 手伝い札 / 根兵糖・並 / 根兵糖・上<br>
       • 日付フォーマット：2025/11/12 または 2025-11-12<br>
       • 文字列列はメモとして自動取り込み
     </div>
@@ -1023,7 +1028,7 @@ var ntSort={dir:1};                /* dir: 1=昇順/-1=降順 */
 var BANS=[],BLOG=[];
 var RCNT={repair:0,forge:0};
 var KS=['c','s','l','w','ko','r','h','kn','kj'];
-var KL={c:'木炭',s:'玉鋼',l:'冷却材',w:'砥石',ko:'小判',r:'依頼札',h:'手伝い札',kn:'金平糖・並',kj:'金平糖・上'};
+var KL={c:'木炭',s:'玉鋼',l:'冷却材',w:'砥石',ko:'小判',r:'依頼札',h:'手伝い札',kn:'根兵糖・並',kj:'根兵糖・上'};
 var KC={c:'#e8864a',s:'#5b9fe8',l:'#3dc8d4',w:'#9b6cd8',ko:'#dba820',r:'#c0804a',h:'#52c878',kn:'#e87fb0',kj:'#c89be8'};
 var KD={c:[],s:[6,3],l:[3,3],w:[8,4],ko:[5,2,2,2],r:[4,4,2,4],h:[2,2],kn:[5,3],kj:[2,3,8,3]};
 var YAX={c:'y',s:'y',l:'y',w:'y',ko:'y',r:'y2',h:'y2',kn:'y2',kj:'y2'};
@@ -1383,7 +1388,7 @@ function inheritPrev(mode){
   var allKeys=['c','s','l','w','ko','r','h','kn','kj','ff','mf','tf','uf'];
   var keys,label;
   if(mode===true||mode==='all'){keys=allKeys;label='全資源';}
-  else if(mode==='konpeito'){keys=konpeitoKeys;label='金平糖';}
+  else if(mode==='konpeito'){keys=konpeitoKeys;label='根兵糖';}
   else{keys=fudaKeys;label='富士・松・竹・梅の札';}
   var idMap={c:'i-c',s:'i-s',l:'i-l',w:'i-w',ko:'i-ko',r:'i-r',h:'i-h',kn:'i-kn',kj:'i-kj',ff:'i-ff',mf:'i-mf',tf:'i-tf',uf:'i-uf'};
   keys.forEach(function(k){
@@ -1401,6 +1406,11 @@ function SM(m){document.getElementById('rmsg').textContent=m;}
 
 /* ─── Event/Note ─── */
 function addEv(){var nm=document.getElementById('e-name').value.trim(),s=document.getElementById('e-s').value,e=document.getElementById('e-e').value,col=document.getElementById('e-col').value;if(!nm||!s||!e){alert('期間メモ名・開始日・終了日を入力してください');return;}if(s>e){alert('開始日が終了日より後です');return;}EVS.push({name:nm,start:s,end:e,color:col,updatedAt:Date.now(),deleted:false,source:'shizai'});document.getElementById('e-name').value='';save();renderEvList();RC();}
+var EV_PALETTE=['#e05555','#e8864a','#dba820','#a8d060','#52c878','#3dc8d4','#5b9fe8','#6a7fe0','#9b6cd8','#c07fd8','#e87fb0','#b0805a'];
+function swatchesHTML(id){return EV_PALETTE.map(function(c){return '<button type="button" class="col-swatch" style="background:'+c+'" onclick="setEvCol(\''+id+'\',\''+c+'\',this)" title="'+c+'"></button>';}).join('');}
+function setEvCol(id,c,btn){var el=document.getElementById(id);if(el)el.value=c;if(btn&&btn.parentNode){[].forEach.call(btn.parentNode.children,function(b){b.classList.remove('sel');});btn.classList.add('sel');}}
+/* 色入力の現在値と一致する見本に .sel を付ける（一致なしなら全解除）。コンテナidは「<入力id>-palette」規約 */
+function syncSwatchSel(id){var el=document.getElementById(id),pal=document.getElementById(id+'-palette');if(!el||!pal)return;[].forEach.call(pal.children,function(b){b.classList.toggle('sel',(b.title||'').toLowerCase()===(el.value||'').toLowerCase());});}
 function addNote(){var d=document.getElementById('n-d').value,t=document.getElementById('n-t').value.trim();if(!d||!t){alert('日付と内容を入力してください');return;}NTS.push({date:d,text:t,updatedAt:Date.now(),deleted:false,source:'shizai'});NTS.sort(function(a,b){return a.date.localeCompare(b.date);});document.getElementById('n-t').value='';save();renderNList();RC();}
 function delEv(i){
   var ev=EVS[i];
@@ -1494,7 +1504,7 @@ function showConflictDialog(){
   });
 }
 function editResModal(d){var r=RES.find(function(x){return x.date===d;});if(!r)return;_mType='res';_mDate=d;document.getElementById('edit-modal-h').textContent='資源データを編集';var ids=['m-c','m-s','m-l','m-w','m-ko','m-r','m-h','m-kn','m-kj'];document.getElementById('edit-modal-body').innerHTML='<div class="row" style="grid-template-columns:1fr;max-width:200px;margin-bottom:10px"><div class="fld"><label class="lbl">日付</label><input type="date" id="m-date" value="'+r.date+'"></div></div><div class="row">'+KS.map(function(k,i){var v=r[k]!=null?r[k].toLocaleString('ja-JP'):'';return '<div class="fld"><label class="lbl" style="color:'+KC[k]+'">'+KL[k]+'</label><div class="num-wrap"><input type="text" inputmode="numeric" id="'+ids[i]+'" value="'+v+'" data-val="'+(r[k]!=null?r[k]:'')+'" oninput="fmtN(this)" placeholder="0"></div></div>';}).join('')+'</div>'+'<div class="row" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--bd1)">'+KFS.map(function(k){var fids={mf:'m-mf',tf:'m-tf',uf:'m-uf',ff:'m-ff'};var v=r[k]!=null?r[k].toLocaleString('ja-JP'):'';return '<div class="fld"><label class="lbl" style="color:'+KFC[k]+'">'+KFL[k]+'</label><div class="num-wrap"><input type="text" inputmode="numeric" id="'+fids[k]+'" value="'+v+'" data-val="'+(r[k]!=null?r[k]:'')+'" oninput="fmtN(this)" placeholder="0"></div></div>';}).join('')+'</div>';openModal();}
-function editEvModal(i){var ev=EVS[i];if(!ev)return;_mType='ev';_mIdx=i;document.getElementById('edit-modal-h').textContent='期間メモを編集';document.getElementById('edit-modal-body').innerHTML='<div class="row"><div class="fld" style="grid-column:span 2"><label class="lbl">期間メモ名</label><input type="text" id="m-ename" value="'+esc(ev.name)+'"></div><div class="fld"><label class="lbl">開始日</label><input type="date" id="m-es" value="'+ev.start+'"></div><div class="fld"><label class="lbl">終了日</label><input type="date" id="m-ee" value="'+ev.end+'"></div><div class="fld"><label class="lbl">色</label><input type="color" id="m-ecol" value="'+ev.color+'" style="height:36px;width:100%"></div></div>';openModal();}
+function editEvModal(i){var ev=EVS[i];if(!ev)return;_mType='ev';_mIdx=i;document.getElementById('edit-modal-h').textContent='期間メモを編集';document.getElementById('edit-modal-body').innerHTML='<div class="row"><div class="fld" style="grid-column:span 2"><label class="lbl">期間メモ名</label><input type="text" id="m-ename" value="'+esc(ev.name)+'"></div><div class="fld"><label class="lbl">開始日</label><input type="date" id="m-es" value="'+ev.start+'"></div><div class="fld"><label class="lbl">終了日</label><input type="date" id="m-ee" value="'+ev.end+'"></div><div class="fld"><label class="lbl">色</label><input type="color" id="m-ecol" value="'+ev.color+'" style="height:36px;width:100%" oninput="syncSwatchSel(\'m-ecol\')"></div></div><div class="fld" style="margin-top:6px"><label class="lbl">色見本（ワンタップ）</label><div class="col-palette" id="m-ecol-palette">'+swatchesHTML('m-ecol')+'</div></div>';openModal();syncSwatchSel('m-ecol');}
 function editNModal(i){var n=NTS[i];if(!n)return;_mType='note';_mIdx=i;document.getElementById('edit-modal-h').textContent='メモを編集';document.getElementById('edit-modal-body').innerHTML='<div class="row"><div class="fld"><label class="lbl">日付</label><input type="date" id="m-nd" value="'+n.date+'"></div><div class="fld" style="grid-column:span 2"><label class="lbl">内容</label><input type="text" id="m-nt" value="'+esc(n.text)+'"></div></div>';openModal();}
 /* Room edit modal */
 function editRoomModal(type,id){
@@ -1832,7 +1842,7 @@ function expXLSX(){function doExp(){try{var ak=KS.concat(KFS);var al=Object.assi
 }catch(ex){alert('Excelの書き出しに失敗:\n'+ex.message);}}
 if(typeof XLSX==='undefined'){var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=doExp;s.onerror=function(){alert('Excelライブラリの読み込みに失敗しました（オンライン環境でお試しください）');};document.head.appendChild(s);}else doExp();}
 function normDate(s){var str=String(s).trim().replace(/\//g,'-');if(/^\d{4}-\d{1,2}-\d{1,2}$/.test(str)){var p=str.split('-');return p[0]+'-'+p[1].padStart(2,'0')+'-'+p[2].padStart(2,'0');}return str;}
-function addKAlias(cm,h,hn,i){KS.forEach(function(k){if(h===KL[k]||hn===k)cm[k]=i;});KFS.forEach(function(k){if(h===KFL[k]||hn===k)cm[k]=i;});if(h==='冷却水'||hn==='冷却水')cm.l=i;}
+function addKAlias(cm,h,hn,i){KS.forEach(function(k){if(h===KL[k]||hn===k)cm[k]=i;});KFS.forEach(function(k){if(h===KFL[k]||hn===k)cm[k]=i;});if(h==='冷却水'||hn==='冷却水')cm.l=i;if(h==='金平糖・並')cm.kn=i;if(h==='金平糖・上')cm.kj=i;}
 function upsertRes(row){var ei=RES.findIndex(function(r){return r.date===row.date;});if(ei>=0)RES[ei]=row;else RES.push(row);}
 function impJSON(inp){if(!inp.files.length)return;var fr=new FileReader();fr.onload=function(e){try{var d=JSON.parse(e.target.result);var rc=0,ec=0,nc=0;
   if(d.resources&&d.resources.length){d.resources.forEach(function(r){if(r&&r.date){upsertRes(r);rc++;}});RES.sort(function(a,b){return a.date.localeCompare(b.date);});}
@@ -2010,7 +2020,7 @@ async function gdSaveWithCheck(){
 var GD_CLIENT_ID='1020015092975-eheh7mf0vjv55a7lufvbc1mi50ele8bv.apps.googleusercontent.com';
 var GD_SCOPE='https://www.googleapis.com/auth/drive.appdata';
 var GD_FILE='shizai_data.json';
-var gdToken=null,gdTokenClient=null;
+var gdToken=null,gdTokenClient=null,_gdRefreshCb=null;
 
 /* ── 起動時にsessionStorageからトークンを復元 ── */
 (function(){
@@ -2025,12 +2035,18 @@ function gdReady(){
       client_id:GD_CLIENT_ID,
       scope:GD_SCOPE,
       callback:function(resp){
-        if(resp.error){gdSetSub('ログインに失敗しました: '+resp.error);return;}
+        if(resp.error){
+          if(_gdRefreshCb){var c=_gdRefreshCb;_gdRefreshCb=null;c(false);}
+          else gdSetSub('ログインに失敗しました: '+resp.error);
+          return;
+        }
         gdToken=resp.access_token;
         sessionStorage.setItem('gd_token',gdToken); /* リロード対策 */
-        gdSetSub('ログイン済み ✓');
-        gdShowBtns(true);
-        updHdrSync();
+        if(_gdRefreshCb){var c=_gdRefreshCb;_gdRefreshCb=null;c(true);/* サイレント更新成功：UIは静かに */ updHdrSync();}
+        else{gdSetSub('ログイン済み ✓');gdShowBtns(true);updHdrSync();}
+      },
+      error_callback:function(err){
+        if(_gdRefreshCb){var c=_gdRefreshCb;_gdRefreshCb=null;c(false);}
       }
     });
   }
@@ -2039,6 +2055,18 @@ function gdReady(){
 function gSignIn(){
   if(!gdReady()){gdSetSub('Google ライブラリ読み込み中…再度お試しください');return;}
   gdTokenClient.requestAccessToken({prompt:''});
+}
+/* ── サイレントリフレッシュ：UIなしで裏側でトークンを取り直す ── */
+function gdSilentRefresh(){
+  return new Promise(function(resolve){
+    if(!gdReady()){resolve(false);return;}
+    var done=false;
+    var finish=function(ok){if(done)return;done=true;_gdRefreshCb=null;resolve(ok);};
+    _gdRefreshCb=function(ok){finish(ok);};
+    setTimeout(function(){finish(false);},3000); /* 3秒でタイムアウト→フォールバック */
+    try{gdTokenClient.requestAccessToken({prompt:'none'});}
+    catch(e){finish(false);}
+  });
 }
 function gSignOut(){
   /* 端末内だけのログアウト（Google側の許可は残すので再ログインが無音＝通知メールが来ない） */
@@ -2057,12 +2085,16 @@ function gdShowBtns(loggedIn){
 }
 function gdSetSub(msg){var e=document.getElementById('sync-sub');if(e)e.textContent=msg;}
 
-/* ── 401時にセッション切れを検知してログイン促すfetchラッパー ── */
+/* ── 401時：まず裏で自動リフレッシュ→ダメなときだけ再ログインを促す ── */
 async function gdFetch(url,opts,isRetry){
   var o=Object.assign({},opts,{headers:Object.assign({},opts.headers,{'Authorization':'Bearer '+gdToken})});
   var res=await fetch(url,o);
   if(res.status===401&&!isRetry){
-    /* トークン切れ：sessionStorageを消してログインボタンを表示 */
+    var ok=await gdSilentRefresh();
+    if(ok&&gdToken){
+      return gdFetch(url,opts,true); /* 新トークンで1回だけ再試行（ユーザーは気づかない） */
+    }
+    /* 自動復帰できなかった場合のみセッション切れを通知 */
     gdToken=null;
     sessionStorage.removeItem('gd_token');
     gdShowBtns(false);updHdrSync();
@@ -2400,6 +2432,7 @@ updHdrSync();
 updInheritBtns();
 /* 使い方ガイド：ボタン表示の反映と初回／設定に応じた自動表示 */
 applyHelpBtnVis();
+var _ecp=document.getElementById('e-col-palette');if(_ecp)_ecp.innerHTML=swatchesHTML('e-col');syncSwatchSel('e-col');
 var guideModalEl=document.getElementById('guide-modal');
 if(guideModalEl)guideModalEl.addEventListener('click',function(e){if(e.target===this)closeGuide();});
 if(!guideAutoOff)setTimeout(openGuide,300);
@@ -2408,7 +2441,7 @@ if(!guideAutoOff)setTimeout(openGuide,300);
   <p style="font-size:11px;color:var(--t4);margin-bottom:12px">関連ツール</p>
   <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:16px">
     <a href="saniwa_top.html" style="display:inline-block;padding:7px 18px;font-size:12px;color:var(--t3);border:1px solid var(--bd1);border-radius:6px;text-decoration:none;background:var(--bg1);transition:all .15s" onmouseover="this.style.color='var(--t1)';this.style.borderColor='var(--bd2)'" onmouseout="this.style.color='var(--t3)';this.style.borderColor='var(--bd1)'">審神者の道具箱</a>
-    <a href="keikoroku.html" style="display:inline-block;padding:7px 18px;font-size:12px;color:var(--t3);border:1px solid var(--bd1);border-radius:6px;text-decoration:none;background:var(--bg1);transition:all .15s" onmouseover="this.style.color='var(--t1)';this.style.borderColor='var(--bd2)'" onmouseout="this.style.color='var(--t3)';this.style.borderColor='var(--bd1)'">稽古禄</a>
+    <a href="keikoroku.html" style="display:inline-block;padding:7px 18px;font-size:12px;color:var(--t3);border:1px solid var(--bd1);border-radius:6px;text-decoration:none;background:var(--bg1);transition:all .15s" onmouseover="this.style.color='var(--t1)';this.style.borderColor='var(--bd2)'" onmouseout="this.style.color='var(--t3)';this.style.borderColor='var(--bd1)'">稽古録</a>
   </div>
   <p style="font-size:11px;color:var(--t4);margin-bottom:8px">データ入出力</p>
   <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">

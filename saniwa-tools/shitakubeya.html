@@ -198,6 +198,39 @@ html.mbar-hide .col-party{top:var(--header-h);height:calc(100vh - var(--header-h
 .si{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:30px;}
 .sn{font-size:10px;color:var(--text2);}
 .sv{font-size:13px;font-weight:500;color:var(--text);}
+.cur-mark{font-size:8px;font-weight:600;color:var(--accent);vertical-align:super;margin-left:1px;}
+/* ---- 現在ステータス編集（数値詳細モーダル内） ---- */
+.cs-edit-btn{display:block;width:100%;font-size:12px;color:var(--text2);background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:7px 11px;cursor:pointer;text-align:center;margin-top:12px;font-family:inherit;}
+.cs-edit-btn:hover{background:var(--bg3);color:var(--text);}
+.cs-panel{margin-top:10px;padding:10px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;}
+.cs-cap{font-size:10px;color:var(--text3);line-height:1.6;margin-bottom:6px;}
+.cs-tgl{display:flex;align-items:center;gap:6px;font-size:11px;margin-bottom:2px;cursor:pointer;}
+.cs-note{font-size:10px;color:var(--text3);line-height:1.6;margin-bottom:8px;}
+.cs-ranbu{display:flex;align-items:center;gap:6px;font-size:11px;margin:2px 0 8px;}
+.cs-ranbu select{font-size:12px;padding:3px 6px;border:1px solid var(--border2);border-radius:6px;background:var(--surface);color:var(--text);font-family:inherit;}
+.cs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.cs-cell{display:flex;flex-direction:column;gap:2px;}
+.cs-cell .cn{font-size:10px;color:var(--text3);text-align:center;}
+.cs-input{width:100%;text-align:center;padding:6px 2px;font-size:13px;border:1px solid var(--border2);border-radius:7px;background:var(--surface);color:var(--text);font-family:inherit;}
+.cs-input:focus{outline:none;border-color:var(--accent2);}
+.cs-input.over{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 10%,transparent);}
+.cs-warn-msg{font-size:10px;color:var(--gold);line-height:1.6;margin-top:6px;}
+.cs-btns{display:flex;gap:8px;margin-top:10px;}
+.cs-btns button{flex:1;border-radius:8px;padding:8px 4px;font-size:12px;cursor:pointer;font-family:inherit;}
+.cs-btn-save{border:1px solid var(--accent);background:var(--accent);color:var(--surface);font-weight:600;}
+.cs-btn-cancel{border:1px solid var(--border2);background:var(--surface);color:var(--text2);}
+.cs-sync-cap{font-size:10px;color:var(--text3);line-height:1.6;margin-top:8px;text-align:center;}
+/* ---- 当たり判定ホバー表示（PCカード・静音版：乗せた領域だけ光る） ---- */
+.sword-card.cs-statclick .card-stats{position:relative;border-radius:6px;}
+.sword-card.cs-statclick .card-stats:hover{outline:2px dashed var(--blue);outline-offset:2px;background:color-mix(in srgb,var(--blue) 5%,transparent);cursor:pointer;}
+.sword-card.cs-statclick .card-stats:hover::after{content:'クリック＝詳細';position:absolute;top:-8px;right:4px;font-size:9px;background:var(--blue);color:var(--surface);border-radius:4px;padding:1px 6px;z-index:2;pointer-events:none;}
+.sword-card .equip-icons{position:relative;border-radius:5px;}
+.sword-card .equip-icons:hover,.sword-card:has(.equip-edit-btn:hover) .equip-icons{outline:2px dashed var(--kiwame);outline-offset:2px;background:color-mix(in srgb,var(--kiwame) 6%,transparent);}
+.sword-card .equip-icons:hover::after,.sword-card:has(.equip-edit-btn:hover) .equip-icons::after{content:'クリック＝装備を編集';position:absolute;top:-20px;left:0;font-size:9px;background:var(--kiwame);color:var(--surface);border-radius:4px;padding:1px 6px;white-space:nowrap;z-index:2;pointer-events:none;}
+.card-detail-btn{font-size:12px;color:var(--text3);background:none;border:1px solid var(--border2);border-radius:4px;cursor:pointer;padding:3px 8px;font-family:inherit;white-space:nowrap;flex-shrink:0;}
+.card-detail-btn:hover{background:var(--bg3);color:var(--text);}
+.pslot-dt-btn{font-size:10px;color:var(--text2);background:var(--bg2);border:1px solid var(--border2);border-radius:4px;cursor:pointer;padding:2px 5px;line-height:1;flex-shrink:0;transition:all .12s;font-family:inherit;}
+.pslot-dt-btn:hover{background:var(--text2);color:var(--surface);border-color:var(--text2);}
 .sv.primary{font-size:17px;font-weight:700;color:var(--accent);}
 .sv.null-val{color:var(--text3);font-size:12px;}
 .si.range-si{background:color-mix(in srgb,var(--green) 12%,var(--bg2));}
@@ -829,6 +862,9 @@ body.show-mobile .pc-wrap{display:none;}
         <button class="kei-sync-btn" style="flex:1" onclick="snapshotPartyAll()" title="編成中の全員の通常装備をこの部隊に取り込む">📋 全員の通常装備を取り込む</button>
         <button class="kei-sync-btn kei-sync-danger" style="flex:1" onclick="clearPartyEquipAll()" title="この部隊の出陣装備を全員分外す">🗑 全員の装備を外す</button>
       </div>
+      <div class="kei-only" style="display:flex;margin-top:4px">
+        <button class="kei-sync-btn" style="flex:1" onclick="openPartyInKeikoroku()" title="この部隊で絞り込んだ状態で稽古録を開きます">📖 この部隊を稽古録で開く</button>
+      </div>
     </div>
 
     <div class="party-slots" id="party-slots"></div>
@@ -922,6 +958,7 @@ body.show-mobile .pc-wrap{display:none;}
       <button class="pm-item" onclick="setAllKiwame(true)">全部「極」にする</button>
     </div>
     <button class="pm-item kei-only" onclick="closePartyMenu();openSyncModal()">⇄ 稽古録と同期</button>
+    <button class="pm-item kei-only" onclick="closePartyMenu();openPartyInKeikoroku()">📖 この部隊を稽古録で開く</button>
     <button class="pm-item" onclick="snapshotPartyAll()">📋 全員の通常装備を取り込む</button>
     <button class="pm-item danger" onclick="clearPartyEquipAll()">🗑 全員の装備を外す</button>
     <button class="pm-item danger" onclick="clearParty()">↺ 部隊をリセット</button>
@@ -1058,7 +1095,7 @@ body.show-mobile .pc-wrap{display:none;}
         </div>
         <div style="background:var(--bg2);border-radius:8px;padding:9px 12px">
           <b style="color:var(--text)">📊 ステータス</b><br>
-          素／乱舞込み／実力を切り替えて確認。部隊合計や閾値チェックで編成の数値も見られます。
+          素／乱舞込み／実力を切り替えて確認。部隊合計や閾値チェックで編成の数値も見られます。連結途中などの現在値は、この詳細画面の「✏ 現在ステータスを編集」または稽古録の各振り詳細で入力できます（空欄＝最大値）。
         </div>
       </div>
       <p style="margin-top:12px;font-size:11px;color:var(--text3)">
@@ -1234,6 +1271,17 @@ body.show-mobile .pc-wrap{display:none;}
       </div>
     </div>
     <div class="settings-sec">
+      <div class="settings-label">現在ステータスの編集（数値詳細）</div>
+      <div class="radio-group">
+        <div style="font-size:11px;color:var(--text3)">ステータス数値のクリックで詳細を開く <span style="font-weight:400;color:var(--text3);font-size:10px">※PC表示のみ</span></div>
+        <label class="radio-row"><input type="radio" name="cs-stat-click" value="off" checked onchange="saveSetting('csStatClick',false);renderList()"> しない（従来通り・デフォルト）</label>
+        <label class="radio-row"><input type="radio" name="cs-stat-click" value="on" onchange="saveSetting('csStatClick',true);renderList()"> する（数値部分のクリックで詳細が開きます）</label>
+        <div style="margin-top:6px;font-size:11px;color:var(--text3)">編集中は外側タップで閉じない</div>
+        <label class="radio-row"><input type="radio" name="cs-guard-outside" value="on" checked onchange="saveSetting('csGuardOutside',true)"> 閉じない（誤タップ防止・デフォルト）</label>
+        <label class="radio-row"><input type="radio" name="cs-guard-outside" value="off" onchange="saveSetting('csGuardOutside',false)"> 従来通り閉じる（編集内容は破棄されます）</label>
+      </div>
+    </div>
+    <div class="settings-sec">
       <div class="settings-label">スマホ並替チップの表示</div>
       <div class="radio-group">
         <label class="radio-row"><input type="radio" name="sort-chip-wrap" value="wrap" checked onchange="applySortChipMode(this.value)"> 折り返す（デフォルト）</label>
@@ -1368,7 +1416,7 @@ const MR=[
 [180,"山鳥毛","さんちょうもう","太刀","福岡一文字",181,[]],
 [182,"古今伝授の太刀","こきんでんじゅのたち","太刀","豊後国行平",0,[]],
 [184,"地蔵行平","じぞうゆきひら","打刀","豊後国行平",0,[]],
-[186,"治金丸","ちがねまる","脇差","なし",0,[]],
+[186,"治金丸","ちがねまる","脇差","なし",187,[]],
 [188,"日光一文字","にっこういちもんじ","太刀","福岡一文字",0,[]],
 [190,"太閤左文字","たいこうさもんじ","短刀","左文字",0,[]],
 [192,"五月雨江","さみだれごう","打刀","江",0,[]],
@@ -1404,6 +1452,7 @@ const MR=[
 [252,"二筋樋貞宗","ふたすじひさだむね","打刀","貞宗",0,[]],
 [254,"雲重","うんじゅう","打刀","鵜飼",0,[]],
 [256,"柏太刀","かしわだち","大太刀","なし",0,[]],
+[258,"波平行安","なみのひらゆきやす","太刀","波平",0,[]],
 ];
 
 
@@ -1506,6 +1555,7 @@ const STAT={
   182:[69,71,71,38,52,34,29,35,0,3], // 古今伝授の太刀
   184:[56,61,50,47,55,42,38,36,0,2], // 地蔵行平
   186:[44,47,41,56,55,49,45,48,0,2], // 治金丸
+  187:[null,121,112,103,71,null,144,68,0,2], // 治金丸 極（生存・偵察未確定）
   188:[59,74,71,49,48,39,25,36,0,3], // 日光一文字
   190:[35,29,40,60,34,46,40,43,0,1], // 太閤左文字
   192:[52,60,49,52,50,46,43,31,0,2], // 五月雨江
@@ -1541,6 +1591,7 @@ const STAT={
   252:[54,63,54,51,57,42,34,31,0,2], // 二筋樋貞宗
   254:[53,61,48,47,52,44,36,36,0,2], // 雲重
   256:[75,81,62,30,57,16,21,36,1,2], // 柏太刀
+  258:[null,67,56,43,45,null,22,36,0,2], // 波平行安（生存・偵察未確定）
   // ── 極 ──
   4:[101,129,130,67,89,66,69,69,0,3],   // 三日月宗近 極
   6:[102,125,120,69,86,70,56,72,0,3],   // 小狐丸 極
@@ -1785,7 +1836,8 @@ MR.forEach(b=>{
 });
 
 function getStat(no){return STAT[no]||null;}
-function getInstStat(inst){
+// マスタ上の素の最大ステータス（curStatsを含まない）。編集パネルのプレースホルダー等で使用
+function getMasterStat(inst){
   if(inst.isKiwame){
     const kno=BM[inst.masterBaseNo]?.kno;
     return kno?getStat(kno):null;
@@ -1798,6 +1850,24 @@ function getInstStat(inst){
   }
   return getStat(inst.masterBaseNo);
 }
+function getInstStat(inst){
+  const master=getMasterStat(inst);
+  // 現在ステータス（入力した「今」の値）を index0〜7 にオーバーレイ
+  // ※マスタ配列は共有参照のため必ずコピーしてから上書き（index8=範囲/9=スロットはマスタのまま）
+  if(master&&Array.isArray(inst.curStats)){
+    let merged=null;
+    for(let i=0;i<8;i++){
+      if(inst.curStats[i]!=null){
+        if(!merged)merged=master.slice();
+        merged[i]=inst.curStats[i];
+      }
+    }
+    if(merged)return merged;
+  }
+  return master;
+}
+// その振りの index i の値が「現在値（curStats）」由来かどうか
+function hasCurStat(inst,i){return !!(inst&&Array.isArray(inst.curStats)&&inst.curStats[i]!=null);}
 
 // ======================================================
 // アプリ状態
@@ -1810,6 +1880,7 @@ let UD={
   conditions:[],   // 閾値条件
   dataSource:'keikoroku',  // 'keikoroku'(連携) | 'local'(このアプリで管理)
   localKiwame:{},          // local時の初/極状態 {masterBaseNo:true(極)}
+  localCurStats:{},        // local時の現在ステータス {masterBaseNo:{i:[8要素]|なし, k:[8要素]|なし}}（素の値・null=最大）
   stash:null,              // 非アクティブモードの編成退避先
   settings:{
     cardMode:'primary',
@@ -1836,6 +1907,8 @@ let UD={
     sortDir:'asc',
     filterType:'',
     filterKiwame:'',
+    csStatClick:false,   // ステータス数値クリックで詳細を開く（PCのみ・既定OFF）
+    csGuardOutside:true, // 現在ステータス編集中は外側タップで閉じない（既定ON）
   }
 };
 
@@ -1863,12 +1936,14 @@ function loadUD(){
       if(parsed.conditions)UD.conditions=parsed.conditions;
       if(parsed.dataSource)UD.dataSource=parsed.dataSource;
       if(parsed.localKiwame&&typeof parsed.localKiwame==='object')UD.localKiwame=parsed.localKiwame;
+      if(parsed.localCurStats&&typeof parsed.localCurStats==='object')UD.localCurStats=parsed.localCurStats;
       if(parsed.stash)UD.stash=parsed.stash;
     }
   }catch(e){}
   // 既定値の補完
   if(UD.dataSource!=='local')UD.dataSource='keikoroku';
   if(!UD.localKiwame||typeof UD.localKiwame!=='object')UD.localKiwame={};
+  if(!UD.localCurStats||typeof UD.localCurStats!=='object')UD.localCurStats={};
   if(!UD.stash||typeof UD.stash!=='object')UD.stash={};
   if(!UD.stash.local)UD.stash.local=defaultWorkingSet();
   if(!UD.stash.keikoroku)UD.stash.keikoroku=defaultWorkingSet();
@@ -1907,7 +1982,16 @@ function buildLocalInstances(){
   for(const k in BM){if(BM[k]&&BM[k].kno)knoSet.add(BM[k].kno);}
   const nos=Object.keys(BM).map(Number).filter(no=>!knoSet.has(no)&&BM[no]&&BM[no].name).sort((a,b)=>a-b);
   const km=UD.localKiwame||{};
-  return nos.map(no=>({id:'L'+no,masterBaseNo:no,isKiwame:!!km[no]&&!!BM[no].kno,ranbuLv:10}));
+  const lcs=UD.localCurStats||{};
+  return nos.map(no=>{
+    const ki=!!km[no]&&!!BM[no].kno;
+    const inst={id:'L'+no,masterBaseNo:no,isKiwame:ki,ranbuLv:10};
+    // ローカルモードの現在ステータス（初/極で別々に保持）
+    const rec=lcs[no];
+    const arr=rec?rec[ki?'k':'i']:null;
+    if(Array.isArray(arr)&&arr.some(v=>v!=null))inst.curStats=arr;
+    return inst;
+  });
 }
 function toggleDataSource(){
   switchDataSource(UD.dataSource==='local'?'keikoroku':'local');
@@ -2178,14 +2262,14 @@ function renderList(){
       const isPrimary=cardMode==='primary'&&sortStat!=='level'&&parseInt(sortStat)===i;
       const val=stat?stat[i]:null;
       const cls=isPrimary?'sv primary':val==null?'sv null-val':'sv';
-      return`<div class="si"><div class="sn">${sn}</div><div class="${cls}">${val!=null?val:'?'}</div></div>`;
+      return`<div class="si"><div class="sn">${sn}</div><div class="${cls}">${val!=null?val:'?'}${hasCurStat(inst,i)?'<span class="cur-mark">現</span>':''}</div></div>`;
     }).join('');
     const rangeVal=stat?stat[8]:null;
     const slotVal=stat?stat[9]:null;
     const rangeHtml=`<div class="si range-si"><div class="sn">範囲</div><div class="sv">${rangeVal!=null?RANGE_LABELS[rangeVal]??'?':'?'}</div></div>`;
     const slotHtml=`<div class="si slot-si"><div class="sn">スロ</div><div class="sv">${slotVal!=null?slotVal:'?'}</div></div>`;
     const equipHtml=renderEquipIcons(inst,eq);
-    return`<div class="sword-card${isSelected?' on':''}" onclick="toggleSelect('${inst.id}')">
+    return`<div class="sword-card${isSelected?' on':''}${UD.settings.csStatClick?' cs-statclick':''}" onclick="toggleSelect('${inst.id}')">
       <div class="card-top">
         <div class="card-name-row">
           ${renderInstIdent(inst)}
@@ -2203,10 +2287,11 @@ function renderList(){
           <button class="card-add-btn${isSelected?' on':''}" onclick="event.stopPropagation();toggleSelect('${inst.id}')">${isSelected?'✓ 編成中':'＋ 追加'}</button>
         </div>
       </div>
-      <div class="card-stats">${statHtml}${rangeHtml}${slotHtml}</div>
+      <div class="card-stats"${UD.settings.csStatClick?` onclick="event.stopPropagation();openStatModal('${inst.id}')"`:''}>${statHtml}${rangeHtml}${slotHtml}</div>
       <div class="card-equip" onclick="event.stopPropagation()">
         <div class="equip-icons" onclick="openEquipEdit(event,'${inst.id}')">${equipHtml}</div>
         <button class="equip-edit-btn" onclick="openEquipEdit(event,'${inst.id}')">装備を編集</button>
+        <button class="card-detail-btn" onclick="openStatModal('${inst.id}')" title="ステータス確認・現在値編集">詳細</button>
         <button class="copy-to-party-btn" onclick="event.stopPropagation();copyEquipToActiveParty('${inst.id}')" title="この男士の通常装備を、今の部隊の出陣装備として記録">装備を移す➤</button>
       </div>
       ${UD.settings.equipMode==='accordion'?`<div class="equip-acc" id="acc-${inst.id}" onclick="event.stopPropagation()">
@@ -2300,7 +2385,7 @@ function renderMobileList(){
     const statHtml=statItems.map(i=>{
       const isPrimary=i===primaryIdx;
       const val=stat?stat[i]:null;
-      return`<div class="m-si"><div class="m-sn">${STAT_NAMES[i]}</div><div class="m-sv${isPrimary?' primary':''}">${val!=null?val:'?'}</div></div>`;
+      return`<div class="m-si"><div class="m-sn">${STAT_NAMES[i]}</div><div class="m-sv${isPrimary?' primary':''}">${val!=null?val:'?'}${hasCurStat(inst,i)?'<span class="cur-mark">現</span>':''}</div></div>`;
     }).join('');
     const mRangeVal=stat?stat[8]:null;
     const mSlotVal=stat?stat[9]:null;
@@ -2463,6 +2548,13 @@ function moveParty(id,delta){
   renderPartyTabs();
 }
 
+// この部隊で絞り込んだ状態で稽古録を開く（連携モードのみ・kei-onlyで出し分け）
+function openPartyInKeikoroku(){
+  const p=activeParty();
+  if(!p)return;
+  window.open('keikoroku.html?party='+encodeURIComponent(p.id),'_blank');
+}
+
 function selectParty(id){
   if(UD.activePartyId===id)return;
   UD.activePartyId=id;
@@ -2593,7 +2685,7 @@ function renderPartySlots(){
       ${horse?`<span class="pslot-eq-tag">🐴${esc(horse.name)}</span>`:''}
       ${tr?`<span class="pslot-eq-tag">✨${esc(tr.name)} Lv${eq.treasureLv||5}</span>`:''}
     </div>`:'';
-    const allStatsHtml=UD.settings.pslotAllStats?(function(){const ds=getDisplayStat(inst,eq);return`<div class="pslot-allstats">`+STAT_NAMES.map((sn,si)=>`<div class="psa-item"><div class="psa-name">${sn}</div><div class="psa-val">${ds&&ds[si]!=null?ds[si]:'?'}</div></div>`).join('')+`</div>`;})():'';
+    const allStatsHtml=UD.settings.pslotAllStats?(function(){const ds=getDisplayStat(inst,eq);return`<div class="pslot-allstats">`+STAT_NAMES.map((sn,si)=>`<div class="psa-item"><div class="psa-name">${sn}</div><div class="psa-val">${ds&&ds[si]!=null?ds[si]:'?'}${hasCurStat(inst,si)?'<span class="cur-mark">現</span>':''}</div></div>`).join('')+`</div>`;})():'';
     return`<div class="pslot filled${isTarget?' target':''}" onclick="selectSlot(${i})">
       <div class="slot-move-btns">
         <button class="slot-move-btn" onclick="event.stopPropagation();moveSlot(${i},-1)" ${i===0?'disabled':''}>▲</button>
@@ -2620,6 +2712,7 @@ function renderPartySlots(){
       <div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0">
         <button class="pslot-rm" onclick="event.stopPropagation();removeFromSlot(${i})" title="外す">×</button>
         <button class="pslot-eq-btn" onclick="event.stopPropagation();openEquipEdit(event,'${inst.id}',true)" title="この部隊用の装備を編集">装備</button>
+        <button class="pslot-dt-btn" onclick="event.stopPropagation();openStatModal('${inst.id}','sortie')" title="ステータス確認・現在値編集">詳細</button>
       </div>
     </div>`;
   }).join('');
@@ -2657,7 +2750,7 @@ function renderMobilePartySlots(){
     }).join('');
     if(expanded){
       const dstat=showStats?getDisplayStat(inst,eq):null;
-      const statGrid=showStats?`<div class="pslot-allstats">`+STAT_NAMES.map((sn,si)=>`<div class="psa-item"><div class="psa-name">${sn}</div><div class="psa-val">${dstat&&dstat[si]!=null?dstat[si]:'?'}</div></div>`).join('')+`</div>`:'';
+      const statGrid=showStats?`<div class="pslot-allstats">`+STAT_NAMES.map((sn,si)=>`<div class="psa-item"><div class="psa-name">${sn}</div><div class="psa-val">${dstat&&dstat[si]!=null?dstat[si]:'?'}${hasCurStat(inst,si)?'<span class="cur-mark">現</span>':''}</div></div>`).join('')+`</div>`:'';
       const badge=UD.dataSource==='local'?kiwameToggleHtml(inst):`<span class="lv-badge" style="font-size:9px">Lv${inst.level||1}</span>`;
       return`<div class="m-slot-row filled${isSel?' selected':''}" onclick="selectSlot(${i})">
         <div class="msr-main">
@@ -4099,10 +4192,16 @@ function openStatModal(id,mode){
   if(!inst)return;
   _statId=id;
   _statMode=(mode==='sortie')?'sortie':'normal';
+  _csEditing=false;
   renderStatModal();
   openModal('stat-modal');
 }
-function setStatModalMode(m){_statMode=m;renderStatModal();}
+function setStatModalMode(m){
+  // 編集中に表示モードを切り替えても入力途中の値を失わないよう退避→復元
+  const keep=_csEditing?csCaptureInputs():null;
+  _statMode=m;renderStatModal();
+  if(keep)csRestoreInputs(keep);
+}
 function renderStatModal(){
   const inst=instances.find(x=>x.id===_statId);
   if(!inst)return;
@@ -4122,7 +4221,7 @@ function renderStatModal(){
   const statCells=['生存','打撃','統率','機動','衝力','偵察','隠蔽','必殺'].map((sn,i)=>`
       <div style="display:flex;flex-direction:column;align-items:center;padding:6px 8px;background:var(--panel);border-radius:7px;min-width:48px">
         <div style="font-size:10px;color:var(--text3)">${sn}</div>
-        <div style="font-size:16px;font-weight:700;color:var(--text)">${stat?stat[i]??'?':'?'}</div>
+        <div style="font-size:16px;font-weight:700;color:var(--text)">${stat?stat[i]??'?':'?'}${hasCurStat(inst,i)?'<span class="cur-mark" style="font-size:9px">現</span>':''}</div>
         ${stat&&baseStat&&stat[i]!==baseStat[i]?`<div style="font-size:9px;color:var(--text3)">素${baseStat[i]??'?'}</div>`:''}
       </div>`).join('');
   const RANGE_L=['単','複','全','貫'];
@@ -4146,7 +4245,197 @@ function renderStatModal(){
     <div style="display:flex;gap:8px;font-size:12px;color:var(--text2)">
       <span>範囲：${rangeVal!=null?RANGE_L[rangeVal]??'?':'?'}</span>
       <span>スロット：${slotVal??'?'}</span>
-    </div>`;
+    </div>
+    <button class="cs-edit-btn" onclick="toggleCsEdit()">${_csEditing?'✏ 現在ステータスを編集（編集中）':'✏ 現在ステータスを編集'}</button>
+    ${_csEditing?renderCsPanel(inst):''}`;
+  if(_csEditing)csRefreshWarn();
+}
+
+// ======================================================
+// 現在ステータス編集（数値詳細モーダル内）
+// 保存値は常に「素」（乱舞補正・装備を含まない）。null=最大値、全nullでフィールド削除
+// 連携モード：tl_data_v3へread-modify-write（curStatsのみ）＋合図キーで稽古録タブに通知
+// ローカルモード：UD.localCurStats（初/極別）に保存し、支度部屋自身のGD同期に乗せる
+// ======================================================
+let _csEditing=false;
+let _csConvRanbu=10;  // ローカルモードの換算用乱舞Lv（換算のみ・保存しない）
+const CS_ZERO=[0,0,0,0,0,0,0,0];
+function csGameIn(){try{return localStorage.getItem('tl_cs_gamein_v1')!=='0';}catch(e){return true;}}
+function csSetGameIn(on){try{localStorage.setItem('tl_cs_gamein_v1',on?'1':'0');}catch(e){}}
+// 換算に使う乱舞補正（連携=振りの乱舞Lv／ローカル=セレクタの値）
+function csBonus(inst){
+  const lv=(UD.dataSource==='local')?_csConvRanbu:((inst&&inst.ranbuLv)||1);
+  return RANBU_BONUS[lv]||CS_ZERO;
+}
+function toggleCsEdit(){_csEditing=!_csEditing;renderStatModal();}
+function csCancel(){_csEditing=false;renderStatModal();toast('編集をキャンセルしました');}
+function csCaptureInputs(){
+  const vals=[];
+  for(let i=0;i<8;i++){
+    const el=document.getElementById('cs-in-'+i);
+    vals.push(el?{v:el.value,d:el.dataset.dirty==='1'}:null);
+  }
+  return vals;
+}
+function csRestoreInputs(vals){
+  for(let i=0;i<8;i++){
+    const el=document.getElementById('cs-in-'+i);
+    if(el&&vals[i]){el.value=vals[i].v;if(vals[i].d)el.dataset.dirty='1';}
+  }
+  csRefreshWarn();
+}
+function renderCsPanel(inst){
+  const isLocal=UD.dataSource==='local';
+  const gi=csGameIn();
+  const b=gi?csBonus(inst):CS_ZERO;
+  const master=getMasterStat(inst);
+  const cur=Array.isArray(inst.curStats)?inst.curStats:[];
+  const cap=isLocal
+    ?'連結途中・修行帰りたてなど「今」の能力値を記録できます。空欄＝最大値。このモードでは支度部屋自身のデータとして保存されます。'
+    :'連結途中・修行帰りたてなど「今」の能力値を記録できます。空欄＝最大値。保存すると稽古録のデータに反映されます。';
+  const syncCap=isLocal
+    ?'この現在値は支度部屋のデータとして保存・同期されます'
+    :'クラウドへは稽古録側の同期で反映されます（稽古録を開くと自動反映）';
+  const ranbuRow=`<div class="cs-ranbu" id="cs-ranbu-row" style="display:${(isLocal&&gi)?'flex':'none'}">換算に使う乱舞Lv：
+      <select id="cs-ranbu-sel" onchange="csOnRanbuSel()">
+        <option value="1"${_csConvRanbu<6?' selected':''}>1〜5</option>
+        <option value="6"${_csConvRanbu===6?' selected':''}>6</option>
+        <option value="7"${_csConvRanbu===7?' selected':''}>7</option>
+        <option value="8"${_csConvRanbu===8?' selected':''}>8</option>
+        <option value="9"${_csConvRanbu===9?' selected':''}>9</option>
+        <option value="10"${_csConvRanbu===10?' selected':''}>10</option>
+      </select>
+      <span style="font-size:10px;color:var(--text3)">（換算のみ・保存はされません）</span></div>`;
+  const cells=STAT_NAMES.map((sn,i)=>{
+    const mv=(master&&master[i]!=null)?master[i]+b[i]:null;
+    const v=(cur[i]!=null)?cur[i]+b[i]:'';
+    return`<div class="cs-cell"><div class="cn">${sn}</div>
+      <input class="cs-input" id="cs-in-${i}" type="number" min="0" inputmode="numeric" value="${v}"
+        placeholder="${mv!=null?mv:'未確定'}" data-max="${mv!=null?mv:''}"
+        oninput="this.dataset.dirty='1';csRefreshWarn()"></div>`;
+  }).join('');
+  return`<div class="cs-panel" id="cs-panel">
+    <div class="cs-cap">${cap}</div>
+    <label class="cs-tgl"><input type="checkbox" id="cs-gamein"${gi?' checked':''} onchange="csOnGameIn()">ゲーム画面の数値で入力（乱舞Lv補正を引いて保存）</label>
+    <div class="cs-note" id="cs-gamein-note" style="display:${gi?'':'none'}">※刀装・馬・宝物を外した状態の数値を確認してください</div>
+    ${ranbuRow}
+    <div class="cs-grid">${cells}</div>
+    <div id="cs-warns"></div>
+    <div class="cs-btns">
+      <button class="cs-btn-cancel" onclick="csCancel()">キャンセル</button>
+      <button class="cs-btn-save" onclick="csSave()">保存</button>
+    </div>
+    <div class="cs-sync-cap">${syncCap}</div>
+  </div>`;
+}
+function csRefreshWarn(){
+  const warnsEl=document.getElementById('cs-warns');
+  if(!warnsEl)return;
+  const warns=[];
+  STAT_NAMES.forEach((sn,i)=>{
+    const el=document.getElementById('cs-in-'+i);
+    if(!el)return;
+    const mx=el.dataset.max===''?null:Number(el.dataset.max);
+    const v=el.value===''?null:Number(el.value);
+    const over=v!=null&&mx!=null&&v>mx;
+    el.classList.toggle('over',over);
+    if(over)warns.push('⚠ '+sn+'：最大値（'+mx+'）を超えています（そのまま保存できます）');
+  });
+  warnsEl.innerHTML=warns.map(w=>`<div class="cs-warn-msg">${w}</div>`).join('');
+}
+// ゲーム画面入力トグル：表示中の値を表現ごと変換（ON化=+補正／OFF化=−補正・0未満は0）
+function csOnGameIn(){
+  const inst=instances.find(x=>x.id===_statId);
+  if(!inst)return;
+  const b=csBonus(inst);
+  const vals=[];
+  for(let i=0;i<8;i++){
+    const el=document.getElementById('cs-in-'+i);
+    vals.push(el&&el.value!==''?Number(el.value):null);
+  }
+  const on=!!document.getElementById('cs-gamein').checked;
+  csSetGameIn(on);
+  const noteEl=document.getElementById('cs-gamein-note');
+  if(noteEl)noteEl.style.display=on?'':'none';
+  const rr=document.getElementById('cs-ranbu-row');
+  if(rr)rr.style.display=(UD.dataSource==='local'&&on)?'flex':'none';
+  const master=getMasterStat(inst);
+  for(let i=0;i<8;i++){
+    const el=document.getElementById('cs-in-'+i);
+    if(!el)continue;
+    const mv=(master&&master[i]!=null)?master[i]+(on?b[i]:0):null;
+    el.placeholder=mv!=null?String(mv):'未確定';
+    el.dataset.max=mv!=null?String(mv):'';
+    if(vals[i]!=null)el.value=String(on?vals[i]+b[i]:Math.max(0,vals[i]-b[i]));
+  }
+  csRefreshWarn();
+}
+// ローカルモードの換算Lv変更：手入力済み(dirty)欄は「新Lvの画面値」とみなし触らない。
+// 未編集欄は保存済みの素から新Lvで表示し直す（稽古録側と同じdirty設計）
+function csOnRanbuSel(){
+  const sel=document.getElementById('cs-ranbu-sel');
+  if(sel)_csConvRanbu=parseInt(sel.value,10)||10;
+  const inst=instances.find(x=>x.id===_statId);
+  if(!inst)return;
+  const gi=csGameIn();
+  const b=gi?csBonus(inst):CS_ZERO;
+  const master=getMasterStat(inst);
+  const cur=Array.isArray(inst.curStats)?inst.curStats:[];
+  for(let i=0;i<8;i++){
+    const el=document.getElementById('cs-in-'+i);
+    if(!el)continue;
+    const mv=(master&&master[i]!=null)?master[i]+b[i]:null;
+    el.placeholder=mv!=null?String(mv):'未確定';
+    el.dataset.max=mv!=null?String(mv):'';
+    if(el.dataset.dirty!=='1')el.value=(cur[i]!=null)?String(cur[i]+b[i]):'';
+  }
+  csRefreshWarn();
+}
+function csSave(){
+  const inst=instances.find(x=>x.id===_statId);
+  if(!inst)return;
+  const gi=csGameIn();
+  const b=gi?csBonus(inst):CS_ZERO;
+  // 入力→素の値へ（空欄・不正値はnull、0未満は0に丸め）
+  const next=[];
+  let hasVal=false;
+  for(let i=0;i<8;i++){
+    const el=document.getElementById('cs-in-'+i);
+    let raw=null;
+    if(el&&el.value!==''){
+      const n=Math.floor(Number(el.value));
+      if(isFinite(n)&&n>=0){raw=Math.max(0,n-b[i]);hasVal=true;}
+    }
+    next.push(raw);
+  }
+  const arr=hasVal?next:null;
+  if(UD.dataSource==='local'){
+    // ローカルモード：UD.localCurStatsに初/極別で保存
+    if(!UD.localCurStats)UD.localCurStats={};
+    const key=String(inst.masterBaseNo),sub=inst.isKiwame?'k':'i';
+    const rec=UD.localCurStats[key]||{};
+    if(arr)rec[sub]=arr;else delete rec[sub];
+    if(Object.keys(rec).length)UD.localCurStats[key]=rec;else delete UD.localCurStats[key];
+    if(arr)inst.curStats=arr;else delete inst.curStats;
+    saveUD();
+    toast('保存しました（支度部屋に保存）');
+  }else{
+    // 連携モード：tl_data_v3を読み直してcurStatsのみ差し替え（read-modify-write）
+    let d=null;
+    try{const rawD=localStorage.getItem('tl_data_v3');if(rawD)d=JSON.parse(rawD);}catch(e){d=null;}
+    const target=(d&&Array.isArray(d.instances))?d.instances.find(x=>x.id===inst.id):null;
+    if(!target){toast('稽古録側でこの男士が見つかりませんでした');return;}
+    if(arr)target.curStats=arr;else delete target.curStats;
+    d.updatedAt=Date.now();
+    try{localStorage.setItem('tl_data_v3',JSON.stringify(d));}catch(e){toast('保存に失敗しました（容量不足の可能性があります）');return;}
+    // 稽古録タブが開いていれば取り込んでもらうための合図
+    try{localStorage.setItem('tl_cs_signal_v1',JSON.stringify({id:inst.id,t:Date.now()}));}catch(e){}
+    if(arr)inst.curStats=arr;else delete inst.curStats;
+    toast('保存しました（稽古録データに反映）');
+  }
+  _csEditing=false;
+  renderStatModal();
+  renderAll();
 }
 
 function closeEquipModalOutside(e){
@@ -4160,8 +4449,13 @@ function saveAndCloseAcc(id){
   if(acc)acc.classList.remove('open');
   if(_accId===id)_accId=null;
 }
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-function closeModalOutside(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+function closeModal(id){document.getElementById(id).classList.remove('open');if(id==='stat-modal')_csEditing=false;}
+function closeModalOutside(e,id){
+  if(e.target!==document.getElementById(id))return;
+  // 現在ステータス編集中の外側タップガード（設定でON/OFF・既定ON）
+  if(id==='stat-modal'&&_csEditing&&UD.settings.csGuardOutside!==false){toast('編集中は外側タップで閉じません（設定で変更できます）');return;}
+  closeModal(id);
+}
 
 // ======================================================
 // 設定
@@ -4393,6 +4687,7 @@ async function gdLoad(){
       if(cloudData.activePartyId)UD.activePartyId=cloudData.activePartyId;
       if(cloudData.equipments)UD.equipments=cloudData.equipments;
       if(cloudData.conditions)UD.conditions=cloudData.conditions;
+      if(cloudData.localCurStats&&typeof cloudData.localCurStats==='object')UD.localCurStats=cloudData.localCurStats;
       if(cloudData.settings)Object.assign(UD.settings,cloudData.settings);
       migrateConditions();
       saveUD();renderAll();
@@ -4405,7 +4700,8 @@ async function gdSave(silent){
   try{
     const body=JSON.stringify({
       parties:UD.parties,activePartyId:UD.activePartyId,
-      equipments:UD.equipments,conditions:UD.conditions,settings:UD.settings
+      equipments:UD.equipments,conditions:UD.conditions,settings:UD.settings,
+      localCurStats:UD.localCurStats
     });
     if(_gdFileId){
       await gdFetch(`https://www.googleapis.com/upload/drive/v3/files/${_gdFileId}?uploadType=media`,
@@ -4477,6 +4773,8 @@ function applySettingsUI(){
   document.querySelectorAll('[name=toso-display]').forEach(r=>r.checked=r.value===(tosoDisplay||'icon'));
   document.querySelectorAll('[name=toso-filter]').forEach(r=>r.checked=r.value===(tosoFilter!==false?'on':'off'));
   document.querySelectorAll('[name=umago-pos]').forEach(r=>r.checked=r.value===(umagoPosition||'default'));
+  document.querySelectorAll('[name=cs-stat-click]').forEach(r=>r.checked=r.value===(UD.settings.csStatClick?'on':'off'));
+  document.querySelectorAll('[name=cs-guard-outside]').forEach(r=>r.checked=r.value===(UD.settings.csGuardOutside!==false?'on':'off'));
   document.querySelectorAll('#vis-stat-chips .s-chip').forEach(c=>{
     c.classList.toggle('on',visibleStats.includes(parseInt(c.dataset.idx)));
   });

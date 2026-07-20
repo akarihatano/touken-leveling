@@ -110,6 +110,18 @@ select {
 }
 textarea { min-height: 110px; resize: vertical; line-height: 1.9; }
 .error-msg { font-size: 11px; color: #8b1a1a; margin-top: 4px; font-family: 'Noto Sans JP', sans-serif; display: none; }
+.form-alert {
+  display: none;
+  background: rgba(139,26,26,.08);
+  border: 1px solid rgba(139,26,26,.3);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 12.5px; line-height: 1.85; color: #8b1a1a;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.form-alert.visible { display: block; }
+.form-alert strong { font-weight: 700; }
 .field.has-error input, .field.has-error select, .field.has-error textarea { border-color: rgba(139,26,26,.5); }
 .field.has-error .error-msg { display: block; }
 .checklist-box {
@@ -212,6 +224,7 @@ footer {
   </div>
 
   <div class="panel" id="step-form">
+    <div class="form-alert" id="form-alert"></div>
     <div class="panel-heading">お問い合わせ</div>
     <div class="panel-sub">ご意見・ご要望・バグ報告などをお送りください</div>
     <div class="steps">
@@ -230,6 +243,9 @@ footer {
             <option value="">選択してください</option>
             <option value="資源帳">資源帳</option>
             <option value="稽古録">稽古録</option>
+            <option value="愛蔵の一ノ倉">愛蔵の一ノ倉</option>
+            <option value="出陣支度部屋">出陣支度部屋</option>
+            <option value="邂逅録">邂逅録</option>
             <option value="その他・全般">その他・全般</option>
           </select>
           <div class="error-msg">対象アプリを選択してください</div>
@@ -334,7 +350,7 @@ footer {
 
 </div>
 </div>
-<footer>審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。</footer>
+<footer>審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari hatano</footer>
 </div>
 <script>
 const TEMPLATES = {
@@ -455,6 +471,72 @@ function goBack() {
   document.getElementById('step-form').style.display    = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+/* ---- 下書き退避・送信失敗の通知・URLパラメータ事前選択 ---- */
+const DRAFT_KEY = 'contact_draft_v1';
+const APP_OPTIONS = ['資源帳','稽古録','愛蔵の一ノ倉','出陣支度部屋','邂逅録','その他・全般'];
+const CAT_OPTIONS = ['バグ報告','機能要望','感想','その他'];
+
+function saveDraft() {
+  try {
+    sessionStorage.setItem(DRAFT_KEY, JSON.stringify({
+      app:     document.getElementById('inp-app').value,
+      cat:     document.getElementById('inp-cat').value,
+      name:    document.getElementById('inp-name').value,
+      subject: document.getElementById('inp-subject').value,
+      body:    document.getElementById('inp-body').value,
+      email:   document.getElementById('inp-email').value
+    }));
+  } catch(e) {}
+}
+function restoreDraft() {
+  try {
+    const d = JSON.parse(sessionStorage.getItem(DRAFT_KEY) || 'null');
+    if (!d) return false;
+    if (d.app     !== undefined) document.getElementById('inp-app').value     = d.app;
+    if (d.cat     !== undefined) document.getElementById('inp-cat').value     = d.cat;
+    if (d.name    !== undefined) document.getElementById('inp-name').value    = d.name;
+    if (d.subject !== undefined) document.getElementById('inp-subject').value = d.subject;
+    if (d.body    !== undefined) document.getElementById('inp-body').value    = d.body;
+    if (d.email   !== undefined) document.getElementById('inp-email').value   = d.email;
+    return true;
+  } catch(e) { return false; }
+}
+function clearDraft() {
+  try { sessionStorage.removeItem(DRAFT_KEY); } catch(e) {}
+}
+
+// 確認画面で「送信」を押した瞬間に下書きを退避（送信失敗時の復元用）
+document.getElementById('send-form').addEventListener('submit', saveDraft);
+
+document.addEventListener('DOMContentLoaded', function () {
+  const params = new URLSearchParams(location.search);
+  const error  = params.get('error');
+  const alertBox = document.getElementById('form-alert');
+
+  if (error) {
+    // 送信失敗 or サーバー側バリデーション：入力内容を復元して通知
+    restoreDraft();
+    if (error === 'invalid') {
+      alertBox.innerHTML = '<strong>入力内容に不備がありました。</strong><br>対象アプリ・カテゴリ・お問い合わせ内容がすべて入力されているか、メールアドレスの形式が正しいかをご確認のうえ、もう一度お試しください。';
+    } else {
+      alertBox.innerHTML = '<strong>送信に失敗しました。</strong><br>お手数ですが、少し時間をおいて再度お試しください。入力いただいた内容は下に復元してあります。';
+    }
+    alertBox.classList.add('visible');
+    onCategoryChange();
+    window.scrollTo({ top: 0 });
+  } else {
+    // 通常アクセス：古い下書きを消し、URLパラメータで対象アプリ／カテゴリを事前選択
+    clearDraft();
+    const app = params.get('app');
+    const cat = params.get('category');
+    if (app && APP_OPTIONS.includes(app)) document.getElementById('inp-app').value = app;
+    if (cat && CAT_OPTIONS.includes(cat)) {
+      document.getElementById('inp-cat').value = cat;
+      onCategoryChange();
+    }
+  }
+});
 </script>
 </body>
 </html>

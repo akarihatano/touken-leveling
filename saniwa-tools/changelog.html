@@ -14,10 +14,107 @@
   gtag('js', new Date());
   gtag('config', 'G-QM317D9ESN');
 </script>
+<script>
+/* テーマを描画前に適用（ちらつき防止） */
+(function(){
+  var hue = 'blue', mode = 'dark';
+  try {
+    var saved = JSON.parse(localStorage.getItem('reply_theme_v1') || 'null');
+    if (saved && (saved.hue === 'blue' || saved.hue === 'red')) hue = saved.hue;
+    if (saved && (saved.mode === 'dark' || saved.mode === 'light')) mode = saved.mode;
+  } catch(e) {}
+  document.documentElement.dataset.hue = hue;
+  document.documentElement.dataset.mode = mode;
+})();
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a1a; }
+
+/* ============================================================
+   テーマ定義（4種）
+   青系×暗い＝縹色（初期） / 青系×明るい＝白群
+   赤系×暗い＝臙脂        / 赤系×明るい＝アゲート色
+   ============================================================ */
+:root,
+html[data-hue="blue"][data-mode="dark"] {
+  --bg: #354f6b;
+  --tx-heading: #dce9f5;
+  --tx-lead: #c7d8ea;
+  --tx-subject: #d6e4f2;
+  --tx-voice: #a8bdd6;
+  --tx-answer: #cddbeb;
+  --tx-answer-b: #e2edf8;
+  --accent: #9fbdd8;
+  --accent-soft: rgba(159,189,216,.5);
+  --accent-faint: rgba(159,189,216,.14);
+  --panel-bg: rgba(0,0,0,.30);
+  --panel-border: rgba(200,220,245,.18);
+  --voice-bg: rgba(0,0,0,.26);
+  --voice-border: rgba(159,189,216,.45);
+  --tag-bg: rgba(159,189,216,.85);
+  --tag-tx: #14222e;
+  --hover-bg: rgba(159,189,216,.08);
+}
+html[data-hue="blue"][data-mode="light"] {
+  --bg: #8caec0;
+  --tx-heading: #22363d;
+  --tx-lead: #2e4750;
+  --tx-subject: #22363d;
+  --tx-voice: #3d5860;
+  --tx-answer: #2a4149;
+  --tx-answer-b: #1c2f36;
+  --accent: #33505c;
+  --accent-soft: rgba(51,80,92,.5);
+  --accent-faint: rgba(51,80,92,.12);
+  --panel-bg: rgba(255,255,255,.45);
+  --panel-border: rgba(60,90,105,.25);
+  --voice-bg: rgba(255,255,255,.5);
+  --voice-border: rgba(60,90,100,.5);
+  --tag-bg: rgba(40,64,72,.78);
+  --tag-tx: #eaf2f7;
+  --hover-bg: rgba(255,255,255,.35);
+}
+html[data-hue="red"][data-mode="dark"] {
+  --bg: #8b1a1a;
+  --tx-heading: #f5e0c0;
+  --tx-lead: #ecd4b4;
+  --tx-subject: #f0d8a8;
+  --tx-voice: #cdb490;
+  --tx-answer: #e6ceac;
+  --tx-answer-b: #f0d8a8;
+  --accent: #c8a84b;
+  --accent-soft: rgba(200,168,75,.5);
+  --accent-faint: rgba(200,168,75,.14);
+  --panel-bg: rgba(0,0,0,.32);
+  --panel-border: rgba(255,220,160,.16);
+  --voice-bg: rgba(0,0,0,.28);
+  --voice-border: rgba(200,168,75,.4);
+  --tag-bg: rgba(200,168,75,.78);
+  --tag-tx: #1a1200;
+  --hover-bg: rgba(200,168,75,.08);
+}
+html[data-hue="red"][data-mode="light"] {
+  --bg: #e39182;
+  --tx-heading: #5a241a;
+  --tx-lead: #6b2f22;
+  --tx-subject: #5a241a;
+  --tx-voice: #813a2b;
+  --tx-answer: #52221a;
+  --tx-answer-b: #3f1a12;
+  --accent: #813a2b;
+  --accent-soft: rgba(129,58,43,.5);
+  --accent-faint: rgba(129,58,43,.12);
+  --panel-bg: rgba(255,255,255,.46);
+  --panel-border: rgba(155,75,55,.28);
+  --voice-bg: rgba(255,255,255,.52);
+  --voice-border: rgba(155,75,55,.5);
+  --tag-bg: rgba(95,40,30,.8);
+  --tag-tx: #f7e8e2;
+  --hover-bg: rgba(255,255,255,.35);
+}
+
+body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: var(--bg); }
 
 .bg {
   min-height: 100vh;
@@ -28,7 +125,16 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   display: flex;
   flex-direction: column;
 }
+/* 背景画像の上にテーマ色を重ねる（画像の模様を活かしつつ色を変える） */
 .bg::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--bg);
+  opacity: .82;
+  pointer-events: none;
+}
+/* テーマ色の上に重ねる格子模様（トップページと同じ） */
+.bg::after {
   content: '';
   position: absolute; inset: 0;
   background:
@@ -67,11 +173,32 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   font-size: 13px;
   font-weight: 600;
   letter-spacing: .35em;
-  color: #f5e0c0;
+  color: var(--tx-heading);
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 18px;
   font-family: 'Noto Sans JP', sans-serif;
 }
+/* テーマ切り替えボタン */
+.theme-bar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.theme-btn {
+  appearance: none;
+  border: 1px solid var(--panel-border);
+  background: var(--panel-bg);
+  color: var(--tx-lead);
+  font-size: 12px;
+  letter-spacing: .08em;
+  font-family: 'Noto Sans JP', sans-serif;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.theme-btn:hover { background: var(--hover-bg); }
 
 /* 月グループ */
 .month-group { margin-bottom: 28px; }
@@ -88,25 +215,62 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   font-size: 13px;
   font-weight: 600;
   letter-spacing: .2em;
-  color: #c8a84b;
+  color: var(--accent);
   font-family: 'Noto Sans JP', sans-serif;
 }
 .month-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, rgba(200,168,75,.4), rgba(200,168,75,.05));
+  background: linear-gradient(to right, var(--accent-soft), transparent);
 }
 .month-count {
   font-size: 10px;
-  color: rgba(200,168,75,.5);
+  color: var(--accent-soft);
   font-family: 'Noto Sans JP', sans-serif;
   letter-spacing: .08em;
 }
+.month-arrow {
+  font-size: 11px;
+  color: var(--accent-soft);
+  transition: transform .25s;
+}
+.month-group.m-closed .month-arrow { transform: rotate(-90deg); }
+.month-body {
+  overflow: hidden;
+  max-height: 30000px;
+  opacity: 1;
+  transition: max-height .4s ease, opacity .3s ease;
+}
+.month-group.m-closed .month-body { max-height: 0; opacity: 0; }
+
+/* 一斉ボタン（月パネルの外・上下） */
+.bulk-bar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0;
+  margin: 0 0 8px;
+}
+.bulk-bar.bulk-bottom { margin: 8px 0 0; }
+.bulk-bar button {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 11px;
+  letter-spacing: .08em;
+  color: var(--tx-voice);
+  background: rgba(0,0,0,.22);
+  border: 1px solid var(--panel-border);
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.bulk-bar button:first-child { border-radius: 6px 0 0 6px; }
+.bulk-bar button:nth-child(2) { border-left: none; }
+.bulk-bar button:last-child { border-radius: 0 6px 6px 0; border-left: none; }
+.bulk-bar button:hover { background: var(--hover-bg); color: var(--tx-answer); }
 
 /* パネル */
 .cl-panel {
-  background: rgba(0,0,0,.32);
-  border: 1px solid rgba(255,220,160,.16);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
   border-radius: 12px;
   padding: 4px 18px;
   backdrop-filter: blur(2px);
@@ -119,7 +283,7 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   position: absolute;
   left: 5px; top: 6px; bottom: 6px;
   width: 1px;
-  background: linear-gradient(to bottom, rgba(200,168,75,.5), rgba(200,168,75,.1));
+  background: linear-gradient(to bottom, var(--accent-soft), var(--accent-faint));
 }
 
 .tl-entry { position: relative; margin-bottom: 4px; }
@@ -135,7 +299,7 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   transition: background .2s;
   position: relative;
 }
-.tl-header:hover { background: rgba(200,168,75,.08); }
+.tl-header:hover { background: var(--hover-bg); }
 
 .tl-header::before {
   content: '';
@@ -144,20 +308,23 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   top: 50%; transform: translateY(-50%);
   width: 8px; height: 8px;
   border-radius: 50%;
-  background: rgba(200,168,75,.4);
-  border: 1.5px solid rgba(200,168,75,.6);
+  background: var(--accent-faint);
+  border: 1.5px solid var(--accent-soft);
   transition: background .2s;
 }
-.tl-entry.is-open .tl-header::before {
-  background: #c8a84b;
-  box-shadow: 0 0 6px rgba(200,168,75,.4);
+.tl-entry.st-short .tl-header::before {
+  background: var(--accent-soft);
+}
+.tl-entry.st-full .tl-header::before {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-soft);
 }
 
 .tl-date {
   font-size: 12px;
   font-weight: 600;
   letter-spacing: .08em;
-  color: #e8c878;
+  color: var(--accent);
   font-family: 'Noto Sans JP', sans-serif;
   font-variant-numeric: tabular-nums;
 }
@@ -165,19 +332,20 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   font-size: 9px;
   font-weight: 600;
   letter-spacing: .12em;
-  color: #1a1200;
-  background: #c8a84b;
+  color: var(--tag-tx);
+  background: var(--tag-bg);
   border-radius: 3px;
   padding: 2px 6px;
   font-family: 'Noto Sans JP', sans-serif;
 }
 .tl-arrow {
   margin-left: auto;
-  font-size: 10px;
-  color: rgba(200,168,75,.5);
+  font-size: 11px;
+  color: var(--accent-soft);
   transition: transform .25s;
 }
-.tl-entry.is-open .tl-arrow { transform: rotate(180deg); }
+.tl-entry.st-short .tl-arrow { transform: rotate(90deg); }
+.tl-entry.st-full .tl-arrow { transform: rotate(180deg); }
 
 .tl-body {
   overflow: hidden;
@@ -185,65 +353,122 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   transition: max-height .35s ease, opacity .3s ease;
   opacity: 0;
 }
-.tl-entry.is-open .tl-body {
-  max-height: 3000px;
+.tl-entry.st-full .tl-body {
+  max-height: 6000px;
   opacity: 1;
 }
 
-.tl-content {
-  font-size: 11px;
-  line-height: 1.9;
-  color: #dfc4a0;
+/* 短文パート（st-short/st-fullで表示） */
+.tl-short {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height .3s ease, opacity .25s ease;
+}
+.tl-entry.st-short .tl-short,
+.tl-entry.st-full .tl-short {
+  max-height: 400px;
+  opacity: 1;
+}
+.tl-short-inner {
+  font-size: 14px;
+  line-height: 1.95;
+  color: var(--tx-answer);
   font-family: 'Noto Sans JP', sans-serif;
-  padding: 6px 8px 10px 12px;
+  padding: 2px 8px 4px 12px;
+}
+.tl-more {
+  display: inline-block;
+  font-size: 11.5px;
+  letter-spacing: .12em;
+  color: var(--accent);
+  font-family: 'Noto Sans JP', sans-serif;
+  cursor: pointer;
+  user-select: none;
+  padding: 3px 10px 3px 12px;
+  margin: 2px 0 6px 12px;
+  border: 1px solid var(--accent-faint);
+  border-radius: 12px;
+  background: rgba(0,0,0,.15);
+  transition: border-color .2s, background .2s;
+}
+.tl-more:hover { border-color: var(--accent-soft); background: var(--hover-bg); }
+.tl-entry.st-full .tl-more { display: none; }
+
+/* 「詳しく」区切り */
+.tl-detail-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 8px;
+}
+.tl-detail-label .line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--accent-soft), transparent);
+}
+.tl-detail-label .txt {
+  font-size: 11px;
+  letter-spacing: .18em;
+  color: var(--accent-soft);
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.tl-content {
+  font-size: 15px;
+  line-height: 2.05;
+  color: var(--tx-answer);
+  font-family: 'Noto Sans JP', sans-serif;
+  padding: 6px 8px 14px 12px;
 }
 .tl-content ul {
   list-style: none;
   padding: 0; margin: 0;
 }
 .tl-content ul li {
-  padding-left: 12px;
+  padding-left: 16px;
   position: relative;
-  margin-bottom: 2px;
+  margin-bottom: 5px;
+  line-height: 1.9;
 }
 .tl-content ul li::before {
   content: '―';
   position: absolute; left: 0;
-  color: rgba(200,168,75,.4);
-  font-size: 9px;
-  top: 3px;
+  color: var(--accent-soft);
+  font-size: 12px;
+  top: 4px;
 }
 .tl-content .tl-note {
-  margin-top: 6px;
-  padding: 6px 10px;
-  background: rgba(0,0,0,.2);
-  border-left: 2px solid rgba(200,168,75,.2);
-  border-radius: 0 4px 4px 0;
-  font-size: 11px;
-  color: #c8a888;
-  line-height: 1.8;
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: var(--voice-bg);
+  border-left: 3px solid var(--voice-border);
+  border-radius: 0 6px 6px 0;
+  font-size: 14px;
+  color: var(--tx-voice);
+  line-height: 1.85;
 }
 .app-label {
-  font-size: 11px; color: #e8c878; font-weight: 600;
-  margin-bottom: 4px; font-family: 'Noto Sans JP', sans-serif;
+  font-size: 14px; color: var(--accent); font-weight: 600;
+  margin-bottom: 6px; font-family: 'Noto Sans JP', sans-serif;
 }
 .app-label + .app-label,
-ul + .app-label { margin-top: 8px; }
+ul + .app-label { margin-top: 10px; }
 
 /* 戻るリンク */
 .back-link {
   display: inline-block;
   margin-top: 28px;
-  font-size: 12px;
-  color: rgba(200,168,75,.8);
+  font-size: 13px;
+  color: var(--accent);
   letter-spacing: .15em;
   font-family: 'Noto Sans JP', sans-serif;
   text-decoration: none;
-  border-bottom: 1px solid rgba(200,168,75,.25);
+  border-bottom: 1px solid var(--accent-soft);
   padding-bottom: 1px;
-  transition: color .2s;
+  transition: opacity .2s;
 }
-.back-link:hover { color: #c8a84b; }
+.back-link:hover { opacity: .75; }
 
 footer {
   position: relative; z-index: 1; text-align: center; padding: 18px;
@@ -252,6 +477,28 @@ footer {
   font-family: 'Noto Sans JP', sans-serif;
 }
 
+/* トップへ戻るボタン（テーマ連動） */
+.scroll-top {
+  position: fixed;
+  bottom: 24px; right: 20px;
+  z-index: 50;
+  width: 40px; height: 40px;
+  background: var(--accent-faint);
+  border: 1px solid var(--accent-soft);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--accent);
+  font-size: 14px;
+  text-decoration: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s, background .2s;
+  backdrop-filter: blur(2px);
+}
+.scroll-top.visible { opacity: 1; pointer-events: auto; }
+.scroll-top:hover { background: var(--hover-bg); }
+
 @media (max-width: 680px) {
   .layout { padding: 28px 16px 48px; }
   .site-title { font-size: 20px; }
@@ -259,7 +506,7 @@ footer {
 </style>
 </head>
 <body>
-<div class="bg">
+<div class="bg" id="top">
 <div class="layout">
 <div class="container">
 
@@ -267,20 +514,399 @@ footer {
 
   <div class="page-heading">＊ 更 新 履 歴 ＊</div>
 
+  <div class="theme-bar">
+    <button type="button" class="theme-btn" id="btn-hue" onclick="toggleHue()">色：青系</button>
+    <button type="button" class="theme-btn" id="btn-mode" onclick="toggleMode()">明るさ：暗い</button>
+  </div>
+
   <!-- 2026年6月 -->
-  <div class="month-group">
-    <div class="month-header">
-      <span class="month-label">2026年6月</span>
+  <!-- 2026年7月 -->
+  <div class="month-group" id="mg-2026-07">
+    <div class="month-header" onclick="mToggle('mg-2026-07')">
+      <span class="month-label">2026年7月</span>
       <span class="month-line"></span>
-      <span class="month-count">6件</span>
+      <span class="month-count">11件</span>
+      <span class="month-arrow">▼</span>
+    </div>
+    <div class="month-body">
+    <div class="bulk-bar">
+      <button onclick="bulkSet('mg-2026-07','st-closed')">すべて閉じる</button>
+      <button onclick="bulkSet('mg-2026-07','st-short')">すべて短文</button>
+      <button onclick="bulkSet('mg-2026-07','st-full')">すべて詳しく</button>
     </div>
     <div class="cl-panel">
       <div class="timeline">
 
+        <div class="tl-entry st-short" id="tl-new27" data-has-short="1">
+          <div class="tl-header" onclick="tlToggle('tl-new27')">
+            <span class="tl-date">2026.07.21</span>
+            <span class="tl-badge">最新</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-short">
+            <div class="tl-short-inner">稽古録：累積経験値グラフで「レベル → 増加経験値 → 累積経験値」の順に切り替えると、グラフが表示されなくなる不具合を修正しました。</div>
+            <span class="tl-more" onclick="tlMoreOpen(event,'tl-new27')">▼ 詳しく見る</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">稽古録</div>
+              <ul>
+                <li>累積経験値とレベルを表示しているグラフで、「レベル → 増加経験値 → 累積経験値」の順に表示を切り替えると、選択中の刀剣男士の累積経験値グラフがすべて非表示になる不具合を修正しました</li>
+                <li>グラフの表示モードによる一時的な非表示と、凡例を操作して手動で非表示にした状態を別々に扱うよう改善しました。ほかの表示切替順や、凡例の表示設定にも影響がないことを確認しています</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new26">
+          <div class="tl-header" onclick="tlToggle('tl-new26')">
+            <span class="tl-date">2026.07.20</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="app-label">稽古録</div>
+              <ul>
+                <li>サイドバーに「⚔ 支度部屋の部隊で絞り込み」を追加しました。部隊を選ぶと、その部隊に編成中の男士だけを表示できます</li>
+                <li>同じ刀を複数持っていても、編成に入っている一振りだけが表示されます。部隊を変えても絵文字の付け替えは不要になりました</li>
+                <li>支度部屋で編成を変えると自動で反映されます（別タブで開いていてもその場で更新されます）</li>
+              </ul>
+              <div class="app-label">出陣支度部屋</div>
+              <ul>
+                <li>「📖 この部隊を稽古録で開く」ボタンを追加しました。ワンタップで絞り込み済みの稽古録が開きます</li>
+              </ul>
+              <div class="app-label">更新履歴ページ</div>
+              <ul>
+                <li>日付を押すたびに「閉じる → 短い説明 → 詳しい説明」と切り替わるようになりました（短い説明は今回の更新から）。短い説明の下の「▼ 詳しく見る」からも進めます</li>
+                <li>月ごとの見出しで、その月をまるごと開閉できるようになりました。最新の月だけ開いた状態で始まります</li>
+                <li>月ごとに「すべて閉じる・すべて短文・すべて詳しく」の一括ボタンを付けました（枠の上下2箇所）</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new25">
+          <div class="tl-header" onclick="tlToggle('tl-new25')">
+            <span class="tl-date">2026.07.19</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="app-label">稽古録</div>
+              <ul>
+                <li>増加経験値のグラフで、記録が数日空いたときは、その期間を「1日あたり」に均して表示するようにしました（3つのグラフ共通）。均した区間は、点にふれると何日ぶんの平均か・その合計をツールチップで確認できます</li>
+                <li>「Exp変化なし ☑」を追加しました。経験値に変化がなかった日を、日付ごとに1件だけの記録としてまとめて残せます。ステータスバーの切り替えと、直近7日ぶんのチップからチェックできます。この記録はグラフの線をつなぐためだけに使われ、グラフに点は増えません（初めて使うときは説明が表示されます）</li>
+                <li>今日つけた記録に、小さな緑の点マークが付くようになりました（個別の記録のみ）。設定で「✅」に変えたり、非表示にしたりできます</li>
+              </ul>
+              <div class="app-label">トップページ</div>
+              <ul>
+                <li>説明書を折りたためるようにしました。「＊ 説 明 書 ＊」の見出しで全体を、各項目の見出しで項目ごとに開閉できます。閉じた項目は要点が1行だけ見え、開閉の状態は次に来たときも引き継がれます</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new24">
+          <div class="tl-header" onclick="tlToggle('tl-new24')">
+            <span class="tl-date">2026.07.18</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="app-label">邂逅録 <span class="tl-badge">大型アップデート</span></div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">新機能・改善</div>
+              <ul>
+                <li>「最近の記録」を切り替え式にしました。「📅 日ごとの記録」（1日の合算をすっきり表示）と「✏ 記録の編集」（1記録＝1カードで個別に編集）を、ボタンで切り替えられます</li>
+                <li>新しく保存した記録に時刻が付くようになりました（例：14:32）。それ以前の記録は「記録1・記録2…」と表示されます</li>
+                <li>記録の編集カードから、いろいろな編集ができるようになりました。男士の個数（±ボタン・タップ入力）、マスの変更（過去は検非違使も選べます）、小判や資源のその場編集、男士の追加まで行えます。スマホでは、資源の行をタップすると編集画面が開きます</li>
+                <li>周回情報の✏編集が、場所に合わせた項目になりました（大阪城＝階・周・小判・博多／過去・連隊戦＝周回数のみ）</li>
+                <li>「日ごとの記録」の各グループから「✏ 編集へ」を押すと、その記録のカードへジャンプできるようになりました</li>
+                <li>CSVに「記録ID」「記録時刻」の列を追加しました。書き出し→取り込みで時刻が保たれ、同じ記録を二重に取り込んでしまうことも防げます。検非違使マスもCSVでそのまま行き来できます</li>
+                <li>集計画面の「💰小判」「🟢資源」が、閉じているときはカードのどこをタップしても開くようになりました</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">バグ修正</div>
+              <ul>
+                <li>過去・連隊戦で1日に複数回記録すると「この日の周回が0件あります」と出て編集できなくなる不具合を直しました</li>
+                <li>過去の記録で、資源の削除が効かないことがある不具合を直しました</li>
+                <li>CSVの書き出し→取り込みで、過去のステージ（8-4など）や連隊戦の難易度が壊れてしまう不具合を直しました。以前の取り込みで壊れてしまったデータは、次に開いたときに一度だけ自動で修復されます</li>
+                <li>✏編集で、設定から外した階の記録が、別の階に移ってしまわないようにしました</li>
+                <li>パソコン⇄スマホ表示を切り替えた直後に、「最近の記録」の表示が正しく作り直されるようにしました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new23">
+          <div class="tl-header" onclick="tlToggle('tl-new23')">
+            <span class="tl-date">2026.07.13</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="app-label">出陣支度部屋</div>
+              <ul>
+                <li>数値詳細画面から「現在ステータス」を編集できるようになりました。稽古録連携モードでは、保存すると稽古録のデータにそのまま反映されます（空欄＝最大値、「ゲーム画面の数値で入力」など、使い方は稽古録側と同じです）</li>
+                <li>「このアプリで管理」モードでも現在ステータスを入力できるようになりました。初と極それぞれ別々に記録できます。ゲーム画面の数値で入力する場合は、換算に使う乱舞レベルを選べます</li>
+                <li>PC表示の男士カードと部隊スロットに「詳細」ボタンを追加しました。これまでスマホ表示だけだった数値詳細画面を、PCでも開けます</li>
+                <li>設定に「ステータス数値のクリックで詳細を開く」を追加しました（PC表示のみ・初期設定はオフ）。オンにすると、カードの数値部分のクリックで詳細画面が開きます</li>
+                <li>設定に「編集中は外側タップで閉じない」を追加しました（初期設定はオン）。現在ステータスの編集中に、うっかり画面の外側に触れて入力が消えてしまうのを防ぎます</li>
+                <li>PC表示のカードで、装備アイコンや（上の設定がオンのときの）ステータス数値にマウスを乗せると、クリックできる範囲が点線で表示されるようになりました</li>
+              </ul>
+              <div class="app-label">稽古録</div>
+              <ul>
+                <li>出陣支度部屋で保存した現在ステータスを、開いている稽古録のタブが自動で取り込むようになりました。クラウド同期が自動の場合は、そのままクラウドにも反映されます</li>
+                <li>※稽古録を開いていないときに出陣支度部屋で編集した内容は、次に稽古録を開いたときにクラウドへ反映されます</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new22">
+          <div class="tl-header" onclick="tlToggle('tl-new22')">
+            <span class="tl-date">2026.07.12</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="app-label">稽古録</div>
+              <ul>
+                <li>男士の詳細画面に「現在ステータス」の入力欄を追加しました。まだ最大ステータスに至っていない男士の「今」の能力値を記録できます。空欄のままなら、これまで通り最大値として扱われます</li>
+                <li>「ゲーム画面の数値で入力」に対応しました。乱舞レベルによる補正を自動で差し引いて保存します（チェックを外すと、補正なしの素の値を直接入力できます）。※刀装・馬・宝物を外した状態の数値をご確認ください</li>
+                <li>最大値を超える数値は、注意の表示つきでそのまま保存できます。マスタが「未確定」になっている項目は、ご自身で値を入力できます</li>
+              </ul>
+              <div class="app-label">出陣支度部屋</div>
+              <ul>
+                <li>稽古録で入力した「現在ステータス」を、素・乱舞込み・実力のすべてのモード、ソート、部隊合計に反映するようにしました（稽古録連携モードでご利用の場合）</li>
+                <li>現在の値が使われている数値には、小さな「現」マークを表示します</li>
+                <li>数値表示の説明に、現在ステータスのご案内を追記しました</li>
+                <li>※この機能をお使いいただくには、稽古録で男士を登録し、出陣支度部屋の設定で「稽古録連携モード」を選んでいただく必要があります</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new21">
+          <div class="tl-header" onclick="tlToggle('tl-new21')">
+            <span class="tl-date">2026.07.10</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="app-label">資源帳・稽古録・愛蔵の一ノ倉</div>
+              <ul>
+                <li>期間メモ・日メモ（日メモは一ノ倉のみ）の色選択に、ワンタップで選べる色見本パレットを追加しました。従来のカラーピッカー（色相バー・スポイト）もそのままお使いいただけます</li>
+              </ul>
+              <div class="app-label">サイト全体</div>
+              <ul>
+                <li>資源帳・稽古録・愛蔵の一ノ倉・出陣支度部屋の説明書を、最新の機能に合わせて更新しました。各説明書に最終更新日の表示も追加しました</li>
+                <li>邂逅録の説明書を新しく用意しました。トップページの邂逅録カードから開けます</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new20">
+          <div class="tl-header" onclick="tlToggle('tl-new20')">
+            <span class="tl-date">2026.07.09</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="app-label">資源帳</div>
+              <ul>
+                <li>期間メモの色を選ぶときに、ワンタップで選べる色見本パレットを追加しました。よく使う定番の色は、こちらからすぐに選べます（これまでの色入力やスポイトでの指定も、そのままお使いいただけます）</li>
+              </ul>
+              <div class="app-label">お返事ページ</div>
+              <ul>
+                <li>お返事ページに、いただいたご報告へのお返事を追加しました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new19">
+          <div class="tl-header" onclick="tlToggle('tl-new19')">
+            <span class="tl-date">2026.07.08</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="app-label">邂逅録</div>
+              <ul>
+                <li>画面の狭いスマートフォンで、画面下のバーに入力した周回数が見えなくなることがある不具合を直しました。数値は正しく記録されていましたが、表示だけが隠れてしまう状態でした。ご報告ありがとうございました</li>
+                <li>この端末にデータを保存できないとき（ブラウザの空き容量不足や、シークレットモード／プライベートタブでのご利用時など）に、お知らせを表示するようにしました。念のためのバックアップをご案内します</li>
+                <li>クラウド同期の再接続を改善しました。ログインがうまくいかなかったときに、その旨がきちんと表示されるようになりました（記録は常に端末に残るので失われません）</li>
+                <li>アプリ内ブラウザ（X・LINEなどのアプリの中で開くブラウザ）でご利用の方に、クラウド同期が使えないことと、SafariやChromeなど通常のブラウザで開き直す方法のご案内を追加しました</li>
+                <li>記録ボタンの表示を、画面下のバー・パソコンのサイドバー・ページ内のすべてで「記録する」に統一しました</li>
+                <li>使い方ガイドに、最近追加した機能（パソコン表示・記録ボタンの固定・選んだ男士の表示・集計ジャンプ・時計・上に戻る）の説明を追加しました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new18">
+          <div class="tl-header" onclick="tlToggle('tl-new18')">
+            <span class="tl-date">2026.07.07</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="app-label">邂逅録 <span class="tl-badge">大型アップデート</span></div>
+              <ul>
+                <li>パソコン表示を本格対応しました。🖥表示が左サイドバー＋広いメイン画面のレイアウトになり、サイドバーに時計・クラウド同期・タブ・記録ボタン・「いまの周回」「きょう」の情報を集約しています</li>
+                <li>記録ボタンを固定しました。「🔁何周した？」と記録ボタンが、スマホでは画面下のバーに、パソコンではサイドバーに常に表示され、男士をたくさん選んでもスクロールせずに記録できます（設定でオフにできます）</li>
+                <li>ヘッダーに時計を追加しました。日付と時刻（秒つき）を表示します（設定でオフにできます）</li>
+                <li>「選んだ男士」の表示を選べるようにしました。たたむ／ひらく、カード内スクロール、コンパクトなチップ表示を設定から切り替えられます</li>
+                <li>集計画面にジャンプ機能を追加しました。⚔男士｜💰小判｜🟢資源のボタンでその場所へ移動できます。小判・資源は普段たたんで表示されます</li>
+                <li>上に戻るボタンを追加しました。少しスクロールすると右下に表示されます</li>
+                <li>ページの下から「審神者の道具箱」トップへ移動できるようにしました</li>
+                <li>設定まわりの文言を調整しました</li>
+                <li>記録バーの数値入力欄の幅を安定させました。画面が狭くても入力欄がつぶれず、レイアウトが崩れにくくなりました</li>
+                <li>画面下のバーの記録ボタンの表示を「記録する」に短くしました。狭い画面でも収まりやすくなります</li>
+                <li>とても狭い画面でも、ヘッダーのボタンがはみ出さないようにしました。収まらないときは、右寄せのまま次の段に折り返して表示されます</li>
+              </ul>
+              <div class="app-label">審神者の道具箱（トップページ）</div>
+              <ul>
+                <li>トップページを新しくしました。パソコンではツールが2列のカード並びになり、各カードの「道具を開く」「説明書」ボタンからすぐ移動できます（マニュアルの一覧は各カードに統合しました）</li>
+                <li>新しい道具の「準備中」カードを置きました。お楽しみに</li>
+                <li>各ツールの紹介文を見直しました</li>
+                <li>更新情報のいちばん新しい項目を、クリックで閉じられるようにしました</li>
+                <li>メールフォームの「対象アプリ」に、愛蔵の一ノ倉・出陣支度部屋・邂逅録を追加しました</li>
+              </ul>
+              <div class="app-label">お返事ページ</div>
+              <ul>
+                <li>お返事ページに、いただいたご報告へのお返事を追加しました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new17">
+          <div class="tl-header" onclick="tlToggle('tl-new17')">
+            <span class="tl-date">2026.07.05</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="app-label">稽古録</div>
+              <ul>
+                <li>累積経験値の入力を改善しました。数字の途中を編集してもカーソルが末尾に飛ばず、カンマも入力の邪魔をしません</li>
+                <li>大きな累積経験値に対応しました。ある桁から先が0になる不具合を直し、15桁まで正しく入力できます（インフレ後の高い数値もOK）</li>
+                <li>Google同期を安定させました。ログインの有効期限（Googleの仕様で約1時間）が切れても自動でつなぎ直し、うまくいかないときはログアウトせず「⚠ 再接続」ボタンから1タップで戻れます。再読み込み後にログインできなくなる不具合も直しました（記録は常に端末に残るので失われません）</li>
+                <li>波平行安（No.258）を追加しました</li>
+                <li>治金丸 極（No.187）を追加しました</li>
+              </ul>
+              <div class="app-label">邂逅録</div>
+              <ul>
+                <li>連隊戦に「目玉なしで記録（周回だけ）」を追加しました。目玉が出なかった周回も記録でき、連隊戦でも目玉の実ドロップ率が出せます</li>
+                <li>ヘッダーを一新しました。☁ボタンでGoogleログイン／ログアウト、↑保存・↓読み込みをヘッダーに配置し、PC／スマホの表示切替ボタンも追加しました</li>
+                <li>「読み込み前の自動控え」を追加しました。クラウド読み込みや「置き換え」取り込みの直前に、その時点のデータを自動で控え、設定の「この控えに戻す」で元に戻せます</li>
+                <li>Google同期を安定させました。期限切れ後の再接続をスムーズにし、「⚠ 再接続」ボタンをヘッダーからも押せるようにしました</li>
+                <li>使い方ガイドに「目玉の実ドロップ率」の説明を追加しました</li>
+                <li>笹貫（No.212）の刀派を「波平」に修正しました</li>
+              </ul>
+              <div class="app-label">資源帳</div>
+              <ul>
+                <li>Google同期を安定させました。稽古録・邂逅録と同じ改善を適用し、期限切れ後の再ログインが通りにくかった内部の作りも見直しました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  
+    <div class="bulk-bar bulk-bottom">
+      <button onclick="bulkSet('mg-2026-07','st-closed')">すべて閉じる</button>
+      <button onclick="bulkSet('mg-2026-07','st-short')">すべて短文</button>
+      <button onclick="bulkSet('mg-2026-07','st-full')">すべて詳しく</button>
+    </div>
+    </div>
+  </div>
+
+  <div class="month-group m-closed" id="mg-2026-06">
+    <div class="month-header" onclick="mToggle('mg-2026-06')">
+      <span class="month-label">2026年6月</span>
+      <span class="month-line"></span>
+      <span class="month-count">9件</span>
+      <span class="month-arrow">▼</span>
+    </div>
+    <div class="month-body">
+    <div class="bulk-bar">
+      <button onclick="bulkSet('mg-2026-06','st-closed')">すべて閉じる</button>
+      <button onclick="bulkSet('mg-2026-06','st-short')">すべて短文</button>
+      <button onclick="bulkSet('mg-2026-06','st-full')">すべて詳しく</button>
+    </div>
+    <div class="cl-panel">
+      <div class="timeline">
+
+        <div class="tl-entry" id="tl-new16">
+          <div class="tl-header" onclick="tlToggle('tl-new16')">
+            <span class="tl-date">2026.06.30</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="app-label">邂逅録</div>
+              <ul>
+                <li>ヘッダーまわりとクラウド同期まわりの表示を見直し、使いやすく整えました</li>
+              </ul>
+              <div class="app-label">資源帳</div>
+              <ul>
+                <li>表示の誤字を修正しました</li>
+              </ul>
+              <div class="app-label">稽古録</div>
+              <ul>
+                <li>数値入力に関する不具合を修正しました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new15">
+          <div class="tl-header" onclick="tlToggle('tl-new15')">
+            <span class="tl-date">2026.06.28</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="app-label">邂逅録</div>
+              <ul>
+                <li><b>夏の連隊戦に対応しました。</b>場所のプリセットに夏の連隊戦を追加し、記録できるようにしました。難易度は8区分（通常の易・普・難・超難／特別合戦場の易・普・難・超難）から選べ、難易度ごとに目玉男士の指定（エリア設定タブ・指定済みは⭐で表示）や、集計の絞り込みもできます。連隊戦はマスがないため、小判・資源・マス選択・検非違使の欄は出ず、記録するのは男士と周回数です</li>
+                <li><b>大阪城の設定を使いやすくしました。</b>「記録する階」「最大階数」「博多藤四郎の小判倍率」の設定を、設定タブからエリア設定タブの大阪城に移しました。記録する階はチップ（タグ）で追加・削除でき、博多藤四郎の小判倍率を変えると記録画面の表示と集計の「博多抜き」にも反映されます。設定を保存せずに別の場所やタブへ移ろうとすると確認が出るようにしました（この確認は設定で消せます）</li>
+                <li><b>スマホのデザインを調整しました。</b>テーマ・配色の切り替えをヘッダーから設定タブに移し、ヘッダーをすっきりさせて、クラウド同期ボタン（☁）と使い方ボタン（？）を置きました。クラウド同期ボタンはログイン中なら緑のドットで分かり、使い方ボタンからはいつでもガイドを開けます（このボタンは設定やガイドから消せます）。「ステージ設定」タブは「エリア設定」に名前を変えました。配色を変えていても起動時に一瞬ちがう配色が見えてしまう現象も直しています</li>
+                <li><b>こまかい修正をしました。</b>「エリア設定」タブの場所選択（過去・大阪城・夏の連隊戦）を設定の枠の上に出すようにし、最後に見ていた場所・ステージ・階・難易度を覚えるようにしました。最近の記録では、連隊戦の難易度が分かりやすく表示されるようになりました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new14">
+          <div class="tl-header" onclick="tlToggle('tl-new14')">
+            <span class="tl-date">2026.06.27</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="app-label">邂逅録</div>
+              <ul>
+                <li>過去（恒常マップ）に対応しました。面とステージを選んで、ステージごとに記録・集計できます。ステージごとに手に入る資源が変わり、資源のない場所では資源欄を出さないようにしています</li>
+                <li>ステージごとに「目玉男士」を指定できるようにしました（新しい「ステージ設定」タブから設定できます）。大阪城も階ごとに目玉が変わるため、階ごとに指定できるようにしました。これまで大阪城全体に設定していた目玉は、99階の目玉として引き継いでいます</li>
+                <li>検非違使に対応しました。ステージ設定で「このステージは検非違使が出る」をオンにすると、記録画面（詳しく記録）で検非違使マスを記録できます。集計でも検非違使マスを通常マスと分けて見られます</li>
+                <li>隠形香に対応しました。検非違使が出るステージで「隠形香を焚いている」をオンにすると、そのステージの検非違使マスを一時的に避けている状態として表示し、記録画面で検非違使マスが選べなくなります（刀剣乱舞を開かなくても、そのステージの状態が分かるようにするための表示です）</li>
+                <li>集計を過去のステージごとに絞り込めるようにしました。ステージを選ぶと、そのステージのドロップだけを集計できます（「すべてのステージ」でまとめて見ることもできます）</li>
+                <li>過去では小判が出ないため、過去を選んでいるときは小判の入力欄を出さないようにしました（大阪城ではこれまで通りです）</li>
+                <li><b>クラウド同期の仕組みを、安全な形に見直しました。</b>これまでは自動でデータを合体（マージ）していましたが、操作によっては記録が消えてしまうことがあったため、自動の合体をやめました。これからは「クラウドへ保存」「クラウドから読み込み」の2つのボタンで、ご自分のタイミングで同期します。どちらも上書きです（「保存」＝この端末の内容でクラウドを上書き／「読み込み」＝クラウドの内容でこの端末を上書き）。押す前に必ず確認が出ます。記録のたびに自動でクラウドへ保存する設定も用意しました（最初はオフ・アップロードのみ）</li>
+                <li>「削除した記録の復元」を追加しました。うっかりすべての記録を削除してしまっても、記録がこの端末（またはクラウド）に残っていれば、設定タブからまとめて元に戻せます（※ 消えたデータすべての復旧を保証するものではなく、データが残っている場合に戻せるものです）</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
         <div class="tl-entry" id="tl-new13">
           <div class="tl-header" onclick="tlToggle('tl-new13')">
             <span class="tl-date">2026.06.25</span>
-            <span class="tl-badge">最新</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -445,14 +1071,28 @@ footer {
 
       </div>
     </div>
+  
+    <div class="bulk-bar bulk-bottom">
+      <button onclick="bulkSet('mg-2026-06','st-closed')">すべて閉じる</button>
+      <button onclick="bulkSet('mg-2026-06','st-short')">すべて短文</button>
+      <button onclick="bulkSet('mg-2026-06','st-full')">すべて詳しく</button>
+    </div>
+    </div>
   </div>
 
   <!-- 2026年5月 -->
-  <div class="month-group">
-    <div class="month-header">
+  <div class="month-group m-closed" id="mg-2026-05">
+    <div class="month-header" onclick="mToggle('mg-2026-05')">
       <span class="month-label">2026年5月</span>
       <span class="month-line"></span>
       <span class="month-count">18件</span>
+      <span class="month-arrow">▼</span>
+    </div>
+    <div class="month-body">
+    <div class="bulk-bar">
+      <button onclick="bulkSet('mg-2026-05','st-closed')">すべて閉じる</button>
+      <button onclick="bulkSet('mg-2026-05','st-short')">すべて短文</button>
+      <button onclick="bulkSet('mg-2026-05','st-full')">すべて詳しく</button>
     </div>
     <div class="cl-panel">
       <div class="timeline">
@@ -790,14 +1430,28 @@ footer {
 
       </div><!-- /timeline -->
     </div><!-- /cl-panel -->
+  
+    <div class="bulk-bar bulk-bottom">
+      <button onclick="bulkSet('mg-2026-05','st-closed')">すべて閉じる</button>
+      <button onclick="bulkSet('mg-2026-05','st-short')">すべて短文</button>
+      <button onclick="bulkSet('mg-2026-05','st-full')">すべて詳しく</button>
+    </div>
+    </div>
   </div><!-- /month-group -->
 
   <!-- 2026年4月 -->
-  <div class="month-group">
-    <div class="month-header">
+  <div class="month-group m-closed" id="mg-2026-04">
+    <div class="month-header" onclick="mToggle('mg-2026-04')">
       <span class="month-label">2026年4月</span>
       <span class="month-line"></span>
       <span class="month-count">7件</span>
+      <span class="month-arrow">▼</span>
+    </div>
+    <div class="month-body">
+    <div class="bulk-bar">
+      <button onclick="bulkSet('mg-2026-04','st-closed')">すべて閉じる</button>
+      <button onclick="bulkSet('mg-2026-04','st-short')">すべて短文</button>
+      <button onclick="bulkSet('mg-2026-04','st-full')">すべて詳しく</button>
     </div>
     <div class="cl-panel">
       <div class="timeline">
@@ -940,6 +1594,13 @@ footer {
 
       </div><!-- /timeline -->
     </div><!-- /cl-panel -->
+  
+    <div class="bulk-bar bulk-bottom">
+      <button onclick="bulkSet('mg-2026-04','st-closed')">すべて閉じる</button>
+      <button onclick="bulkSet('mg-2026-04','st-short')">すべて短文</button>
+      <button onclick="bulkSet('mg-2026-04','st-full')">すべて詳しく</button>
+    </div>
+    </div>
   </div><!-- /month-group -->
 
   <a class="back-link" href="saniwa_top.html">← トップへ戻る</a>
@@ -948,15 +1609,93 @@ footer {
 </div>
 
 <footer>
-  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。
+  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari hatano
 </footer>
 </div>
 
+<a class="scroll-top" id="scroll-top" href="#top" title="トップへ戻る">▲</a>
+
 <script>
+/* ---- 更新エントリ：3段階（閉→短文→詳しく→閉） ---- */
+var TL_STATES = ['st-closed', 'st-short', 'st-full'];
+
+function tlSetState(entry, st) {
+  TL_STATES.forEach(function(s){ entry.classList.remove(s); });
+  if (st !== 'st-closed') entry.classList.add(st);
+}
+function tlGetState(entry) {
+  if (entry.classList.contains('st-full')) return 'st-full';
+  if (entry.classList.contains('st-short')) return 'st-short';
+  return 'st-closed';
+}
 function tlToggle(id) {
   const entry = document.getElementById(id);
-  entry.classList.toggle('is-open');
+  const hasShort = entry.getAttribute('data-has-short') === '1';
+  const cur = tlGetState(entry);
+  let next;
+  if (hasShort) {
+    next = cur === 'st-closed' ? 'st-short' : cur === 'st-short' ? 'st-full' : 'st-closed';
+  } else {
+    next = cur === 'st-closed' ? 'st-full' : 'st-closed';
+  }
+  tlSetState(entry, next);
 }
+function tlMoreOpen(ev, id) {
+  ev.stopPropagation();
+  tlSetState(document.getElementById(id), 'st-full');
+}
+function bulkSet(monthId, st) {
+  document.querySelectorAll('#' + monthId + ' .tl-entry').forEach(function(entry){
+    const hasShort = entry.getAttribute('data-has-short') === '1';
+    if (st === 'st-short' && !hasShort) {
+      tlSetState(entry, 'st-closed'); // 短文が無いエントリは閉のまま
+    } else {
+      tlSetState(entry, st);
+    }
+  });
+}
+function mToggle(id) {
+  document.getElementById(id).classList.toggle('m-closed');
+}
+
+/* ---- テーマ切り替え ---- */
+const THEME_KEY = 'reply_theme_v1';
+
+function saveTheme() {
+  try {
+    localStorage.setItem(THEME_KEY, JSON.stringify({
+      hue: document.documentElement.dataset.hue,
+      mode: document.documentElement.dataset.mode
+    }));
+  } catch(e) {}
+}
+function updateThemeButtons() {
+  const hue = document.documentElement.dataset.hue;
+  const mode = document.documentElement.dataset.mode;
+  const btnHue = document.getElementById('btn-hue');
+  const btnMode = document.getElementById('btn-mode');
+  if (btnHue)  btnHue.textContent  = '色：' + (hue === 'blue' ? '青系' : '赤系');
+  if (btnMode) btnMode.textContent = '明るさ：' + (mode === 'dark' ? '暗い' : '明るい');
+}
+function toggleHue() {
+  const cur = document.documentElement.dataset.hue;
+  document.documentElement.dataset.hue = (cur === 'blue') ? 'red' : 'blue';
+  saveTheme();
+  updateThemeButtons();
+}
+function toggleMode() {
+  const cur = document.documentElement.dataset.mode;
+  document.documentElement.dataset.mode = (cur === 'dark') ? 'light' : 'dark';
+  saveTheme();
+  updateThemeButtons();
+}
+document.addEventListener('DOMContentLoaded', updateThemeButtons);
+
+/* ---- トップへ戻るボタン ---- */
+const scrollBtn = document.getElementById('scroll-top');
+window.addEventListener('scroll', () => {
+  scrollBtn.classList.toggle('visible', window.scrollY > 300);
+}, { passive: true });
 </script>
 </body>
 </html>
