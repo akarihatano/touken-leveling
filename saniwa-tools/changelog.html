@@ -6,6 +6,14 @@
 <title>更新履歴 — 審神者の道具箱</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- アクセス解析の停止設定を読む（プライバシーポリシーのボタンで切り替えます） -->
+<script>
+try {
+  if (localStorage.getItem('saniwa_ga_optout') === '1') {
+    window['ga-disable-G-QM317D9ESN'] = true;
+  }
+} catch (e) {}
+</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
 <script>
@@ -327,6 +335,19 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: var(-
   color: var(--accent);
   font-family: 'Noto Sans JP', sans-serif;
   font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+/* 見出しに更新の内容を出す（閉じたままでも中身が分かるように） */
+.tl-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--tx-lead);
+  font-family: 'Noto Sans JP', sans-serif;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .tl-badge {
   font-size: 9px;
@@ -337,12 +358,15 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: var(-
   border-radius: 3px;
   padding: 2px 6px;
   font-family: 'Noto Sans JP', sans-serif;
+  flex-shrink: 0;
 }
 .tl-arrow {
   margin-left: auto;
   font-size: 11px;
   color: var(--accent-soft);
   transition: transform .25s;
+  flex-shrink: 0;
+  padding-left: 4px;
 }
 .tl-entry.st-short .tl-arrow { transform: rotate(90deg); }
 .tl-entry.st-full .tl-arrow { transform: rotate(180deg); }
@@ -476,6 +500,8 @@ footer {
   font-size: 11px; color: rgba(240,220,190,.55); letter-spacing: .15em;
   font-family: 'Noto Sans JP', sans-serif;
 }
+footer a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+footer a:hover { opacity: .75; }
 
 /* トップへ戻るボタン（テーマ連動） */
 .scroll-top {
@@ -502,6 +528,14 @@ footer {
 @media (max-width: 680px) {
   .layout { padding: 28px 16px 48px; }
   .site-title { font-size: 20px; }
+  /* 見出しを2段に：1段目に日付とバッジ、2段目に内容 */
+  .tl-header { flex-wrap: wrap; row-gap: 2px; }
+  .tl-title {
+    flex: 0 0 100%;
+    order: 5;
+    font-size: 11.5px;
+  }
+  .tl-arrow { order: 4; margin-left: auto; }
 }
 </style>
 </head>
@@ -521,11 +555,737 @@ footer {
 
   <!-- 2026年6月 -->
   <!-- 2026年7月 -->
-  <div class="month-group" id="mg-2026-07">
+  <!-- 2026年8月 -->
+  <!-- 2026年9月 -->
+  <div class="month-group" id="mg-2026-09">
+    <div class="month-header" onclick="mToggle('mg-2026-09')">
+      <span class="month-label">2026年9月</span>
+      <span class="month-line"></span>
+      <span class="month-count">4件</span>
+      <span class="month-arrow">▼</span>
+    </div>
+    <div class="month-body">
+    <div class="bulk-bar">
+      <button onclick="bulkSet('mg-2026-09','st-closed')">すべて閉じる</button>
+      <button onclick="bulkSet('mg-2026-09','st-short')">すべて短文</button>
+      <button onclick="bulkSet('mg-2026-09','st-full')">すべて詳しく</button>
+    </div>
+    <div class="cl-panel">
+      <div class="timeline">
+
+        <div class="tl-entry" id="tl-new53" data-has-short="1">
+          <div class="tl-header" onclick="tlToggle('tl-new53')">
+            <span class="tl-date">2026.09.20</span>
+            <span class="tl-badge">最新</span>
+            <span class="tl-title">愛蔵の一ノ倉 ― 回想を記録できる「追想録」を足しました</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-short">
+            <div class="tl-short-inner">ゲーム内の回想195件を、集めたかどうか記録できるタブが増えました。題・出陣先・登場する刀剣男士・前提になる回想がひと目でわかり、刀剣男士や時代で絞り込んで探せます。<br><br>ゲームで ？？？ と伏せられている回想は、追想録でも伏せた状態から始まります。</div>
+            <span class="tl-more" onclick="tlMoreOpen(event,'tl-new53')">▼ 詳しく見る</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">愛蔵の一ノ倉 ― 回想を記録できる「追想録」を足しました</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">回想195件を記録できます</div>
+              <ul>
+                <li>宝物帳と刀装のあいだに<b>追想録</b>タブが増えました</li>
+                <li>1枚のカードに、番号・題・読み・出陣先・登場する刀剣男士が入ります。出陣先は<b>「1-1 維新の記憶・函館」</b>のようにステージ番号つきです</li>
+                <li>「入手」に印を付けると集めた印になります。カードごとに<b>メモ</b>も書けます（書いた分だけ縦に伸びます）</li>
+                <li>記録は Google ドライブ同期・JSON エクスポートにそのまま乗ります</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">探しかた</div>
+              <ul>
+                <li><b>すべて／入手済み／未入手</b>の切り替えと、番号の<b>昇順・降順</b></li>
+                <li><b>文字で探す</b>欄は、題・読み・刀剣男士名・メモ・「其の◯」の番号を見ます。空白は無視するので「妖物斬りの陰気」でも「妖物斬りの 陰気」でも見つかります</li>
+                <li>片仮名はひらがなでも探せます。「そはやのつるき」で ソハヤノツルキ が見つかります</li>
+                <li><b>「詳しく絞る」</b>を開くと、時代・地域／刀種／刀剣男士／番号帯／メモあり でも絞れます。刀種を選ぶと刀剣男士の選択肢がその刀種だけになります</li>
+                <li>条件は重ねてかけられ、<b>「絞り込みを全部戻す」</b>で一度に戻せます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">？？？（伏せ字）</div>
+              <ul>
+                <li>ゲームの回想一覧で題も刀剣男士も ？？？ になっている回想は、<b>追想録でも伏せた状態から始まります</b></li>
+                <li><b>「ゲームで？？？になる回想を伏せる」</b>の印を外すと、伏せずに全部表示します</li>
+                <li>印を付けたままでも、<b>「入手」に印を付けた回想はその場で開きます</b>（ゲームと同じです）</li>
+                <li>伏せているあいだは、その題と伏せられた刀剣男士では検索・絞り込みに引っかかりません</li>
+                <li>どの回想が伏せられるかは回想ごとに決まっていて、審神者によって変わりません</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">前提回想と、まとめて記録</div>
+              <ul>
+                <li>先に集めておく必要がある回想には<b>「↑ 前提：其の◯」</b>、その回想を集めると出てくる回想には<b>「↓ つづき：其の◯」</b>が出ます。番号を押すとそのカードまで移動します</li>
+                <li><b>「◯件に☑」「◯件の☑を外す」</b>で、いま表示されている回想にまとめて印を付け外しできます。絞り込まずに押せば195件すべて、絞ってから押せばその範囲だけです</li>
+                <li>押す前に確認が出ます。印を外してもメモは消えません</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new52" data-has-short="1">
+          <div class="tl-header" onclick="tlToggle('tl-new52')">
+            <span class="tl-date">2026.09.17</span>
+            <span class="tl-title">トップページ ― 画面の幅に合わせて並びが変わるようにしました</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-short">
+            <div class="tl-short-inner">画面の幅に合わせて、道具の並びが変わるようになりました。タブレットやパソコンでは、道具の絵がゆったり大きく見えます。<br><br>横に広い画面では、説明書と更新履歴が右側に並びます。スクロールしなくても目に入ります。<br><br>スマートフォンでの見え方は変わっていません。</div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new51" data-has-short="1">
+          <div class="tl-header" onclick="tlToggle('tl-new51')">
+            <span class="tl-date">2026.09.13</span>
+            <span class="tl-title">稽古録 ― 髭切・膝丸の「特」を直し、刀を追加しやすくしました</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-short">
+            <div class="tl-short-inner">髭切・膝丸の「特」が切り替わるレベルを直しました。あわせて、極のカードからその刀を追加できるように、個別のカードからまとめの画面へ戻れるようにしています。</div>
+            <span class="tl-more" onclick="tlMoreOpen(event,'tl-new51')">▼ 詳しく見る</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">稽古録 ― 髭切・膝丸の「特」を直し、刀を追加しやすくしました</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">髭切・膝丸の「特」が変わるレベルを直しました</div>
+              <ul>
+                <li>これまで特二がLv.35、特三がLv.45で切り替わる表示になっていましたが、正しくは<b>特二がLv.50、特三がLv.75</b>です</li>
+                <li>膝丸は特一がLv.25、<b>特二がLv.50</b>です</li>
+                <li>形態はレベルから計算しているため、記録し直していただく必要はありません。<b>表示だけが変わります</b></li>
+                <li>すでに記録しておられる方は、<b>Lv.35〜74の髭切・膝丸が、これまでより手前の段階で表示されます</b>（例：Lv.45の髭切は、これまで特三と出ていましたが、正しくは特一です）</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">極のカードからも、その刀を追加できるようにしました</div>
+              <ul>
+                <li>これまで極のカードには案内文が出るだけで、そこから刀を足すことができませんでした</li>
+                <li>「<b>＋ この刀を追加（極）</b>」を押すと、極の状態で新しく1振り増やせます</li>
+                <li>増えた刀は<b>Lv.1・累積経験値は空</b>から始まります。レベルと累積経験値はご自身でご入力ください</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">個別のカードから、まとめの画面へ戻れるようにしました</div>
+              <ul>
+                <li>刀の設定画面の左上に「<b>◀ 刀の名前（まとめ）</b>」が出ます</li>
+                <li>これまで、個別のカードから設定画面を開くと「＋ この刀を追加」にたどり着けませんでした</li>
+                <li><b>Lv順・Exp順・乱舞Lv順・入手順</b>で並べているときは所持している刀すべてが個別のカードになるため、この並べ替えをお使いの方は全部の刀で行けない状態でした</li>
+                <li>「◀」で戻ると、保存していない変更は反映されません（✕で閉じたときと同じです）</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new50" data-has-short="1">
+          <div class="tl-header" onclick="tlToggle('tl-new50')">
+            <span class="tl-date">2026.09.08</span>
+            <span class="tl-title">サイト全体・稽古録・出陣支度部屋 ― 新しい刀剣男士に対応し、記録を守るしくみを足しました</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-short">
+            <div class="tl-short-inner">古今伝授の太刀と地蔵行平を極として記録できるようになりました。太閤左文字の極のステータスもお入れしています。あわせて、ブラウザやアプリの都合で本丸の記録が失われないよう、二つのしくみを道具箱ぜんたいに足しました。</div>
+            <span class="tl-more" onclick="tlMoreOpen(event,'tl-new50')">▼ 詳しく見る</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">サイト全体・稽古録・出陣支度部屋 ― 新しい刀剣男士に対応し、記録を守るしくみを足しました</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">新しい刀剣男士に対応しました</div>
+              <ul>
+                <li><b>古今伝授の太刀</b>と<b>地蔵行平</b>を極として記録できるようになりました</li>
+                <li>稽古録・出陣支度部屋の両方が対象です</li>
+                <li><b>ステータスの最大値はまだ空欄です。</b>確かめられ次第お入れします</li>
+                <li>空欄でも、刀の設定画面の「📊 現在ステータス」に今の数値を記録できます。修行から帰っている方はそちらをお使いください</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">太閤左文字の極のステータスを入れました</div>
+              <ul>
+                <li>前回から空欄にしていた太閤左文字の極に、打撃・統率・機動・衝力・隠蔽・必殺の6つをお入れしました</li>
+                <li>生存と偵察は連結では上げられないため、まだ空欄のままです</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">SNSアプリの中で開くと、記録が別の場所に保存されます</div>
+              <ul>
+                <li>XやInstagramなどのアプリの中からリンクを開くと、SafariやChromeとは<b>別の場所</b>に記録が保存されます</li>
+                <li>同じ道具を開いても以前の記録が見えなかったり、Googleとつながらなかったりします</li>
+                <li>その状態のときに、画面の上へ案内を出すようにしました</li>
+                <li><b>記録が見えている場合は、先に書き出し（エクスポート）をお取りください。</b>そのファイルをSafariやChromeで開いた同じ道具に読み込めば、そのまま続けられます</li>
+                <li>案内は「このブラウザでは表示しない」で消せます</li>
+                <li>道具箱のすべての道具が対象です</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">手元が空のままクラウドへ保存するのを止めます</div>
+              <ul>
+                <li>機種変更やブラウザの乗り換え、サイトデータの削除などで、その端末の記録が空になっていることがあります</li>
+                <li>その状態で「クラウドへ保存」を押すと、<b>クラウドに残っていた記録まで空で上書きされ、元に戻せません</b></li>
+                <li>手元が空のときは確認をはさむようにしました。「読み込む」を選べば、クラウドの記録をそのまま取り戻せます</li>
+                <li>どうしても空のまま保存したいときのために「それでも保存する」も残してあります</li>
+                <li>道具箱のすべての道具が対象です</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  
+    <div class="bulk-bar bulk-bottom">
+      <button onclick="bulkSet('mg-2026-09','st-closed')">すべて閉じる</button>
+      <button onclick="bulkSet('mg-2026-09','st-short')">すべて短文</button>
+      <button onclick="bulkSet('mg-2026-09','st-full')">すべて詳しく</button>
+    </div>
+    </div>
+  </div>
+
+  <div class="month-group m-closed" id="mg-2026-08">
+    <div class="month-header" onclick="mToggle('mg-2026-08')">
+      <span class="month-label">2026年8月</span>
+      <span class="month-line"></span>
+      <span class="month-count">15件</span>
+      <span class="month-arrow">▼</span>
+    </div>
+    <div class="month-body">
+    <div class="bulk-bar">
+      <button onclick="bulkSet('mg-2026-08','st-closed')">すべて閉じる</button>
+      <button onclick="bulkSet('mg-2026-08','st-short')">すべて短文</button>
+      <button onclick="bulkSet('mg-2026-08','st-full')">すべて詳しく</button>
+    </div>
+    <div class="cl-panel">
+      <div class="timeline">
+
+        <div class="tl-entry" id="tl-new49" data-has-short="1">
+          <div class="tl-header" onclick="tlToggle('tl-new49')">
+            <span class="tl-date">2026.08.29</span>
+            <span class="tl-title">サイト全体 ― プライバシーポリシーのページを作りました</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-short">
+            <div class="tl-short-inner">当サイトが扱う情報についてのページを新しく作りました。ツールに記録した本丸のデータと、サイトの使われ方を見るアクセス解析は別のものです。その違いと、アクセス解析を断る方法をまとめています。各ページの下にあるリンクから開けます。</div>
+            <span class="tl-more" onclick="tlMoreOpen(event,'tl-new49')">▼ 詳しく見る</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">サイト全体 ― プライバシーポリシーのページを作りました</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">プライバシーポリシーのページを作りました</div>
+              <ul>
+                <li>当サイトが扱う情報についてまとめたページを新しく用意しました</li>
+                <li>各ページの下にあるリンクから開けます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">本丸の記録と、アクセス解析は別のものです</div>
+              <ul>
+                <li>稽古録・資源帳などで記録したデータは、お使いの端末のブラウザの中だけに保存されます。管理人のもとへ送られることはなく、中身を見ることもできません</li>
+                <li>Googleドライブ同期をお使いの場合も、保存先はあなたご自身のGoogleドライブです</li>
+                <li>これとは別に、どのページが何回開かれたか、どんな端末で見られているかといった<b>サイト全体の使われ方</b>を、Googleアナリティクスで記録しています</li>
+                <li>この二つはまったく別のものです。個人を特定する目的で使うことはありません</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">アクセス解析を断るボタンを置きました</div>
+              <ul>
+                <li>プライバシーポリシーのページに<b>「このブラウザでアクセス解析を無効にする」</b>ボタンがあります</li>
+                <li>パソコン・スマートフォン・タブレットのどれでもお使いいただけます</li>
+                <li>設定はそのブラウザに保存されます。ブラウザのデータを消したときや、別のブラウザ・別の端末をお使いのときは、もう一度設定してください</li>
+                <li>iPhone・iPadでは、しばらく開かないでいると設定が消えることがあります</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new48" data-has-short="1">
+          <div class="tl-header" onclick="tlToggle('tl-new48')">
+            <span class="tl-date">2026.08.26</span>
+            <span class="tl-title">稽古録・出陣支度部屋 ― 刀剣男士のステータスを見直しました</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-short">
+            <div class="tl-short-inner">刀剣男士のステータスをゲーム画面と照らし合わせて確かめ、治金丸・波平行安・狐ヶ崎為次の3振りの誤りを直しました。あわせて太閤左文字の極を追加しています。稽古録と出陣支度部屋の両方が対象です。</div>
+            <span class="tl-more" onclick="tlMoreOpen(event,'tl-new48')">▼ 詳しく見る</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">稽古録・出陣支度部屋 ― 刀剣男士のステータスを見直しました</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">3振りのステータスを直しました</div>
+              <ul>
+                <li><b>治金丸（極）</b>・<b>波平行安</b>・<b>狐ヶ崎為次</b>の3振りで、登録していたステータスに誤りがありました</li>
+                <li>92振りをゲーム画面と1つずつ照らし合わせて確かめ、見つかった誤りはこの3振りでした</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">太閤左文字の極を追加しました</div>
+              <ul>
+                <li>稽古録・出陣支度部屋の両方で、太閤左文字を極として記録できるようになりました</li>
+                <li><b>ステータスの最大値はまだ空欄です。</b>確かめられ次第お入れします</li>
+                <li>空欄でも、刀の設定画面の「📊 現在ステータス」に今の数値を記録できます。修行から帰っている方はそちらをお使いください</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">ステータスを見比べるときは</div>
+              <ul>
+                <li>数値は刀装・馬・宝物を外した状態のものです</li>
+                <li>「現在ステータス」の見本は、その刀の<b>乱舞Lv</b>の設定に合わせて出ています。刀の設定画面で乱舞Lvを合わせると、ゲーム画面と同じ数字になります</li>
+                <li>見比べて「違うかも」と思ったところがあれば、ぜひ教えてください。今回の見直しも、そうした気づきから始まりました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new47">
+          <div class="tl-header" onclick="tlToggle('tl-new47')">
+            <span class="tl-date">2026.08.25</span>
+            <span class="tl-title">邂逅録 ― 夜花奪還作戦に対応しました</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">邂逅録 ― 夜花奪還作戦に対応しました</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">夜花奪還作戦を追加しました</div>
+              <ul>
+                <li>場所をえらぶ欄に<b>「夜花奪還作戦」</b>が増えました。対百鬼夜行迎撃作戦の次、いちばん下にあります</li>
+                <li>場所は江戸下町ひとつだけなので、<b>階や難易度をえらぶ欄は出しません</b>。えらぶ手間がないぶん、すぐ記録に進めます</li>
+                <li>資源は大阪城と同じ<b>木炭・玉鋼・冷却材・砥石</b>の4つです。依頼札の欄は出ません</li>
+                <li><b>小判の欄は出しません</b>。夜花では小判が出ないためです。大阪城から続けて記録しても、小判の数字が持ち越されることはありません</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">「マス」ではなく「出た敵」でえらびます</div>
+              <ul>
+                <li>ドロップの出どころを<b>ボス・苦無・不明</b>の3つから選べます。苦無はマスではなくレア敵なので、見出しも「どの敵から？」に変えました</li>
+                <li><b>通常マスは出しません。</b>去年の夜花では通常のマスから刀剣男士が落ちなかったためです。検非違使の欄も出ません</li>
+                <li>集計でも「苦無だけ」でしぼりこめます。苦無から出た男士だけを見たいときにお使いください</li>
+                <li>記録したあとでも、記録カードの選択欄から「ボス→苦無」のように直せます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">これまでの開催回を7回ぶん入れました</div>
+              <ul>
+                <li>2020年から2026年までの7回を最初から登録してあります。集計の📅期間から、回ごとにふりかえれます</li>
+                <li><b>2026年の回は 8月25日〜9月8日 です。</b>公式の発表を待つあいだ「予想」として入れていましたが、発表された日程と同じだったので、そのまま確定にしました。<b>「予想」の印は外れています</b>（すでにお使いの方の画面でも自動で外れます）</li>
+                <li>実際の日程と違っていたら、エリア設定タブの「📅 開催期間」からご自分で直せます。直した回は、こちらからの更新では触りません</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">CSV・Excelでのやりとり</div>
+              <ul>
+                <li>書き出すと、出どころの欄に<b>「苦無」</b>と入ります。取り込むときは「くない」「クナイ」「kunai」でも同じものとして拾います</li>
+                <li>場所の欄は「夜花奪還作戦」でも、短い呼び名の<b>「夜花」</b>でも取り込めます</li>
+                <li>書き出したファイルの名前は「邂逅録_夜花_2026年8月.csv」のようになります</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">目玉（レアドロップ）を指定できるようにしました</div>
+              <ul>
+                <li><b>エリア設定タブに、夜花の欄が出ていませんでした。</b>目玉を指定する欄そのものがなく、指定しようがない状態でした。ご不便をおかけしました</li>
+                <li><b>ボスと苦無で、別々に指定できます。</b>出る男士が違うためです。エリア設定タブで場所に「夜花」を選ぶと、敵を選ぶボタンが出ます。指定ずみのほうには⭐が付きます</li>
+                <li>記録画面で<b>「不明」</b>を選んでいるときは、どちらから出たか決まっていないので、<b>ボスと苦無の目玉をまとめて</b>出します。集計で「すべて」を選んだときも同じです</li>
+                <li>最近の記録の★は、<b>その男士が出た敵</b>で付きます。ボスの目玉にしている男士でも、苦無から出た記録には★が付きません</li>
+                <li>ほかの場所と同じように、<b>「この指定を ボスと苦無 の両方に入れる」</b>ボタンもあります</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new46">
+          <div class="tl-header" onclick="tlToggle('tl-new46')">
+            <span class="tl-date">2026.08.25</span>
+            <span class="tl-title">邂逅録 ― 連隊戦を3つに分け、開催回でしぼりこめるようにしました</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">邂逅録 ― 連隊戦を3つに分け、開催回でしぼりこめるようにしました</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">連隊戦を3つに分けました</div>
+              <ul>
+                <li><b>冬の「連隊戦」</b>・<b>「連隊戦・海辺の陣」</b>・<b>「連隊戦・初夏の陣」</b>の3つになりました。場所をえらぶ欄では、この3つが必ず隣り合って並びます</li>
+                <li>ひとつにまとめていると難易度の並びが噛み合わなかったためです。冬は乱が<b>「乱・昼夜」「乱・夜戦」「乱・堅牢」「乱・延先」</b>の4つに分かれ、初夏の陣には単発の「乱」があり、海辺の陣には特別合戦場があります</li>
+                <li><b>これまでの記録は「連隊戦・海辺の陣」にそのまま残ります。</b>中身も件数も変わりません</li>
+                <li>書き出したファイルの名前では、これまでどおり「冬の連隊戦」「夏の連隊戦」「初夏の連隊戦」という短い呼び名を使います</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">冬の記録が海辺の陣に入っていたら、移し替えをご案内します</div>
+              <ul>
+                <li>冬の開催期間に「連隊戦・海辺の陣」で記録されているものが見つかると、画面の上に帯でお知らせします。<b>3つに分ける前は、冬も夏もひとつの連隊戦に記録していた</b>ためです</li>
+                <li>押すと、何件をどの年月から移すのかを確かめてから決められます。<b>移さずに断ることもできます。</b>一度断れば二度と出ません</li>
+                <li>特別合戦場の記録は冬に同じ難易度がないので<b>移しません</b>。何件あったかだけお知らせします</li>
+                <li>移したあとも、記録の中身（男士・個数・周回数・日付）は何ひとつ変わりません</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">終わったイベントは畳んであります</div>
+              <ul>
+                <li>「連隊戦・初夏の陣」は<b>2018年を最後に開催されていない</b>ので、記録タブのえらぶ欄からは畳んであります</li>
+                <li>えらぶ欄のすぐ下の<b>「終わったイベントも出す」</b>で出せます。出したときは名前のうしろに「（終了）」と付きます</li>
+                <li><b>集計タブにはいつでも出ます。</b>過去の記録をふりかえるのに困らないようにしています</li>
+                <li>いま選んでいる場所が終わったイベントのときは、畳まずそのまま出します</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">場所の名前を整えました</div>
+              <ul>
+                <li><b>「大阪城（地下に眠る千両箱）」→「大阪城・地下に眠る千両箱」</b>、<b>「連隊戦～海辺の陣～」→「連隊戦・海辺の陣」</b>になりました</li>
+                <li>記号がファイル名に入ると扱いにくいため、中黒に揃えています。<b>記録はそのままです</b></li>
+                <li>ご自分で名前を変えていた場合は、そのまま残します。こちらの都合で上書きすることはありません</li>
+                <li>CSVの取り込みは<b>古い名前のままでも通ります</b>。「夏の連隊戦」「連隊戦～海辺の陣～」「大阪城（地下に眠る千両箱）」のどれでも、正しい場所に入ります</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">開催回でしぼりこめるようになりました</div>
+              <ul>
+                <li>集計タブの📅期間に、その場所の<b>開催回が金色で並びます</b>。押すと、その回の記録だけになります</li>
+                <li><b>記録がある回だけ</b>出します。ずらりと並んで探しにくくならないようにしています</li>
+                <li>大阪城39回・連隊戦（冬11回／海辺8回／初夏2回）・対百鬼夜行迎撃作戦3回・夜花奪還作戦7回を最初から登録してあります</li>
+                <li>エリア設定タブの<b>「📅 開催期間」</b>から、回を足したり日付を直したりできます。呼び名も変えられます</li>
+                <li><b>記録には何も足しません。</b>記録の日付を見て、こちらで振り分けているだけです。回を消しても記録は消えません</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">あわせて、書き出しの案内文を直しました</div>
+              <ul>
+                <li>集計の「📤 この条件で書き出す」の案内文で、難易度が<b>内部の記号のまま</b>出ていました。「sp_hard」「ran_chuya」のような、画面のどこにも無い文字が出ている状態でした</li>
+                <li>「<b>特別合戦場・難</b>」「<b>乱・昼夜</b>」「<b>高難易度・甲</b>」のように、えらぶときと同じ読める名前で出るようになりました</li>
+                <li>あわせて、大阪城は「50」から「<b>50階</b>」に、過去は「8-4」から「<b>8-4 京都(五条)</b>」とステージ名まで出るようになりました</li>
+                <li>すぐ下に出るファイル名は、もともと正しい名前でした。<b>案内文だけが取り残されていました</b>。書き出される中身は前から変わっていません</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new45">
+          <div class="tl-header" onclick="tlToggle('tl-new45')">
+            <span class="tl-date">2026.08.23</span>
+            <span class="tl-title">資源帳 ― 期間メモの帯が正しく出るようにしました</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">資源帳 ― 期間メモの帯が正しく出るようにしました</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">帯が正しい位置と幅で出るようになりました</div>
+              <ul>
+                <li>これまで、グラフの横軸は「資源を記録した日」を等間隔に並べたものでした。そのため、記録が飛んでいる期間にかかる期間メモの帯は、置き場所を計算しきれず、<b>まったく違う場所に描かれたり、グラフ全体を覆ってしまったり</b>していました</li>
+                <li>横軸を本物の日付の並びに変えました。帯はイベントの期間どおりの位置と幅で出ます。<b>20日のイベントは20日ぶんの幅</b>です</li>
+                <li>記録の間隔が空いている方ほど、ずれが大きく出ていました。毎日つけている方の画面は、これまでとほとんど変わりません</li>
+                <li>期間メモの表示を「ガントバー」「ブラケット」にしているときも、同じように直っています</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">グラフの横軸が日付どおりになりました</div>
+              <ul>
+                <li>記録していない日にも、その日ぶんの幅が空きます。3日つけていない期間は3日ぶん空いて見えます</li>
+                <li>しばらく記録をお休みしていた方は、<b>その期間が空白として見えるようになります</b>。これまでは記録と記録が隣り合って詰まって見えていました</li>
+                <li>日付の目盛りも、記録の件数ではなく日数で並ぶようになりました</li>
+                <li>ご注意：日付を打ち間違えて遠い年の記録が混ざっていると、ほかの記録がすべて端に寄って見えます。そのときはデータ一覧タブで日付をご確認ください</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">帯が出ないときは理由が出ます</div>
+              <ul>
+                <li>グラフ下の期間メモの一覧に、帯が出ていない理由を添えました。「記録がないため未表示」「表示期間の外」「8/22で途切れ」のように、その期間メモごとに出ます</li>
+                <li>該当するものがあるときは、一覧の下に「資源を記録するか、表示期間を全期間にすると出てきます」と1行だけ添えています</li>
+                <li>表示期間をしぼりこんでいるだけの場合と、記録そのものが無い場合は、それぞれ違う書き方で出ます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">グラフの右端に境目が出ます</div>
+              <ul>
+                <li>記録の先まで続く期間メモがあるときは、グラフの右端に灰色の点線を引きます。帯がそこで途切れているのか、その先も続いているのかが分かります</li>
+                <li>設定に「境目の斜線」を追加しました。点線に加えて斜線でも示せます。既定は表示しないので、これまでと見た目は変わりません</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new44">
+          <div class="tl-header" onclick="tlToggle('tl-new44')">
+            <span class="tl-date">2026.08.23</span>
+            <span class="tl-title">稽古録 ― グラフの表示の選びかたを覚えるようにしました</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">稽古録 ― グラフの表示の選びかたを覚えるようにしました</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">選んだ表示を覚えるようになりました</div>
+              <ul>
+                <li>期間メモの表示スタイル（帯／ガント／ブラケット）、ラベル（通常／縦書き／なし）、縦軸に出す値（両方／累積経験値／レベル／増加経験値）の3つを覚えます</li>
+                <li>ブラウザを閉じて開き直しても、前に選んだ表示のままです。「増加経験値」を選んでいたときは、次も増加経験値のグラフで開きます</li>
+                <li>表示スタイルとラベルは、これまでも<b>選んだ時点では覚えていた</b>のですが、開き直すと必ず帯・通常に戻っていました。覚えた値を読み出すところが抜けていたためです</li>
+                <li>この設定は端末ごとに覚えます。スマホで選んだ表示はパソコンには移りません（Googleドライブの同期がお預かりしているのは刀の記録だけです）</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">縦軸の切り替えを共通にしました</div>
+              <ul>
+                <li>稽古録グラフと「この刀のあゆみ」で別々だった縦軸の切り替えを、1つにまとめました</li>
+                <li>グラフで「レベル」を選んでから刀のあゆみを開くと、<b>あゆみも最初からレベル</b>の表示です</li>
+                <li>あゆみで切り替えると、<b>後ろの稽古録グラフも一緒に</b>切り替わります</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new43">
+          <div class="tl-header" onclick="tlToggle('tl-new43')">
+            <span class="tl-date">2026.08.17</span>
+            <span class="tl-title">稽古録 ― 過去の記録を一覧で手直しできるようにしました</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">稽古録 ― 過去の記録を一覧で手直しできるようにしました</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">記録一覧ができました</div>
+              <ul>
+                <li>「この刀のあゆみ」を開くと、いちばん下にその刀の記録一覧が出ます。新しいものが上です</li>
+                <li>日付・累積経験値・レベルのほかに、前の記録から<b>どれだけ増えたか</b>と、何日ぶりかも並べています。累積の数字だけでは打ち間違いに気づきにくいためです</li>
+                <li>行を押すと、日付・累積経験値・レベル・メモを直せます。その記録を消すこともできます</li>
+                <li>「＋ 記録を足す」から、あとになって思い出した日の記録を足すこともできます</li>
+                <li>手で直した記録には ✍ の印が付きます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">過去を直しても、刀の今の数値が動かなくなりました</div>
+              <ul>
+                <li>これまでは、刀の編集画面で「記録日付」を過去にして保存すると、その日の記録のレベルが<b>今のレベル</b>で上書きされていました。7月の経験値に今のレベルが付いた記録ができてしまう状態でした</li>
+                <li>同じように、刀の「現在の累積経験値」も入力した過去の値で上書きされ、カードの表示が過去に戻ってしまうことがありました</li>
+                <li>新しくできた記録一覧から直すと、<b>どちらも起きません</b>。いちばん新しい記録を直したときだけ、刀の今の数値も一緒に動きます</li>
+                <li>記録を消したときは、残っている記録のいちばん新しいものに合わせ直します</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">レベルの目安を出すようにしました</div>
+              <ul>
+                <li>累積経験値を入れると「極でこの経験値なら Lv.107 くらいです」と目安が出ます。打ち間違いに気づきやすくするためです</li>
+                <li>目安を出すだけで、<b>レベルの欄は書き換えません</b>。過去のレベルを直したいのに上書きされては困るためです</li>
+                <li>極と初（通常〜特）では経験値の表が別なので、どちらで数えた目安なのかを必ず書いています。修行して極になった刀は、修行より前の記録も「極」の表で数えてしまうため、数字が合わないことがあります</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">一覧を折りたためるようにしました</div>
+              <ul>
+                <li>「この刀のあゆみ」の期間メモ・この刀のメモ・日メモ・記録一覧を、見出しを押して折りたためるようにしました</li>
+                <li>グラフ画面の期間メモ・日メモも同じように折りたためます</li>
+                <li>既定では全部開いています。開き閉じは刀ごとには覚えず、どの刀でも、グラフ画面とあゆみのどちらでも同じ状態になります</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new42">
+          <div class="tl-header" onclick="tlToggle('tl-new42')">
+            <span class="tl-date">2026.08.17</span>
+            <span class="tl-title">稽古録・出陣支度部屋・邂逅録 ― 新しい刀剣男士に対応しました</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">稽古録・出陣支度部屋・邂逅録 ― 新しい刀剣男士に対応しました</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">新しい刀剣男士</div>
+              <ul>
+                <li>狐ヶ崎為次（No.260・太刀・青江）を、稽古録・出陣支度部屋・邂逅録の3つに追加しました。カードの表示や記録、部隊の編成、ドロップの記録にお使いいただけます</li>
+                <li>生存と偵察の最大値はまだ分かっていないため、空欄（未確定）にしてあります。分かりしだい入れます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">稽古録 ― 空きスロットの表示を直しました</div>
+              <ul>
+                <li>極が実装されている5振り（白山吉光・水心子正秀・源清麿・山鳥毛・治金丸）が、絞り込みのしかたによっては「空き」と表示されることがあったのを直しました</li>
+                <li>波平行安と狐ヶ崎為次の極の枠を、空きスロットとして用意しました。これから新しい男士が出たときも、極が実装されるまでのあいだ同じように枠が出ます</li>
+                <li>空きスロットはサイドバーの「空きスロット表示」を入れているときだけ出ます。既定では出ません</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">稽古録 ― そのほかの修正</div>
+              <ul>
+                <li>山鳥毛の極で「現在ステータス」の生存・偵察に正しい数値を入れると、最大値を超えているという誤った警告が出ていたのを直しました。数値の見本も「未確定」と出るようになりました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new41">
+          <div class="tl-header" onclick="tlToggle('tl-new41')">
+            <span class="tl-date">2026.08.16</span>
+            <span class="tl-title">邂逅録 ― 使い方ガイドを作り直しました</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">邂逅録 ― 使い方ガイドを作り直しました</div>
+              <ul>
+                <li>項目ごとに<b>畳める</b>ようになりました。上の「すべて開く」「すべて閉じる」でまとめて切り替えられます</li>
+                <li>説明を足しました。<b>記録を見なおす・直す</b>（「日ごと」と「記録の編集」の使い分け）、<b>期間でしぼりこむ</b>、<b>この条件で書き出す</b>、<b>CSV・Excelでのやりとり</b>、<b>古い記録の自動修復</b>の5つです</li>
+                <li>はじめての方向けに「<b>3ステップ</b>」の項目を置きました。初めて開いたときはこれだけが開いています</li>
+                <li>更新があったときだけ、ヘッダーの「？」がゆっくり光り、記録画面の上に<b>お知らせの帯</b>が1回だけ出ます。帯の「×」を押すと、その更新については二度と出ません</li>
+                <li>案内の外側（暗い部分）を押しても閉じられます。文章を選んでいる途中に指が外に出ても、閉じないようにしました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new40">
+          <div class="tl-header" onclick="tlToggle('tl-new40')">
+            <span class="tl-date">2026.08.16</span>
+            <span class="tl-title">愛蔵の一ノ倉 ― 愛用度の入力欄を直しました</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">愛蔵の一ノ倉 ― 愛用度の入力欄を直しました</div>
+              <ul>
+                <li>宝物の追加・編集で<b>愛用度の欄に触れると、中の数字が選ばれた状態</b>になります。そのまま打てば新しい数字に置きかわります</li>
+                <li>これまでは欄をタップしても元の数字が消えず、打った数字が<b>後ろにくっついて</b>しまい、けた数の上限で切り取られて別の値で保存されることがありました（例：3500 の欄に 4000 と打つと 10000 になる）</li>
+                <li>先頭に余計な「<b>0</b>」が残らないようにしました（05000 → 5000）</li>
+                <li>一度触れたあとにもう一度その欄を押せば、これまでどおり<b>一部だけ直す</b>こともできます</li>
+                <li>日本語入力を使っているときに数字が二重に入ってしまう場合に備えて、変換中の文字を書きかえないようにしました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new38">
+          <div class="tl-header" onclick="tlToggle('tl-new38')">
+            <span class="tl-date">2026.08.15</span>
+            <span class="tl-title">邂逅録 ― 集計に「この条件のまとめ」を追加しました</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">邂逅録 ― 集計に「この条件のまとめ」を追加しました</div>
+              <ul>
+                <li>集計タブの上に「📋 この条件のまとめ」が出ます。<b>総周回数</b>・ドロップがあった回数・記録の件数が並びます</li>
+                <li>「ドロップ無し（空振り）」「目玉なし」として記録した<b>周回数</b>も出ます。その記録がないときは行を出しません</li>
+                <li>10周まとめて空振りとして記録した場合は<b>10周</b>として数えます（ボタンを押した回数ではありません）</li>
+                <li>これまで総周回数は、目玉を指定している場所でしか表示されませんでした。<b>目玉の指定がなくても出る</b>ようになりました</li>
+                <li>期間・場所・ステージのしぼりこみに連動します。マスをしぼりこんでいるときは、総周回数のかわりに案内を出します</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new37">
+          <div class="tl-header" onclick="tlToggle('tl-new37')">
+            <span class="tl-date">2026.08.11</span>
+            <span class="tl-title">邂逅録 ― 対百鬼夜行迎撃作戦に対応しました</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">邂逅録 ― 対百鬼夜行迎撃作戦に対応しました</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">対百鬼夜行迎撃作戦を追加しました</div>
+              <ul>
+                <li>場所の一覧に「対百鬼夜行迎撃作戦」が増えました。記録・集計・書き出しのどれでも選べます</li>
+                <li>迎撃ラインは 高難易度・中難易度・低難易度 の 甲・乙・丙 で9つです。ラインごとに記録して、ラインごとに集計できます</li>
+                <li>マス（ボス・通常）の区別はありません。小判と資源の欄も出ません</li>
+                <li>男士が落ちるのは残党戦のあいだだけ、という昨年と同じ想定で作っています</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">目玉（レアドロップ）の指定</div>
+              <ul>
+                <li>エリア設定タブで、迎撃ラインごとに目玉を指定できます</li>
+                <li>「この指定を 9つの迎撃ライン すべてに入れる」ボタンを足しました。同じ目玉を9回入れ直さずに済みます</li>
+                <li>百鬼夜行には、ここでしか手に入らない男士はいません。目玉を指定しなくても集計は出ますので、追いかけたい男士がいるときの目印としてお使いください</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">周回だけを記録するボタン</div>
+              <ul>
+                <li>「ドロップ無し（空振り）として記録」…何も出なかった周に使います</li>
+                <li>「お迎えしたい男士は出なかった（周回だけ）」…★を付けた男士だけを追いかけている方向けです。ほかの男士が出ていても記録しないとき、周回数だけ数えられます</li>
+                <li>どちらも周回数に数えられます。記録の一覧では「ドロップ無し」「目玉なし」と分けて出ます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">大阪城の階</div>
+              <ul>
+                <li>記録が残っている階は、エリア設定の「記録する階」に入っていなくても選べるようになりました</li>
+                <li>昔の開催で100階まであった頃の記録をお持ちの方が、その階だけを見られます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">表示と取り込み</div>
+              <ul>
+                <li>長い場所名を短く出すようにしました。エリア設定タブの場所ボタンでは「連隊戦～海辺の陣～」が「夏の連隊戦」と出ます</li>
+                <li>CSVの取り込みで、場所の欄に短い呼び名を書いても読み取れるようになりました（「大阪城」「百鬼夜行」など）</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">内側の整理</div>
+              <ul>
+                <li>連隊戦のような「難易度で選ぶイベント」の作りを、共通の形に整理しました。今後イベントが増えるときに、これまでの記録を壊さずに足せます</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new39">
+          <div class="tl-header" onclick="tlToggle('tl-new39')">
+            <span class="tl-date">2026.08.09</span>
+            <span class="tl-title">トップページ ― 道具ごとの副題を追加しました</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">トップページ ― 道具ごとの副題を追加しました</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">道具ごとの副題</div>
+              <ul>
+                <li>資源帳 ― 資源の推移グラフ</li>
+                <li>稽古録 ― レベリング管理</li>
+                <li>愛蔵の一ノ倉 ― 宝物と断片の整理棚</li>
+                <li>出陣支度部屋 ― 部隊編成シミュレータ</li>
+                <li>邂逅録 ― ドロップ率の記録と集計</li>
+                <li>鍛刀録 ― 鍛刀結果の記録・集計</li>
+                <li>集積帳 ― 収集物ノルマ表（もとからあった副題です。置く位置だけ変わりました）</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">並びについて</div>
+              <ul>
+                <li>副題は道具の名前より上に置きました。何をする道具かを先に読んでから、名前を覚えていただけるようにするためです</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">そのほか</div>
+              <ul>
+                <li>「愛蔵の一ノ倉」の使い方についてのアンケートを始めました。トップページのアンケート欄からご協力いただけます（8/31まで）</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new36">
+          <div class="tl-header" onclick="tlToggle('tl-new36')">
+            <span class="tl-date">2026.08.09</span>
+            <span class="tl-title">稽古録 ― 編成した隊での絞り込みと不具合の修正</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">稽古録 ― 編成した隊での絞り込みと不具合の修正</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">編成した隊で絞り込めます</div>
+              <ul>
+                <li>サイドバーの「⚔ 部隊で絞り込み」に「グラフで編成した隊」を追加しました。グラフ画面の部隊タブで組んだ隊を選ぶと、その隊の男士だけがカード一覧に出ます</li>
+                <li>「支度部屋の部隊」と両方選ぶと、どちらにも入っている男士だけになります</li>
+                <li>隊の中身をグラフ画面で変えると、一覧にもそのまま反映されます</li>
+                <li>まだ男士を入れていない隊も選べます。そのときは「この隊にはまだ男士がいません」と出ます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">不具合の修正</div>
+              <ul>
+                <li>部隊タブで、開いている隊より前の隊を削除すると、表示が別の隊にずれてしまうのを直しました。削除の前に、開いていた隊の変更も保存されます</li>
+                <li>Googleドライブ同期で、通信が一瞬とぎれたあと自動での再接続が効かなくなることがあったのを直しました</li>
+                <li>同じく同期で、クラウドのファイルを探せなかったときに「まだ無い」と勘違いして、同じ名前のファイルをもう1つ作ってしまうことがあったのを直しました。同じ名前のファイルが複数あるときは、いちばん新しいものを使います</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">呼び名の整理</div>
+              <ul>
+                <li>画面に出ていた「プリセット」という言い方を「部隊タブ」に揃えました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new35">
+          <div class="tl-header" onclick="tlToggle('tl-new35')">
+            <span class="tl-date">2026.08.06</span>
+            <span class="tl-title">稽古録 ― メモ一覧の見直しと不具合の修正</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">稽古録 ― メモ一覧の見直しと不具合の修正</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">メモの一覧を揃えました</div>
+              <ul>
+                <li>期間メモ・日メモ・この刀のメモの行を、どの画面でも同じ並びにしました。名前や本文が左、日付が右です</li>
+                <li>強調したときの色が、選んでいるテーマに合わせて変わるようになりました。これまでは決まった青紫だったので、和風ライトなどでは色が浮いて見えていました</li>
+                <li>印の大きさと行の間隔も揃えました。「この刀のあゆみ」の一覧が少し詰まっていたのを、グラフ画面と同じにしています</li>
+                <li>「この刀のあゆみ」でも、期間メモが「開催中・予定」と「終了した期間メモ」に分かれ、終了した分をたためるようになりました。開き閉じはグラフ画面と共通です</li>
+                <li>「この刀のあゆみ」の並びを、期間メモ → この刀のメモ → 日メモ に変えました。グラフ画面と同じく期間メモから始まります</li>
+                <li>画面によって「メモ」「全体メモ」と呼び名が違っていたのを「日メモ」に揃えました。道具の他の場所と同じ言い方です</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">日メモの日付の位置を選べます</div>
+              <ul>
+                <li>サイドバーの「表示オプション」に「日メモの日付を左に置く」を追加しました</li>
+                <li>入れると、日メモとこの刀のメモが「日付 → 本文」の並びになり、強調した行の日付が色付きになります</li>
+                <li>何もしなければ「本文 → 日付」の並びで、本文の左はしが期間メモの名前とそろいます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">不具合の修正</div>
+              <ul>
+                <li>記録が1件だけのとき、「この刀のあゆみ」のグラフが真っ白になっていたのを直しました。点が枠の線に隠れてしまい、線も引けない状態でした</li>
+                <li>記録が2件以上あるときも、いちばん左といちばん右の点が半分だけ枠に隠れていました。あわせて直しています</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">読みやすさ</div>
+              <ul>
+                <li>ラベルの「通常・縦書き・なし」が押せないとき、見た目でも押せないと分かるようになりました。ガントとブラケットのときは、この3つは使いません</li>
+                <li>「（帯のときだけ使えます）」の文字が薄すぎたので、読める濃さにしました</li>
+                <li>スマホで、グラフの下のメモが縦に積まれるようになりました。これまでは2列で、期間メモの名前が1文字ほどしか見えないことがありました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  
+    <div class="bulk-bar bulk-bottom">
+      <button onclick="bulkSet('mg-2026-08','st-closed')">すべて閉じる</button>
+      <button onclick="bulkSet('mg-2026-08','st-short')">すべて短文</button>
+      <button onclick="bulkSet('mg-2026-08','st-full')">すべて詳しく</button>
+    </div>
+    </div>
+  </div>
+
+  <div class="month-group m-closed" id="mg-2026-07">
     <div class="month-header" onclick="mToggle('mg-2026-07')">
       <span class="month-label">2026年7月</span>
       <span class="month-line"></span>
-      <span class="month-count">11件</span>
+      <span class="month-count">18件</span>
       <span class="month-arrow">▼</span>
     </div>
     <div class="month-body">
@@ -537,19 +1297,277 @@ footer {
     <div class="cl-panel">
       <div class="timeline">
 
-        <div class="tl-entry st-short" id="tl-new27" data-has-short="1">
-          <div class="tl-header" onclick="tlToggle('tl-new27')">
-            <span class="tl-date">2026.07.21</span>
-            <span class="tl-badge">最新</span>
+        <div class="tl-entry" id="tl-new34">
+          <div class="tl-header" onclick="tlToggle('tl-new34')">
+            <span class="tl-date">2026.07.31</span>
+            <span class="tl-title">集積帳 ― 新しく公開しました</span>
             <span class="tl-arrow">▼</span>
-          </div>
-          <div class="tl-short">
-            <div class="tl-short-inner">稽古録：累積経験値グラフで「レベル → 増加経験値 → 累積経験値」の順に切り替えると、グラフが表示されなくなる不具合を修正しました。</div>
-            <span class="tl-more" onclick="tlMoreOpen(event,'tl-new27')">▼ 詳しく見る</span>
           </div>
           <div class="tl-body">
             <div class="tl-content">
               <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">集積帳 ― 新しく公開しました</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">どんな道具か</div>
+              <ul>
+                <li>連隊戦の貝、江戸城の鍵、御年魂など、期間中に集めていく収集イベントのための道具です</li>
+                <li>ゲーム画面に出ている合計を、そのまま入れるだけで記録できます。前の日との引き算は要りません</li>
+                <li>日ごとに集めた数を棒グラフ、累計を折れ線で重ねて表示します。両方の目盛りを揃えて見比べることもできます</li>
+                <li>終了日を過ぎたイベントは「終了したイベント」としてたたまれます。開けば、あとからでも書き足せます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">目標とノルマ（使いたいときだけ）</div>
+              <ul>
+                <li>目標数を入れると、1日に必要な数と、遅れているときに取り戻すための数が出ます</li>
+                <li>「7月23日の分まで（10日目まで）」のように、どれくらい先取りできているかも表示します</li>
+                <li>途中の報酬をマイルストーンとして登録すると、グラフに線が引かれ、届いたときにお知らせします</li>
+                <li>これらは既定では出ません。イベントごとに切り替えられるので、記録だけの道具としてもお使いいただけます</li>
+                <li>メンテナンスの日を目標の計算に入れるかどうかも、イベントごとに選べます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">保存と持ち出し</div>
+              <ul>
+                <li>Googleドライブと同期できます。読み込む前に、この端末にしかないものが失われないか数えてお尋ねします</li>
+                <li>読み込んだ直後であれば、画面の上に出る帯から取り消せます</li>
+                <li>ファイル（JSON）への書き出し・読み込みもできます</li>
+                <li>自動保存もありますが、既定では止めてあります。設定から入れられます</li>
+                <li>複数の端末でお使いになる場合は、先に片方から保存し、もう片方はそれを読み込んでからお使いください。両方で同じイベントを作ると、名前が同じでも別のものとして扱われます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">そのほか</div>
+              <ul>
+                <li>明るい／暗い／端末に合わせる の3つから見た目を選べます</li>
+                <li>異去のように、いくつかのものを並行して集める場合は、素材ごとのタブに分けて記録できます。タブはつまんで並べ替えられます</li>
+                <li>日付は、ほかの道具と同じカレンダーから選べます。イベントの期間の外は押せないようにしてあります</li>
+                <li>説明書は準備中です。しばらくお待ちください</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new33">
+          <div class="tl-header" onclick="tlToggle('tl-new33')">
+            <span class="tl-date">2026.07.27</span>
+            <span class="tl-title">資源帳 ― 覚え書きと設定の整理</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">資源帳 ― 覚え書きと設定の整理</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">「覚え書き」タブができました</div>
+              <ul>
+                <li>タイトルと内容を書いて残せます。改行のある長い文章も書けます</li>
+                <li>日付に縛られないので、「小判周回のやりかた」のような、いつでも引き出したい内容を置いておけます</li>
+                <li>「期間・日別メモ」はグラフに重ねる注釈です。覚え書きはグラフには出ません。役割が違うので別のタブにしました</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">タグと検索で探せます</div>
+              <ul>
+                <li>木炭・玉鋼など9種類の資源タグを、1件にいくつでも付けられます</li>
+                <li>自分で決めた言葉のタグも付けられます（20文字まで）。前に使ったタグはワンタップで選べるので、言い方がばらつきません</li>
+                <li>タイトル・内容・タグの文字から検索できます</li>
+                <li>「資源で探す」と「タグで探す」を組み合わせると、その両方に当てはまるものだけが残ります。同じ欄の中で複数選んだときは、どれかに当てはまるものが出ます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">よく見返すものは上に固定できます</div>
+              <ul>
+                <li>星印を押すとピン留めされ、一覧の一番上に並びます。もう一度押すと外れます</li>
+                <li>ピン留め以外は、新しく書いたもの・直したものから順に並びます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">保存と持ち出し</div>
+              <ul>
+                <li>JSONの書き出し・読み込みに覚え書きも含まれます</li>
+                <li>Googleドライブの同期にも含まれます。複数の端末でお使いの場合は、あとから直したほうが残ります</li>
+                <li>CSVとExcelは数字の表なので、覚え書きは含みません</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">設定を整理しました</div>
+              <ul>
+                <li>設定の並びを、意味の近いものが隣り合うように変えました。見た目 → グラフ → データ → 案内 → リセット → バージョン、の順です</li>
+                <li>「期間メモの表示スタイル」の選択肢が「帯（現在）」となっていたのを「帯」に直しました。ほかの見せ方に切り替えても表示が「帯（現在）」のままで、実際と食い違っていたためです</li>
+                <li>見出し「資源入力」を「同じ日付の上書き」に変えました。何の設定か、見出しだけで分かるようにするためです</li>
+                <li>お札グラフは、お札の記録が1件も無いあいだ自動で隠れるようになりました。お札を記録していない方の画面に、空のグラフが出ていたためです。1件でも記録すると出てきます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">そのほか</div>
+              <ul>
+                <li>資源帳から稽古録へ移動するボタンの名前が「稽古禄」と誤っていたので直しました</li>
+                <li>期間メモの色見本で、いま選んでいる色に枠が付くようになりました。どれを選んでいるか見分けがつきにくかったためです</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new32">
+          <div class="tl-header" onclick="tlToggle('tl-new32')">
+            <span class="tl-date">2026.07.26</span>
+            <span class="tl-title">出陣支度部屋 ― Googleドライブ同期の作り直し</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">出陣支度部屋 ― Googleドライブ同期の作り直し</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">ログインしても勝手に読み込まなくなりました</div>
+              <ul>
+                <li>これまでは「Googleでログイン」を押した時点でクラウドのデータが読み込まれ、この端末の変更が上書きされていました</li>
+                <li>これからは、この端末とクラウドのどちらが新しいかを確かめたうえで、読み込むかどうかをお尋ねします</li>
+                <li>「⬇ 読み込む」にも確認を追加しました。押し間違いで編成が消えることがなくなります</li>
+                <li>「⬆ 保存する」は、クラウド側のほうが新しいときに警告を出すようにしました</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">編成や装備が減って見える場合</div>
+              <ul>
+                <li>複数の端末をお使いの方で、別の端末のデータによって編成や装備が減って見えることがありました。どちらが新しいかの判定に誤りがあったためです</li>
+                <li>編成が残っているほうの端末で開いてください。「クラウドの編成が空のようです」という確認が出るので、「クラウドへ保存する」を押すと元に戻ります</li>
+                <li>各端末に保存されているデータそのものは消えていません</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">ログインまわりの不具合も直しました</div>
+              <ul>
+                <li>ページを開いた直後にログインを押すと、1回目が反応しないことがありました。Googleの読み込みを待ってから実行するようにして解消しています</li>
+                <li>通信の途中で接続の期限が切れたとき、これまではログアウト扱いになっていました。今後は自動でつなぎ直し、それでも駄目なときは「⚠ 再接続」と表示します。この端末のデータはそのまま残ります</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new31">
+          <div class="tl-header" onclick="tlToggle('tl-new31')">
+            <span class="tl-date">2026.07.26</span>
+            <span class="tl-title">出陣支度部屋 ― 部隊タブと編成の欄の見直し</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">出陣支度部屋 ― 部隊タブと編成の欄の見直し</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">部隊タブ</div>
+              <ul>
+                <li>選んでいるタブの大きさが変わらなくなりました。どのタブも同じ形で並ぶので、目で追いやすくなっています</li>
+                <li>改名と削除は、タブの下の操作欄にまとめました</li>
+                <li>⠿ をつまんで並べ替えるとき、タブが細かく震えることがあった問題を直しました</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">並び順を変える ◀▶ ボタン</div>
+              <ul>
+                <li>既定では表示しなくなりました。⠿ をつまんで動かす方法があるためです</li>
+                <li>これまでどおり ◀▶ を使いたい場合は、設定の「操作」から表示できます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">パソコンの画面</div>
+              <ul>
+                <li>「編成中の部隊」の欄を広げました。部隊の中身と合計値が見やすくなっています</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new30">
+          <div class="tl-header" onclick="tlToggle('tl-new30')">
+            <span class="tl-date">2026.07.23</span>
+            <span class="tl-title">出陣支度部屋 ― 設定画面の整理</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">出陣支度部屋 ― 設定画面の整理</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">5つのグループにまとめました</div>
+              <ul>
+                <li>18個あった設定を「データ」「見た目」「操作」「スマホ表示」「詳しい設定」の5つに分けました</li>
+                <li>それぞれ折りたたんでおけるようになりました。たたんだ見出しには、今どうなっているかがひとこと表示されます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">説明文を書き直しました</div>
+              <ul>
+                <li>選択肢は「選ぶとどうなるか」が分かるように、すべて書き直しました</li>
+                <li>「このアプリで管理」を選んだときは、初/極の状態やステータスの実数値も直接入力できることを説明に加えました</li>
+                <li>設定パネルの幅を広げ、文字も少し大きくして読みやすくしました</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">午年号の並び順</div>
+              <ul>
+                <li>午年号は既定ではゲームと同じくいちばん最後に表示されますが、設定で望月などの近くに表示することもできます。この案内を馬の一覧にも表示するようにしました</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new29">
+          <div class="tl-header" onclick="tlToggle('tl-new29')">
+            <span class="tl-date">2026.07.23</span>
+            <span class="tl-title">出陣支度部屋 ― 並べ替えと確認画面の見直し</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">出陣支度部屋 ― 並べ替えと確認画面の見直し</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">部隊タブの並べ替え</div>
+              <ul>
+                <li>部隊タブの左端に ⠿ が付きました。ここをつまんで動かすと、部隊の並び順を変えられます</li>
+                <li>スマホでは ⠿ からだけ動くようにしてあるので、うっかり動いてしまう心配はありません。パソコンではタブのどこからでもつまめます</li>
+                <li>並べ替えたあとに「元に戻す」が数秒表示されるので、間違えてもすぐ戻せます</li>
+                <li>これまでの ◀▶ ボタンもそのまま使えます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">確認画面を作り直しました</div>
+              <ul>
+                <li>「削除しますか？」などの確認を、ブラウザ任せではなく支度部屋の中で表示するようにしました。一部のブラウザ（特にスマホ）では確認画面が出ず、削除やリセットを押しても何も起きないことがあったためです</li>
+                <li>ボタンに「削除する」「リセットする」のように何が起きるかを書くようにしました</li>
+                <li>部隊を削除するときは、部隊名を表示するようにしました</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">お知らせの出し方</div>
+              <ul>
+                <li>「部隊は6振りまでです」などのお知らせが、警告窓ではなく画面下の帯で表示されるようになりました</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">設定の説明を分かりやすく</div>
+              <ul>
+                <li>設定「ステータスの詳細画面」の説明を書き直しました。選んだときに何が起きるかが分かるようにしています</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new28">
+          <div class="tl-header" onclick="tlToggle('tl-new28')">
+            <span class="tl-date">2026.07.22</span>
+            <span class="tl-title">出陣支度部屋 ― 見やすさの改善</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
+              <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+              <div class="app-label">出陣支度部屋 ― 見やすさの改善</div>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">男士リスト</div>
+              <ul>
+                <li>ステータスの表示を整理しました。項目名を控えめにして、並び替えに使っている項目だけを大きく表示します。数字が並びすぎて見づらい、という状態を解消しました</li>
+                <li>男士リストと部隊の列を色分けし、それぞれに見出しを付けました</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">部隊タブ</div>
+              <ul>
+                <li>編成名の文字を大きくし、選んでいないタブの文字も読みやすい濃さにしました。名前を変更するときの入力欄も、同じ大きさに揃えています</li>
+                <li>編集・削除のボタンを、押せると分かる見た目に変更しました。削除は赤で表示します</li>
+                <li>タブの操作は「⋯」ボタンにまとめました。押すと「改名」「削除」が出ます。削除を誤って押してしまうことがなくなります</li>
+                <li>この形では、選んでいないタブに × は表示されません。ほかの部隊を削除するときは、一度そのタブを選んでから「⋯ → 削除」を押してください</li>
+                <li>従来どおり編集・× を常に表示する形も、設定から選べます</li>
+                <li>並び順を変える ◀▶ ボタンは、これまでどおりです</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">閾値チェック（PC）</div>
+              <ul>
+                <li>折りたためるようになりました。見出しをクリックで開閉します</li>
+                <li>畳んでいるときも、見出しに ✓（達成）／△（一部達成）／✕（未達）の件数が表示されるので、判定はひと目で分かります</li>
+                <li>開閉の状態は次回も引き継がれます</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">スマホ表示</div>
+              <ul>
+                <li>並び替えのボタンが場所を取っていたため、「並替」「絞込」「表示」の3つのボタンにまとめました。押すと下から出るシートで選べます（シートの名前も「絞込・並替」に変わりました）</li>
+                <li>現在の並び順・絞り込み・表示ステータス（素／乱舞込み／実力）が、ボタンの上に常に表示されます</li>
+                <li>一覧を下にスクロールすると上部が隠れ、上に戻すと再び表示されます。一覧を見られる範囲が広くなりました</li>
+              </ul>
+              <div class="app-label" style="font-size:12px;color:#8b1a1a;margin-top:6px;">設定</div>
+              <ul>
+                <li>設定に「見やすさ（表示デザイン）」と「スマホ表示（画面を広く使う）」を追加しました。それぞれ従来の表示に戻せます</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" id="tl-new27">
+          <div class="tl-header" onclick="tlToggle('tl-new27')">
+            <span class="tl-date">2026.07.21</span>
+            <span class="tl-title">稽古録</span>
+            <span class="tl-arrow">▼</span>
+          </div>
+          <div class="tl-body">
+            <div class="tl-content">
               <div class="app-label">稽古録</div>
               <ul>
                 <li>累積経験値とレベルを表示しているグラフで、「レベル → 増加経験値 → 累積経験値」の順に表示を切り替えると、選択中の刀剣男士の累積経験値グラフがすべて非表示になる不具合を修正しました</li>
@@ -562,6 +1580,7 @@ footer {
         <div class="tl-entry" id="tl-new26">
           <div class="tl-header" onclick="tlToggle('tl-new26')">
             <span class="tl-date">2026.07.20</span>
+            <span class="tl-title">稽古録・出陣支度部屋・更新履歴ページ</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -589,6 +1608,7 @@ footer {
         <div class="tl-entry" id="tl-new25">
           <div class="tl-header" onclick="tlToggle('tl-new25')">
             <span class="tl-date">2026.07.19</span>
+            <span class="tl-title">稽古録・トップページ</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -610,6 +1630,7 @@ footer {
         <div class="tl-entry" id="tl-new24">
           <div class="tl-header" onclick="tlToggle('tl-new24')">
             <span class="tl-date">2026.07.18</span>
+            <span class="tl-title">邂逅録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -640,6 +1661,7 @@ footer {
         <div class="tl-entry" id="tl-new23">
           <div class="tl-header" onclick="tlToggle('tl-new23')">
             <span class="tl-date">2026.07.13</span>
+            <span class="tl-title">出陣支度部屋・稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -665,6 +1687,7 @@ footer {
         <div class="tl-entry" id="tl-new22">
           <div class="tl-header" onclick="tlToggle('tl-new22')">
             <span class="tl-date">2026.07.12</span>
+            <span class="tl-title">稽古録・出陣支度部屋</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -689,6 +1712,7 @@ footer {
         <div class="tl-entry" id="tl-new21">
           <div class="tl-header" onclick="tlToggle('tl-new21')">
             <span class="tl-date">2026.07.10</span>
+            <span class="tl-title">資源帳・稽古録・愛蔵の一ノ倉・サイト全体</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -709,6 +1733,7 @@ footer {
         <div class="tl-entry" id="tl-new20">
           <div class="tl-header" onclick="tlToggle('tl-new20')">
             <span class="tl-date">2026.07.09</span>
+            <span class="tl-title">資源帳・お返事ページ</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -728,6 +1753,7 @@ footer {
         <div class="tl-entry" id="tl-new19">
           <div class="tl-header" onclick="tlToggle('tl-new19')">
             <span class="tl-date">2026.07.08</span>
+            <span class="tl-title">邂逅録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -748,6 +1774,7 @@ footer {
         <div class="tl-entry" id="tl-new18">
           <div class="tl-header" onclick="tlToggle('tl-new18')">
             <span class="tl-date">2026.07.07</span>
+            <span class="tl-title">邂逅録・審神者の道具箱（トップページ）・お返事ページ</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -785,6 +1812,7 @@ footer {
         <div class="tl-entry" id="tl-new17">
           <div class="tl-header" onclick="tlToggle('tl-new17')">
             <span class="tl-date">2026.07.05</span>
+            <span class="tl-title">稽古録・邂逅録・資源帳</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -844,6 +1872,7 @@ footer {
         <div class="tl-entry" id="tl-new16">
           <div class="tl-header" onclick="tlToggle('tl-new16')">
             <span class="tl-date">2026.06.30</span>
+            <span class="tl-title">邂逅録・資源帳・稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -867,6 +1896,7 @@ footer {
         <div class="tl-entry" id="tl-new15">
           <div class="tl-header" onclick="tlToggle('tl-new15')">
             <span class="tl-date">2026.06.28</span>
+            <span class="tl-title">邂逅録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -885,6 +1915,7 @@ footer {
         <div class="tl-entry" id="tl-new14">
           <div class="tl-header" onclick="tlToggle('tl-new14')">
             <span class="tl-date">2026.06.27</span>
+            <span class="tl-title">邂逅録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -907,6 +1938,7 @@ footer {
         <div class="tl-entry" id="tl-new13">
           <div class="tl-header" onclick="tlToggle('tl-new13')">
             <span class="tl-date">2026.06.25</span>
+            <span class="tl-title">資源帳・稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -928,6 +1960,7 @@ footer {
         <div class="tl-entry" id="tl-new12">
           <div class="tl-header" onclick="tlToggle('tl-new12')">
             <span class="tl-date">2026.06.16</span>
+            <span class="tl-title">邂逅録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -947,6 +1980,7 @@ footer {
         <div class="tl-entry" id="tl-new11">
           <div class="tl-header" onclick="tlToggle('tl-new11')">
             <span class="tl-date">2026.06.15</span>
+            <span class="tl-title">出陣支度部屋</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -967,6 +2001,7 @@ footer {
         <div class="tl-entry" id="tl-new10">
           <div class="tl-header" onclick="tlToggle('tl-new10')">
             <span class="tl-date">2026.06.14</span>
+            <span class="tl-title">邂逅録・サイト全体</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -993,6 +2028,7 @@ footer {
         <div class="tl-entry" id="tl-new9">
           <div class="tl-header" onclick="tlToggle('tl-new9')">
             <span class="tl-date">2026.06.13</span>
+            <span class="tl-title">邂逅録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1016,6 +2052,7 @@ footer {
         <div class="tl-entry" id="tl-new8">
           <div class="tl-header" onclick="tlToggle('tl-new8')">
             <span class="tl-date">2026.06.12</span>
+            <span class="tl-title">邂逅録・資源帳・稽古録・出陣支度部屋・愛蔵の一ノ倉</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1100,6 +2137,7 @@ footer {
         <div class="tl-entry" id="tl-new7">
           <div class="tl-header" onclick="tlToggle('tl-new7')">
             <span class="tl-date">2026.05.31</span>
+            <span class="tl-title">稽古録・出陣支度部屋・愛蔵の一ノ倉</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1128,6 +2166,7 @@ footer {
         <div class="tl-entry" id="tl-new6">
           <div class="tl-header" onclick="tlToggle('tl-new6')">
             <span class="tl-date">2026.05.30</span>
+            <span class="tl-title">サイト</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1144,6 +2183,7 @@ footer {
         <div class="tl-entry" id="tl-new5">
           <div class="tl-header" onclick="tlToggle('tl-new5')">
             <span class="tl-date">2026.05.29</span>
+            <span class="tl-title">稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1162,6 +2202,7 @@ footer {
         <div class="tl-entry" id="tl-new4">
           <div class="tl-header" onclick="tlToggle('tl-new4')">
             <span class="tl-date">2026.05.28</span>
+            <span class="tl-title">稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1179,6 +2220,7 @@ footer {
         <div class="tl-entry" id="tl-new3">
           <div class="tl-header" onclick="tlToggle('tl-new3')">
             <span class="tl-date">2026.05.27</span>
+            <span class="tl-title">稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1202,6 +2244,7 @@ footer {
         <div class="tl-entry" id="tl-new2">
           <div class="tl-header" onclick="tlToggle('tl-new2')">
             <span class="tl-date">2026.05.25</span>
+            <span class="tl-title">稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1221,6 +2264,7 @@ footer {
         <div class="tl-entry" id="tl-new">
           <div class="tl-header" onclick="tlToggle('tl-new')">
             <span class="tl-date">2026.05.24</span>
+            <span class="tl-title">資源帳・稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1243,6 +2287,7 @@ footer {
         <div class="tl-entry" id="tl-0">
           <div class="tl-header" onclick="tlToggle('tl-0')">
             <span class="tl-date">2026.05.19</span>
+            <span class="tl-title">稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1258,6 +2303,7 @@ footer {
         <div class="tl-entry" id="tl-1">
           <div class="tl-header" onclick="tlToggle('tl-1')">
             <span class="tl-date">2026.05.18</span>
+            <span class="tl-title">資源帳・稽古録・サイト</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1278,6 +2324,7 @@ footer {
         <div class="tl-entry" id="tl-2">
           <div class="tl-header" onclick="tlToggle('tl-2')">
             <span class="tl-date">2026.05.17</span>
+            <span class="tl-title">稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1296,6 +2343,7 @@ footer {
         <div class="tl-entry" id="tl-3">
           <div class="tl-header" onclick="tlToggle('tl-3')">
             <span class="tl-date">2026.05.13</span>
+            <span class="tl-title">資源帳・稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1311,6 +2359,7 @@ footer {
         <div class="tl-entry" id="tl-4">
           <div class="tl-header" onclick="tlToggle('tl-4')">
             <span class="tl-date">2026.05.12</span>
+            <span class="tl-title">資源帳</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1327,6 +2376,7 @@ footer {
         <div class="tl-entry" id="tl-5">
           <div class="tl-header" onclick="tlToggle('tl-5')">
             <span class="tl-date">2026.05.11</span>
+            <span class="tl-title">資源帳・稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1342,6 +2392,7 @@ footer {
         <div class="tl-entry" id="tl-6">
           <div class="tl-header" onclick="tlToggle('tl-6')">
             <span class="tl-date">2026.05.10</span>
+            <span class="tl-title">稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1359,6 +2410,7 @@ footer {
         <div class="tl-entry" id="tl-7">
           <div class="tl-header" onclick="tlToggle('tl-7')">
             <span class="tl-date">2026.05.07</span>
+            <span class="tl-title">稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1374,6 +2426,7 @@ footer {
         <div class="tl-entry" id="tl-8">
           <div class="tl-header" onclick="tlToggle('tl-8')">
             <span class="tl-date">2026.05.06</span>
+            <span class="tl-title">資源帳・稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1399,6 +2452,7 @@ footer {
         <div class="tl-entry" id="tl-9">
           <div class="tl-header" onclick="tlToggle('tl-9')">
             <span class="tl-date">2026.05.05</span>
+            <span class="tl-title">資源帳</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1415,6 +2469,7 @@ footer {
         <div class="tl-entry" id="tl-10">
           <div class="tl-header" onclick="tlToggle('tl-10')">
             <span class="tl-date">2026.05.02</span>
+            <span class="tl-title">稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1459,6 +2514,7 @@ footer {
         <div class="tl-entry" id="tl-11">
           <div class="tl-header" onclick="tlToggle('tl-11')">
             <span class="tl-date">2026.04.30</span>
+            <span class="tl-title">資源帳</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1482,6 +2538,7 @@ footer {
         <div class="tl-entry" id="tl-12">
           <div class="tl-header" onclick="tlToggle('tl-12')">
             <span class="tl-date">2026.04.26</span>
+            <span class="tl-title">資源帳</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1499,6 +2556,7 @@ footer {
         <div class="tl-entry" id="tl-13">
           <div class="tl-header" onclick="tlToggle('tl-13')">
             <span class="tl-date">2026.04.25</span>
+            <span class="tl-title">資源帳・稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1522,6 +2580,7 @@ footer {
         <div class="tl-entry" id="tl-14">
           <div class="tl-header" onclick="tlToggle('tl-14')">
             <span class="tl-date">2026.04.24</span>
+            <span class="tl-title">資源帳</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1541,6 +2600,7 @@ footer {
         <div class="tl-entry" id="tl-15">
           <div class="tl-header" onclick="tlToggle('tl-15')">
             <span class="tl-date">2026.04.23</span>
+            <span class="tl-title">資源帳・サイト</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1563,6 +2623,7 @@ footer {
         <div class="tl-entry" id="tl-16">
           <div class="tl-header" onclick="tlToggle('tl-16')">
             <span class="tl-date">2026.04.22</span>
+            <span class="tl-title">サイト・資源帳・稽古録</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1579,6 +2640,7 @@ footer {
         <div class="tl-entry" id="tl-17">
           <div class="tl-header" onclick="tlToggle('tl-17')">
             <span class="tl-date">2026.04.21</span>
+            <span class="tl-title">稽古録・サイト</span>
             <span class="tl-arrow">▼</span>
           </div>
           <div class="tl-body">
@@ -1609,7 +2671,7 @@ footer {
 </div>
 
 <footer>
-  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari hatano
+  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari shizukuishi<br><a href="privacy.html">プライバシーポリシー</a>
 </footer>
 </div>
 

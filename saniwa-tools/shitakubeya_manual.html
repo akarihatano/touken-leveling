@@ -7,6 +7,14 @@
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- アクセス解析の停止設定を読む（プライバシーポリシーのボタンで切り替えます） -->
+<script>
+try {
+  if (localStorage.getItem('saniwa_ga_optout') === '1') {
+    window['ga-disable-G-QM317D9ESN'] = true;
+  }
+} catch (e) {}
+</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
 <script>
@@ -394,6 +402,8 @@ footer {
   font-size: 11px; color: var(--footer-tx); letter-spacing: .15em;
   font-family: 'Noto Sans JP', sans-serif; background: var(--footer-bg);
 }
+footer a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+footer a:hover { opacity: .75; }
 
 /* ── トップへ戻るボタン ── */
 .scroll-top {
@@ -603,9 +613,10 @@ footer {
     <div class="text">複数の部隊を登録して切り替えられます。タブの操作はPC・スマホとも共通です。</div>
     <ul class="list" style="margin-top:8px">
       <li>タブ右端の <span class="key">＋</span> で新しい部隊を追加</li>
-      <li>タブの <span class="key">✏</span> をクリック（タップ）して部隊名を変更</li>
-      <li><span class="key">◀</span> <span class="key">▶</span> で部隊の表示順を変更</li>
-      <li><span class="key">×</span> で部隊を削除（最後の1部隊は削除できません）</li>
+      <li>選択中のタブの <span class="key">⋯</span> メニューから部隊名を変更・削除</li>
+      <li>タブの <span class="key">⠿</span> をつまんで部隊の表示順を変更</li>
+      <li>設定で「個別ボタン」を選ぶと、<span class="key">✏</span>・<span class="key">◀</span>・<span class="key">▶</span>・<span class="key">×</span> を常時表示</li>
+      <li>部隊の削除は、どちらの操作方法でも最後の1部隊だけは削除できません</li>
     </ul>
   </div>
 
@@ -650,6 +661,7 @@ footer {
     <div class="label">部隊の一括操作</div>
     <div class="text">右カラム（PC）または ≡ 部隊メニュー（スマホ）から以下の操作が行えます。</div>
     <ul class="list" style="margin-top:8px">
+      <li><em>📖 この部隊を稽古録で開く</em>：現在の部隊だけに絞り込んだ稽古録を新しいタブで開く（稽古録連携モードのみ）</li>
       <li><em>📋 全員の通常装備を取り込む</em>：全員の通常装備を一括でこの部隊の出陣装備にコピー</li>
       <li><em>🗑 全員の装備を外す</em>：全員の出陣装備記録を一括解除</li>
       <li><em>↺ 部隊をリセット</em>：この部隊のスロットを全て空にする</li>
@@ -846,6 +858,7 @@ footer {
     <div class="text">編成見出し右端の <span class="key">≡</span> ボタンで右スライドのメニューが開きます。以下の操作ができます。</div>
     <ul class="list" style="margin-top:8px">
       <li>稽古録と同期（稽古録連携モードのみ）</li>
+      <li>この部隊を稽古録で開く（稽古録連携モードのみ）</li>
       <li>全員の通常装備を取り込む / 全員の装備を外す</li>
       <li>部隊をリセット</li>
       <li>▸ 部隊合計（タップして展開）</li>
@@ -948,7 +961,7 @@ footer {
 </div><!-- /wrapper -->
 </div><!-- /bg -->
 
-<footer>審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari hatano</footer>
+<footer>審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari shizukuishi<br><a href="privacy.html">プライバシーポリシー</a></footer>
 
 <a href="#top" class="scroll-top" id="scroll-top" title="トップへ戻る">▲</a>
 

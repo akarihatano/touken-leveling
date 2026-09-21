@@ -93,15 +93,22 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: var(-
 .layout {
   position: relative; z-index: 1;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-template-areas:
-    "apps info"
-    "contacts contacts";
+    "header"
+    "apps"
+    "sp-update"
+    "sp-changelog"
+    "info"
+    "contacts";
+  max-width: 960px;
+  margin: 0 auto;
   min-height: 100vh;
 }
 
 /* 左カラム */
-.col-left { grid-area: apps; padding: 44px 28px 44px 44px; display: flex; flex-direction: column; gap: 22px; }
+.site-head { grid-area: header; padding: 44px 44px 22px; display: flex; flex-direction: column; gap: 22px; }
+.col-left { grid-area: apps; padding: 0 44px 24px; display: flex; flex-direction: column; gap: 22px; }
 
 .site-title {
   display: inline-block;
@@ -117,7 +124,8 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: var(-
 /* ツール2列グリッド */
 .tool-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* 幅に応じて 1→2→3列 と自動で変わる。区切り幅を増やさずに済む */
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 18px;
   align-items: stretch; /* 同じ行のカードは同じ高さ */
 }
@@ -150,6 +158,96 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: var(-
 }
 .tool-card--coming .card-title,
 .tool-card--coming .card-desc { color: rgba(74,48,32,.55); }
+
+/* ============================================================
+   ツールカード上部のプレビュー帯
+   ・images/card_〇〇.png を置くと、そのカードだけ自動で帯が出ます。
+   ・画像が無いカードは帯を出さず、従来どおり猫アイコン付きの
+     横並びレイアウトのまま（bandFallback() が自動で戻します）。
+   ・帯の厚みは下の --band-ratio（横：縦の比率）だけで調整できます。
+     数字を小さくすると帯が厚く、大きくすると薄くなります。
+   ============================================================ */
+:root { --band-ratio: 3.5; }
+
+.card-band {
+  width: 100%;
+  aspect-ratio: var(--band-ratio) / 1;
+  position: relative;   /* 猫アイコンの位置基準 */
+  overflow: visible;    /* 猫が帯の下へはみ出せるように（画像は object-fit で切り出し済み） */
+  background: rgba(240,232,216,.9);
+  border-bottom: 1px solid rgba(160,100,60,.22);
+  flex-shrink: 0;
+}
+.card-band img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: top center;
+  display: block;
+}
+/* 帯ありカードは「上に帯／下に本文」の縦並びに切り替える */
+.tool-card--band {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  overflow: hidden; /* 帯の上端をカードの角丸に合わせる */
+}
+.tool-card--band .card-body { padding: 18px 20px 18px 20px; min-height: 0; }
+
+/* ------------------------------------------------------------
+   猫アイコンの置き場所
+   ・帯があるカード … 帯の右下に置く。カードに cat-a / cat-b を付けて選ぶ
+       cat-a … 帯の中にすっぽり収める（絵を隠しにくい）
+       cat-b … 帯と本文の境目にまたがらせる（縁に座っているように見える）
+     大きさ・位置は帯の高さに対する％なので、画面幅が変わっても比率は崩れません。
+   ・帯がないカード … カードの右上に置く。本文は横幅いっぱいになります
+   ・準備中（？？？）カードは対象外。今までどおり
+
+   ★ 猫1匹ずつの微調整
+     猫の絵は縦横比がばらばらです。高さだけをそろえても「猫そのものの
+     大きさ」はそろいません（横に長い猫ほど大きく見えます）。
+     そこで大きさと位置を、次の2つの変数で持たせています。
+
+       --cat-h … 帯の高さに対する猫の高さ。小さくすると猫が縮みます
+       --cat-y … 帯の下端からの位置。マイナスで下へ潜ります
+
+     既定は下の cat-a / cat-b が入れます。1匹だけ変えたいときは、
+     そのカードの div に style を足してください。書くのはこれだけです：
+
+       style="--cat-h: 55%; --cat-y: -18%;"
+
+     目安：潜る深さ（--cat-y）は、猫の高さ（--cat-h）のおよそ3分の1です。
+     大きさを変えたら、こちらも同じ割合で直すと他の猫と並びがそろいます。
+   ------------------------------------------------------------ */
+/* 既定値。カード側の style で上書きすると、その猫だけ変わります */
+.tool-card--band.cat-a { --cat-h: 62%; --cat-y:  10%; }
+.tool-card--band.cat-b { --cat-h: 80%; --cat-y: -26%; }
+
+.tool-card--band .cat-area {
+  display: block;
+  position: absolute;
+  right: 10px;
+  width: auto;
+  height: var(--cat-h);
+  bottom: var(--cat-y);
+  z-index: 2;
+  pointer-events: none; /* カード全体のクリック判定を邪魔しない */
+}
+.tool-card--band .cat-area img { height: 100%; width: auto; display: block; }
+
+/* 帯がまだ無いカード（画像未設置・フォールバック時） */
+.tool-card:not(.tool-card--band):not(.tool-card--coming) {
+  padding-left: 20px;
+}
+.tool-card:not(.tool-card--band):not(.tool-card--coming) .cat-area {
+  position: absolute;
+  top: 10px; right: 14px;
+  width: auto; height: 44px;
+  z-index: 2;
+  pointer-events: none;
+}
+.tool-card:not(.tool-card--band):not(.tool-card--coming) .cat-area img {
+  height: 100%; width: auto; display: block;
+}
 
 .cat-area { flex-shrink: 0; width: 64px; display: flex; align-items: center; justify-content: center; }
 .cat-area img { width: 64px; height: auto; }
@@ -208,6 +306,37 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: var(-
   white-space: nowrap;
 }
 
+/* 「試験公開」バッジ（α版などのツールカード見出しに付ける小さな印） */
+/* カードタイトルの副題（ツール名に「― ○○ ―」が付くもの用）。
+   名前の下に置きます。14px なら画面819px以上で1行に収まります
+   （2列レイアウトの下限は681px）。もっと目立たせたいときは
+   font-size を上げてください。16px＝画面900px以上、18px＝982px以上で1行。
+   太さは 400・600・700 の3つだけ使えます（読み込んでいるのがこの3つ。
+   500 と指定しても400に落ちて変わりません）。タイトルが700です */
+.card-subtitle {
+  /* 副題は名前の「上」に置きます（HTMLで card-title の先頭に書く）。
+     display:block なので、それだけで1行目に来ます。
+     何をする道具かを先に読ませて、そのあと名前を覚えてもらう並びです。 */
+  display: block;
+  font-size: 14px; font-weight: 600;
+  letter-spacing: .06em;
+  color: rgba(74,48,32,.85);
+  margin-bottom: 6px;
+}
+.card-badge-alpha {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 10px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 10.5px; font-weight: 500; letter-spacing: .06em;
+  color: #8b4513;
+  background: rgba(139,69,19,.10);
+  border: 1px solid rgba(139,69,19,.35);
+  border-radius: 999px;
+  padding: 2px 9px;
+  white-space: nowrap;
+}
+
 /* スマホ専用コンパクト更新バー */
 .sp-update-bar { display: none; grid-area: sp-update; margin: 0 20px 4px; }
 .sp-update-toggle {
@@ -238,7 +367,7 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: var(-
 .sp-update-body.is-open { max-height: 3000px; opacity: 1; padding: 10px 14px 12px; }
 
 /* 右カラム */
-.col-right { grid-area: info; padding: 36px 44px 24px 24px; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
+.col-right { grid-area: info; padding: 0 44px 24px; display: flex; flex-direction: column; gap: 14px; }
 
 .info-panel {
   background: var(--rp-bg);
@@ -460,6 +589,20 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: var(-
   color: var(--rp-accent2);
   font-family: 'Noto Sans JP', sans-serif;
   font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+/* 見出しに更新の内容を出す（閉じたままでも中身が分かるように） */
+.tl-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--rp-text);
+  font-family: 'Noto Sans JP', sans-serif;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* 最新バッジ */
@@ -472,6 +615,7 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: var(-
   border-radius: 3px;
   padding: 2px 6px;
   font-family: 'Noto Sans JP', sans-serif;
+  flex-shrink: 0;
 }
 
 /* 矢印 */
@@ -480,6 +624,8 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: var(-
   font-size: 10px;
   color: var(--rp-accent-soft);
   transition: transform .25s;
+  flex-shrink: 0;
+  padding-left: 4px;
 }
 .tl-entry.st-short .tl-arrow { transform: rotate(90deg); }
 .tl-entry.st-full .tl-arrow { transform: rotate(180deg); }
@@ -697,7 +843,7 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: var(-
   padding-bottom: 1px;
 }
 
-/* アンケートカード（SURVEY_URL 設定時のみ表示・PC/SPの2箇所） */
+/* アンケートカード（SURVEYS の url 設定時のみ表示・PC/SPの2箇所） */
 .survey-card {
   display: none;
   align-items: center; gap: 14px;
@@ -804,6 +950,9 @@ footer {
   font-size: 11px; color: var(--footer-tx); letter-spacing: .15em;
   font-family: 'Noto Sans JP', sans-serif; background: var(--footer-bg);
 }
+.info-note a, .info-text a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+footer a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+footer a:hover { opacity: .75; }
 
 /* テーマ切り替えボタン（reply 等と同じしくみ） */
 .theme-bar { display: flex; gap: 10px; margin-bottom: 4px; }
@@ -816,17 +965,28 @@ footer {
 }
 .theme-btn:hover { background: var(--tb-hover); }
 
-@media (max-width: 680px) {
+/* ═══ 広い画面：説明書と更新履歴を右側へ ═══════════════
+   1600px以上でだけ2カラムに戻す。仮の値なので、GA4の結果で
+   発動幅（1600px）と左右の比（3fr 2fr）は入れ替えられる。
+   これより狭い画面は1カラムのまま、何も変わらない。 */
+@media (min-width: 1600px) {
   .layout {
-    grid-template-columns: 1fr;
+    max-width: 1600px;
+    grid-template-columns: 3fr 2fr;
     grid-template-areas:
-      "apps"
-      "sp-update"
-      "sp-changelog"
-      "info"
-      "contacts";
+      "header header"
+      "apps   info"
+      "contacts contacts";
   }
-  .col-left { padding: 28px 20px 16px; }
+  /* 見出しの下から左右が始まるので、上端が構造的にそろう */
+  .site-head { padding: 44px 44px 22px; }
+  .col-left  { padding: 0 22px 24px 44px; }
+  .col-right { padding: 0 44px 24px 22px; }
+}
+
+@media (max-width: 680px) {
+  .site-head { padding: 28px 20px 22px; }
+  .col-left { padding: 0 20px 16px; }
   .col-right { padding: 8px 20px 32px; }
   .site-title { font-size: 20px; }
   .tool-grid { grid-template-columns: 1fr; }
@@ -839,7 +999,28 @@ footer {
   .survey-pc.is-active { display: none; }
 }
 </style>
+<script>
+/* 帯のプレビュー画像が見つからなかったカードを、従来の横並び（猫アイコンあり）に戻す。
+   画像を images/ に置けば、このフォールバックは動かず帯が表示されます。 */
+function bandFallback(img) {
+  var card = img.closest('.tool-card');
+  var band = img.closest('.card-band');
+  /* 猫アイコンは帯の中に入っているので、帯を消す前にカード直下へ避難させる */
+  var cat = band ? band.querySelector('.cat-area') : null;
+  if (card && cat) card.insertBefore(cat, card.firstChild);
+  if (card) card.classList.remove('tool-card--band');
+  if (band) band.remove();
+}
+</script>
 <meta name="google-site-verification" content="41PBQmId38sOlXSM_sEyzmUPCmkdAd6uwCU-YnOtzpA" />
+<!-- アクセス解析の停止設定を読む（プライバシーポリシーのボタンで切り替えます） -->
+<script>
+try {
+  if (localStorage.getItem('saniwa_ga_optout') === '1') {
+    window['ga-disable-G-QM317D9ESN'] = true;
+  }
+} catch (e) {}
+</script>
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
 <script>
@@ -864,39 +1045,133 @@ footer {
 <script>
 /* ================================================================
    ★ アンケート設定（ここを編集します）
-   SURVEY_URL にGoogleフォームのURLを入れると、アンケートカードが
-   PC版（お返事カードの下）とスマホ版（すべての更新履歴→の下）に
-   表示されます。 ''（空）に戻すと両方とも非表示になります。
-   SURVEY_DESC は説明文。開催ごとに変えてもOK、そのままでもOKです。
-   例: var SURVEY_URL = 'https://docs.google.com/forms/d/e/○○○/viewform';
+   アンケートは書いた順にカードとして表示されます（PC版・スマホ版の
+   両方に出ます）。それぞれ次の3つを設定します。
+     url  … GoogleフォームのURL。'' （空）にすると、そのアンケートだけ
+            非表示になります（フォームが出来るまでは空のままでOK）。
+     title… カードの見出し
+     desc … 説明文。いつまで受け付けるかを必ず入れます。
+            「〇/〇 〇〇:〇〇（日本時間）まで。」の〇を数字に置き換えて
+            ください。終わったら url を '' に戻します
+   増やしたいときは { … } を , で区切って足せます。ただし画面に出るのは
+   先頭2つ（0番と1番）だけです。HTML側のカードが data-survey="0" と "1"
+   の2枚しかないためで、3番目から先は「控えの置き場」になります。
+   控えを出したくなったら、先頭2つのどちらかと入れ替えてください。
+   減らすときは その { … } ごと消すか、url を '' にします。
    ================================================================ */
-var SURVEY_URL  = 'https://docs.google.com/forms/d/e/1FAIpQLScGc5Bn5QE6sA8DJzYDbczJBnCygjhNES0836ILfV_dAFopAQ/viewform?usp=dialog';
-var SURVEY_DESC = '道具箱の使い心地について、3分ほどのアンケートです';
+var SURVEYS = [
+  {
+    /* 愛蔵の一ノ倉 使い方アンケート（2026-08-09 開始 / 8-31 まで）
+       終わったら url を '' に戻してください */
+    url:   '',
+    title: '愛蔵の一ノ倉 使い方アンケート',
+    desc:  '一ノ倉の作り替えを考えています。どう作り替えるかは、まだ決めていません。ふだんの使い方を聞かせてください。8/31 23:59（日本時間）まで。'
+  },
+  {
+    /* 鍛刀録 意見募集（8/31 まで・予定） */
+    url:   '',
+    title: '鍛刀録 意見募集',
+    desc:  '試験公開中の「鍛刀録」を試して、使い心地やご要望を聞かせてください。α版のため、まだ不具合が残っているかもしれません。8/31まで（予定）。'
+  },
+  {
+    /* ここから下は控えです。画面には出ません。
+       出したくなったら、上の2つのどちらかと入れ替えてください。
+       次のアンケート用の下書き。フォームができたら url を入れて、
+       desc の〇を数字に置き換えてください */
+    url:   '',
+    title: 'アンケート',
+    desc:  'クラウド同期について、3分ほどのアンケートです。ご協力いただけると嬉しいです。〇/〇 〇〇:〇〇（日本時間）まで。'
+  }
+];
 </script>
 </head>
 <body>
+<!-- ═══ SNSアプリの中で開いている人への案内 ═══════════════════
+     Xなどのアプリ内でリンクを開くと、ブラウザ本体とは別の場所に
+     データが保存される。同じ道具を開いても記録が見えず、
+     Googleログインも通らないことがある。
+     ここは案内を出すだけで、動きは何も変えない。 -->
+<div id="iab-bar" style="display:none"></div>
+<script>
+(function(){
+  var KEY='saniwa_iab_hide';
+  function isInApp(){
+    var ua=navigator.userAgent||'';
+    /* ①名乗っているアプリ ②AndroidのWebView ③iOSのWKWebView（Safari/の名乗りが無い） */
+    if(/FBAN|FBAV|FB_IAB|Instagram|\bLine\/|MicroMessenger|KAKAOTALK/.test(ua))return true;
+    if(/;\s*wv\)/.test(ua))return true;
+    if(/iPhone|iPad|iPod/.test(ua)&&ua.indexOf('AppleWebKit')>=0&&!/Safari\//.test(ua))return true;
+    return false;
+  }
+  function hidden(){ try{ return localStorage.getItem(KEY)==='1'; }catch(e){ return false; } }
+  function hasData(){ return false; }
+  function close(never){
+    if(never){ try{ localStorage.setItem(KEY,'1'); }catch(e){} }
+    var el=document.getElementById('iab-bar');
+    if(el)el.style.display='none';
+  }
+  window.iabClose=function(){
+    var c=document.getElementById('iab-never');
+    close(c&&c.checked);
+  };
+  function show(){
+    var el=document.getElementById('iab-bar');
+    if(!el)return;
+    var body = hasData()
+      ? '<p style="margin:0 0 10px">ここでの記録は、<b>いま開いているアプリ（Xなど）の中</b>だけに保存されています。'
+        +'この道具ではなくそのアプリが管理している場所なので、アプリ側の都合でまとめて消えることがあります。</p>'
+        +'<p style="margin:0 0 10px"><b>いま画面に記録が見えているなら、先に書き出し（エクスポート）を取ってください。</b>'
+        +'そのファイルを、SafariやChromeで開いた同じ道具に読み込めば、そのまま続けられます。</p>'
+      : '<p style="margin:0 0 10px">このままでは道具の記録が保存されなかったり、Googleとつながらないことがあります。</p>'
+        +'<p style="margin:0"><b>メニューの「ブラウザで開く」から、SafariやChromeで開き直してください。</b></p>';
+    el.innerHTML=
+      '<div style="max-width:640px;margin:0 auto;padding:14px 16px;font-size:13px;line-height:1.85">'
+      +'<div style="font-weight:700;margin-bottom:8px">⚠ SNSアプリの中で開いています</div>'
+      +body
+      +'<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap">'
+      +'<label style="font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer">'
+      +'<input type="checkbox" id="iab-never"> このブラウザでは表示しない</label>'
+      +'<button onclick="iabClose()" style="padding:7px 18px;font-size:12px;border-radius:7px;'
+      +'border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer;font-family:inherit">閉じる</button>'
+      +'</div></div>';
+    el.setAttribute('style',
+      'display:block;background:#fff4d6;color:#5a4212;border-bottom:1px solid #e0c98a;'
+      +'position:relative;z-index:400');
+  }
+  function init(){ if(isInApp()&&!hidden())show(); }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
+<!-- ═══ ここまで ═══════════════════════════════════════════ -->
 <div class="bg">
 <div class="layout">
 
 <!-- 左カラム -->
-<div class="col-left">
-  <div class="site-title">審神者の道具箱</div>
+<header class="site-head">
+  <h1 class="site-title">審神者の道具箱</h1>
 
   <!-- テーマ切り替え -->
   <div class="theme-bar">
     <button type="button" class="theme-btn" id="btn-hue" onclick="toggleHue()">色：青系</button>
     <button type="button" class="theme-btn" id="btn-mode" onclick="toggleMode()">明るさ：暗い</button>
   </div>
+</header>
 
+<div class="col-left">
   <div class="tool-grid">
 
-  <div class="tool-card">
-    <div class="cat-area">
-      <!-- cat.png を同じフォルダに入れると表示されます -->
-      <img src="cat1.png" alt="猫" onerror="this.style.display='none'">
+  <div class="tool-card tool-card--band cat-b">
+    <div class="card-band">
+      <!-- images/card_shizaichou.png を置くと帯が表示されます（無ければ自動で帯なし） -->
+      <img src="images/card_shizaichou.png" alt="資源帳の画面イメージ" decoding="async" onerror="bandFallback(this)">
+      <div class="cat-area">
+        <!-- cat.png を同じフォルダに入れると表示されます -->
+        <img src="cat1.png" alt="猫" onerror="this.style.display='none'">
+      </div>
     </div>
     <div class="card-body">
-      <div class="card-title">資源帳</div>
+      <h2 class="card-title"><span class="card-subtitle">― 資源の推移グラフ ―</span>資源帳</h2>
       <div class="card-desc">
         木炭・玉鋼・冷却材・砥石などの資源や道具を記録・管理するツールです。
         推移をグラフで確認できます。
@@ -908,12 +1183,16 @@ var SURVEY_DESC = '道具箱の使い心地について、3分ほどのアンケ
     </div>
   </div>
 
-  <div class="tool-card">
-    <div class="cat-area">
-      <img src="cat2.png" alt="猫" onerror="this.style.display='none'">
+  <div class="tool-card tool-card--band cat-b">
+    <div class="card-band">
+      <!-- images/card_keikoroku.png -->
+      <img src="images/card_keikoroku.png" alt="稽古録の画面イメージ" decoding="async" onerror="bandFallback(this)">
+      <div class="cat-area">
+        <img src="cat2.png" alt="猫" onerror="this.style.display='none'">
+      </div>
     </div>
     <div class="card-body">
-      <div class="card-title">稽古録</div>
+      <h2 class="card-title"><span class="card-subtitle">― レベリング管理 ―</span>稽古録</h2>
       <div class="card-desc">
         刀剣男士のレベルと累積経験値を記録・管理するツールです。
       </div>
@@ -924,14 +1203,18 @@ var SURVEY_DESC = '道具箱の使い心地について、3分ほどのアンケ
     </div>
   </div>
 
-  <div class="tool-card">
-    <div class="cat-area">
-      <img src="cat4.png" alt="猫" onerror="this.style.display='none'">
+  <div class="tool-card tool-card--band cat-b">
+    <div class="card-band">
+      <!-- images/card_ichinokura.png -->
+      <img src="images/card_ichinokura.png" alt="愛蔵の一ノ倉の画面イメージ" decoding="async" onerror="bandFallback(this)">
+      <div class="cat-area">
+        <img src="cat4.png" alt="猫" onerror="this.style.display='none'">
+      </div>
     </div>
     <div class="card-body">
-      <div class="card-title">愛蔵の一ノ倉</div>
+      <h2 class="card-title"><span class="card-subtitle">― 宝物と断片と回想の整理棚 ―</span>愛蔵の一ノ倉</h2>
       <div class="card-desc">
-        宝物・断片を記録・管理するツールです。資源帳・稽古録の記録をカレンダーで振り返れて、刀装・馬のソートもできます。
+        宝物・断片・回想を記録・管理するツールです。資源帳・稽古録の記録をカレンダーで振り返れて、刀装・馬のソートもできます。
       </div>
       <div class="card-links">
         <a class="card-link card-link--open" href="ichinokura.html">道具を開く →</a>
@@ -940,12 +1223,16 @@ var SURVEY_DESC = '道具箱の使い心地について、3分ほどのアンケ
     </div>
   </div>
 
-  <div class="tool-card">
-    <div class="cat-area">
-      <img src="cat5.png" alt="猫" onerror="this.style.display='none'" style="width:80px;">
+  <div class="tool-card tool-card--band cat-b">
+    <div class="card-band">
+      <!-- images/card_shitakubeya.png -->
+      <img src="images/card_shitakubeya.png" alt="出陣支度部屋の画面イメージ" decoding="async" onerror="bandFallback(this)">
+      <div class="cat-area">
+        <img src="cat5.png" alt="猫" onerror="this.style.display='none'">
+      </div>
     </div>
     <div class="card-body">
-      <div class="card-title">出陣支度部屋</div>
+      <h2 class="card-title"><span class="card-subtitle">― 部隊編成シミュレータ ―</span>出陣支度部屋</h2>
       <div class="card-desc">
         刀剣男士で部隊を編制し、装備を整えるツールです。稽古録と連携して、男士の乱舞レベルをステータスに反映できます（登録がなくても利用できます）。
       </div>
@@ -956,19 +1243,73 @@ var SURVEY_DESC = '道具箱の使い心地について、3分ほどのアンケ
     </div>
   </div>
 
-  <div class="tool-card">
-    <div class="cat-area">
-      <!-- cat6.png を同じフォルダに入れると表示されます -->
-      <img src="cat6.png" alt="猫" onerror="this.style.display='none'">
+  <div class="tool-card tool-card--band cat-b">
+    <div class="card-band">
+      <!-- images/card_kaikouroku.png -->
+      <img src="images/card_kaikouroku.png" alt="邂逅録の画面イメージ" decoding="async" onerror="bandFallback(this)">
+      <div class="cat-area">
+        <!-- cat6.png を同じフォルダに入れると表示されます -->
+        <img src="cat6.png" alt="猫" onerror="this.style.display='none'">
+      </div>
     </div>
     <div class="card-body">
-      <div class="card-title">邂逅録</div>
+      <h2 class="card-title"><span class="card-subtitle">― ドロップ率の記録と集計 ―</span>邂逅録</h2>
       <div class="card-desc">
         ドロップした刀剣男士を記録・集計するツールです。目玉男士のドロップ率を分析できます。
       </div>
       <div class="card-links">
         <a class="card-link card-link--open" href="kaikouroku.html">道具を開く →</a>
         <a class="card-link card-link--manual" href="kaikouroku_manual.html">説明書 →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 鍛刀録（試験公開／α版・猫画像なし・説明書なし） -->
+  <div class="tool-card tool-card--band cat-b">
+    <div class="card-band">
+      <!-- images/card_tantouroku.png を置くと帯が表示されます（無ければ本文を左いっぱいに表示） -->
+      <img src="images/card_tantouroku.png" alt="鍛刀録の画面イメージ" decoding="async" onerror="bandFallback(this)">
+      <!-- 猫を出したくなったら、下の3行のコメントを外して cat3.png の部分を差し替えてください
+      <div class="cat-area">
+        <img src="cat3.png" alt="猫" onerror="this.style.display='none'">
+      </div>
+      -->
+    </div>
+    <div class="card-body">
+      <h2 class="card-title"><span class="card-subtitle">― 鍛刀結果の記録・集計 ―</span>鍛刀録<span class="card-badge-alpha">試験公開</span></h2>
+      <div class="card-desc">
+        鍛刀の結果を記録・集計するツールです。レシピごとの傾向を振り返れます。現在お試し公開中で、ご意見を募集しています。
+      </div>
+      <div class="card-links">
+        <a class="card-link card-link--open" href="tantouroku.html">道具を開く →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 集積帳 -->
+  <!-- cat7 は歩いている猫で横に長いぶん、高さをそろえると猫だけ大きく見えます。
+       そのためこのカードだけ小さくしています（既定は 80% / -26%）。
+       数字を変えたいときは下の style の値を書き換えてください。 -->
+  <div class="tool-card tool-card--band cat-b" style="--cat-h: 55%; --cat-y: -18%;">
+    <div class="card-band">
+      <!-- images/card_shusekichou.png を置くと帯が表示されます（無ければ自動で帯なし） -->
+      <img src="images/card_shusekichou.png" alt="集積帳の画面イメージ" decoding="async" onerror="bandFallback(this)">
+      <div class="cat-area">
+        <!-- cat7.png を同じフォルダに入れると表示されます -->
+        <img src="cat7.png" alt="猫" onerror="this.style.display='none'">
+      </div>
+    </div>
+    <div class="card-body">
+      <h2 class="card-title"><span class="card-subtitle">― 収集物ノルマ表 ―</span>集積帳</h2>
+      <div class="card-desc">
+        連隊戦の貝や江戸城の鍵など、収集イベントで集めた数を記録・管理するツールです。目標を決めると、1日に必要な数も出せます。
+      </div>
+      <div class="card-links">
+        <a class="card-link card-link--open" href="shusekichou.html">道具を開く →</a>
+        <!-- 説明書ができたら、下の1行を有効にして「説明書 準備中」の行を消してください
+        <a class="card-link card-link--manual" href="shusekichou_manual.html">説明書 →</a>
+        -->
+        <span class="card-pending">説明書 準備中</span>
       </div>
     </div>
   </div>
@@ -996,23 +1337,35 @@ var SURVEY_DESC = '道具箱の使い心地について、3分ほどのアンケ
 <div class="sp-update-bar">
   <div class="sp-update-toggle" onclick="spUpdateToggle()" id="sp-update-btn">
     <span class="sp-update-label">最新更新</span>
-    <span class="sp-update-date">2026.07.21</span>
+    <span class="sp-update-date">2026.09.17</span>
     <span class="sp-update-badge">最新</span>
     <span class="sp-update-arrow">▼</span>
   </div>
   <div class="sp-update-body" id="sp-update-body">
     <div class="tl-content">
-      <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
+      <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">トップページ ― 画面の幅に合わせて並びが変わるようにしました</div>
       <ul>
-        <li>累積経験値とレベルを表示しているグラフで、「レベル → 増加経験値 → 累積経験値」の順に表示を切り替えると、選択中の刀剣男士の累積経験値グラフがすべて非表示になる不具合を修正しました</li>
-        <li>グラフの表示モードによる一時的な非表示と、凡例を操作して手動で非表示にした状態を別々に扱うよう改善しました。ほかの表示切替順や、凡例の表示設定にも影響がないことを確認しています</li>
+        <li>画面の幅に合わせて、道具の並びが変わるようになりました。<b>タブレットやパソコンでは、道具の絵がゆったり大きく見えます</b></li>
+        <li>横に広い画面では、<b>説明書と更新履歴が右側に並びます</b>。スクロールしなくても目に入ります</li>
+        <li>スマートフォンでの見え方は変わっていません</li>
       </ul>
     </div>
   </div>
 </div>
 <div class="sp-changelog-link">
   <a href="changelog.html">すべての更新履歴 →</a>
-  <a class="survey-card survey-sp" href="#" target="_blank" rel="noopener">
+  <a class="survey-card survey-sp" data-survey="0" href="#" target="_blank" rel="noopener">
+    <div class="survey-icon">📋</div>
+    <div class="survey-body">
+      <div class="survey-title-row">
+        <span class="survey-title">アンケート</span>
+        <span class="survey-badge">実施中</span>
+      </div>
+      <div class="survey-desc"></div>
+    </div>
+    <span class="survey-arrow">→</span>
+  </a>
+  <a class="survey-card survey-sp" data-survey="1" href="#" target="_blank" rel="noopener">
     <div class="survey-icon">📋</div>
     <div class="survey-body">
       <div class="survey-title-row">
@@ -1027,7 +1380,7 @@ var SURVEY_DESC = '道具箱の使い心地について、3分ほどのアンケ
 <div class="col-right">
   <div class="info-panel is-open" id="info-panel">
     <div class="info-heading-row" onclick="infoPanelToggle()">
-      <div class="info-heading">＊ 説 明 書 ＊</div>
+      <h2 class="info-heading">＊ 説 明 書 ＊</h2>
       <span class="info-heading-arrow">▼</span>
     </div>
 
@@ -1037,7 +1390,7 @@ var SURVEY_DESC = '道具箱の使い心地について、3分ほどのアンケ
     <div class="info-block fold-block is-open" data-fold-id="about">
       <div class="fold-head" onclick="infoBlockToggle(this, event)">
         <div class="fold-head-main">
-          <div class="info-label">📖 このアプリについて</div>
+          <h2 class="info-label">📖 このアプリについて</h2>
           <div class="fold-digest">ゲームと連動しない、すべて手入力のツールです</div>
         </div>
         <span class="fold-arrow">▼</span>
@@ -1056,7 +1409,7 @@ var SURVEY_DESC = '道具箱の使い心地について、3分ほどのアンケ
     <div class="info-block fold-block is-open" data-fold-id="save">
       <div class="fold-head" onclick="infoBlockToggle(this, event)">
         <div class="fold-head-main">
-          <div class="info-label">💾 データの保存について</div>
+          <h2 class="info-label">💾 データの保存について</h2>
           <div class="fold-digest">データは端末内のみに保存。<em>定期的なバックアップを必ず</em>お願いします</div>
         </div>
         <span class="fold-arrow">▼</span>
@@ -1065,6 +1418,10 @@ var SURVEY_DESC = '道具箱の使い心地について、3分ほどのアンケ
       <div class="info-text">
         データはお使いの端末のブラウザ内にのみ保存されます。<br>
         管理人がデータを確認・アクセスすることは<em>一切ありません</em>のでご安心ください。
+      </div>
+      <div class="info-note" style="margin-top:8px;">
+        アクセス状況（訪問数など）は、Googleアナリティクスで記録しています。<br>
+        これは<em>記録した本丸の中身とは別のもの</em>です。詳しくは<a href="privacy.html">プライバシーポリシー</a>をご覧ください。
       </div>
       <div class="info-note" style="margin-top:8px;">
         Googleドライブ同期はバックアップの一つとしてご利用ください。<br>
@@ -1092,7 +1449,7 @@ var SURVEY_DESC = '道具箱の使い心地について、3分ほどのアンケ
     <div class="info-block fold-block is-open" data-fold-id="compat">
       <div class="fold-head" onclick="infoBlockToggle(this, event)">
         <div class="fold-head-main">
-          <div class="info-label">🔄 ツール間の互換性</div>
+          <h2 class="info-label">🔄 ツール間の互換性</h2>
           <div class="fold-digest">「イベント・メモのデータ」は資源帳⇄稽古録で共通です</div>
         </div>
         <span class="fold-arrow">▼</span>
@@ -1111,7 +1468,7 @@ var SURVEY_DESC = '道具箱の使い心地について、3分ほどのアンケ
     <div class="info-block fold-block is-open" data-fold-id="excel">
       <div class="fold-head" onclick="infoBlockToggle(this, event)">
         <div class="fold-head-main">
-          <div class="info-label">📊 資源帳 — Excelデータの読み込み</div>
+          <h2 class="info-label">📊 資源帳 — Excelデータの読み込み</h2>
           <div class="fold-digest">Excelに付けていた資源の記録を取り込める場合があります</div>
         </div>
         <span class="fold-arrow">▼</span>
@@ -1134,7 +1491,7 @@ var SURVEY_DESC = '道具箱の使い心地について、3分ほどのアンケ
     <div class="info-block fold-block is-open" data-fold-id="browser">
       <div class="fold-head" onclick="infoBlockToggle(this, event)">
         <div class="fold-head-main">
-          <div class="info-label">🌐 推奨ブラウザ</div>
+          <h2 class="info-label">🌐 推奨ブラウザ</h2>
           <div class="fold-digest">アプリ内ブラウザ（WebView）では<em>Google同期が動きません</em></div>
         </div>
         <span class="fold-arrow">▼</span>
@@ -1201,83 +1558,110 @@ var SURVEY_DESC = '道具箱の使い心地について、3分ほどのアンケ
   })();
   </script>
   <div class="update-panel">
-    <div class="update-heading">＊ 更 新 情 報 ＊</div>
+    <h2 class="update-heading">＊ 更 新 情 報 ＊</h2>
     <div class="timeline">
 
       <!-- 1件目：最新 -->
-      <div class="tl-entry is-latest" id="tl-new16" data-has-short="1">
-        <div class="tl-header" onclick="tlToggle('tl-new16')">
-          <span class="tl-date">2026.07.21</span>
+      <div class="tl-entry is-latest" id="tl-new40" data-has-short="1">
+        <div class="tl-header" onclick="tlToggle('tl-new40')">
+          <span class="tl-date">2026.09.17</span>
           <span class="tl-badge">最新</span>
+          <span class="tl-title">トップページ ― 画面の幅に合わせて並びが変わるようにしました</span>
           <span class="tl-arrow">▼</span>
         </div>
         <div class="tl-short">
-          <div class="tl-short-inner">稽古録：累積経験値グラフで「レベル → 増加経験値 → 累積経験値」の順に切り替えると、グラフが表示されなくなる不具合を修正しました。</div>
-          <span class="tl-more" onclick="tlMoreOpen(event,'tl-new16')">▼ 詳しく見る</span>
+          <div class="tl-short-inner">画面の幅に合わせて、道具の並びが変わるようになりました。タブレットやパソコンでは、道具の絵がゆったり大きく見えます。<br><br>横に広い画面では、説明書と更新履歴が右側に並びます。スクロールしなくても目に入ります。<br><br>スマートフォンでの見え方は変わっていません。</div>
+        </div>
+      </div>
+
+      <div class="tl-entry" id="tl-new39" data-has-short="1">
+        <div class="tl-header" onclick="tlToggle('tl-new39')">
+          <span class="tl-date">2026.09.13</span>
+          <h3 class="tl-title">稽古録 ― 髭切・膝丸の「特」を直し、刀を追加しやすくしました</h3>
+          <span class="tl-arrow">▼</span>
+        </div>
+        <div class="tl-short">
+          <div class="tl-short-inner">髭切・膝丸の「特」が切り替わるレベルを直しました。あわせて、極のカードからその刀を追加できるように、個別のカードからまとめの画面へ戻れるようにしています。</div>
+          <span class="tl-more" onclick="tlMoreOpen(event,'tl-new39')">▼ 詳しく見る</span>
         </div>
         <div class="tl-body">
           <div class="tl-content">
-      <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
-      <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
-      <ul>
-        <li>累積経験値とレベルを表示しているグラフで、「レベル → 増加経験値 → 累積経験値」の順に表示を切り替えると、選択中の刀剣男士の累積経験値グラフがすべて非表示になる不具合を修正しました</li>
-        <li>グラフの表示モードによる一時的な非表示と、凡例を操作して手動で非表示にした状態を別々に扱うよう改善しました。ほかの表示切替順や、凡例の表示設定にも影響がないことを確認しています</li>
-      </ul>
+            <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+            <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">稽古録 ― 髭切・膝丸の「特」を直し、刀を追加しやすくしました</div>
+            <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">髭切・膝丸の「特」が変わるレベルを直しました</div>
+            <ul>
+              <li>これまで特二がLv.35、特三がLv.45で切り替わる表示になっていましたが、正しくは<b>特二がLv.50、特三がLv.75</b>です</li>
+              <li>膝丸は特一がLv.25、<b>特二がLv.50</b>です</li>
+              <li>形態はレベルから計算しているため、記録し直していただく必要はありません。<b>表示だけが変わります</b></li>
+              <li>すでに記録しておられる方は、<b>Lv.35〜74の髭切・膝丸が、これまでより手前の段階で表示されます</b>（例：Lv.45の髭切は、これまで特三と出ていましたが、正しくは特一です）</li>
+            </ul>
+            <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">極のカードからも、その刀を追加できるようにしました</div>
+            <ul>
+              <li>これまで極のカードには案内文が出るだけで、そこから刀を足すことができませんでした</li>
+              <li>「<b>＋ この刀を追加（極）</b>」を押すと、極の状態で新しく1振り増やせます</li>
+              <li>増えた刀は<b>Lv.1・累積経験値は空</b>から始まります。レベルと累積経験値はご自身でご入力ください</li>
+            </ul>
+            <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">個別のカードから、まとめの画面へ戻れるようにしました</div>
+            <ul>
+              <li>刀の設定画面の左上に「<b>◀ 刀の名前（まとめ）</b>」が出ます</li>
+              <li>これまで、個別のカードから設定画面を開くと「＋ この刀を追加」にたどり着けませんでした</li>
+              <li><b>Lv順・Exp順・乱舞Lv順・入手順</b>で並べているときは所持している刀すべてが個別のカードになるため、この並べ替えをお使いの方は全部の刀で行けない状態でした</li>
+              <li>「◀」で戻ると、保存していない変更は反映されません（✕で閉じたときと同じです）</li>
+            </ul>
           </div>
         </div>
       </div>
 
-      <!-- 2件目：折りたたみ（前回の最新）-->
-      <div class="tl-entry" id="tl-new15">
-        <div class="tl-header" onclick="tlToggle('tl-new15')">
-          <span class="tl-date">2026.07.20</span>
+      <!-- 2件目：折りたたみ（前回の最新） -->
+      <div class="tl-entry" id="tl-new38" data-has-short="1">
+        <div class="tl-header" onclick="tlToggle('tl-new38')">
+          <span class="tl-date">2026.09.08</span>
+          <h3 class="tl-title">サイト全体・稽古録・出陣支度部屋 ― 新しい刀剣男士に対応し、記録を守るしくみを足しました</h3>
           <span class="tl-arrow">▼</span>
+        </div>
+        <div class="tl-short">
+          <div class="tl-short-inner">古今伝授の太刀と地蔵行平を極として記録できるようになりました。太閤左文字の極のステータスもお入れしています。あわせて、ブラウザやアプリの都合で本丸の記録が失われないよう、二つのしくみを道具箱ぜんたいに足しました。</div>
+          <span class="tl-more" onclick="tlMoreOpen(event,'tl-new38')">▼ 詳しく見る</span>
         </div>
         <div class="tl-body">
           <div class="tl-content">
-      <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
-      <ul>
-        <li>サイドバーに「⚔ 支度部屋の部隊で絞り込み」を追加しました。部隊を選ぶと、その部隊に編成中の男士だけを表示できます</li>
-        <li>同じ刀を複数持っていても、編成に入っている一振りだけが表示されます。部隊を変えても絵文字の付け替えは不要になりました</li>
-        <li>支度部屋で編成を変えると自動で反映されます（別タブで開いていてもその場で更新されます）</li>
-      </ul>
-      <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">出陣支度部屋</div>
-      <ul>
-        <li>「📖 この部隊を稽古録で開く」ボタンを追加しました。ワンタップで絞り込み済みの稽古録が開きます</li>
-      </ul>
-      <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">更新履歴ページ</div>
-      <ul>
-        <li>短い説明→詳しい説明の2段階で読めるようにしました。月ごとの開閉と一括ボタンも付きました</li>
-      </ul>
+            <div class="tl-detail-label"><span class="txt">詳しく</span><span class="line"></span></div>
+            <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">サイト全体・稽古録・出陣支度部屋 ― 新しい刀剣男士に対応し、記録を守るしくみを足しました</div>
+            <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">新しい刀剣男士に対応しました</div>
+            <ul>
+              <li><b>古今伝授の太刀</b>と<b>地蔵行平</b>を極として記録できるようになりました</li>
+              <li>稽古録・出陣支度部屋の両方が対象です</li>
+              <li><b>ステータスの最大値はまだ空欄です。</b>確かめられ次第お入れします</li>
+              <li>空欄でも、刀の設定画面の「📊 現在ステータス」に今の数値を記録できます。修行から帰っている方はそちらをお使いください</li>
+            </ul>
+            <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">太閤左文字の極のステータスを入れました</div>
+            <ul>
+              <li>前回から空欄にしていた太閤左文字の極に、打撃・統率・機動・衝力・隠蔽・必殺の6つをお入れしました</li>
+              <li>生存と偵察は連結では上げられないため、まだ空欄のままです</li>
+            </ul>
+            <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">SNSアプリの中で開くと、記録が別の場所に保存されます</div>
+            <ul>
+              <li>XやInstagramなどのアプリの中からリンクを開くと、SafariやChromeとは<b>別の場所</b>に記録が保存されます</li>
+              <li>同じ道具を開いても以前の記録が見えなかったり、Googleとつながらなかったりします</li>
+              <li>その状態のときに、画面の上へ案内を出すようにしました</li>
+              <li><b>記録が見えている場合は、先に書き出し（エクスポート）をお取りください。</b>そのファイルをSafariやChromeで開いた同じ道具に読み込めば、そのまま続けられます</li>
+              <li>案内は「このブラウザでは表示しない」で消せます</li>
+              <li>道具箱のすべての道具が対象です</li>
+            </ul>
+            <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">手元が空のままクラウドへ保存するのを止めます</div>
+            <ul>
+              <li>機種変更やブラウザの乗り換え、サイトデータの削除などで、その端末の記録が空になっていることがあります</li>
+              <li>その状態で「クラウドへ保存」を押すと、<b>クラウドに残っていた記録まで空で上書きされ、元に戻せません</b></li>
+              <li>手元が空のときは確認をはさむようにしました。「読み込む」を選べば、クラウドの記録をそのまま取り戻せます</li>
+              <li>どうしても空のまま保存したいときのために「それでも保存する」も残してあります</li>
+              <li>道具箱のすべての道具が対象です</li>
+            </ul>
           </div>
         </div>
       </div>
 
       <!-- 3件目：折りたたみ -->
-      <div class="tl-entry" id="tl-new14">
-        <div class="tl-header" onclick="tlToggle('tl-new14')">
-          <span class="tl-date">2026.07.19</span>
-          <span class="tl-arrow">▼</span>
-        </div>
-        <div class="tl-body">
-          <div class="tl-content">
-      <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin-bottom:4px;font-family:'Noto Sans JP',sans-serif;">稽古録</div>
-      <ul>
-        <li>増加経験値のグラフで、記録が数日空いたときは、その期間を「1日あたり」に均して表示するようにしました（3つのグラフ共通）。均した区間は、点にふれると何日ぶんの平均か・その合計をツールチップで確認できます</li>
-        <li>「Exp変化なし ☑」を追加しました。経験値に変化がなかった日を、日付ごとに1件だけの記録としてまとめて残せます。ステータスバーの切り替えと、直近7日ぶんのチップからチェックできます。この記録はグラフの線をつなぐためだけに使われ、グラフに点は増えません（初めて使うときは説明が表示されます）</li>
-        <li>今日つけた記録に、小さな緑の点マークが付くようになりました（個別の記録のみ）。設定で「✅」に変えたり、非表示にしたりできます</li>
-      </ul>
-      <div style="font-size:12px;color:var(--rp-accent2);font-weight:600;margin:8px 0 4px;font-family:'Noto Sans JP',sans-serif;">トップページ</div>
-      <ul>
-        <li>説明書を折りたためるようにしました。「＊ 説 明 書 ＊」の見出しで全体を、各項目の見出しで項目ごとに開閉できます。閉じた項目は要点が1行だけ見え、開閉の状態は次に来たときも引き継がれます</li>
-      </ul>
-          </div>
-        </div>
-      </div>
-
-      
-
-      <!-- すべての更新履歴 -->
+<!-- すべての更新履歴 -->
       <a href="changelog.html" class="tl-all-link">すべての更新履歴 →</a>
 
     </div><!-- /timeline -->
@@ -1299,8 +1683,19 @@ var SURVEY_DESC = '道具箱の使い心地について、3分ほどのアンケ
     <span class="reply-mini-link">開く →</span>
   </a>
 
-  <!-- アンケート（SURVEY_URL 設定時のみ表示） -->
-  <a class="survey-card survey-pc" href="#" target="_blank" rel="noopener">
+  <!-- アンケート（各カードの data-survey 番号が SURVEYS配列と対応。URL設定時のみ表示） -->
+  <a class="survey-card survey-pc" data-survey="0" href="#" target="_blank" rel="noopener">
+    <div class="survey-icon">📋</div>
+    <div class="survey-body">
+      <div class="survey-title-row">
+        <span class="survey-title">アンケート</span>
+        <span class="survey-badge">実施中</span>
+      </div>
+      <div class="survey-desc"></div>
+    </div>
+    <span class="survey-arrow">→</span>
+  </a>
+  <a class="survey-card survey-pc" data-survey="1" href="#" target="_blank" rel="noopener">
     <div class="survey-icon">📋</div>
     <div class="survey-body">
       <div class="survey-title-row">
@@ -1394,16 +1789,23 @@ var SURVEY_DESC = '道具箱の使い心地について、3分ほどのアンケ
 </div>
 </div>
 <footer>
-  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari hatano
+  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari shizukuishi<br><a href="privacy.html">プライバシーポリシー</a>
 </footer>
 <script>
-/* アンケートカードの表示（設定はファイル上部の「★ アンケート設定」） */
+/* アンケートカードの表示（設定はファイル上部の「★ アンケート設定」）
+   各カードの data-survey="0" などの番号が、SURVEYS配列の何番目かを指します。
+   url が空のアンケートはカードごと非表示（is-active を付けない）。 */
 (function(){
-  if (typeof SURVEY_URL === 'undefined' || !SURVEY_URL) return;
+  if (typeof SURVEYS === 'undefined' || !Array.isArray(SURVEYS)) return;
   document.querySelectorAll('.survey-card').forEach(function(card){
-    card.href = SURVEY_URL;
+    var i = parseInt(card.getAttribute('data-survey'), 10);
+    var s = SURVEYS[i];
+    if (!s || !s.url) return;                 /* 未設定・URL空は非表示のまま */
+    card.href = s.url;
+    var t = card.querySelector('.survey-title');
+    if (t && s.title) t.textContent = s.title;
     var d = card.querySelector('.survey-desc');
-    if (d) d.textContent = (typeof SURVEY_DESC !== 'undefined' && SURVEY_DESC) ? SURVEY_DESC : 'アンケートにご協力ください';
+    if (d) d.textContent = s.desc ? s.desc : 'アンケートにご協力ください';
     card.classList.add('is-active');
   });
 })();

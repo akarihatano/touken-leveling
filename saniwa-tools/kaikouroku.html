@@ -11,17 +11,29 @@
   var p=s.palette||'tetsu',m=s.mode||'light';
   document.documentElement.setAttribute('data-theme',p+'-'+m);
   document.documentElement.setAttribute('data-view',s.viewMode==='pc'?'pc':'phone');
-  // 最後にいた場所が連隊戦なら、モードバーを最初から隠す（一瞬見えるのを防ぐ）
+  // 最後にいた場所がマスなしのイベント（連隊戦・百鬼夜行など）なら、
+  // モードバーを最初から隠す（一瞬見えるのを防ぐ）
+  // ※ ここは本体スクリプトより前に走るので DIFF_SETS を参照できない。
+  //   新しい型を DIFF_SETS に足したら、この配列にも足すこと
+  var DIFF_TYPES_EARLY=['rentai','hyakki'];
   var lp=s.lastPlaceId;
   if(lp){
     var d=JSON.parse(localStorage.getItem('kk_data_v1')||'{}');
     var pl=(d.places||[]).find(function(x){return x.id===lp&&!x.deleted;});
-    if(pl&&pl.type==='rentai')document.documentElement.setAttribute('data-hidemodebar','1');
+    if(pl&&DIFF_TYPES_EARLY.indexOf(pl.type)>=0)document.documentElement.setAttribute('data-hidemodebar','1');
   }
 }catch(e){}})();
 </script>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- アクセス解析の停止設定を読む（プライバシーポリシーのボタンで切り替えます） -->
+<script>
+try {
+  if (localStorage.getItem('saniwa_ga_optout') === '1') {
+    window['ga-disable-G-QM317D9ESN'] = true;
+  }
+} catch (e) {}
+</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
 <script>
@@ -48,7 +60,6 @@
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.6}
-.mock-banner{background:var(--bg3);color:var(--text2);text-align:center;padding:6px;font-size:11px;letter-spacing:1px;border-bottom:1px solid var(--border)}
 header{background:var(--surface);border-bottom:1px solid var(--border)}
 .header-inner{max-width:600px;margin:0 auto;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .h-titlewrap{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
@@ -62,6 +73,17 @@ header{background:var(--surface);border-bottom:1px solid var(--border)}
 .hdr-act-btn.synced .hdr-sync-dot{display:block}
 .help-rd{font-family:var(--font-s);font-weight:700;font-size:15px;color:var(--accent);border:1.5px solid var(--gold);background:rgba(200,168,75,.12)}
 .help-rd:hover{background:rgba(200,168,75,.24)}
+/* 設定タブのいちばん上「🆕 これまでの更新」 */
+.news-entry{cursor:pointer}
+.news-entry:hover{background:var(--bg3)}
+.news-entry .card-h{display:flex;align-items:center;gap:6px}
+.news-entry .ne-arw{margin-left:auto;color:var(--text3);font-size:18px;line-height:1}
+/* 設定タブのカードは見出しを押すと畳める。畳んだ状態は端末ごとに覚える */
+.fcard>.card-h{cursor:pointer;user-select:none}
+.fcard>.card-h .arw{font-size:9px;color:var(--text3);transition:.15s;flex:0 0 auto}
+.fcard.fold>.card-h{margin:0}
+.fcard.fold>.card-h .arw{transform:rotate(-90deg)}
+.fcard.fold>:not(.card-h){display:none}
 .hdr-pill{height:34px;padding:0 11px;border-radius:99px;border:1px solid var(--border2);background:var(--bg);color:var(--accent);font-size:13px;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;line-height:1}
 .hdr-pill:hover{background:var(--bg3)}
 .hdr-pill:disabled{opacity:.45;cursor:not-allowed}
@@ -86,7 +108,7 @@ html[data-view="pc"] .hdr-acts{flex:0 0 auto}
 .card-h{font-family:var(--font-s);font-size:14px;color:var(--accent);font-weight:600;margin:0 0 4px;letter-spacing:.05em;display:flex;align-items:center;gap:6px}
 .card-sub{font-size:11px;color:var(--text2);margin-bottom:10px}
 label.fl{display:block;font-size:11px;color:var(--text3);margin:12px 0 4px;letter-spacing:.05em;font-weight:500}
-input[type=text],select{width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:15px;font-family:inherit}
+input[type=text],input[type=date],select{width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:15px;font-family:inherit}
 input:focus,select:focus{outline:none;border-color:var(--accent)}
 .row{display:flex;gap:10px}.row>*{flex:1}
 .btn{padding:11px 14px;background:var(--accent);color:#fff;border:none;border-radius:var(--r);font-weight:600;cursor:pointer;font-size:14px;font-family:inherit;letter-spacing:.05em}
@@ -266,10 +288,31 @@ html[data-hidemodebar] #modeBar{display:none}
 .floor-add input{flex:1;padding:8px 11px;border:1px solid var(--border2);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;font-family:inherit}
 .scfg-num{width:120px;padding:8px 11px;border:1px solid var(--border2);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;font-family:inherit}
 .osaka-save-zone{margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+.scfg-copyall{margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+.agg-sum-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px dashed var(--border)}
+.agg-sum-row:last-child{border-bottom:none}
+.agg-sum-row .l{font-size:12px;color:var(--text2)}
+.agg-sum-row .v{font-size:14px;font-weight:600;color:var(--text);font-variant-numeric:tabular-nums;white-space:nowrap}
+.agg-sum-row .v.big{font-size:19px;color:var(--accent)}
+.scfg-copyall .btn{background:var(--gold);color:#2c2520}
 .rentai-row-label{font-family:var(--font-s);font-size:12px;font-weight:600;color:var(--text2);margin:8px 0 6px;display:flex;align-items:center;gap:7px}
 .rentai-row-label::after{content:"";flex:1;height:1px;background:var(--border)}
 .rentai-row-label.sp{color:var(--accent)}
+.rentai-row-label.old{color:var(--text3)}
+/* 昔しか無かった難易度（初夏の陣2017年の「乱」）は破線にして、今は選ばないものだと分かるように */
+.rec-stage-btn.old{border-style:dashed;color:var(--text3)}
+.rec-stage-btn.old.on{background:var(--text3);border-color:var(--text3);color:#fff}
+/* 場所セレクトの下の補足（どの連隊戦かを伝える） */
+.place-note{font-size:11.5px;color:var(--text2);background:rgba(200,168,75,.12);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:7px 10px;margin-top:7px;line-height:1.65}
+.place-note b{color:var(--accent)}
+.ended-chk{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text2);margin-top:8px;cursor:pointer;flex-wrap:wrap}
+.ended-chk input{width:auto;flex:0 0 auto}
+.ended-tag{font-size:9.5px;font-weight:700;color:var(--text3);border:1px solid var(--border2);border-radius:99px;padding:1px 7px;flex:0 0 auto}
 .rentai-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:6px}
+.rentai-grid.c2{grid-template-columns:repeat(2,1fr)}
+.rentai-grid.c3{grid-template-columns:repeat(3,1fr)}
+.rentai-grid.c4{grid-template-columns:repeat(4,1fr)}
+.rentai-grid.c5{grid-template-columns:repeat(5,1fr)}
 .rentai-grid .rec-stage-btn{min-width:0}
 .rentai-sel{margin-top:10px;padding:9px 11px;background:var(--accent-bg);border-radius:8px;font-size:13px;color:var(--accent)}
 .unsaved-btns{display:flex;flex-direction:column;gap:8px;margin-top:14px}
@@ -433,6 +476,32 @@ html[data-hidemodebar] #modeBar{display:none}
 .modal-title{font-family:var(--font-s);font-size:16px;font-weight:600;color:var(--accent);margin-bottom:14px}
 .modal-actions{display:flex;gap:8px;margin-top:16px}
 .modal-actions .btn{flex:1}
+/* ── 使い方ガイド（畳めるカード） ── */
+.gcard{background:var(--bg2);border-radius:8px;margin-bottom:7px;overflow:hidden}
+.gcard-h{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;user-select:none;font-size:12.5px;font-weight:600;color:var(--accent)}
+.gcard-h .arw{font-size:9px;color:var(--text3);transition:.15s;flex:0 0 auto}
+.gcard.fold .gcard-h .arw{transform:rotate(-90deg)}
+.gcard-h .ttl{flex:1}
+.gcard-b{padding:0 12px 11px;font-size:12px;line-height:1.8;color:var(--text)}
+.gcard.fold .gcard-b{display:none}
+.gcard-b b{color:var(--accent)}
+.gcard.gnew{background:rgba(200,168,75,.16);border:1px solid var(--gold)}
+.gcard.gnew .gcard-h{color:var(--warn)}
+.gcard.gbasic{background:var(--bg3)}
+.gnew-tag{font-size:9.5px;font-weight:700;background:var(--warn);color:#fff;border-radius:99px;padding:1px 7px;flex:0 0 auto}
+.gtools{display:flex;gap:6px;margin-bottom:9px}
+.gtools button{flex:1;font-size:11px;padding:6px 8px;border-radius:99px;border:1px solid var(--border2);background:var(--bg);color:var(--text2);cursor:pointer;font-family:inherit}
+.glead{font-size:12.5px;color:var(--text2);line-height:1.85;margin-bottom:12px}
+.gstep{display:flex;gap:8px;align-items:flex-start;margin:5px 0}
+.gstep .n{flex:0 0 auto;width:19px;height:19px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.gfoot{font-size:11px;color:var(--text3);margin-top:12px;line-height:1.7}
+/* ── 更新のお知らせ帯（未読の更新があるときだけ・閉じたら二度と出ない） ── */
+.nbar{display:none;align-items:center;gap:8px;font-size:12.5px;color:var(--text);background:rgba(200,168,75,.15);border-bottom:1px solid var(--gold);padding:7px 12px}
+.nbar.show{display:flex}
+.nbar .ic{flex:0 0 auto}
+.nbar .tx{flex:1;line-height:1.45}
+.nbar .see{flex:0 0 auto;font-size:11.5px;font-weight:700;padding:4px 12px;border-radius:99px;border:1px solid var(--gold);background:var(--gold);color:#2c2520;cursor:pointer;font-family:inherit}
+.nbar .cls{flex:0 0 auto;width:24px;height:24px;border-radius:50%;border:none;background:transparent;color:var(--text3);font-size:16px;line-height:1;cursor:pointer;font-family:inherit}
 
 /* 空状態 */
 .empty-state{text-align:center;padding:30px 16px;color:var(--text3)}
@@ -481,6 +550,39 @@ html[data-recbar] .wrap{padding-bottom:150px}
 .sel-fold-btn{display:block;width:100%;margin-top:8px;padding:9px;background:var(--bg2);border:1px dashed var(--border2);border-radius:8px;color:var(--accent);font-size:12px;cursor:pointer;font-family:inherit;text-align:center}
 .sel-fold-btn:hover{background:var(--bg3)}
 
+/* ══ 期間のしぼりこみ（集計する条件） ══ */
+.pd-chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.pd-chip{font-size:12px;padding:7px 12px;border:1px solid var(--border2);border-radius:99px;background:var(--bg);color:var(--text2);cursor:pointer;transition:.12s;white-space:nowrap}
+.pd-chip:hover{border-color:var(--accent2)}
+.pd-chip.on{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+.pd-dates{display:flex;align-items:center;gap:8px;margin-top:8px}
+.pd-dates input[type=date]{flex:1;font-size:14px;padding:9px 10px;min-width:0}
+.pd-tilde{color:var(--text3);font-size:13px;flex:0 0 auto}
+.pd-summary{font-size:11px;color:var(--text2);margin-top:8px;padding:8px 10px;background:var(--bg2);border-radius:var(--r);line-height:1.6}
+.pd-summary b{color:var(--accent)}
+.pd-summary.pd-warn{background:rgba(198,123,46,.13);color:var(--warn)}
+.pd-summary.pd-warn b{color:var(--warn)}
+/* ── 開催回（方式C） ── */
+.pd-chip.trm-chip{border-color:var(--gold);color:var(--warn);background:rgba(200,168,75,.10)}
+.pd-chip.trm-chip.on{background:var(--gold);color:#2c2520;border-color:var(--gold);font-weight:700}
+.pd-trm-lab{font-size:10.5px;color:var(--text3);margin:9px 0 3px}
+.trm{display:flex;align-items:center;gap:7px;padding:8px 9px;border:1px solid var(--border);border-radius:8px;background:var(--bg2);margin-bottom:6px}
+.trm .nm{flex:0 0 auto;font-size:12.5px;font-weight:600;color:var(--accent);min-width:84px}
+.trm .dt{flex:1;font-size:11.5px;color:var(--text2);font-variant-numeric:tabular-nums}
+.trm .est{font-size:10px;font-weight:700;color:var(--warn);border:1px solid var(--warn);border-radius:99px;padding:0 6px;margin-left:5px;white-space:nowrap}
+.trm .ed,.trm .dl{flex:0 0 auto;width:26px;height:26px;border-radius:6px;border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit}
+.trm.mine{border-color:var(--accent2);background:var(--surface)}
+.trm-more,.trm-add{width:100%;font-size:12px;padding:9px;border-radius:8px;cursor:pointer;font-family:inherit;margin-top:4px}
+.trm-more{border:1px solid var(--border2);background:var(--bg);color:var(--text2)}
+.trm-add{border:1px dashed var(--border2);background:transparent;color:var(--accent)}
+.trm-none{font-size:11.5px;color:var(--text3);padding:10px 2px}
+.trm-form{border:1px solid var(--border2);border-radius:8px;padding:10px;background:var(--surface);margin-top:6px}
+.trm-form .row{display:flex;gap:7px;align-items:center;margin-bottom:7px}
+.trm-form .row label{font-size:11.5px;color:var(--text2);flex:0 0 62px}
+.trm-form input[type=date],.trm-form input[type=text]{flex:1;min-width:0}
+.trm-form .chk{font-size:11.5px;color:var(--text2);display:flex;align-items:center;gap:6px;margin-bottom:8px;cursor:pointer}
+.trm-form .chk input{width:auto}
+
 /* ══ 第1弾: 集計ジャンプ＋折りたたみ ══ */
 .agg-jump{display:flex;gap:6px;margin-bottom:12px;position:sticky;top:44px;z-index:18;background:var(--bg);padding:6px 0}
 .agg-jump .aj-chip{flex:1;text-align:center;font-size:12px;padding:8px 4px;border:1px solid var(--border2);border-radius:99px;background:var(--surface);color:var(--accent);cursor:pointer;font-family:var(--font-s);font-weight:600;letter-spacing:.03em}
@@ -519,7 +621,7 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
 .sb-subtitle{font-size:10px;color:var(--text3);letter-spacing:.08em;margin-top:1px}
 .sb-icons{display:flex;gap:6px}
 .sb-ic-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--border2);background:var(--bg);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--accent);padding:0}
-.sb-ic-btn.sb-help{border:1.5px solid var(--gold);background:rgba(200,168,75,.12);font-family:var(--font-s);font-weight:700;font-size:14px}
+.sb-ic-btn.sb-help{border:1.5px solid var(--gold);background:rgba(200,168,75,.12);font-family:var(--font-s);font-weight:700;font-size:14px;position:relative}
 .sb-clock{padding:10px 16px;border-bottom:1px solid var(--border);text-align:center}
 .sb-ckd{font-size:10px;color:var(--text3)}
 .sb-ckt{font-size:22px;font-weight:700;color:var(--accent);letter-spacing:2px;font-family:var(--font-s);line-height:1.2}
@@ -562,6 +664,74 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
 </style>
 </head>
 <body>
+<!-- ═══ SNSアプリの中で開いている人への案内 ═══════════════════
+     Xなどのアプリ内でリンクを開くと、ブラウザ本体とは別の場所に
+     データが保存される。同じ道具を開いても記録が見えず、
+     Googleログインも通らないことがある。
+     ここは案内を出すだけで、動きは何も変えない。 -->
+<div id="iab-bar" style="display:none"></div>
+<script>
+(function(){
+  var KEY='saniwa_iab_hide';
+  /* ホーム画面に追加して開いている状態。SNSアプリの中ではないので案内を出さない。
+     iOSは navigator.standalone、AndroidなどはCSSの display-mode で分かる。 */
+  function isHomeScreen(){
+    try{ if(navigator.standalone===true)return true; }catch(e){}
+    try{ if(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)return true; }catch(e){}
+    return false;
+  }
+  function isInApp(){
+    if(isHomeScreen())return false;
+    var ua=navigator.userAgent||'';
+    /* ①名乗っているアプリ ②AndroidのWebView ③iOSのWKWebView（Safari/の名乗りが無い） */
+    if(/FBAN|FBAV|FB_IAB|Instagram|\bLine\/|MicroMessenger|KAKAOTALK/.test(ua))return true;
+    if(/;\s*wv\)/.test(ua))return true;
+    if(/iPhone|iPad|iPod/.test(ua)&&ua.indexOf('AppleWebKit')>=0&&!/Safari\//.test(ua))return true;
+    return false;
+  }
+  function hidden(){ try{ return localStorage.getItem(KEY)==='1'; }catch(e){ return false; } }
+  function hasData(){ return typeof gdLocalEmpty==="function" ? !gdLocalEmpty() : false; }
+  function close(never){
+    if(never){ try{ localStorage.setItem(KEY,'1'); }catch(e){} }
+    var el=document.getElementById('iab-bar');
+    if(el)el.style.display='none';
+  }
+  window.iabClose=function(){
+    var c=document.getElementById('iab-never');
+    close(c&&c.checked);
+  };
+  /* 設定画面のお知らせなど、この帯の外からも同じ判定を使えるようにする */
+  window.isHomeScreen=isHomeScreen;
+  function show(){
+    var el=document.getElementById('iab-bar');
+    if(!el)return;
+    var body = hasData()
+      ? '<p style="margin:0 0 10px">ここでの記録は、<b>いま開いているアプリ（Xなど）の中</b>だけに保存されています。'
+        +'この道具ではなくそのアプリが管理している場所なので、アプリ側の都合でまとめて消えることがあります。</p>'
+        +'<p style="margin:0 0 10px"><b>いま画面に記録が見えているなら、先に書き出し（エクスポート）を取ってください。</b>'
+        +'そのファイルを、SafariやChromeで開いた同じ道具に読み込めば、そのまま続けられます。</p>'
+      : '<p style="margin:0 0 10px">このままでは記録が保存されない、以前の記録が見えない、Googleとつながらない、といったことが起きます。</p>'
+        +'<p style="margin:0"><b>メニューの「ブラウザで開く」から、SafariやChromeで開き直してください。</b>以前の記録がそのまま見えることがあります。</p>';
+    el.innerHTML=
+      '<div style="max-width:640px;margin:0 auto;padding:14px 16px;font-size:13px;line-height:1.85">'
+      +'<div style="font-weight:700;margin-bottom:8px">⚠ SNSアプリの中で開いています</div>'
+      +body
+      +'<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap">'
+      +'<label style="font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer">'
+      +'<input type="checkbox" id="iab-never"> このブラウザでは表示しない</label>'
+      +'<button onclick="iabClose()" style="padding:7px 18px;font-size:12px;border-radius:7px;'
+      +'border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer;font-family:inherit">閉じる</button>'
+      +'</div></div>';
+    el.setAttribute('style',
+      'display:block;background:#fff4d6;color:#5a4212;border-bottom:1px solid #e0c98a;'
+      +'position:relative;z-index:400');
+  }
+  function init(){ if(isInApp()&&!hidden())show(); }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
+<!-- ═══ ここまで ═══════════════════════════════════════════ -->
 <div class="save-warn" id="saveWarn" role="alert">
   <div class="ic">⚠</div>
   <div class="body">
@@ -585,6 +755,7 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
     <button class="hdr-pill hdr-pill-save" id="hdrSaveBtn" onclick="askSaveToCloud()" title="クラウドへ保存" aria-label="クラウドへ保存" style="display:none">↑<span>保存</span></button>
     <button class="hdr-pill hdr-pill-load" id="hdrLoadBtn" onclick="askLoadFromCloud()" title="クラウドから読み込み" aria-label="クラウドから読み込み" style="display:none">↓<span id="hdrLoadLabel">読み込み</span></button>
     <button class="hdr-pill" id="hdrReconBtn" onclick="gdSignIn()" title="Googleに再接続" aria-label="Googleに再接続" style="display:none;border-color:var(--warn);color:var(--warn);background:rgba(198,123,46,.10)">⚠<span>再接続</span></button>
+    <button class="hdr-pill" id="hdrNewsBtn" onclick="openNews()" title="更新のお知らせ" aria-label="更新のお知らせ" style="display:none;border-color:var(--gold);color:var(--gold);background:rgba(200,168,75,.12)">🆕<span>更新</span></button>
     <button class="hdr-act-btn help-rd" id="helpBtn" onclick="openGuide()" title="使い方" aria-label="使い方">？</button>
     <button class="hdr-act-btn hdr-mode-btn" id="hdrModeBtn" onclick="toggleViewMode()" title="表示モードを切り替え" aria-label="表示モードを切り替え"><span id="hdrModeIcon">🖥</span></button>
   </div>
@@ -657,9 +828,13 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
     <div id="sbToday"></div>
   </div>
 
-  <div class="sb-foot"><a href="saniwa_top.html">審神者の道具箱</a></div>
 </aside>
 <div id="mainCol">
+<div class="nbar" id="misfixBar">
+  <span class="ic">🔃</span><span class="tx">冬の連隊戦の記録があるかもしれません</span>
+  <button class="see" onclick="openMisfixDialog()">確認する</button>
+  <button class="cls" onclick="dismissMisfixBar()" title="このお知らせを閉じる" aria-label="このお知らせを閉じる">×</button>
+</div>
 <div class="mode-bar" id="modeBar">
   <div class="mode-switch">
     <div class="ms on" id="ms-easy" onclick="setRecMode('easy')">かんたん記録<span class="ms-sub">出たものを選ぶだけ</span></div>
@@ -675,6 +850,7 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
     <div class="card-h">📍 周回の設定</div>
     <label class="fl">場所</label>
     <select id="recPlace" onchange="onRecPlaceChange()"></select>
+    <div id="recPlaceExtras"></div>
     <div id="recFloorWrap">
       <label class="fl">階数</label>
       <select id="recFloor" onchange="onRecFloorChange()"></select>
@@ -687,7 +863,7 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
       <div class="floor-info" id="stageInfo2"></div>
     </div>
     <div id="recRentaiWrap" style="display:none">
-      <label class="fl">難易度</label>
+      <label class="fl" id="recRentaiLabel">難易度</label>
       <div id="recRentaiBtns"></div>
       <div class="rentai-sel" id="rentaiSel" style="display:none"></div>
     </div>
@@ -700,6 +876,8 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
       <div class="mass-btn on" id="mass-boss" onclick="setMass('boss')"><span class="mb-icon">🔴</span>ボスマス</div>
       <div class="mass-btn" id="mass-normal" onclick="setMass('normal')"><span class="mb-icon">🟣</span>通常マス</div>
       <div class="mass-btn" id="mass-kebi" onclick="setMass('kebi')" style="display:none"><span class="mb-icon">◉</span>検非違使マス</div>
+      <div class="mass-btn" id="mass-kunai" onclick="setMass('kunai')" style="display:none"><span class="mb-icon">🗡</span>苦無</div>
+      <div class="mass-btn" id="mass-unknown" onclick="setMass('unknown')" style="display:none"><span class="mb-icon">❔</span>不明</div>
     </div>
     <div class="note" id="featuredHint" style="display:none">※ 通常マスでは目玉男士は出ないため、候補から自動で外しています（誤記録防止）。</div>
     <div class="note" id="kebiHint" style="display:none">※ 検非違使マスは、<b>エリア設定タブ</b>でそのステージに「検非違使あり」を設定すると、ここで記録できるようになります。</div>
@@ -723,6 +901,8 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
     <div class="note detail-only">※「ドロップ無し」を記録すると <b>実ドロップ率</b> が出せます。構成比だけ見る日は記録しなくてOK。</div>
     <button class="nodrop-btn rentai-only" id="rentaiNoDropBtn" onclick="pickNoDrop()" style="display:none">― 目玉なしで記録（周回だけ）―</button>
     <div class="note rentai-only" id="rentaiNoDropNote" style="display:none">※ 目玉が出なかった日は、これで周回数だけ記録できます（通常ドロップはあった扱い）。集計で目玉の<b>実ドロップ率</b>が出せます。</div>
+    <button class="nodrop-btn rentai-only" id="rentaiNoDropBtn2" onclick="pickNoFeat()" style="display:none">― お迎えしたい男士は出なかった（周回だけ）―</button>
+    <div class="note rentai-only" id="rentaiNoDropNote2" style="display:none"></div>
     <div class="note" id="easyHint">※ かんたん記録では<b>目玉男士はボスのドロップ</b>として自動で記録します。それ以外はマスを問わず記録します。細かくマス分けしたいときは「詳しく記録」へ。</div>
     <div class="lastadd" id="lastAdd" style="margin-top:6px"></div>
   </div>
@@ -746,7 +926,7 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
       <input type="text" inputmode="numeric" class="cnt-input" id="killInput" onchange="killInputChg()">
       <button class="cnt-btn" onclick="chgKill(1)">＋</button>
     </div>
-    <div class="note">＋/− のボタンでも、数字を直接タップして入力してもOK。1周＝ボス1体です。1周ごとに記録しても、何周かまとめて記録してもかまいません（その周回数を入れてください）。</div>
+    <div class="note" id="killsNote">＋/− のボタンでも、数字を直接タップして入力してもOK。1周＝ボス1体です。1周ごとに記録しても、何周かまとめて記録してもかまいません（その周回数を入れてください）。</div>
     <div class="note">※ この欄は<b>周回数を数えるもの</b>です。ここに入れた数の合計が、実ドロップ率の<b>分母（総周回数）</b>になります。目玉が出た周も、出なかった周（「目玉なしで記録」）も、周回数を入れて記録すると、正しい率が出ます。</div>
   </div>
 
@@ -817,6 +997,24 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
 <div id="agg" class="screen">
   <div class="card">
     <div class="card-h">🔍 集計する条件</div>
+
+    <label class="fl">📅 期間</label>
+    <div class="pd-chips" id="aggPdChips">
+      <div class="pd-chip on" data-p="all" onclick="setAggPeriod(this)">全期間</div>
+      <div class="pd-chip" data-p="thism" onclick="setAggPeriod(this)">今月</div>
+      <div class="pd-chip" data-p="lastm" onclick="setAggPeriod(this)">先月</div>
+      <div class="pd-chip" data-p="d7" onclick="setAggPeriod(this)">過去7日</div>
+      <div class="pd-chip" data-p="d30" onclick="setAggPeriod(this)">過去30日</div>
+    </div>
+    <div class="pd-dates">
+      <input type="date" id="aggPdFrom" onchange="onAggPeriodDate()">
+      <span class="pd-tilde">〜</span>
+      <input type="date" id="aggPdTo" onchange="onAggPeriodDate()">
+    </div>
+    <div class="pd-trm-lab" id="aggTrmLab" style="display:none"></div>
+    <div class="pd-chips" id="aggTrmChips" style="display:none"></div>
+    <div class="pd-summary" id="aggPdSummary">すべての記録が対象です（<b>全期間</b>）</div>
+
     <label class="fl">場所</label><select id="aggPlace" onchange="onAggPlace()"></select>
     <div id="aggFloorWrap"><label class="fl" id="aggFloorLabel">階数</label><select id="aggFloor" onchange="onAggFloor()"></select></div>
   </div>
@@ -834,6 +1032,7 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
       <div class="tg" data-m="boss" onclick="setAggMass(this)">🔴 ボス</div>
       <div class="tg" data-m="normal" onclick="setAggMass(this)">🟣 通常マス</div>
       <div class="tg" data-m="kebi" id="aggMassKebi" onclick="setAggMass(this)">◉ 検非違使</div>
+      <div class="tg" data-m="kunai" id="aggMassKunai" onclick="setAggMass(this)" style="display:none">🗡 苦無</div>
     </div>
   </div>
 
@@ -844,6 +1043,11 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
       <div class="tg" data-m="B" onclick="setAggMode(this)">実ドロップ率</div>
     </div>
     <div class="help-box" id="modeHelp"></div>
+  </div>
+
+  <div class="card" id="aggSumCard">
+    <div class="card-h">📋 この条件のまとめ</div>
+    <div id="aggSummary"></div>
   </div>
 
   <div id="featBlock"></div>
@@ -879,6 +1083,17 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
     <div class="card-h agg-sec-hd" id="aggHdShizai" style="border:none" onclick="event.stopPropagation();toggleAggSec('shizai')">🟢 資源 <span class="agg-arw">▼</span></div>
     <div id="aggShizai" style="display:none"></div>
   </div>
+
+  <div class="card" id="aggExportCard">
+    <div class="card-h">📤 この条件で書き出す</div>
+    <div class="mini-note" style="margin-bottom:8px;">上でしぼりこんだ記録だけを、スプレッドシートで開ける形で書き出します。</div>
+    <div class="dm-btns">
+      <button class="btn btn-ghost btn-sm" onclick="exportAggCSV()">CSV</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportAggXLSX()">Excel (.xlsx)</button>
+    </div>
+    <div class="note" id="aggExportNote"></div>
+    <div class="mini-note" style="margin-top:6px">※ マスのしぼりこみは書き出しには反映されません（記録をまるごと書き出すため）。</div>
+  </div>
 </div>
 
 <!-- ===== ステージ設定 ===== -->
@@ -893,30 +1108,38 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
     <div class="mini-note" style="margin-bottom:8px;">看板になる目玉男士を指定します。記録画面でその階・ステージ・難易度を選ぶと★付きで出て、集計でハイライトされます（指定しなくてもOK）。<b>過去・大阪城は階やステージごと、連隊戦は難易度ごと</b>に目玉（レアドロップ）が変わります。自分が回るところだけ入れればOK。</div>
     <div id="scfgBody"></div>
   </div>
+  <div class="card" id="scfgTermsCard">
+    <div class="card-h">📅 開催期間</div>
+    <div class="mini-note" style="margin-bottom:8px;">この場所がいつ開催されたかを登録します。集計の期間しぼりこみに<b>開催回</b>として並びます（記録があるものだけ）。<b>記録には何も足しません</b>——記録の日付から自動で振り分けます。</div>
+    <div id="scfgTerms"></div>
+  </div>
 </div>
 
 <!-- ===== プリセット ===== -->
 <div id="preset" class="screen">
-  <div class="card">
-    <div class="card-h">🏯 場所プリセット</div>
+  <div class="card news-entry" onclick="openNews()">
+    <div class="card-h" style="margin:0">🆕 これまでの更新<span class="ne-arw">›</span></div>
+  </div>
+  <div class="card fcard" id="pc-place">
+    <div class="card-h" onclick="presetToggle('place')"><span class="arw">▼</span>🏯 場所プリセット</div>
     <div class="mini-note" style="margin-bottom:10px;">記録できる場所の一覧です。新しいイベントは順次追加されます。</div>
     <div id="placeList"></div>
   </div>
-  <div class="card">
-    <div class="card-h">🌸 お迎え男士の指定</div>
+  <div class="card fcard" id="pc-wish">
+    <div class="card-h" onclick="presetToggle('wish')"><span class="arw">▼</span>🌸 お迎え男士の指定</div>
     <div class="mini-note" style="margin-bottom:8px;">あなたが欲しい男士を登録すると、記録・最近の記録・集計で 🌸 が付きます（マスを問わず・全部の場所で共通）。目玉（★）と違って、ボス以外で拾える子の目印に。目玉になっている子は、ボスマスでは★、それ以外のマスでは🌸で表示されます。</div>
     <div class="feat-current" id="wishCurrent"></div>
     <input type="text" class="feat-search" id="wishSearch" placeholder="名前で検索してお迎えに追加（漢字・読み仮名）" oninput="onWishSearch()">
     <div class="feat-add-list" id="wishAddList"></div>
   </div>
 
-  <div class="card">
-    <div class="card-h">🎨 テーマ・配色</div>
+  <div class="card fcard" id="pc-theme">
+    <div class="card-h" onclick="presetToggle('theme')"><span class="arw">▼</span>🎨 テーマ・配色</div>
     <div class="mini-note" style="margin-bottom:8px">配色を選べます。一度決めれば、この端末でずっと使われます。</div>
     <div class="theme-row" id="themeRow"></div>
   </div>
-  <div class="card">
-    <div class="card-h">🖥 表示設定</div>
+  <div class="card fcard" id="pc-view">
+    <div class="card-h" onclick="presetToggle('view')"><span class="arw">▼</span>🖥 表示設定</div>
     <label class="sync-check"><input type="checkbox" id="stickyModeChk" onchange="toggleStickyMode()"> 「かんたん／詳しく」の切り替えを画面上部に固定する</label>
     <div class="mini-note">はじめからオンになっています。記録中にスクロールしても切り替えバーが上に残ります。固定したくないときはチェックを外してください。</div>
     <label class="sync-check" style="margin-top:12px"><input type="checkbox" id="selGroupChk" onchange="toggleSelGroup()"> 同じ名前の男士をまとめて並べる（記録順）</label>
@@ -945,8 +1168,8 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
     <div class="mini-note">一定の高さを超えたぶんは、カードの中だけでスクロールします。カード自体はそれ以上伸びません。</div>
   </div>
 
-  <div class="card">
-    <div class="card-h">☁ クラウド同期（Google Drive）</div>
+  <div class="card fcard" id="pc-sync">
+    <div class="card-h" onclick="presetToggle('sync')"><span class="arw">▼</span>☁ クラウド同期（Google Drive）</div>
     <div class="inapp-note" id="inappNote" style="display:none">
       <div class="ic">📱</div>
       <div class="body">
@@ -963,16 +1186,18 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-h">💾 データの保存・読み込み</div>
+  <div class="card fcard" id="pc-data">
+    <div class="card-h" onclick="presetToggle('data')"><span class="arw">▼</span>💾 データの保存・読み込み</div>
     <div class="mini-note" style="margin-bottom:10px">記録をファイルに書き出したり、ファイルから取り込めます。スプレッドシートで開ける形式（CSV・Excel）にも対応しています。</div>
 
     <div class="dm-label">書き出す（エクスポート）</div>
+    <div class="mini-note" style="margin-bottom:6px">すべての記録を書き出します。バックアップはこちらから。</div>
     <div class="dm-btns">
       <button class="btn btn-ghost btn-sm" onclick="exportJSON()">JSON（完全バックアップ）</button>
       <button class="btn btn-ghost btn-sm" onclick="exportCSV()">CSV</button>
       <button class="btn btn-ghost btn-sm" onclick="exportXLSX()">Excel (.xlsx)</button>
     </div>
+    <div class="note">💡 期間や場所をしぼって書き出したいときは、<b>集計</b>画面のいちばん下「この条件で書き出す」からどうぞ。</div>
 
     <div class="dm-label" style="margin-top:14px">テンプレートを書き出す</div>
     <div class="mini-note" style="margin-bottom:6px">記入例つきの空ファイル。これに沿って書けば取り込めます。</div>
@@ -1013,7 +1238,10 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
   </div>
 </div>
 
-<div class="sp-foot"><a href="saniwa_top.html">審神者の道具箱</a></div>
+<footer style="margin-top:36px;padding:20px 16px 28px;text-align:center;font-size:11px;line-height:2">
+  <div style="height:1px;background:currentColor;opacity:.14;margin:0 auto 16px;max-width:280px"></div>
+  <a href="saniwa_top.html" style="color:inherit;opacity:.85">審神者の道具箱</a><span style="opacity:.5">　・　</span><a href="privacy.html" style="color:inherit;opacity:.85">プライバシーポリシー</a><br><span style="opacity:.5">このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari shizukuishi</span><br><span style="opacity:.5">無断転載・再配布・広告目的での公開を禁じます。</span>
+</footer>
 </div>
 </div><!-- /mainCol -->
 </div><!-- /pcBody -->
@@ -1049,6 +1277,15 @@ html[data-view="pc"] #sbar{display:flex;flex-direction:column;width:230px;flex-s
 <div class="toast" id="toast"></div>
 
 <!-- 確認モーダル -->
+<div class="modal-bg" id="newsModal">
+  <div class="modal">
+    <div id="newsBody"></div>
+    <div class="modal-actions" style="margin-top:14px">
+      <button class="btn" style="width:100%" onclick="document.getElementById('newsModal').classList.remove('show')">とじる</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-bg" id="guideModal">
   <div class="modal">
     <div id="guideBody"></div>
@@ -1248,7 +1485,8 @@ const MR=[
 [252,"二筋樋貞宗","ふたすじひさだむね","打刀","貞宗"],
 [254,"雲重","うんじゅう","打刀","鵜飼"],
 [256,"柏太刀","かしわだち","大太刀","なし"],
-[258,"波平行安","なみのひらゆきやす","太刀","波平"]
+[258,"波平行安","なみのひらゆきやす","太刀","波平"],
+[260,"狐ヶ崎為次","きつねがさきためつぐ","太刀","青江"]
 ];
 /* ============================================================
    邂逅録 Kaikouroku — ローカル実装 v1
@@ -1260,11 +1498,28 @@ const TYPES=["短刀","脇差","打刀","太刀","大太刀","薙刀","槍","剣
 const SCHOOLS=["粟田口","長船","江","福岡一文字","三条","古備前","来","貞宗","左文字","正宗","兼定","堀川","鵜飼","三池","青江","村正","虎徹","広光","豊後国行平","波平","なし"];
 const THEMES=[["washi","和紙"],["sakura","桜"],["midori","緑"],["tetsu","鉄"]];
 const NODROP='__nodrop__';
+// 2つめの「周回だけ記録」（★を追いかけている人向け）。分母への効き方はNODROPと同じで、
+// 「本当に何も出なかった周」と「★は出なかった周」を後から見分けられるように別の印にする
+const NOFEAT='__nofeat__';
+function isNoDropName(n){return n===NODROP||n===NOFEAT;}
+// 記録・書き出しでの呼び名
+function noDropNameOf(n,pid){return n===NOFEAT?'目玉なし':noDropShort(pid);}
 // 連隊戦は「目玉なし（通常ドロップはあった）」、それ以外は「ドロップ無し（空振り）」と出し分ける
+// （百鬼夜行はそもそも何も出ない周が大半なので「空振り」側）
 function isRentaiPlace(pid){const p=placeById(pid);return !!(p&&p.type==='rentai');}
 function noDropLabel(pid){return isRentaiPlace(pid)?'目玉なし（通常ドロップのみ）':'ドロップ無し（空振り）';}
 function noDropShort(pid){return isRentaiPlace(pid)?'目玉なし':'ドロップ無し';}
-const MASS_LABEL={boss:'ボス',normal:'通常マス',kebi:'検非違使',resource:'資源',unknown:'マス不明'};
+// 2つめの印（NOFEAT）用の呼び名。ボタンの文言と揃える
+function noDropLabelOf(n,pid){return n===NOFEAT?'お迎えしたい男士は出なかった':noDropLabel(pid);}
+const MASS_LABEL={boss:'ボス',normal:'通常マス',kebi:'検非違使',kunai:'苦無',resource:'資源',unknown:'マス不明'};
+// 夜花奪還作戦だけは「どのマスか」ではなく「どの敵から出たか」で区別する。
+// 苦無はランダムに現れるレア敵で、マス（場所）ではないため。
+const MASS_LABEL_YOBANA={boss:'ボス',kunai:'苦無',unknown:'不明'};
+function massLabelOf(placeId,m){
+  const p=placeById(placeId);
+  if(p&&p.type==='yobana')return MASS_LABEL_YOBANA[m]||MASS_LABEL[m]||'';
+  return MASS_LABEL[m]||'';
+}
 // 資源の種類（key, ラベル, アイコン）。場所により使う種類を絞れる
 const RESOURCES=[['mokutan','木炭','🪵'],['tamahagane','玉鋼','🪨'],['reikyaku','冷却材','💧'],['toishi','砥石','🧱'],['irai','依頼札','📜']];
 const RES_LABEL={};const RES_ICON={};RESOURCES.forEach(([k,l,i])=>{RES_LABEL[k]=l;RES_ICON[k]=i;});
@@ -1312,13 +1567,13 @@ const SK='kk_data_v1', SS='kk_set_v1', BK='kk_bak_v1';
 
 // ── データ ──
 let UD={records:[],places:[],featured:[],featuredByStage:{},kebiByStage:{},onkeikoByStage:{},wishlist:[],updatedAt:0};
-let ST={palette:'tetsu',mode:'light',aggMode:'A',guideShown:false,periodicSync:false,autoSync:false,lastSync:0,lastHakata:'極',recentSort:'featured',recentSortDir:'desc',recentView:'date',stickyMode:true,selGroup:true,addFlash:false,warnUnsavedOsaka:true,hideHelpBtn:false,recentOpen:{},lastPlaceId:null,lastFloor:{},confirmSave:true,viewMode:'phone',clock:true,recBar:true,selShape:'list',selFold:true,selScroll:true};
+let ST={palette:'tetsu',mode:'light',aggMode:'A',guideShown:false,guideSeenVer:'',presetFold:{},periodicSync:false,autoSync:false,lastSync:0,lastHakata:'極',recentSort:'featured',recentSortDir:'desc',recentView:'date',stickyMode:true,selGroup:true,addFlash:false,warnUnsavedOsaka:true,hideHelpBtn:false,recentOpen:{},lastPlaceId:null,lastFloor:{},confirmSave:true,viewMode:'phone',clock:true,recBar:true,selShape:'list',selFold:true,selScroll:true};
 let _appReady=false;
 
 // デフォルト場所プリセット（大阪城）
 function defaultOsaka(){
   return {
-    id:'osaka', name:'大阪城（地下に眠る千両箱）', type:'osaka',
+    id:'osaka', name:OSAKA_NAME, type:'osaka',
     floors:[10,20,30,40,50,51,90,95,99], maxFloor:99,
     hakataRate:{'初':1.5,'極':2.0}, order:100, updatedAt:Date.now(), deleted:false
   };
@@ -1327,29 +1582,265 @@ function defaultOsaka(){
 function defaultKako(){
   return {id:'kako', name:'過去（恒常マップ）', type:'kako', order:0, updatedAt:Date.now(), deleted:false};
 }
-// 夏の連隊戦（期間限定イベント）。マスがないので資源・小判・検非違使なし。難易度ごとに目玉を持つ
-function defaultRentai(){
-  return {id:'rentai_natsu', name:'夏の連隊戦', type:'rentai', order:110, updatedAt:Date.now(), deleted:false};
-}
-// 連隊戦の難易度（8区分・2行）。sp=特別合戦場。記録のfloorにidを保存する
-const RENTAI_DIFF=[
-  {id:'easy',label:'易',sp:false},
-  {id:'normal',label:'普',sp:false},
-  {id:'hard',label:'難',sp:false},
-  {id:'superhard',label:'超難',sp:false},
-  {id:'sp_easy',label:'易',sp:true},
-  {id:'sp_normal',label:'普',sp:true},
-  {id:'sp_hard',label:'難',sp:true},
-  {id:'sp_superhard',label:'超難',sp:true}
+// 連隊戦～海辺の陣～（期間限定イベント）。マスがないので資源・小判・検非違使なし。難易度ごとに目玉を持つ
+// idは 'rentai_natsu' のまま変えない（記録のplaceIdが全部これを指しているため）。変えるのは表示名だけ
+// 場所名の区切りは中黒「・」に統一（全角チルダは今後使わない）
+const RENTAI_NAME='連隊戦・海辺の陣';
+const RENTAI_NAME_OLD='夏の連隊戦';         // いちばん古い名前
+const RENTAI_NAME_MID='連隊戦～海辺の陣～'; // 中黒にする前の名前（～は全角チルダ U+FF5E）
+const OSAKA_NAME='大阪城・地下に眠る千両箱';
+const OSAKA_NAME_OLD='大阪城（地下に眠る千両箱）';
+// 取り込みで拾う旧名（書き出したCSVを戻したときに迷子にしないため）
+const PLACE_OLD_NAMES=[
+  {id:'rentai_natsu', names:[RENTAI_NAME_OLD, RENTAI_NAME_MID]},
+  {id:'osaka',        names:[OSAKA_NAME_OLD]}
 ];
-function rentaiDiffById(id){return RENTAI_DIFF.find(d=>d.id===id);}
-// フルネーム（記録・集計の表示用）：通常はそのまま、特別は「特別合戦場・難」
-function rentaiDiffName(id){const d=rentaiDiffById(id);if(!d)return id;return d.sp?('特別合戦場・'+d.label):d.label;}
-// 短い名前（ボタン用）：易・普・難・超難
-function rentaiDiffShort(id){const d=rentaiDiffById(id);return d?d.label:id;}
-function isRentaiDiff(id){return !!rentaiDiffById(id);}
+// 連隊戦の改名を必要なら当てる。保存名がちょうど旧名のときだけ書き換える
+// （自分でつけた名前は触らない）。書き換えたら true
+// load() のほか、クラウド読み込み・JSON復元の後からも呼ぶ：
+// 古い端末やバックアップから旧名のデータが入ってくることがあるため
+function fixRentaiName(){
+  let changed=false;
+  const rn=(UD.places||[]).find(p=>p.id==='rentai_natsu');
+  if(rn&&(rn.name===RENTAI_NAME_OLD||rn.name===RENTAI_NAME_MID)){
+    rn.name=RENTAI_NAME;rn.updatedAt=Date.now();changed=true;
+  }
+  const os=(UD.places||[]).find(p=>p.id==='osaka');
+  if(os&&os.name===OSAKA_NAME_OLD){
+    os.name=OSAKA_NAME;os.updatedAt=Date.now();changed=true;
+  }
+  return changed;
+}
+function defaultRentai(){
+  return {id:'rentai_natsu', name:RENTAI_NAME, type:'rentai', order:110, updatedAt:Date.now(), deleted:false};
+}
+// 冬の「連隊戦」は現役。公式のイベント名は修飾のない「連隊戦」なので、名前は創作せずそのままにする。
+// どの連隊戦か分かるように、短い呼び名を「冬の連隊戦」にし、記録画面では場所セレクトの下に補足を出す。
+const RENTAI_FUYU_NAME='連隊戦';
+function defaultRentaiFuyu(){
+  return {id:'rentai_fuyu', name:RENTAI_FUYU_NAME, type:'rentai_fuyu', order:105, updatedAt:Date.now(), deleted:false};
+}
+// 連隊戦・初夏の陣は2回だけ開催されて終了。昔の記録を入れるために場所として残す。
+// ended:true の場所は記録画面のセレクトから畳む（集計にはいつでも出る）。
+const RENTAI_SHOKA_NAME='連隊戦・初夏の陣';
+function defaultRentaiShoka(){
+  return {id:'rentai_shoka', name:RENTAI_SHOKA_NAME, type:'rentai_shoka', order:115, ended:true, updatedAt:Date.now(), deleted:false};
+}
+// 対百鬼夜行迎撃作戦（期間限定イベント）。連隊戦と同じ「難易度で選ぶ」型
+// 夜花奪還作戦：場所は江戸下町の1つだけ（階や難易度の分岐がない）。
+// 男士が落ちるのはボスと、ランダムで現れるレア敵「苦無」を倒したときだけ。
+// 資源は大阪城と同じ4種（木炭・玉鋼・冷却材・砥石）が出て、小判は出ない。
+const YOBANA_NAME='夜花奪還作戦';
+const YOBANA_FLOOR='edo';   // 江戸下町（1つだけなので固定。目玉の鍵は yobana@edo）
+const YOBANA_FLOOR_NAME='江戸下町';  // 画面に出す名前。内部の階IDをそのまま見せないため
+function defaultYobana(){
+  return {id:'yobana', name:YOBANA_NAME, type:'yobana', order:140,
+          resources:OSAKA_RES.slice(), updatedAt:Date.now(), deleted:false};
+}
+const HYAKKI_NAME='対百鬼夜行迎撃作戦';
+function defaultHyakki(){
+  return {id:'hyakki', name:HYAKKI_NAME, type:'hyakki', order:130, updatedAt:Date.now(), deleted:false};
+}
 
+// 特命調査。あかり指定の並び順で5つぶんの席を取ってある。
+// 聚楽第200／文久土佐205／天保江戸210／慶長熊本215／慶応甲府220。
+// いま入っているのは慶長熊本だけ。ほかは開催されたときにこの番号で足す。
+const KEICHO_KUMAMOTO_NAME='特命調査・慶長熊本';
+function defaultKeichoKumamoto(){
+  return {id:'keicho_kumamoto', name:KEICHO_KUMAMOTO_NAME, type:'keicho_kumamoto', order:215, updatedAt:Date.now(), deleted:false};
+}
+
+// ══ 難易度で選ぶイベントの場所（共通の型） ══
+// マスの概念がなく、小判・資源も出ない。難易度（連隊戦）や迎撃ライン（百鬼夜行）ごとに目玉を持つ。
+// 新しいイベントを足すときは、ここに表を1つ書いて、場所プリセットの type をその鍵にするだけ。
+//   label : 画面の見出し（「難易度」「迎撃ライン」）
+//   rows  : 行分け（head=見出し／cols=横に並べる数／prefix=フルネームの頭／cls=行見出しの追加class／alias=取り込みで許す別名）
+//   items : 難易度そのもの。id を記録の floor に保存する（idは場所ごとに一意ならよい）
+const DIFF_SETS={
+  // 冬の「連隊戦」：通常4 ＋ 4種の乱＝8
+  //   2015・2016年は通常4のみ、2017-12-19以降に4種の乱が入った。
+  //   単発の「乱」は冬には一度も無いので置かない（初夏の陣だけにある）。
+  rentai_fuyu:{
+    label:'難易度',
+    rows:[
+      {head:'通常', cols:4, prefix:''},
+      {head:'乱',   cols:4, prefix:'乱・', cls:'sp', alias:['乱']}
+    ],
+    items:[
+      {id:'easy',      label:'易',   row:0},
+      {id:'normal',    label:'普',   row:0},
+      {id:'hard',      label:'難',   row:0},
+      {id:'superhard', label:'超難', row:0},
+      {id:'ran_chuya',  label:'昼夜', row:1},
+      {id:'ran_yasen',  label:'夜戦', row:1},
+      {id:'ran_kenrou', label:'堅牢', row:1},
+      {id:'ran_ensen',  label:'遠戦', row:1}
+    ],
+    noDropBtn:'― 目玉なしで記録（周回だけ）―',
+    noDropNote:'※ 目玉が出なかった日は、これで周回数だけ記録できます（通常ドロップはあった扱い）。集計で目玉の<b>実ドロップ率</b>が出せます。',
+    killsNote:'1周＝ボス1体'
+  },
+  // 連隊戦・初夏の陣：通常4 ＋ 単発の乱1 ＋ 4種の乱＝9
+  //   2017年は「乱」が1つだけ、2018年は4種。単発の乱は2017年の記録専用なので破線にする。
+  rentai_shoka:{
+    label:'難易度',
+    rows:[
+      {head:'通常', cols:4, prefix:''},
+      {head:'乱（2017年だけ）', cols:1, prefix:'', cls:'sp old', alias:['乱']},
+      {head:'乱', cols:4, prefix:'乱・', cls:'sp', alias:['乱']}
+    ],
+    items:[
+      {id:'easy',      label:'易',   row:0},
+      {id:'normal',    label:'普',   row:0},
+      {id:'hard',      label:'難',   row:0},
+      {id:'superhard', label:'超難', row:0},
+      {id:'ran',       label:'乱',   row:1, old:true},
+      {id:'ran_chuya',  label:'昼夜', row:2},
+      {id:'ran_yasen',  label:'夜戦', row:2},
+      {id:'ran_kenrou', label:'堅牢', row:2},
+      {id:'ran_ensen',  label:'遠戦', row:2}
+    ],
+    noDropBtn:'― 目玉なしで記録（周回だけ）―',
+    noDropNote:'※ 目玉が出なかった日は、これで周回数だけ記録できます（通常ドロップはあった扱い）。集計で目玉の<b>実ドロップ率</b>が出せます。',
+    killsNote:'1周＝ボス1体'
+  },
+  // 連隊戦・海辺の陣：通常4 ＋ 特別合戦場4
+  rentai:{
+    label:'難易度',
+    rows:[
+      {head:'通常',       cols:4, prefix:''},
+      {head:'特別合戦場', cols:4, prefix:'特別合戦場・', cls:'sp', alias:['特別','特']}
+    ],
+    items:[
+      {id:'easy',         label:'易',   row:0},
+      {id:'normal',       label:'普',   row:0},
+      {id:'hard',         label:'難',   row:0},
+      {id:'superhard',    label:'超難', row:0},
+      {id:'sp_easy',      label:'易',   row:1},
+      {id:'sp_normal',    label:'普',   row:1},
+      {id:'sp_hard',      label:'難',   row:1},
+      {id:'sp_superhard', label:'超難', row:1}
+    ],
+    noDropBtn:'― 目玉なしで記録（周回だけ）―',
+    noDropNote:'※ 目玉が出なかった日は、これで周回数だけ記録できます（通常ドロップはあった扱い）。集計で目玉の<b>実ドロップ率</b>が出せます。',
+    killsNote:'1周＝ボス1体'
+  },
+  // 対百鬼夜行迎撃作戦：高／中／低 × 甲・乙・丙
+  hyakki:{
+    label:'迎撃ライン',
+    rows:[
+      {head:'高難易度', cols:3, prefix:'高難易度・'},
+      {head:'中難易度', cols:3, prefix:'中難易度・'},
+      {head:'低難易度', cols:3, prefix:'低難易度・'}
+    ],
+    items:[
+      {id:'hi_kou',   label:'甲', row:0},
+      {id:'hi_otsu',  label:'乙', row:0},
+      {id:'hi_hei',   label:'丙', row:0},
+      {id:'chu_kou',  label:'甲', row:1},
+      {id:'chu_otsu', label:'乙', row:1},
+      {id:'chu_hei',  label:'丙', row:1},
+      {id:'tei_kou',  label:'甲', row:2},
+      {id:'tei_otsu', label:'乙', row:2},
+      {id:'tei_hei',  label:'丙', row:2}
+    ],
+    noDropBtn:'― ドロップ無し（空振り）として記録 ―',
+    noDropNote:'※ <b>何も出なかった周</b>はこれ。周回数だけ記録できます。',
+    noDropBtn2:'― お迎えしたい男士は出なかった（周回だけ）―',
+    noDropNote2:'※ ★を付けた男士だけを追いかけている人向け。<b>ほかの男士が出ていても記録しない</b>とき、周回数だけ数えられます。',
+    killsNote:'1周＝1回の出陣'
+  },
+  // 特命調査・慶長熊本。難易度ではなく「どのマスで戦ったか × 難易度」で分ける。
+  // 難易度（普／難）は2026年の回から。2024年までの回には無いので、いちばん上に破線の段を置く。
+  // 闇り通路は「通路そのもの」ではなく、その中にいるボスのこと（通路の通常マスは「通常マス」側）。
+  keicho_kumamoto:{
+    // label は見出しのほか「すべての〜」「9つの〜 すべてに入れる」のように文章へ名詞として入る。
+    // 問いかけの形（どこで戦った？）にすると文が壊れるので、名詞にしておくこと。
+    label:'戦った場所',
+    rows:[
+      {head:'2024年までの回', cols:3, prefix:'', cls:'old'},
+      {head:'普',             cols:3, prefix:'普・'},
+      {head:'難',             cols:3, prefix:'難・', cls:'sp'}
+    ],
+    items:[
+      {id:'old_kuragari',   label:'闇り通路のボス', row:0, old:true},
+      {id:'old_honmaru',    label:'本丸御殿',       row:0, old:true},
+      {id:'old_normal',     label:'通常マス',       row:0, old:true},
+      {id:'futsu_kuragari', label:'闇り通路のボス', row:1},
+      {id:'futsu_honmaru',  label:'本丸御殿',       row:1},
+      {id:'futsu_normal',   label:'通常マス',       row:1},
+      {id:'nan_kuragari',   label:'闇り通路のボス', row:2},
+      {id:'nan_honmaru',    label:'本丸御殿',       row:2},
+      {id:'nan_normal',     label:'通常マス',       row:2}
+    ],
+    noDropBtn:'― 目玉なしで記録（周回だけ）―',
+    noDropNote:'※ 目玉が出なかった日は、これで周回数だけ記録できます（通常ドロップはあった扱い）。集計で目玉の<b>実ドロップ率</b>が出せます。',
+    noDropBtn2:'― お迎えしたい男士は出なかった（周回だけ）―',
+    noDropNote2:'※ ★を付けた男士だけを追いかけている人向け。<b>ほかの男士が出ていても記録しない</b>とき、周回数だけ数えられます。',
+    killsNote:'1周＝マップを回りきる'
+  }
+};
+function diffSetOfType(t){return (t&&DIFF_SETS[t])||null;}
+function isDiffPlaceObj(p){return !!(p&&diffSetOfType(p.type));}
+function diffSetOf(pid){return diffSetOfType((placeById(pid)||{}).type);}
+function isDiffPlace(pid){return !!diffSetOf(pid);}
+// 難易度の照会は必ず場所ごとに引く（別のイベントで同じidを使ってもぶつからない）
+function diffById(pid,id){const s=diffSetOf(pid);return s?(s.items.find(d=>d.id===id)||null):null;}
+function isDiffId(pid,id){return !!diffById(pid,id);}
+function firstDiffId(pid){const s=diffSetOf(pid);return (s&&s.items.length)?s.items[0].id:null;}
+// フルネーム（記録・集計の表示用）：「難」「特別合戦場・難」「高難易度・甲」
+function diffName(pid,id){
+  const s=diffSetOf(pid),d=diffById(pid,id);
+  if(!s||!d)return id;
+  return ((s.rows[d.row]||{}).prefix||'')+d.label;
+}
+function diffLabel(pid){const s=diffSetOf(pid);return (s&&s.label)||'難易度';}
+// 取り込み用：表示名から難易度idを引く。区切り記号のゆれは吸収するが、
+// 「ちょい難」が「難」に化けないよう、部分一致はさせない
+function diffIdFromName(pid,v){
+  const s=diffSetOf(pid);if(!s)return null;
+  const k=x=>String(x==null?'':x).replace(/[・･\-‐‑‒–—―ー－\s　]/g,'');
+  const vk=k(v);if(!vk)return null;
+  for(const d of s.items){if(k(((s.rows[d.row]||{}).prefix||'')+d.label)===vk)return d.id;}
+  for(const d of s.items){
+    const al=(s.rows[d.row]||{}).alias||[];
+    for(const a of al){if(k(a+d.label)===vk)return d.id;}
+  }
+  for(const d of s.items){if(k(d.label)===vk)return d.id;}
+  return null;
+}
+
+// ══ 場所の「短い呼び名」 ══
+// 画面の見出しに使う。既定の名前のときだけ当てる（自分で名前を変えている人のものは触らない）
+// name は「その名前のときに short を当てる」条件。改名したら旧名も並べておくこと
+// （ここを新名だけにすると、まだ改名が当たっていない端末で短い呼び名が消える）
+const PLACE_SHORT=[
+  {id:'kako',         name:'過去（恒常マップ）', short:'過去'},
+  {id:'osaka',        name:OSAKA_NAME,           short:'大阪城'},
+  {id:'osaka',        name:OSAKA_NAME_OLD,       short:'大阪城'},
+  {id:'rentai_natsu', name:RENTAI_NAME,          short:'夏の連隊戦'},
+  {id:'rentai_natsu', name:RENTAI_NAME_MID,      short:'夏の連隊戦'},
+  {id:'rentai_natsu', name:RENTAI_NAME_OLD,      short:'夏の連隊戦'},
+  {id:'rentai_fuyu',  name:RENTAI_FUYU_NAME,     short:'冬の連隊戦'},
+  {id:'rentai_shoka', name:RENTAI_SHOKA_NAME,    short:'初夏の連隊戦'},
+  {id:'hyakki',       name:HYAKKI_NAME,          short:'百鬼夜行'},
+  {id:'yobana',       name:YOBANA_NAME,          short:'夜花'},
+  {id:'keicho_kumamoto', name:KEICHO_KUMAMOTO_NAME, short:'慶長熊本'}
+];
+function shortName(p){
+  if(!p)return '';
+  if(p.short)return String(p.short);
+  const d=PLACE_SHORT.find(x=>x.id===p.id);
+  if(d&&p.name===d.name)return d.short;
+  return String(p.name||'').replace(/（.*）/,'');
+}
+function shortNameOf(pid){return shortName(placeById(pid));}
+
+let _firstEver=false;
 function load(){
+  // 正真正銘の初回かどうかは「設定がまだ保存されていないこと」で見分ける。
+  // ST.guideShown は既定値なので、既存ユーザーの保存済み設定にも入っており判定に使えない。
+  try{_firstEver=!localStorage.getItem(SS);}catch(e){_firstEver=false;}
   try{const d=localStorage.getItem(SK);if(d)UD=JSON.parse(d);}catch(e){}
   try{const s=localStorage.getItem(SS);if(s)ST={...ST,...JSON.parse(s)};}catch(e){}
   // 一度きりの移行：モードバー固定を既定ONに揃える（以後は手動の選択を尊重）
@@ -1380,6 +1871,34 @@ function load(){
   // 夏の連隊戦を一度だけ追加
   if(!UD.places.some(p=>p.id==='rentai_natsu')){
     UD.places.push(defaultRentai());
+  }
+  // 対百鬼夜行迎撃作戦を一度だけ追加（自分で消した人には戻さない）
+  if(!UD.places.some(p=>p.id==='hyakki')){
+    UD.places.push(defaultHyakki());
+  }
+  // 冬の「連隊戦」と「連隊戦・初夏の陣」を一度だけ追加（自分で消した人には戻さない）
+  if(!UD.places.some(p=>p.id==='rentai_fuyu')){
+    UD.places.push(defaultRentaiFuyu());
+  }
+  if(!UD.places.some(p=>p.id==='rentai_shoka')){
+    UD.places.push(defaultRentaiShoka());
+  }
+  // 夜花奪還作戦を一度だけ追加（自分で消した人には戻さない）
+  if(!UD.places.some(p=>p.id==='yobana')){
+    UD.places.push(defaultYobana());
+  }
+  // 特命調査・慶長熊本を一度だけ追加（自分で消した人には戻さない）
+  if(!UD.places.some(p=>p.id==='keicho_kumamoto')){
+    UD.places.push(defaultKeichoKumamoto());
+  }
+  // 一度きりの改名：「夏の連隊戦」→「連隊戦～海辺の陣～」
+  // 保存されている名前がちょうど旧名のときだけ書き換える（自分で名前を変えていた人のものは触らない）
+  if(!ST.rentaiNameV1){
+    if(fixRentaiName()){
+      try{localStorage.setItem(SK,JSON.stringify(UD));}catch(e){}
+    }
+    ST.rentaiNameV1=true;
+    try{saveST();}catch(e){}
   }
   // 一度きりの移行：場所の並び順を 過去=0／大阪城=100 に揃える（記録・男士のデータには触らない）
   if(!ST.placeOrderV2){
@@ -1427,6 +1946,17 @@ function dismissSaveWarn(){
 // ── アクティブ抽出（soft-delete除外） ──
 function activeRecords(){return UD.records.filter(r=>!r.deleted);}
 function activePlaces(){return UD.places.filter(p=>!p.deleted).sort((a,b)=>(a.order||0)-(b.order||0));}
+// 階の選択肢（大阪城）。設定の「記録する階」に、記録が残っている階を足して返す。
+// 昔の開催では100階まであった等、いまの設定にない階の記録を持っている人が、その階を選べるように
+function floorOptions(p){
+  const set=new Set(((p&&p.floors)||[]).map(Number).filter(f=>isFinite(f)&&f>0));
+  if(p)(UD.records||[]).forEach(r=>{
+    if(r.deleted||r.placeId!==p.id)return;
+    const f=Number(r.floor);
+    if(isFinite(f)&&f>0)set.add(f);
+  });
+  return [...set].sort((a,b)=>b-a);
+}
 function placeById(id){return UD.places.find(p=>p.id===id&&!p.deleted);}
 function uid(p){return p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 // 端末のタイムゾーンに関係なく日本時間(JST=UTC+9)で年月日を出す
@@ -1462,7 +1992,7 @@ function doShowScreen(id,el){
   // 上部タブとサイドバーのナビ、両方のactiveを画面IDで揃える
   document.querySelectorAll('.tab,.snav').forEach(t=>t.classList.toggle('active',t.dataset.scr===id));
   window.scrollTo(0,0);
-  const mb=document.getElementById('modeBar');if(mb){const _rp=placeById(recState.placeId);mb.style.display=(id==='rec'&&!(_rp&&_rp.type==='rentai'))?'':'none';}
+  const mb=document.getElementById('modeBar');if(mb){const _rp=placeById(recState.placeId);mb.style.display=(id==='rec'&&!isDiffPlaceObj(_rp))?'':'none';}
   applyRecBar();
   if(id==='agg'){renderAggControls();renderAgg();}
   if(id==='preset')renderPreset();
@@ -1541,8 +2071,10 @@ function initRecState(){
   }else if(p&&p.type==='kako'){
     const st=(lf[pid]&&stageById(lf[pid]))?lf[pid]:_kakoStage;
     recState.floor=st;_kakoStage=st;_kakoMen=menOfStage(st);
-  }else if(p&&p.type==='rentai'){
-    recState.floor=(lf[pid]&&isRentaiDiff(lf[pid]))?lf[pid]:'easy';
+  }else if(p&&p.type==='yobana'){
+    recState.floor=YOBANA_FLOOR;   // 江戸下町の1つだけなので固定
+  }else if(isDiffPlaceObj(p)){
+    recState.floor=(lf[pid]&&isDiffId(pid,lf[pid]))?lf[pid]:firstDiffId(pid);
   }
 }
 // 前回いた場所と、場所ごとの前回ステージ（大阪城は前回の階）を覚える
@@ -1550,18 +2082,20 @@ function rememberPlace(){
   if(!ST.lastFloor)ST.lastFloor={};
   ST.lastPlaceId=recState.placeId;
   const p=placeById(recState.placeId);
-  if(p&&(p.type==='osaka'||p.type==='kako'||p.type==='rentai'))ST.lastFloor[recState.placeId]=recState.floor;
+  if(p&&(p.type==='osaka'||p.type==='kako'||p.type==='yobana'||isDiffPlaceObj(p)))ST.lastFloor[recState.placeId]=recState.floor;
   saveST();
 }
 
 function renderRecPlace(){
   const sel=document.getElementById('recPlace');
-  sel.innerHTML=activePlaces().map(p=>`<option value="${p.id}" ${p.id===recState.placeId?'selected':''}>${p.name}</option>`).join('');
+  // 終わったイベントは畳む。いま選んでいる場所は消さない
+  sel.innerHTML=recPlaceList().map(p=>`<option value="${p.id}" ${p.id===recState.placeId?'selected':''}>${esc(p.name)}${isEndedPlace(p)?'（終了）':''}</option>`).join('');
+  renderRecPlaceExtras();
 }
 function updateHeaderSub(){
   // ヘッダーのサブは固定（「― 男士ドロップ集計 ―」）になったので何もしない
   const el=document.getElementById('hSub');
-  if(el){const p=placeById(recState.placeId);const name=p?p.name.replace(/（.*）/,''):'';el.textContent='― '+(name||'')+' ドロップ集計 ―';}
+  if(el){const name=shortNameOf(recState.placeId);el.textContent='― '+(name||'')+' ドロップ集計 ―';}
 }
 function onRecPlaceChange(){
   recState.placeId=document.getElementById('recPlace').value;
@@ -1574,10 +2108,17 @@ function onRecPlaceChange(){
     recState.koban=0;recState.kobanHits=0;
     const ki=document.getElementById('kobanInput');if(ki)ki.value='';
     const khi=document.getElementById('kobanHitsInput');if(khi)khi.value='';
-  }else if(p&&p.type==='rentai'){
+  }else if(p&&p.type==='yobana'){
+    // 江戸下町の1つだけなので階は固定。大阪城から移ったときに階が残らないようにする
+    recState.floor=YOBANA_FLOOR;
+    // 夜花では小判は出ないので入力をクリア
+    recState.koban=0;recState.kobanHits=0;
+    const ki=document.getElementById('kobanInput');if(ki)ki.value='';
+    const khi=document.getElementById('kobanHitsInput');if(khi)khi.value='';
+  }else if(isDiffPlaceObj(p)){
     const lf=ST.lastFloor||{};
-    recState.floor=(lf[p.id]&&isRentaiDiff(lf[p.id]))?lf[p.id]:'easy';
-    // 連隊戦は小判なし・かんたん固定
+    recState.floor=(lf[p.id]&&isDiffId(p.id,lf[p.id]))?lf[p.id]:firstDiffId(p.id);
+    // 連隊戦・百鬼夜行は小判なし・かんたん固定
     recState.koban=0;recState.kobanHits=0;
     const ki=document.getElementById('kobanInput');if(ki)ki.value='';
     const khi=document.getElementById('kobanHitsInput');if(khi)khi.value='';
@@ -1588,22 +2129,37 @@ function onRecPlaceChange(){
 }
 function renderRecFloor(){
   const p=placeById(recState.placeId);
-  const isRentai=(p&&p.type==='rentai');
-  ['rentaiNoDropBtn','rentaiNoDropNote'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display=isRentai?'':'none';});
-  // 過去・連隊戦では小判が出ないので小判カードを隠す（大阪城は今まで通り表示）
+  const isDiff=isDiffPlaceObj(p);
+  const dset=isDiff?DIFF_SETS[p.type]:null;
+  ['rentaiNoDropBtn','rentaiNoDropNote'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display=isDiff?'':'none';});
+  // 「周回だけ記録」の文言は場所の型ごと（連隊戦＝目玉なし／百鬼夜行＝空振り）
+  if(dset){
+    const nb=document.getElementById('rentaiNoDropBtn');if(nb)nb.textContent=dset.noDropBtn;
+    const nn=document.getElementById('rentaiNoDropNote');if(nn)nn.innerHTML=dset.noDropNote;
+  }
+  // 2つめのボタン（★だけを追いかけている人向け）。持っている型のときだけ出す
+  const _has2=!!(dset&&dset.noDropBtn2);
+  const nb2=document.getElementById('rentaiNoDropBtn2');
+  const nn2=document.getElementById('rentaiNoDropNote2');
+  if(nb2){nb2.style.display=(isDiff&&_has2)?'':'none';if(_has2)nb2.textContent=dset.noDropBtn2;}
+  if(nn2){nn2.style.display=(isDiff&&_has2)?'':'none';if(_has2)nn2.innerHTML=dset.noDropNote2;}
+  // 「何周した？」の説明も型ごと（連隊戦＝1周＝ボス1体／百鬼夜行＝1周＝1回の出陣）
+  const kn=document.getElementById('killsNote');
+  if(kn)kn.innerHTML='＋/− のボタンでも、数字を直接タップして入力してもOK。'+((dset&&dset.killsNote)||'1周＝ボス1体')+'です。1周ごとに記録しても、何周かまとめて記録してもかまいません（その周回数を入れてください）。';
+  // 小判が出るのは大阪城だけ。過去・連隊戦・百鬼夜行・夜花奪還作戦では小判カードを隠す
   const kc=document.getElementById('kobanCardRec');
-  if(kc)kc.style.display=(p&&(p.type==='kako'||p.type==='rentai'))?'none':'';
-  // 資源カード：連隊戦はマスがないので隠す
+  if(kc)kc.style.display=(p&&p.type==='osaka')?'':'none';
+  // 資源カード：マスがないので隠す
   const shc=document.getElementById('shizaiCard');
-  if(shc)shc.style.display=isRentai?'none':'';
-  // モードバー：連隊戦はマスがないので隠して「かんたん」固定
+  if(shc)shc.style.display=isDiff?'none':'';
+  // モードバー：マスがないので隠して「かんたん」固定
   const mb=document.getElementById('modeBar');
-  if(mb)mb.style.display=isRentai?'none':'';
-  if(isRentai&&recState.recMode!=='easy'){recState.recMode='easy';document.getElementById('ms-easy')?.classList.add('on');document.getElementById('ms-detail')?.classList.remove('on');document.querySelectorAll('#rec .detail-only').forEach(e=>e.style.display='none');}
+  if(mb)mb.style.display=isDiff?'none':'';
+  if(isDiff&&recState.recMode!=='easy'){recState.recMode='easy';document.getElementById('ms-easy')?.classList.add('on');document.getElementById('ms-detail')?.classList.remove('on');document.querySelectorAll('#rec .detail-only').forEach(e=>e.style.display='none');}
   const snote=document.getElementById('shizaiNote');
   if(snote){
-    if(p&&(p.type==='kako'||p.type==='rentai')){snote.style.display='none';}
-    else{snote.style.display='';snote.textContent='※ 小判は上の金色の欄に入れてください。';}
+    if(p&&p.type==='osaka'){snote.style.display='';snote.textContent='※ 小判は上の金色の欄に入れてください。';}
+    else{snote.style.display='none';}
   }
   const fw=document.getElementById('recFloorWrap');
   const sw=document.getElementById('recStageWrap');
@@ -1611,35 +2167,40 @@ function renderRecFloor(){
   if(p&&p.type==='osaka'){
     fw.style.display='block'; if(sw)sw.style.display='none'; if(rw)rw.style.display='none';
     const sel=document.getElementById('recFloor');
-    sel.innerHTML=(p.floors||[]).slice().sort((a,b)=>b-a).map(f=>`<option value="${f}" ${f===recState.floor?'selected':''}>${f}階</option>`).join('');
+    sel.innerHTML=floorOptions(p).map(f=>`<option value="${f}" ${f===recState.floor?'selected':''}>${f}階</option>`).join('');
     document.getElementById('floorInfo').innerHTML='※ 記録できる階は<b>エリア設定タブ</b>で増やせます（50階・特定階の周回にも対応）';
   }else if(p&&p.type==='kako'){
     fw.style.display='none'; if(sw)sw.style.display='block'; if(rw)rw.style.display='none';
     renderRecStage();
-  }else if(isRentai){
+  }else if(isDiff){
     fw.style.display='none'; if(sw)sw.style.display='none'; if(rw)rw.style.display='block';
-    renderRentaiDiff();
+    renderDiffBtns();
   }else{
     fw.style.display='none'; if(sw)sw.style.display='none'; if(rw)rw.style.display='none';
   }
   updateMassToggle();
   if(typeof updateSidebar==='function')updateSidebar();
 }
-// 連隊戦の難易度ボタン（2行・見出し付き）
-function renderRentaiDiff(){
+// 難易度ボタン（行分けは場所の型ごと。連隊戦=2行×4／百鬼夜行=3行×3）
+function renderDiffBtns(){
   const box=document.getElementById('recRentaiBtns');
   if(!box)return;
-  const row=(sp)=>RENTAI_DIFF.filter(d=>d.sp===sp).map(d=>`<button class="rec-stage-btn ${recState.floor===d.id?'on':''}" onclick="pickRentaiDiff('${d.id}')" style="text-align:center"><span class="id">${d.label}</span></button>`).join('');
-  box.innerHTML=`<div class="rentai-row-label">通常</div><div class="rec-stage-btns rentai-grid">${row(false)}</div>`
-    +`<div class="rentai-row-label sp">特別合戦場</div><div class="rec-stage-btns rentai-grid">${row(true)}</div>`;
+  const pid=recState.placeId, s=diffSetOf(pid);
+  if(!s)return;
+  const lab=document.getElementById('recRentaiLabel');
+  if(lab)lab.textContent=s.label;
+  box.innerHTML=s.rows.map((r,ri)=>{
+    const btns=s.items.filter(d=>d.row===ri).map(d=>`<button class="rec-stage-btn ${d.old?'old ':''}${recState.floor===d.id?'on':''}" onclick="pickDiff('${d.id}')" style="text-align:center"><span class="id">${d.label}</span></button>`).join('');
+    return `<div class="rentai-row-label${r.cls?' '+r.cls:''}">${r.head}</div><div class="rec-stage-btns rentai-grid c${r.cols||4}">${btns}</div>`;
+  }).join('');
   const sel=document.getElementById('rentaiSel');
-  if(sel){sel.style.display='block';sel.innerHTML=`<i class="ti"></i>えらび中：<b>${rentaiDiffName(recState.floor)}</b>`;}
+  if(sel){sel.style.display='block';sel.innerHTML=`<i class="ti"></i>えらび中：<b>${diffName(pid,recState.floor)}</b>`;}
 }
-function pickRentaiDiff(id){
-  if(!isRentaiDiff(id))return;
+function pickDiff(id){
+  if(!isDiffId(recState.placeId,id))return;
   recState.floor=id;
   rememberPlace();
-  renderRentaiDiff();buildQuick();
+  renderDiffBtns();buildQuick();
   if(typeof renderSbNow==='function')renderSbNow();
 }
 function renderRecStage(){
@@ -1699,6 +2260,24 @@ function updateMassToggle(){
   const isKako=(p&&p.type==='kako');
   const unlocked=isKako&&curKebiUnlocked();
   const onkeiko=isKako&&curOnkeiko();
+  // 夜花奪還作戦：マスではなく「出た敵」で区別する（ボス／苦無／不明）
+  const isYobana=!!(p&&p.type==='yobana');
+  const card=document.getElementById('massCard');
+  const kunaiBtn=document.getElementById('mass-kunai');
+  const unkBtn=document.getElementById('mass-unknown');
+  const nmlBtn=document.getElementById('mass-normal');
+  if(card){
+    const h=card.querySelector('.card-h'), sub=card.querySelector('.card-sub');
+    if(h)h.innerHTML=isYobana?'⚔ どの敵から？':'🗺 どのマス？';
+    if(sub)sub.textContent=isYobana
+      ?'男士が落ちるのはボスと苦無だけです。どちらから出たかを選びます'
+      :'記録するマスを選びます。マスによって男士の候補が変わります';
+  }
+  if(kunaiBtn)kunaiBtn.style.display=isYobana?'':'none';
+  if(unkBtn)unkBtn.style.display=isYobana?'':'none';
+  if(nmlBtn)nmlBtn.style.display=isYobana?'none':'';
+  if(isYobana&&recState.mass!=='boss'&&recState.mass!=='kunai'&&recState.mass!=='unknown')setMass('boss');
+  if(!isYobana&&(recState.mass==='kunai'||recState.mass==='unknown'))setMass('boss');
   const kbtn=document.getElementById('mass-kebi');
   if(kbtn){
     kbtn.style.display=unlocked?'':'none'; // 解禁済みなら出す（隠形香ONでも存在は見せて、灰色で避けてるとわかるように）
@@ -1723,11 +2302,11 @@ function buildQuick(){
   const easy=recState.recMode==='easy';
   const _pt=placeById(recState.placeId)?.type;
   const recs=activeRecords().filter(r=>r.placeId===recState.placeId
-    &&((_pt!=='osaka'&&_pt!=='kako'&&_pt!=='rentai')||r.floor===recState.floor));
+    &&((_pt!=='osaka'&&_pt!=='kako'&&!diffSetOfType(_pt))||r.floor===recState.floor));
   // 頻度集計（詳しくモードは選択中マスのみ、かんたんは全マス）
   const freq={};
   recs.forEach(r=>r.swords.forEach(s=>{
-    if(s.name===NODROP)return;
+    if(isNoDropName(s.name))return;
     if(!easy&&s.mass!==recState.mass)return;
     freq[s.name]=(freq[s.name]||0)+s.count;
   }));
@@ -1794,16 +2373,19 @@ function addSword(name){
   if(!recState.swords[k])recState.swords[k]={name,mass:m,count:0,seq:recState._swseq++};
   recState.swords[k].count++;renderSelected(k);addFeedback(name,recState.swords[k].count);
 }
-function pickNoDrop(){
+function pickNoDrop(){ pickNoDropKind(NODROP); }
+// ★だけを追いかけている人向けの「周回だけ記録」
+function pickNoFeat(){ pickNoDropKind(NOFEAT); }
+function pickNoDropKind(kind){
   const m=recState.mass; // ドロップ無しは詳しくモードのみ
-  const k=selKey(NODROP,m);
-  if(!recState.swords[k])recState.swords[k]={name:NODROP,mass:m,count:0,seq:recState._swseq++};
-  recState.swords[k].count++;renderSelected(k);addFeedback(NODROP,recState.swords[k].count);
+  const k=selKey(kind,m);
+  if(!recState.swords[k])recState.swords[k]={name:kind,mass:m,count:0,seq:recState._swseq++};
+  recState.swords[k].count++;renderSelected(k);addFeedback(kind,recState.swords[k].count);
 }
 // 男士を足したときの手応え：操作場所の近くの一行＋画面下のトースト（数だけ伸びる）
 let _lastAddTimer=null,_addToastTimer=null;
 function addFeedback(name,count){
-  const disp=(name===NODROP)?noDropLabel(recState.placeId):name;
+  const disp=isNoDropName(name)?noDropLabelOf(name,recState.placeId):name;
   const cntTxt=count>1?`（×${count}）`:'';
   // 操作場所の近くの一行
   const el=document.getElementById('lastAdd');
@@ -1844,7 +2426,7 @@ function commitSelCount(k,val){
 // ── 選んだ男士の並べ替え ──
 const SEL_SORT_DEFS=[['record','記録順',false],['name','名前順',true],['type','種類順',true],['no','No順',true],['count','件数順',true]];
 const SEL_KIND_ORDER=['短刀','脇差','打刀','太刀','大太刀','薙刀','槍','剣'];
-const SEL_MASS_ORDER={boss:0,normal:1,kebi:2,unknown:3};
+const SEL_MASS_ORDER={boss:0,kunai:1,normal:2,kebi:3,unknown:4};
 // 表示順のキー配列を返す
 function selOrderedKeys(){
   const keys=Object.keys(recState.swords);
@@ -1949,7 +2531,7 @@ function renderSelected(flashKey){
     const added=(k===flashKey);            // 今足した行
     const flashCls=(added&&ST.addFlash)?' flash':''; // 枠が光る（設定ON時）
     const bumpCls=added?' bump':'';         // 数字バウンド（常時）
-    if(it.name===NODROP){label='<span style="color:var(--text2)">'+noDropLabel(recState.placeId)+'</span>';}
+    if(isNoDropName(it.name)){label='<span style="color:var(--text2)">'+noDropLabelOf(it.name,recState.placeId)+'</span>';}
     else{
       const sw=swInfo(it.name);
       feat=(curFeatured().includes(it.name)&&it.mass==='boss');
@@ -1975,7 +2557,7 @@ function renderSelectedChips(box,ord,flashKey){
   box.innerHTML=ord.map(k=>{
     const it=recState.swords[k];let label,feat=false;
     const bumpCls=(k===flashKey)?' bump':'';
-    if(it.name===NODROP){label='<span style="color:var(--text2)">'+noDropShort(recState.placeId)+'</span>';}
+    if(isNoDropName(it.name)){label='<span style="color:var(--text2)">'+noDropNameOf(it.name,recState.placeId)+'</span>';}
     else{
       feat=(curFeatured().includes(it.name)&&it.mass==='boss');
       const star=feat?'<span class="sw-star">★</span> ':((UD.wishlist&&UD.wishlist.includes(it.name))?'<span class="sw-wish">🌸</span> ':'');
@@ -2022,7 +2604,7 @@ function placeResources(placeId){
 // いま記録中の場所・ステージで手に入る資源（過去はステージごと）
 function currentResources(){
   const p=placeById(recState.placeId);
-  if(p&&p.type==='rentai')return []; // 連隊戦はマスがないので資源なし
+  if(isDiffPlaceObj(p))return []; // 連隊戦・百鬼夜行はマスがないので資源なし
   if(p&&p.type==='kako'){
     const st=stageById(recState.floor);
     return st?orderRes(st.res):[];
@@ -2031,8 +2613,39 @@ function currentResources(){
   return OSAKA_RES;
 }
 // 目玉リスト：場所＋階/ステージごと（鍵は '場所@階'。例 osaka@99 / kako@8-4）。大阪城も過去も同じ仕組み
-function featuredList(placeId,floor){
-  return (UD.featuredByStage&&UD.featuredByStage[placeId+'@'+floor])||[];
+/* 目玉の一覧。
+   夜花だけは階（江戸下町ひとつ）ではなく「出た敵」で分ける。ボスと苦無で
+   出る男士が違うため。mass を渡さない／'unknown'／'all' のときは、どちらから
+   出たか決まっていないので両方を合わせて返す。
+   ほかの場所はこれまでどおり 場所@階 で引く。 */
+const YOBANA_FEAT_MASSES=['boss','kunai'];
+function yobanaFeatKey(mass){return 'yobana@'+(mass==='kunai'?'kunai':'boss');}
+/* 慶長熊本の目玉の鍵。★の置き場は6つ。
+   普と難は出る男士が同じなので、マスごとに1つを共有する（どちらで指定しても両方に効く）。
+     futsu_honmaru・nan_honmaru → keicho_kumamoto@honmaru
+   2024年までの回は出る男士が今と違うので、それぞれ別に持つ。
+     old_honmaru               → keicho_kumamoto@old_honmaru
+   'all' や空のときは、どの鍵にも当たらず空になる（連隊戦・百鬼夜行と同じ）。 */
+function keichoFeatKey(floor){
+  const f=String(floor||'');
+  if(f.indexOf('old_')===0)return 'keicho_kumamoto@'+f;
+  return 'keicho_kumamoto@'+f.replace(/^(futsu|nan)_/,'');
+}
+function featuredList(placeId,floor,mass){
+  const fb=UD.featuredByStage||{};
+  const p=placeById(placeId);
+  if(p&&p.type==='yobana'){
+    if(mass==='boss'||mass==='kunai')return fb[yobanaFeatKey(mass)]||[];
+    // 不明・すべて・指定なし → ボスと苦無を合わせる（重複は取り除く）
+    const merged=[];
+    YOBANA_FEAT_MASSES.forEach(function(m){
+      (fb['yobana@'+m]||[]).forEach(function(n){if(merged.indexOf(n)<0)merged.push(n);});
+    });
+    return merged;
+  }
+  // 慶長熊本は id で見分ける（場所を消した人の昔の記録でも★が見えるように）
+  if(placeId==='keicho_kumamoto')return fb[keichoFeatKey(floor)]||[];
+  return fb[placeId+'@'+floor]||[];
 }
 // 目玉の鍵を「場所@階」に統一する移行（旧・過去の裸鍵→kako@／旧・大阪城の全体目玉→osaka@99）
 function migrateFeaturedKeys(){
@@ -2049,8 +2662,8 @@ function migrateFeaturedKeys(){
     UD.featuredByStage[k]=Array.from(new Set([...(UD.featuredByStage[k]||[]),...UD.featured]));
   }
 }
-function isFeatured(name,placeId,floor){return featuredList(placeId,floor).includes(name);}
-function curFeatured(){return featuredList(recState.placeId,recState.floor);} // 記録中の文脈
+function isFeatured(name,placeId,floor,mass){return featuredList(placeId,floor,mass).includes(name);}
+function curFeatured(){return featuredList(recState.placeId,recState.floor,recState.mass);} // 記録中の文脈（いま選んでいる敵）
 // 検非違使：そのステージで検非違使マスが解禁されているか（過去のみ・ステージ設定でマーク）
 function kebiUnlocked(placeId,floor){return !!(UD.kebiByStage&&UD.kebiByStage[placeId+'@'+floor]);}
 function curKebiUnlocked(){return kebiUnlocked(recState.placeId,recState.floor);}
@@ -2104,17 +2717,37 @@ function resChg(k){
 function minsChg(){recState.mins=Math.max(0,parseInt(document.getElementById('minsInput').value)||0);}
 
 // 記録の保存
+// 何も入力せずに押したときは、周回だけの記録にするか一度たずねてから保存する
 function saveRecord(){
   const keys=Object.keys(recState.swords);
   const _allowRes=currentResources();
   const resKeys=Object.keys(recState.res).filter(k=>recState.res[k]>0&&_allowRes.includes(k));
   const p=placeById(recState.placeId);
-  const isKako=(p&&p.type==='kako');
-  const noKoban=(p&&(p.type==='kako'||p.type==='rentai')); // 過去・連隊戦は小判が出ない
+  const noKoban=!(p&&p.type==='osaka'); // 小判が出るのは大阪城だけ
   const koban=noKoban?0:recState.koban;
-  if(keys.length===0&&koban===0&&resKeys.length===0){toast('男士・小判・資源のいずれかを入力してください');return;}
+  if(keys.length===0&&koban===0&&resKeys.length===0){
+    const n=Math.max(1,recState.kills||1);
+    const where=shortNameOf(recState.placeId)||'この場所';
+    confirmDialogHtml(
+      '男士も小判も資源も入っていません。<br>'
+      +'<b>'+where+'</b> を <b>'+n+'周</b> まわって、何も出なかった記録として残しますか？'
+      +'<div class="mini-note" style="margin-top:8px">まわった回数を残しておくと、ドロップ率が正しく出ます。</div>',
+      '周回だけ記録する', function(){doSaveRecord(true);});
+    return;
+  }
+  doSaveRecord(false);
+}
+// lapsOnly=true は「わざと作った周回だけの記録」。中身が空でも自動削除しない目印になる
+function doSaveRecord(lapsOnly){
+  const _allowRes=currentResources();
+  const resKeys=Object.keys(recState.res).filter(k=>recState.res[k]>0&&_allowRes.includes(k));
+  const p=placeById(recState.placeId);
+  const isKako=(p&&p.type==='kako');
+  const noKoban=!(p&&p.type==='osaka'); // 小判が出るのは大阪城だけ
+  const koban=noKoban?0:recState.koban;
   const swords=selOrderedKeys().map(k=>({name:recState.swords[k].name,count:recState.swords[k].count,mass:recState.swords[k].mass}));
-  const floor=(p&&(p.type==='osaka'||p.type==='kako'||p.type==='rentai'))?recState.floor:null;
+  // 階を持つ場所：大阪城（階）・過去（ステージ）・連隊戦や百鬼夜行（難易度）・夜花（江戸下町で固定）
+  const floor=(p&&(p.type==='osaka'||p.type==='kako'||p.type==='yobana'||isDiffPlaceObj(p)))?recState.floor:null;
   const res={};resKeys.forEach(k=>{res[k]=recState.res[k];});
   // 博多倍率は「記録した瞬間の値」を刻む（後で設定を変えても、過去の抜き推定が動かない）
   const _hOp=placeById('osaka');
@@ -2130,6 +2763,7 @@ function saveRecord(){
   };
   // ボス小判ドロップ率は「詳しく記録」で追跡したときだけ。かんたん・過去・連隊戦では付けない
   if(recState.recMode==='detail'&&!noKoban)rec.kobanHits=recState.kobanHits||0;
+  if(lapsOnly)rec.lapsOnly=true;   // わざと作った周回だけの記録（自動削除しない目印）
   UD.records.push(rec);
   // 今保存したグループ／記録カードだけ開く（他は閉じる。両ビュー対応）
   const savedGid=[rec.date,rec.placeId,rec.floor==null?'-':rec.floor].join('~');
@@ -2233,10 +2867,7 @@ function renderRecentByDate(){
 
   box.innerHTML=glist.map(g=>{
     const p=placeById(g.placeId);
-    let head;
-    if(p&&p.type==='kako'){const st=stageById(g.floor);head=st?`${st.id} ${st.nm}`:(g.floor||(p?p.name.replace(/（.*）/,''):''));}
-    else if(p&&p.type==='rentai'){head=isRentaiDiff(g.floor)?rentaiDiffName(g.floor):(p.name.replace(/（.*）/,''));}
-    else head=g.floor?(g.floor+'階'):(p?p.name.replace(/（.*）/,''):'');
+    const head=stageLabel(g.placeId,g.floor);
     const totalKills=g.records.reduce((s,r)=>s+(r.kills||0),0);
     const totalKoban=g.records.reduce((s,r)=>s+(r.koban||0),0);
     const gid=[g.date,g.placeId,g.floor==null?'-':g.floor].join('~');
@@ -2293,13 +2924,13 @@ function renderRecentByDate(){
     });
     const swRows=aggKeys.map(k=>{
       const a=agg[k];
-      const isND=a.name===NODROP;
+      const isND=isNoDropName(a.name);
       const star=(_gf.includes(a.name))?'<span class="star">★</span> ':((UD.wishlist&&UD.wishlist.includes(a.name))?'<span class="sw-wish">🌸</span> ':'');
-      const nm=isND?'<span style="color:var(--text2)">'+noDropShort(g.placeId)+'</span>':`${star}${a.name}`;
+      const nm=isND?'<span style="color:var(--text2)">'+noDropNameOf(a.name,g.placeId)+'</span>':`${star}${a.name}`;
       const sw=swInfo(a.name);
       const yomi=(!isND&&sw)?`<span class="y">${sw[2]}</span>`:'';
       // 表示専用：バッジ＋名前＋×n（編集は「✏ 編集へ」から記録の編集ビューで）
-      const massBadge=(p&&p.type==='rentai')?'':`<span class="rmass-k" style="background:var(--bg3);color:var(--text2)">${MASS_LABEL[a.mass]}</span>`;
+      const massBadge=isDiffPlaceObj(p)?'':`<span class="rmass-k" style="background:var(--bg3);color:var(--text2)">${MASS_LABEL[a.mass]}</span>`;
       return `<div class="srow">
         ${massBadge}
         <span class="rname">${nm} ${yomi}</span>
@@ -2370,18 +3001,27 @@ function recentAllOpen(open){
   saveST();renderRecent();
 }
 
-/* ── ✏ 記録の編集ビュー（1記録=1カード） ── */
-// 場所名の見出し（日ごとビューと同じ規則）
-function recHeadName(placeId,floor){
+/* ── 場所＋階の見出しラベル（画面のどこでも同じ規則） ── */
+// ここが唯一の出どころ。最近の記録（日ごと／記録の編集）、サイドバーの
+// 「いまの周回」「きょう」、書き出しの案内文が、すべてこれを通る。
+// 新しい場所タイプを足すときは、この関数だけ直せばよい。
+// （以前は同じ中身が3か所に写してあり、夜花で内部の階ID 'edo' が
+//   「edo階」として画面に出てしまった）
+function stageLabel(placeId,floor){
   const p=placeById(placeId);
-  if(p&&p.type==='kako'){const st=stageById(floor);return st?`${st.id} ${st.nm}`:(floor||p.name.replace(/（.*）/,''));}
-  if(p&&p.type==='rentai')return isRentaiDiff(floor)?rentaiDiffName(floor):p.name.replace(/（.*）/,'');
-  return floor?(floor+'階'):(p?p.name.replace(/（.*）/,''):'');
+  if(p&&p.type==='kako'){const st=stageById(floor);return st?`${st.id} ${st.nm}`:(floor||shortName(p));}
+  if(p&&p.type==='yobana')return YOBANA_FLOOR_NAME;  // 江戸下町ひとつだけ。階IDは出さない
+  if(isDiffPlaceObj(p))return isDiffId(placeId,floor)?diffName(placeId,floor):shortName(p);
+  return floor?(floor+'階'):shortName(p);
 }
+
+/* ── ✏ 記録の編集ビュー（1記録=1カード） ── */
+// 場所名の見出し（stageLabel に一本化。呼び名は従来のまま残す）
+function recHeadName(placeId,floor){return stageLabel(placeId,floor);}
 // そのステージで出る資源キー（recStateに依存しない版）
 function resourcesFor(placeId,floor){
   const p=placeById(placeId);
-  if(p&&p.type==='rentai')return [];
+  if(isDiffPlaceObj(p))return [];
   if(p&&p.type==='kako'){const st=stageById(floor);return st?orderRes(st.res):[];}
   if(p&&Array.isArray(p.resources))return p.resources;
   return OSAKA_RES;
@@ -2419,19 +3059,23 @@ function recCardHtml(r,seq,isPc){
   const head=recHeadName(r.placeId,r.floor);
   const atLabel=r.at?fmtAtTime(r.at):('記録'+seq);
   const open=!!(ST.recentOpen&&ST.recentOpen['r:'+r.id]);
+  // 夜花はボスと苦無で目玉が違うので、男士ごとに「その男士が出た敵」で引く
   const _gf=featuredList(r.placeId,r.floor);
+  const _isFeat=(nm,ms)=>featuredList(r.placeId,r.floor,ms).includes(nm);
   const swRows=(r.swords||[]).map((s,idx)=>{
-    const isND=s.name===NODROP;
-    const star=_gf.includes(s.name)?'<span class="star">★</span> ':((UD.wishlist&&UD.wishlist.includes(s.name))?'<span class="sw-wish">🌸</span> ':'');
-    const nm=isND?'<span style="color:var(--text2)">'+noDropShort(r.placeId)+'</span>':`${star}${s.name}`;
+    const isND=isNoDropName(s.name);
+    const star=_isFeat(s.name,s.mass)?'<span class="star">★</span> ':((UD.wishlist&&UD.wishlist.includes(s.name))?'<span class="sw-wish">🌸</span> ':'');
+    const nm=isND?'<span style="color:var(--text2)">'+noDropNameOf(s.name,r.placeId)+'</span>':`${star}${s.name}`;
     const sw=swInfo(s.name);
     const yomi=(!isND&&sw)?`<span class="y">${sw[2]}</span>`:'';
-    // マス：大阪城=3択／過去=検非を足して4択／連隊戦=なし
+    // マス：大阪城=3択／過去=検非を足して4択／連隊戦・百鬼夜行=なし
     let massSel='';
-    if(type!=='rentai'){
+    if(!diffSetOfType(type)){
       if(isND)massSel=`<span class="rmass-k" style="background:var(--bg3);color:var(--text2)">${MASS_LABEL[s.mass]}</span>`;
       else{
-        const opts=[['boss','ボス'],['normal','通常']].concat(type==='kako'?[['kebi','検非違使']]:[]).concat([['unknown','不明']]);
+        const opts=(type==='yobana')
+          ? [['boss','ボス'],['kunai','苦無'],['unknown','不明']]
+          : [['boss','ボス'],['normal','通常']].concat(type==='kako'?[['kebi','検非違使']]:[]).concat([['unknown','不明']]);
         massSel=`<select class="mass-sel" onchange="changeRowMass('${r.id}',${idx},this.value)">`+opts.map(([v,l])=>`<option value="${v}" ${s.mass===v?'selected':''}>${l}</option>`).join('')+`</select>`;
       }
     }
@@ -2629,6 +3273,8 @@ function delResFromEditModal(){
 }
 // 男士も小判も資源も空になった記録はソフト削除する
 function pruneIfEmpty(r){
+  // わざと作った「周回だけの記録」は、中身が空なのが正しい姿なので消さない
+  if(r.lapsOnly)return;
   const hasRes=r.res&&Object.keys(r.res).some(k=>r.res[k]>0);
   if((r.swords||[]).length===0&&(r.koban||0)===0&&!hasRes)r.deleted=true;
 }
@@ -2676,7 +3322,7 @@ function addSwordToRec(id,name){
   const r=UD.records.find(x=>x.id===id);
   if(!r)return;
   // かんたん判定と同じ：目玉ならboss、他はunknown（行で後から変えられる）
-  const m=featuredList(r.placeId,r.floor).includes(name)?'boss':'unknown';
+  const m=featuredList(r.placeId,r.floor).includes(name)?'boss':'unknown';   // 目玉なら暫定でボス（行で直せる）
   const dup=(r.swords||[]).find(s=>s.name===name&&s.mass===m);
   if(dup)dup.count++;
   else{if(!r.swords)r.swords=[];r.swords.push({name,mass:m,count:1});}
@@ -2744,7 +3390,417 @@ function saveSessionEdit(){
 /* ============================================================
    集計画面
    ============================================================ */
-let aggState={placeId:'osaka',floor:'all',mass:'all',mode:'A'};
+let aggState={placeId:'osaka',floor:'all',mass:'all',mode:'A',pd:'all',from:'',to:'',termId:''};
+
+/* ── 期間のしぼりこみ ──────────────────────────────
+   aggState.pd  … 選択中のショートカット（'all'|'thism'|'lastm'|'d7'|'d30'|'custom'）
+   aggState.from/to … 'YYYY-MM-DD'（空なら制限なし）。記録のdateも同じ形式なので文字列比較でよい
+   保存はしない（画面を開き直すと「全期間」に戻る＝いつも通りの見え方から始まる） */
+const AGG_PD_LABEL={all:'全期間',thism:'今月',lastm:'先月',d7:'過去7日',d30:'過去30日'};
+function pdYmd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function aggPeriodRange(p){
+  const now=new Date();
+  if(p==='thism')return{from:pdYmd(new Date(now.getFullYear(),now.getMonth(),1)),to:pdYmd(now)};
+  if(p==='lastm')return{from:pdYmd(new Date(now.getFullYear(),now.getMonth()-1,1)),to:pdYmd(new Date(now.getFullYear(),now.getMonth(),0))};
+  if(p==='d7'){const f=new Date(now);f.setDate(f.getDate()-6);return{from:pdYmd(f),to:pdYmd(now)};}
+  if(p==='d30'){const f=new Date(now);f.setDate(f.getDate()-29);return{from:pdYmd(f),to:pdYmd(now)};}
+  return{from:'',to:''}; // all
+}
+function setAggPeriod(el){
+  const p=el.dataset.p;
+  const r=aggPeriodRange(p);
+  aggState.pd=p;aggState.from=r.from;aggState.to=r.to;aggState.termId='';
+  const fEl=document.getElementById('aggPdFrom'),tEl=document.getElementById('aggPdTo');
+  if(fEl)fEl.value=r.from;if(tEl)tEl.value=r.to;
+  renderAgg();
+}
+function onAggPeriodDate(){
+  const fEl=document.getElementById('aggPdFrom'),tEl=document.getElementById('aggPdTo');
+  aggState.from=fEl?fEl.value:'';aggState.to=tEl?tEl.value:'';
+  // 手で日付を触ったらショートカットの選択は外す（全部空なら「全期間」に戻す）
+  aggState.pd=(!aggState.from&&!aggState.to)?'all':'custom';aggState.termId='';
+  renderAgg();
+}
+// 記録の日付が期間内か（from/toとも境界を含む）
+function inAggPeriod(dateStr){
+  const f=aggState.from,t=aggState.to;
+  if(!f&&!t)return true;
+  const d=String(dateStr||'');
+  if(!d)return false;
+  if(f&&d<f)return false;
+  if(t&&d>t)return false;
+  return true;
+}
+function pdJp(s){return s?s.replace(/-/g,'.'):'';}
+
+/* ══ 開催期間（方式C） ══════════════════════════════════
+   場所ごとに「開催回」を持つ。記録には何も足さず、記録の日付から振り分ける。
+   置き場所は UD の場所オブジェクト（p.terms）。クラウド同期にそのまま乗る。
+   既定値は「場所ごとの一度きり移行」。UD.termsSeeded[placeId] が立っていれば二度と入れない。
+   ＝あとから新しい場所（冬の連隊戦など）を足しても、その場所の分だけ自動で入る。
+
+   日付は 'YYYY-MM-DD' の文字列。記録の date と同じ形なので文字列比較でよい。
+   時刻は持たない：催しは開始日の夕方〜終了日の昼までなので、
+   開始日・終了日とも「その日を含む」で数えれば実際の開催と一致する。 */
+
+// 出典＝あかりが wiki から持ってきた日程。日数と曜日で検算済み（2026-08-16）
+const TERM_SEED={
+  osaka:[
+    ['2026-06-02','2026-06-23'],['2026-03-31','2026-04-21'],['2026-01-27','2026-02-12'],
+    ['2025-09-30','2025-10-14'],['2025-06-17','2025-07-01'],['2025-04-08','2025-04-30'],
+    ['2024-11-12','2024-12-03'],['2024-05-21','2024-06-11'],['2024-03-05','2024-03-26'],
+    ['2023-12-05','2023-12-19'],['2023-09-26','2023-10-17'],['2023-03-22','2023-04-11'],
+    ['2022-11-29','2022-12-13'],['2022-06-28','2022-07-12'],['2022-04-12','2022-04-26'],
+    ['2021-09-08','2021-09-28'],['2021-05-18','2021-06-01'],['2021-03-01','2021-03-23'],
+    ['2020-09-23','2020-10-13'],['2020-05-19','2020-06-09'],['2020-03-04','2020-03-24'],
+    ['2019-10-09','2019-10-29'],['2019-05-15','2019-05-28'],['2019-02-26','2019-03-12'],
+    ['2018-10-02','2018-10-16'],['2018-04-04','2018-04-17'],['2017-11-29','2017-12-13'],
+    ['2017-10-03','2017-10-18'],['2017-07-25','2017-08-08'],['2017-04-25','2017-05-09'],
+    ['2017-02-21','2017-03-07'],['2016-10-18','2016-11-08'],['2016-07-26','2016-08-09'],
+    ['2016-05-24','2016-06-14'],['2016-04-12','2016-04-26'],['2016-01-26','2016-02-02'],
+    ['2015-11-19','2015-12-08'],['2015-09-08','2015-09-15'],['2015-06-11','2015-07-07']
+  ],
+  rentai_natsu:[
+    ['2026-06-30','2026-07-28'],['2025-07-01','2025-07-29'],['2024-07-02','2024-07-30'],
+    ['2023-06-20','2023-07-18'],['2022-07-26','2022-08-16'],['2021-07-20','2021-08-10'],
+    ['2020-07-21','2020-08-11'],['2019-07-30','2019-08-27']
+  ],
+  hyakki:[
+    ['2026-08-12','2026-08-25'],['2025-08-12','2025-08-26'],['2024-08-13','2024-08-27']
+  ],
+  rentai_fuyu:[
+    ['2025-12-16','2026-01-13'],['2024-12-17','2025-01-14'],['2023-12-19','2024-01-16'],
+    ['2022-12-13','2023-01-10'],['2021-12-21','2022-01-14'],['2020-12-17','2021-01-14'],
+    ['2019-12-24','2020-01-14'],['2018-12-18','2019-01-15'],['2017-12-19','2018-01-16'],
+    ['2016-12-20','2017-01-17'],['2015-12-29','2016-01-18']
+  ],
+  rentai_shoka:[
+    ['2018-06-28','2018-07-26'],['2017-05-30','2017-06-13']
+  ],
+  // 夜花奪還作戦。3つ目の true は「終了日がまだ発表されていない（予想）」の印。
+  // 2026年は 2026-08-25 開始で終了未発表。過去6回のうち15日間が4回で最頻、
+  // しかも2020年は同じ8/25(火)開始→9/8(火)終了だったので 2026-09-08 を予想として入れる。
+  yobana:[
+    ['2026-08-25','2026-09-08'],   // 2026-08-25 公式発表で確定（8/25メンテ終了〜9/8 12:59）
+    ['2025-08-26','2025-09-09'],['2024-08-27','2024-09-10'],['2023-08-22','2023-09-05'],
+    ['2022-08-29','2022-09-13'],['2021-08-10','2021-08-25'],['2020-08-25','2020-09-08']
+  ],
+  // 特命調査・慶長熊本。5回とも火曜に始まり火曜に終わる。
+  // 難易度（普／難）があるのは2026年の回だけで、2024年までの回には無い。
+  keicho_kumamoto:[
+    ['2026-09-08','2026-09-29'],   // 22日間・開催中
+    ['2024-10-01','2024-10-22'],   // 22日間
+    ['2022-10-18','2022-11-01'],   // 15日間
+    ['2021-04-27','2021-05-18'],   // 22日間
+    ['2020-04-28','2020-05-19']    // 22日間
+  ]
+};
+
+// 呼び名は開始日の年月から作る。同じ年月が重なるときだけ (2) (3) と枝番を付ける
+function termAutoName(from,list,selfId){
+  const m=String(from||'').match(/^(\d{4})-(\d{2})/);
+  if(!m)return '新しい回';
+  const base=m[1]+'年'+Number(m[2])+'月';
+  const same=(list||[]).filter(t=>t.id!==selfId&&String(t.name||'').replace(/\(\d+\)$/,'')===base);
+  return same.length?base+'('+(same.length+1)+')':base;
+}
+// 恒常マップ（過去・異去）は開催期間を持たない
+function placeHasTerms(p){return !!p && p.type!=='kako' && p.type!=='iko';}
+function termsOf(placeId){
+  const p=placeById(placeId);
+  if(!p||!placeHasTerms(p))return [];
+  return (p.terms||[]).filter(t=>t&&!t.deleted).slice().sort((a,b)=>String(b.from||'').localeCompare(String(a.from||'')));
+}
+/* 一度きりの移行：夜花2026年の回から「予想」の印を外す
+   2026-08-25 の公式発表で 8/25〜9/8 が当たっていた。日付は合っているので触らず、
+   印だけ外す。すでに一度開いた人は UD.termsSeeded.yobana が立っていて種が
+   入り直さないため、ここで直す必要がある。
+   自分で直した回（mine）は、こちらの都合で書き換えない。 */
+function fixYobanaEst(){
+  const p=placeById('yobana');
+  if(!p||!Array.isArray(p.terms))return false;
+  let changed=false;
+  p.terms.forEach(function(t){
+    if(!t||t.mine||t.deleted)return;
+    if(t.est&&t.from==='2026-08-25'&&t.to==='2026-09-08'){t.est=false;changed=true;}
+  });
+  if(changed)p.updatedAt=Date.now();   // クラウド同期に乗せる
+  return changed;
+}
+
+// 場所ごとの一度きり移行。あとから場所が増えても、その場所の分だけ入る
+function seedTerms(){
+  if(!UD.termsSeeded)UD.termsSeeded={};
+  let changed=false;
+  Object.keys(TERM_SEED).forEach(function(pid){
+    if(UD.termsSeeded[pid])return;              // この場所はもう入れた
+    const p=placeById(pid);
+    if(!p){return;}                             // 場所がまだ無い（新設待ち）ので今回は触らない
+    if(!Array.isArray(p.terms))p.terms=[];
+    if(p.terms.length===0){
+      TERM_SEED[pid].forEach(function(fr){
+        p.terms.push({id:uid(),name:termAutoName(fr[0],p.terms),from:fr[0],to:fr[1],est:!!fr[2]});
+      });
+      p.updatedAt=Date.now();
+    }
+    UD.termsSeeded[pid]=true;
+    changed=true;
+  });
+  if(changed)save();
+}
+// 記録がその開催回に入るか（両端を含む）
+function inTerm(dateStr,t){
+  const d=String(dateStr||'');
+  if(!d||!t)return false;
+  if(t.from&&d<t.from)return false;
+  if(t.to&&d>t.to)return false;
+  return true;
+}
+// 記録が1件でもある開催回だけを返す（39個並べないため）
+function termsWithRecords(placeId){
+  const list=termsOf(placeId);
+  if(!list.length)return [];
+  const recs=activeRecords().filter(r=>r.placeId===placeId);
+  if(!recs.length)return [];
+  return list.filter(t=>recs.some(r=>inTerm(r.date,t)));
+}
+
+/* ── 集計：開催回チップ ── */
+function renderAggTerms(){
+  const lab=document.getElementById('aggTrmLab'),box=document.getElementById('aggTrmChips');
+  if(!lab||!box)return;
+  const list=termsWithRecords(aggState.placeId);
+  if(!list.length){lab.style.display='none';box.style.display='none';box.innerHTML='';return;}
+  const p=placeById(aggState.placeId);
+  lab.style.display='';box.style.display='';
+  lab.innerHTML='▼ '+(p?shortName(p):'')+'の開催回（記録があるものだけ）';
+  box.innerHTML=list.map(function(t){
+    const on=(aggState.pd==='term'&&aggState.termId===t.id)?' on':'';
+    return '<div class="pd-chip trm-chip'+on+'" data-t="'+t.id+'" onclick="setAggTerm(\''+t.id+'\')">'
+      +esc(t.name)+(t.est?'（予想）':'')+'</div>';
+  }).join('');
+}
+function setAggTerm(id){
+  const t=termsOf(aggState.placeId).find(x=>x.id===id);
+  if(!t)return;
+  if(aggState.pd==='term'&&aggState.termId===id){   // もう一度押したら解除
+    aggState.pd='all';aggState.termId='';aggState.from='';aggState.to='';
+  }else{
+    aggState.pd='term';aggState.termId=id;aggState.from=t.from||'';aggState.to=t.to||'';
+  }
+  const fEl=document.getElementById('aggPdFrom'),tEl=document.getElementById('aggPdTo');
+  if(fEl)fEl.value=aggState.from;if(tEl)tEl.value=aggState.to;
+  renderAgg();
+}
+// いま選ばれている開催回（無ければ null）
+function currentTerm(){
+  if(aggState.pd!=='term')return null;
+  return termsOf(aggState.placeId).find(t=>t.id===aggState.termId)||null;
+}
+
+
+/* ══ 終わったイベントを畳む／場所セレクトの補足／入れ違え記録の救済 ══
+   ended:true の場所は記録画面のセレクトから隠す（集計にはいつでも出る）。
+   いま選んでいる場所は、ended でも消さない（選択中のものが突然消えないように）。 */
+function isEndedPlace(p){return !!(p&&p.ended);}
+function hasEndedPlace(){return activePlaces().some(isEndedPlace);}
+// 記録画面のセレクトに出す場所
+function recPlaceList(){
+  const all=activePlaces();
+  if(ST.showEnded)return all;
+  return all.filter(p=>!isEndedPlace(p)||p.id===recState.placeId);
+}
+function setShowEnded(on){
+  ST.showEnded=!!on;saveST();
+  renderRecPlaceExtras();
+  renderRecPlace();
+}
+// セレクトの下に出すもの（補足＋終わったイベントの切替）
+function renderRecPlaceExtras(){
+  const box=document.getElementById('recPlaceExtras');
+  if(!box)return;
+  const p=placeById(recState.placeId);
+  let h='';
+  if(p&&p.id==='rentai_fuyu'&&p.name===RENTAI_FUYU_NAME){
+    h+='<div class="place-note">この「<b>連隊戦</b>」は<b>冬</b>に開催されるものです（12月〜1月）。夏は「連隊戦・海辺の陣」を選んでください。</div>';
+  }
+  if(hasEndedPlace()){
+    const names=activePlaces().filter(isEndedPlace).map(x=>shortName(x)).join('・');
+    h+='<label class="ended-chk"><input type="checkbox" '+(ST.showEnded?'checked':'')
+      +' onchange="setShowEnded(this.checked)"> 終わったイベントも出す<span class="ended-tag">'+esc(names)+'</span></label>';
+  }
+  box.innerHTML=h;
+}
+
+/* ── 入れ違え記録の救済 ──
+   冬は12〜1月・海辺は6〜8月で期間が重ならない。
+   海辺の陣の記録で日付が冬の開催期間に入るものは、入れ間違いとみなせる。
+   勝手に動かさず、帯で知らせてから確認ダイアログを出す。一度断ったら二度と出さない。 */
+function misfiledWinterRecords(){
+  const fuyu=placeById('rentai_fuyu');
+  if(!fuyu)return [];
+  const terms=termsOf('rentai_fuyu');
+  if(!terms.length)return [];
+  const set=DIFF_SETS['rentai_fuyu'];
+  const okIds=set?set.items.map(d=>d.id):[];
+  return activeRecords().filter(function(r){
+    if(r.placeId!=='rentai_natsu')return false;
+    if(!terms.some(t=>inTerm(r.date,t)))return false;
+    return okIds.indexOf(r.floor)>=0;   // 冬にある難易度だけ移す（特別合戦場は移さない）
+  });
+}
+function misfiledSkipped(){
+  const terms=termsOf('rentai_fuyu');
+  if(!terms.length)return 0;
+  const set=DIFF_SETS['rentai_fuyu'];
+  const okIds=set?set.items.map(d=>d.id):[];
+  return activeRecords().filter(function(r){
+    return r.placeId==='rentai_natsu' && terms.some(t=>inTerm(r.date,t)) && okIds.indexOf(r.floor)<0;
+  }).length;
+}
+function applyMisfixBarVis(){
+  const bar=document.getElementById('misfixBar');
+  if(!bar)return;
+  const show=!ST.misfixDone && misfiledWinterRecords().length>0;
+  bar.classList.toggle('show',show);
+}
+function dismissMisfixBar(){
+  ST.misfixDone=true;saveST();
+  const bar=document.getElementById('misfixBar');if(bar)bar.classList.remove('show');
+}
+function openMisfixDialog(){
+  const recs=misfiledWinterRecords();
+  if(!recs.length){dismissMisfixBar();return;}
+  const skipped=misfiledSkipped();
+  const months=Array.from(new Set(recs.map(r=>String(r.date).slice(0,7).replace('-','年')+'月'))).sort().reverse();
+  let msg='<b>冬の連隊戦の記録が見つかりました</b><br><br>'
+    +'「'+esc(RENTAI_NAME)+'」に、<b>冬の連隊戦の開催期間</b>にあたる記録が <b>'+recs.length+'件</b> あります'
+    +(months.length?'（'+esc(months.slice(0,4).join('・'))+(months.length>4?' ほか':'')+'）':'')+'。<br>'
+    +'海辺の陣は6〜8月の開催なので、入れ間違いの可能性が高いです。<br><br>'
+    +'「'+esc(RENTAI_FUYU_NAME)+'」へ移しますか？<br>'
+    +'<span style="color:var(--text3);font-size:11.5px">※ 記録の中身（男士・周回数・日付）はそのままです。場所だけ変わります。<br>'
+    +'※ この確認は一度だけです。あとから移すこともできます。'
+    +(skipped?'<br>※ 特別合戦場の記録 '+skipped+'件 は、冬に特別合戦場が無いため移しません。':'')+'</span>';
+  confirmDialogHtml(msg,'移す',function(){
+    const now=Date.now();
+    recs.forEach(function(r){r.placeId='rentai_fuyu';r.updatedAt=now;});
+    ST.misfixDone=true;saveST();save();
+    renderRecent();renderAgg();
+    const bar=document.getElementById('misfixBar');if(bar)bar.classList.remove('show');
+    toast(recs.length+'件を「'+RENTAI_FUYU_NAME+'」へ移しました');
+  },false);
+}
+
+/* ── エリア設定：開催期間の編集 ── */
+let trmMore={};      // 場所ID → 全部見せるか
+let trmEditing=null; // 編集中の開催回ID（'new' なら追加）
+function renderTermsCard(){
+  const wrap=document.getElementById('scfgTermsCard'),box=document.getElementById('scfgTerms');
+  if(!wrap||!box)return;
+  const p=placeById(scfgPlace);
+  if(!p){wrap.style.display='none';return;}
+  wrap.style.display='';
+  if(!placeHasTerms(p)){
+    box.innerHTML='<div class="trm-none">恒常マップなので開催期間はありません。いつでも行けます。</div>';
+    return;
+  }
+  const list=termsOf(scfgPlace);
+  const lim=trmMore[scfgPlace]?list.length:5;
+  let h='';
+  if(!list.length){
+    h+='<div class="trm-none">まだ開催回がありません。下の「＋ 開催回を足す」から登録できます。</div>';
+  }else{
+    h+=list.slice(0,lim).map(function(t){
+      return '<div class="trm'+(t.mine?' mine':'')+'">'
+        +'<span class="nm">'+esc(t.name)+'</span>'
+        +'<span class="dt">'+pdJp(t.from)+' 〜 '+pdJp(t.to)+(t.est?'<span class="est">予想</span>':'')+'</span>'
+        +'<button class="ed" onclick="trmEdit(\''+t.id+'\')" title="直す">✏</button>'
+        +'<button class="dl" onclick="trmDel(\''+t.id+'\')" title="消す">🗑</button></div>';
+    }).join('');
+    if(!trmMore[scfgPlace]&&list.length>lim)
+      h+='<button class="trm-more" onclick="trmShowMore()">もっと見る（全'+list.length+'回）</button>';
+  }
+  if(trmEditing){
+    const t=(trmEditing==='new')?{name:'',from:'',to:'',est:false}:list.find(x=>x.id===trmEditing);
+    if(t){
+      h+='<div class="trm-form">'
+       +'<div class="row"><label>開始日</label><input type="date" id="trmFrom" value="'+(t.from||'')+'"></div>'
+       +'<div class="row"><label>終了日</label><input type="date" id="trmTo" value="'+(t.to||'')+'"></div>'
+       +'<div class="row"><label>呼び名</label><input type="text" id="trmName" value="'+esc(t.name||'')+'" placeholder="空にすると開始日から作ります"></div>'
+       +'<label class="chk"><input type="checkbox" id="trmEst" '+(t.est?'checked':'')+'> 終了日はまだ発表されていない（予想）</label>'
+       +'<div style="display:flex;gap:7px"><button class="btn" style="flex:1" onclick="trmSave()">保存</button>'
+       +'<button class="btn btn-ghost" style="flex:1" onclick="trmCancel()">やめる</button></div></div>';
+    }
+  }else{
+    h+='<button class="trm-add" onclick="trmEdit(\'new\')">＋ 開催回を足す</button>';
+  }
+  box.innerHTML=h;
+}
+function trmShowMore(){trmMore[scfgPlace]=true;renderTermsCard();}
+function trmEdit(id){trmEditing=id;renderTermsCard();}
+function trmCancel(){trmEditing=null;renderTermsCard();}
+function trmSave(){
+  const p=placeById(scfgPlace);
+  if(!p)return;
+  const from=(document.getElementById('trmFrom')||{}).value||'';
+  const to=(document.getElementById('trmTo')||{}).value||'';
+  const est=!!(document.getElementById('trmEst')||{}).checked;
+  let name=((document.getElementById('trmName')||{}).value||'').trim();
+  if(!from){toast('開始日を入れてください');return;}
+  if(to&&from>to){toast('開始日が終了日より後になっています');return;}
+  if(!Array.isArray(p.terms))p.terms=[];
+  if(trmEditing==='new'){
+    if(!name)name=termAutoName(from,p.terms,null);
+    p.terms.push({id:uid(),name:name,from:from,to:to,est:est,mine:true});
+  }else{
+    const t=p.terms.find(x=>x.id===trmEditing);
+    if(!t)return;
+    if(!name)name=termAutoName(from,p.terms,t.id);
+    t.name=name;t.from=from;t.to=to;t.est=est;t.mine=true;
+  }
+  p.updatedAt=Date.now();
+  trmEditing=null;save();renderTermsCard();renderAgg();
+  toast('開催回を保存しました');
+}
+function trmDel(id){
+  const p=placeById(scfgPlace);
+  if(!p||!Array.isArray(p.terms))return;
+  const t=p.terms.find(x=>x.id===id);
+  if(!t)return;
+  confirmDialogHtml('<b>開催回を消します</b><br>「'+esc(t.name)+'」（'+pdJp(t.from)+' 〜 '+pdJp(t.to)+'）を消しますか？<br><br><span style="color:var(--text3)">※ 記録は消えません。集計の絞り込みからこの回が消えるだけです。</span>','消す',function(){
+    p.terms=p.terms.filter(x=>x.id!==id);
+    p.updatedAt=Date.now();
+    if(aggState.pd==='term'&&aggState.termId===id){aggState.pd='all';aggState.termId='';aggState.from='';aggState.to='';}
+    save();renderTermsCard();renderAgg();
+    toast('消しました');
+  },false);
+}
+
+function renderAggPeriod(){
+  document.querySelectorAll('#aggPdChips .pd-chip').forEach(c=>c.classList.toggle('on',c.dataset.p===aggState.pd));
+  renderAggTerms();
+  const box=document.getElementById('aggPdSummary');
+  if(!box)return;
+  const f=aggState.from,t=aggState.to;
+  box.classList.remove('pd-warn');
+  const _tm=currentTerm();
+  if(_tm){
+    box.innerHTML='<b>'+esc(_tm.name)+'</b>'+(_tm.est?'（予想）':'')+'の開催期間が対象です（'+pdJp(_tm.from)+' 〜 '+pdJp(_tm.to)+'）';
+    return;
+  }
+  if(f&&t&&f>t){
+    box.classList.add('pd-warn');
+    box.innerHTML='開始日が終了日より後になっています。日付を確かめてください。';
+  }else if(!f&&!t){
+    box.innerHTML='すべての記録が対象です（<b>全期間</b>）';
+  }else if(f&&t){
+    box.innerHTML='<b>'+pdJp(f)+'</b> 〜 <b>'+pdJp(t)+'</b> の記録が対象です'+(aggState.pd!=='custom'?'（'+(AGG_PD_LABEL[aggState.pd]||'')+'）':'');
+  }else if(f){
+    box.innerHTML='<b>'+pdJp(f)+'</b> 以降の記録が対象です';
+  }else{
+    box.innerHTML='<b>'+pdJp(t)+'</b> までの記録が対象です';
+  }
+}
 
 function renderAggControls(){
   document.getElementById('aggPlace').innerHTML=activePlaces().map(p=>`<option value="${p.id}" ${p.id===aggState.placeId?'selected':''}>${p.name}</option>`).join('');
@@ -2755,27 +3811,27 @@ function renderAggControls(){
     fw.style.display='block';
     if(flabel)flabel.textContent='階数';
     document.getElementById('aggFloor').innerHTML='<option value="all">すべての階</option>'+
-      (p.floors||[]).slice().sort((a,b)=>b-a).map(f=>`<option value="${f}" ${String(f)===String(aggState.floor)?'selected':''}>${f}階</option>`).join('');
+      floorOptions(p).map(f=>`<option value="${f}" ${String(f)===String(aggState.floor)?'selected':''}>${f}階</option>`).join('');
   }else if(p&&p.type==='kako'){
     fw.style.display='block';
     if(flabel)flabel.textContent='ステージ';
     document.getElementById('aggFloor').innerHTML='<option value="all">すべてのステージ</option>'+
       KAKO_MAP.map(g=>`<optgroup label="${g.men}面 ${g.name}">`+g.stages.map(s=>`<option value="${s.id}" ${String(s.id)===String(aggState.floor)?'selected':''}>${s.id} ${s.nm}</option>`).join('')+'</optgroup>').join('');
-  }else if(p&&p.type==='rentai'){
+  }else if(isDiffPlaceObj(p)){
     fw.style.display='block';
-    if(flabel)flabel.textContent='難易度';
-    document.getElementById('aggFloor').innerHTML='<option value="all">すべての難易度</option>'+
-      '<optgroup label="通常">'+RENTAI_DIFF.filter(d=>!d.sp).map(d=>`<option value="${d.id}" ${String(d.id)===String(aggState.floor)?'selected':''}>${d.label}</option>`).join('')+'</optgroup>'+
-      '<optgroup label="特別合戦場">'+RENTAI_DIFF.filter(d=>d.sp).map(d=>`<option value="${d.id}" ${String(d.id)===String(aggState.floor)?'selected':''}>${d.label}</option>`).join('')+'</optgroup>';
+    const _ds=DIFF_SETS[p.type];
+    if(flabel)flabel.textContent=_ds.label;
+    document.getElementById('aggFloor').innerHTML=`<option value="all">すべての${_ds.label}</option>`+
+      _ds.rows.map((r,ri)=>`<optgroup label="${r.head}">`+_ds.items.filter(d=>d.row===ri).map(d=>`<option value="${d.id}" ${String(d.id)===String(aggState.floor)?'selected':''}>${d.label}</option>`).join('')+'</optgroup>').join('');
   }else{fw.style.display='none';}
-  const isRentaiAgg=(p&&p.type==='rentai');
-  // 過去（恒常マップ）・連隊戦では小判が出ないので小判カードを隠す
+  const isDiffAgg=isDiffPlaceObj(p);
+  // 過去（恒常マップ）・連隊戦・百鬼夜行では小判が出ないので小判カードを隠す
   const kc=document.getElementById('aggKobanCard');
-  if(kc)kc.style.display=(p&&(p.type==='kako'||p.type==='rentai'))?'none':'';
-  // 連隊戦はマスがないのでマス絞り込みカードごと隠す（集計はすべてまとめて）
+  if(kc)kc.style.display=(p&&(p.type==='kako'||isDiffAgg))?'none':'';
+  // マスがないのでマス絞り込みカードごと隠す（集計はすべてまとめて）
   const massCard=document.getElementById('aggMassCard');
-  if(massCard)massCard.style.display=isRentaiAgg?'none':'';
-  if(isRentaiAgg&&aggState.mass!=='all')aggState.mass='all';
+  if(massCard)massCard.style.display=isDiffAgg?'none':'';
+  if(isDiffAgg&&aggState.mass!=='all')aggState.mass='all';
   // 検非違使が出るのは過去だけ。集計のマストグルでも過去のときだけ「◉検非違使」を出す
   const kebiTg=document.getElementById('aggMassKebi');
   if(kebiTg)kebiTg.style.display=(p&&p.type==='kako')?'':'none';
@@ -2791,34 +3847,55 @@ function setAggMass(el){el.parentNode.querySelectorAll('.tg').forEach(t=>t.class
 function setAggMode(el){el.parentNode.querySelectorAll('.tg').forEach(t=>t.classList.remove('on'));el.classList.add('on');aggState.mode=el.dataset.m;renderAgg();}
 
 // 集計対象レコード抽出
+// 場所が変わったとき、選ばれている開催回がその場所のものでなければ外す
+function syncAggTerm(){
+  if(aggState.pd!=='term')return;
+  if(!termsOf(aggState.placeId).some(t=>t.id===aggState.termId)){
+    aggState.pd='all';aggState.termId='';aggState.from='';aggState.to='';
+    const fEl=document.getElementById('aggPdFrom'),tEl=document.getElementById('aggPdTo');
+    if(fEl)fEl.value='';if(tEl)tEl.value='';
+  }
+}
 function aggRecords(){
+  syncAggTerm();
   return activeRecords().filter(r=>{
     if(r.placeId!==aggState.placeId)return false;
     if(aggState.floor!=='all'&&String(r.floor)!==String(aggState.floor))return false;
+    if(!inAggPeriod(r.date))return false;
     return true;
   });
 }
 
 function renderAgg(){
   renderAggModeHelp();
+  renderAggPeriod();
   const recs=aggRecords();
   const isAll=aggState.mass==='all';
   const counts={}; // name → count
   let dropTotal=0;  // ドロップ有り合計（A分母）
   let killTotal=0;  // 周回数合計（B分母・boss/all）
   let massVisit=0;  // 通常マス踏破合計（B分母・normal、空振り含む）
+  let ndKills=0;    // 「ドロップ無し（空振り）」として記録した周回数
+  let nfKills=0;    // 「目玉なし／お迎えしたい男士は出なかった」として記録した周回数
   recs.forEach(r=>{
     if(isAll||aggState.mass==='boss')killTotal+=r.kills||0;
-    r.swords.forEach(s=>{
+    // 空振りの周回数：その記録が空振りの印だけでできているとき、記録の周回数をまるごと数える
+    // （「10周まとめて空振り」は10周。ボタンを押した回数ではない）
+    const sws=r.swords||[];
+    if(sws.length&&sws.every(s=>isNoDropName(s.name))){
+      const k=r.kills||0;
+      if(sws.some(s=>s.name===NOFEAT))nfKills+=k; else ndKills+=k;
+    }
+    sws.forEach(s=>{
       if(!isAll&&s.mass!==aggState.mass)return;
       if(aggState.mass==='normal'||aggState.mass==='kebi')massVisit+=s.count;
-      if(s.name===NODROP)return;
+      if(isNoDropName(s.name))return;
       counts[s.name]=(counts[s.name]||0)+s.count;
       dropTotal+=s.count;
     });
   });
   // ランキング生成
-  const _af=featuredList(aggState.placeId,aggState.floor); // 集計中の文脈の目玉
+  const _af=featuredList(aggState.placeId,aggState.floor,aggState.mass); // 集計中の文脈の目玉（夜花は敵ごと・すべてなら両方）
   let rank=Object.keys(counts).map(n=>{
     const sw=swInfo(n);
     let rate;
@@ -2846,10 +3923,15 @@ function renderAgg(){
     }else{featBlock.style.display='none';}
   }else{featBlock.style.display='none';}
 
+  renderAggSummary(recs,{killTotal,dropTotal,ndKills,nfKills});
+
   // 一覧
   const list=document.getElementById('rankList');
   if(rank.length===0){
-    list.innerHTML='<div class="empty-state"><div class="es-icon">⚔</div><div class="es-text">この条件の記録はまだありません</div></div>';
+    const pdOn=!!(aggState.from||aggState.to);
+    list.innerHTML='<div class="empty-state"><div class="es-icon">⚔</div><div class="es-text">'+
+      (pdOn?'この期間には、まだ記録がありません<div style="font-size:11px;margin-top:6px">期間を広げるか、別の場所を選んでみてください。</div>'
+           :'この条件の記録はまだありません')+'</div></div>';
   }else{
     const max=Math.max(...rank.map(r=>r.rate),0.01);
     list.innerHTML=rank.map((r,i)=>{
@@ -2864,8 +3946,51 @@ function renderAgg(){
   // 小判
   renderKoban(recs);
   renderShizaiAgg(recs);
+  renderAggExportNote(recs);
   applyAggSec();
   updateAggJump();
+}
+
+// 「📋 この条件のまとめ」。総周回数と、空振り・目玉なしの周回数を出す
+// ※ 空振りの周回数は「その記録の周回数」で数える（10周まとめて空振り＝10周）
+function renderAggSummary(recs,t){
+  const box=document.getElementById('aggSummary');
+  const card=document.getElementById('aggSumCard');
+  if(!box||!card)return;
+  if(!recs.length){card.style.display='none';return;}
+  card.style.display='';
+  const n=v=>Number(v||0).toLocaleString();
+  const massOn=(aggState.mass!=='all');
+  const rows=[];
+  // 総周回数は「ボス」または「すべて」のときだけ意味を持つ（通常マスは踏破数で数えるため）
+  if(!massOn||aggState.mass==='boss'){
+    rows.push(['総周回数', n(t.killTotal)+'周', 1]);
+  }
+  rows.push(['ドロップがあった回数', n(t.dropTotal)+'回', 0]);
+  if(t.ndKills)rows.push(['ドロップ無し（空振り）', n(t.ndKills)+'周', 0]);
+  if(t.nfKills)rows.push([noDropNameOf(NOFEAT,aggState.placeId), n(t.nfKills)+'周', 0]);
+  rows.push(['記録の件数', n(recs.length)+'件', 0]);
+  box.innerHTML=rows.map(r=>
+    `<div class="agg-sum-row"><span class="l">${r[0]}</span><span class="v${r[2]?' big':''}">${r[1]}</span></div>`
+  ).join('')
+  +(massOn?'<div class="mini-note" style="margin-top:7px">※ マスをしぼりこんでいます。総周回数は「ボス」か「すべて」のときに出ます。</div>':'');
+}
+
+// 「この条件で書き出す」カードに、いま出る中身を書いておく
+function renderAggExportNote(recs){
+  const box=document.getElementById('aggExportNote');
+  if(!box)return;
+  const p=placeById(aggState.placeId);
+  const pn=p?p.name:aggState.placeId;
+  const f=aggState.from,t=aggState.to;
+  const per=(!f&&!t)?'全期間':(f&&t)?pdJp(f)+'〜'+pdJp(t):f?pdJp(f)+'以降':pdJp(t)+'まで';
+  // 難易度制の場所で id（sp_hard / ran_chuya）が生で出ていたため stageLabel を通す
+  const fl=(aggState.floor!=='all')?' の <b>'+stageLabel(aggState.placeId,aggState.floor)+'</b>':'';
+  if(!recs.length){
+    box.innerHTML='いまの条件に合う記録がありません。';
+    return;
+  }
+  box.innerHTML='いま書き出されるのは <b>'+per+'</b> の <b>'+pn+'</b>'+fl+' の記録（<b>'+recs.length+'件</b>）です。';
 }
 
 function renderAggModeHelp(){
@@ -2969,10 +4094,15 @@ function renderPlaceList(){
 
 // 目玉指定（ステージ設定タブ）：場所＋階/ステージごと。鍵は '場所@階'
 let scfgPlace='kako', scfgMen='8', scfgStage='8-4', scfgFloor=99, scfgDiff='easy', scfgSearch='';
+let scfgMass='boss';   // 夜花のエリア設定で、いま開いている敵（boss / kunai）
+function isYobanaPlace(id){const p=placeById(id);return !!(p&&p.type==='yobana');}
 function scfgKey(){
   if(scfgPlace==='kako')return 'kako@'+scfgStage;
   if(scfgPlace==='osaka')return 'osaka@'+scfgFloor;
-  if(scfgPlace==='rentai_natsu')return 'rentai_natsu@'+scfgDiff;
+  // 慶長熊本は難易度型でもあるので、下の isDiffPlace より前で拾う（普・難は★を共有）
+  if(scfgPlace==='keicho_kumamoto')return keichoFeatKey(scfgDiff);
+  if(isDiffPlace(scfgPlace))return scfgPlace+'@'+scfgDiff;
+  if(isYobanaPlace(scfgPlace))return yobanaFeatKey(scfgMass);   // 夜花は敵ごと
   return scfgPlace+'@';
 }
 // ── 大阪城の設定（階・最大階数・博多倍率）：保存ボタンで確定するドラフト ──
@@ -3048,7 +4178,7 @@ function renderStageCfg(){
   const places=activePlaces();
   const pbox=document.getElementById('scfgPlaces');
   if(pbox){
-    pbox.innerHTML=places.map(p=>`<button class="scfg-place-btn ${scfgPlace===p.id?'on':''}" onclick="scfgSetPlace('${p.id}')">${p.name.replace(/（.*）/,'')}</button>`).join('');
+    pbox.innerHTML=places.map(p=>`<button class="scfg-place-btn ${scfgPlace===p.id?'on':''}" onclick="scfgSetPlace('${p.id}')">${shortName(p)}</button>`).join('');
   }
   const body=document.getElementById('scfgBody');
   if(!body)return;
@@ -3096,19 +4226,52 @@ function renderStageCfg(){
     // 5. 独立した保存ボタン
     html+='<div class="osaka-save-zone"><div class="mini-note" style="margin-bottom:8px">※ 上の「記録する階」「最大階数」「博多藤四郎の小判倍率」を変更したら、下のボタンで保存してください（目玉の指定はタップで自動保存されます）。</div><button class="btn" style="width:100%" onclick="saveOsakaCfg()">大阪城の設定を保存</button></div>';
     body.innerHTML=html;
-  }else if(p&&p.type==='rentai'){
-    // 難易度ごとの目玉（2行・見出し付き）。連隊戦はこれだけ
-    let html='<div class="mini-note" style="margin-bottom:9px">難易度を選んで、その難易度の目玉（レアドロップ）を指定します。難易度ごとに違います。</div>';
-    const drow=(sp)=>RENTAI_DIFF.filter(d=>d.sp===sp).map(d=>{
-      const has=featuredList('rentai_natsu',d.id).length?'<span class="scfg-has">⭐</span>':'';
-      return `<button class="rec-stage-btn ${scfgDiff===d.id?'on':''}" onclick="scfgPickDiff('${d.id}')" style="position:relative;text-align:center">${has}<span class="id">${d.label}</span></button>`;
+  }else if(isDiffPlaceObj(p)){
+    // 難易度／迎撃ラインごとの目玉。行分けは場所の型ごと
+    const ds=DIFF_SETS[p.type];
+    if(!isDiffId(scfgPlace,scfgDiff))scfgDiff=firstDiffId(scfgPlace);
+    let html=`<div class="mini-note" style="margin-bottom:9px">${ds.label}を選んで、その${ds.label}の目玉（レアドロップ）を指定します。</div>`;
+    if(p.type==='hyakki')html+='<div class="mini-note" style="margin-bottom:9px">百鬼夜行には、ここでしか出ない男士はいません。目玉は<b>指定しなくても集計は出ます</b>。追いかけたい男士がいるときの目印として使ってください。</div>';
+    if(p.type==='keicho_kumamoto')html+='<div class="mini-note" style="margin-bottom:9px"><b>普と難は同じ目玉を見ます。</b>どちらで指定しても、両方に入ります。2024年までの回は、出る男士が今と違うので別に指定します。</div>';
+    html+=ds.rows.map((r,ri)=>{
+      const btns=ds.items.filter(d=>d.row===ri).map(d=>{
+        const has=featuredList(scfgPlace,d.id).length?'<span class="scfg-has">⭐</span>':'';
+        return `<button class="rec-stage-btn ${d.old?'old ':''}${scfgDiff===d.id?'on':''}" onclick="scfgPickDiff('${d.id}')" style="position:relative;text-align:center">${has}<span class="id">${d.label}</span></button>`;
+      }).join('');
+      return `<div class="rentai-row-label${r.cls?' '+r.cls:''}">${r.head}</div><div class="rec-stage-btns rentai-grid c${r.cols||4}" style="margin-bottom:10px">${btns}</div>`;
     }).join('');
-    html+=`<div class="rentai-row-label">通常</div><div class="rec-stage-btns rentai-grid">${drow(false)}</div>`;
-    html+=`<div class="rentai-row-label sp">特別合戦場</div><div class="rec-stage-btns rentai-grid" style="margin-bottom:10px">${drow(true)}</div>`;
-    html+=scfgEditorHtml(rentaiDiffName(scfgDiff));
+    // 慶長熊本の普・難は★を共有しているので、見出しでそれと分かるようにする（昔の段はそのまま）
+    let edLabel=diffName(scfgPlace,scfgDiff);
+    if(p.type==='keicho_kumamoto'&&!/^old_/.test(scfgDiff)){
+      const it=ds.items.find(d=>d.id===scfgDiff);
+      if(it)edLabel=it.label+'（普・難 共通）';
+    }
+    html+=scfgEditorHtml(edLabel);
+    // まとめて入れる：いま開いているラインの目玉を、この場所の全部のラインへ
+    // 慶長熊本では出さない。普・難はもう★を共有しているし、マスごとに出る男士が違うので
+    // 「全部に同じ★」はほぼ間違いになる。しかも scfgCopyToAll は 場所@難易度 の鍵に直接書くため、
+    // 共有の鍵（keichoFeatKey）と食い違って、押しても何も変わらないボタンになってしまう。
+    if(p.type!=='keicho_kumamoto'){
+      html+=`<div class="scfg-copyall"><button class="btn" id="scfgCopyAllBtn" style="width:100%" onclick="scfgCopyToAll()">この指定を ${ds.items.length}つの${ds.label} すべてに入れる</button>`;
+      html+=`<div class="mini-note" style="margin-top:7px">※ いま開いている${ds.label}の目玉で、<b>ほかの${ds.items.length-1}つを置きかえます</b>（押す前に確認が出ます）。</div></div>`;
+    }
+    body.innerHTML=html;
+  }else if(isYobanaPlace(scfgPlace)){
+    // 夜花：場所は江戸下町ひとつなので、階ではなく「出た敵」で目玉を分ける
+    let html='<div class="mini-note" style="margin-bottom:9px">ボスと苦無では出る男士が違うので、<b>それぞれ別に指定します</b>。記録画面で「不明」を選んでいるときは、両方の目玉をまとめて出します。</div>';
+    html+='<div class="rec-stage-btns" style="margin-bottom:10px">'+YOBANA_FEAT_MASSES.map(function(m){
+      const has=(featuredList('yobana',null,m)||[]).length?'<span class="scfg-has">⭐</span>':'';
+      const ic=(m==='kunai')?'🗡':'🔴';
+      return `<button class="rec-stage-btn ${scfgMass===m?'on':''}" onclick="scfgPickMass('${m}')" style="position:relative;text-align:center">${has}<span class="id">${ic} ${massLabelOf('yobana',m)}</span></button>`;
+    }).join('')+'</div>';
+    html+=scfgEditorHtml(massLabelOf('yobana',scfgMass));
+    const otherLbl=massLabelOf('yobana',(scfgMass==='kunai')?'boss':'kunai');
+    html+=`<div class="scfg-copyall"><button class="btn" id="scfgCopyAllBtn" style="width:100%" onclick="scfgCopyToAllYobana()">この指定を ボスと苦無 の両方に入れる</button>`;
+    html+=`<div class="mini-note" style="margin-top:7px">※ いま開いている目玉で、<b>「${otherLbl}」を置きかえます</b>（押す前に確認が出ます）。</div></div>`;
     body.innerHTML=html;
   }else{body.innerHTML='';}
   renderScfgAddList();
+  renderTermsCard();
 }
 function scfgList(){return (UD.featuredByStage&&UD.featuredByStage[scfgKey()])||[];}
 // 検非違使あり トグル（過去のステージのみ）
@@ -3212,18 +4375,59 @@ function restoreScfgState(){
   if(ST.scfgStage&&stageById(ST.scfgStage)){scfgStage=ST.scfgStage;scfgMen=menOfStage(ST.scfgStage);}
   const op=placeById('osaka');
   if(op&&ST.scfgFloor!=null&&(op.floors||[]).includes(ST.scfgFloor))scfgFloor=ST.scfgFloor;
-  if(ST.scfgDiff&&isRentaiDiff(ST.scfgDiff))scfgDiff=ST.scfgDiff;
+  if(ST.scfgDiff&&isDiffId(scfgPlace,ST.scfgDiff))scfgDiff=ST.scfgDiff;
+  if(ST.scfgMass==='boss'||ST.scfgMass==='kunai')scfgMass=ST.scfgMass;   // 夜花の敵
   if(scfgPlace==='osaka')initOsakaDraft();
 }
 // ステージ設定タブの「最後に見ていた場所・ステージ・階・難易度」を覚える
 function saveScfgState(){
-  ST.scfgPlace=scfgPlace;ST.scfgMen=scfgMen;ST.scfgStage=scfgStage;ST.scfgFloor=scfgFloor;ST.scfgDiff=scfgDiff;
+  ST.scfgPlace=scfgPlace;ST.scfgMen=scfgMen;ST.scfgStage=scfgStage;ST.scfgFloor=scfgFloor;ST.scfgDiff=scfgDiff;ST.scfgMass=scfgMass;
   saveST();
 }
 function scfgOpenMen(men){scfgMen=men;renderStageCfg();}
 function scfgPickStage(id){scfgStage=id;scfgSearch='';scfgMen=menOfStage(id);saveScfgState();renderStageCfg();}
 function scfgPickFloor(f){scfgFloor=f;scfgSearch='';saveScfgState();renderStageCfg();}
-function scfgPickDiff(id){if(!isRentaiDiff(id))return;scfgDiff=id;scfgSearch='';saveScfgState();renderStageCfg();}
+function scfgPickDiff(id){if(!isDiffId(scfgPlace,id))return;scfgDiff=id;scfgSearch='';saveScfgState();renderStageCfg();}
+// 夜花：エリア設定で見る敵を切り替える
+function scfgPickMass(m){if(m!=='boss'&&m!=='kunai')return;scfgMass=m;scfgSearch='';saveScfgState();renderStageCfg();}
+// 夜花：いま開いている敵の目玉を、もう片方にも入れる
+function scfgCopyToAllYobana(){
+  const src=(featuredList('yobana',null,scfgMass)||[]).slice();
+  const other=(scfgMass==='kunai')?'boss':'kunai';
+  const from=massLabelOf('yobana',scfgMass), to=massLabelOf('yobana',other);
+  const msg=src.length
+    ? `「${from}」の目玉（${src.join('、')}）を、「${to}」にも入れます。もともとの指定は置きかえられます。よろしいですか？`
+    : `「${from}」には目玉の指定がありません。「${to}」の指定も空にします。よろしいですか？`;
+  confirmDialog(msg,'すべてに入れる',()=>{
+    if(!UD.featuredByStage)UD.featuredByStage={};
+    UD.featuredByStage[yobanaFeatKey(other)]=src.slice();
+    UD.updatedAt=Date.now();
+    save();
+    renderStageCfg();
+    if(typeof buildQuick==='function')buildQuick();
+    toast(src.length?'ボスと苦無の両方に入れました':'ボスと苦無の両方を空にしました');
+  });
+}
+// いま開いている難易度／迎撃ラインの目玉を、この場所の全部へコピーする
+function scfgCopyToAll(){
+  const s=diffSetOf(scfgPlace);
+  if(!s)return;
+  const src=(featuredList(scfgPlace,scfgDiff)||[]).slice();
+  const from=diffName(scfgPlace,scfgDiff);
+  const others=s.items.filter(d=>d.id!==scfgDiff);
+  const msg=src.length
+    ? `「${from}」の目玉（${src.join('、')}）を、ほかの${others.length}つの${s.label}にも入れます。もともとの指定は置きかえられます。よろしいですか？`
+    : `「${from}」には目玉の指定がありません。ほかの${others.length}つの${s.label}の指定も、すべて空にします。よろしいですか？`;
+  confirmDialog(msg,'すべてに入れる',()=>{
+    if(!UD.featuredByStage)UD.featuredByStage={};
+    others.forEach(d=>{UD.featuredByStage[scfgPlace+'@'+d.id]=src.slice();});
+    UD.updatedAt=Date.now();
+    save();
+    renderStageCfg();
+    if(typeof buildQuick==='function')buildQuick();
+    toast(src.length?`${others.length+1}つの${s.label}に入れました`:`${others.length+1}つの${s.label}を空にしました`);
+  });
+}
 function scfgAdd(name){
   const k=scfgKey();
   if(!UD.featuredByStage)UD.featuredByStage={};
@@ -3282,12 +4486,13 @@ function downloadBlob(blob,filename){
 function dateStamp(){const d=new Date();return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');}
 
 // レコードを行（1男士=1行）に展開
-function recordsToRows(){
+// 引数なし＝全記録（従来どおり）／配列を渡すとその記録だけを行にする
+function recordsToRows(recs){
   const rows=[];
-  activeRecords().forEach(r=>{
+  (recs||activeRecords()).forEach(r=>{
     const p=placeById(r.placeId);
     const placeName=p?p.name:r.placeId;
-    const massJp=m=>m==='boss'?'ボス':m==='normal'?'通常':m==='kebi'?'検非違使':m==='resource'?'資源':m==='unknown'?'不明':'';
+    const massJp=m=>m==='boss'?'ボス':m==='normal'?'通常':m==='kebi'?'検非違使':m==='kunai'?'苦無':m==='resource'?'資源':m==='unknown'?'不明':'';
     const atDate=r.at?new Date(r.at):null;
     const atValue=(atDate&&!isNaN(atDate.getTime()))?atDate.toISOString():'';
     // 記録IDと時刻は全行に持たせる。同じ記録の複数男士を再結合しつつ、別記録は混ざらない
@@ -3298,7 +4503,7 @@ function recordsToRows(){
         rows.push(Object.assign({
           '日付':r.date,'場所':placeName,'階数':r.floor||'',
           'マス(ボス/通常)':massJp(s.mass),
-          '男士':s.name===NODROP?noDropShort(r.placeId):s.name,'件数':s.count,
+          '男士':isNoDropName(s.name)?noDropNameOf(s.name,r.placeId):s.name,'件数':s.count,
           '撃破回数':r.kills||'','小判':r.koban||0,'博多(なし/初/極)':r.hakata||'なし',
           '博多倍率':(typeof r.hrate==='number'&&r.hrate>0)?r.hrate:''
         }, i===0?resCols():{'木炭':'','玉鋼':'','冷却材':'','砥石':'','依頼札':'','時間(分)':'','ボス小判回数':''},recCols()));
@@ -3337,6 +4542,58 @@ function exportXLSX(){
   const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'邂逅録');
   XLSX.writeFile(wb,'邂逅録_'+dateStamp()+'.xlsx');
   toast('Excelを書き出しました');
+}
+/* ── 集計画面の条件で書き出す（期間×場所×ステージ） ──────────
+   マスは記録の中身（男士1件ごと）の絞り込みなので、書き出しには使わない。
+   記録をまるごと出すことで、そのまま取り込み直せる形を保つ */
+function aggExportName(ext){
+  const p=placeById(aggState.placeId);
+  // ファイル名には「短い呼び名」を使う（大阪城／夏の連隊戦／百鬼夜行）。
+  // 以前は「（…）」を落として短くしていたが、名前を中黒に改名して括弧が消えたため
+  // フルネームがそのまま出てしまった。短い呼び名なら改名しても短いままになる。
+  // 自分で名前を変えている人には shortName が従来どおり「（…）」落としを返す。
+  let pn=(p?shortName(p):aggState.placeId).replace(/（[^）]*）/g,'').replace(/\([^)]*\)/g,'').trim();
+  pn=pn.replace(/[\\\/:*?"<>|]/g,'').replace(/\s+/g,'').slice(0,24)||'記録';
+  const parts=['邂逅録',pn];
+  if(aggState.floor!=='all'){
+    // 難易度制の場所は id（easy / hi_kou）ではなく読める名前にする
+    const _fl=isDiffPlace(aggState.placeId)?diffName(aggState.placeId,aggState.floor):String(aggState.floor);
+    parts.push(String(_fl).replace(/[\\\/:*?"<>|\s・]/g,''));
+  }
+  const cmp=s=>s.replace(/-/g,'');
+  const f=aggState.from,t=aggState.to;
+  const _tm=currentTerm();
+  if(_tm){
+    parts.push(String(_tm.name).replace(/[\\\/:*?\"<>|\s]/g,''));
+  }else{
+    parts.push((!f&&!t)?'全期間':(f&&t)?cmp(f)+'-'+cmp(t):f?cmp(f)+'以降':cmp(t)+'まで');
+  }
+  return parts.join('_')+'.'+ext;
+}
+function aggExportRows(){
+  const recs=aggRecords();
+  if(recs.length===0){toast('この条件の記録がありません');return null;}
+  const rows=recordsToRows(recs);
+  if(rows.length===0){toast('この条件の記録がありません');return null;}
+  return rows;
+}
+function exportAggCSV(){
+  const rows=aggExportRows();if(!rows)return;
+  const ws=XLSX.utils.json_to_sheet(rows,{header:IMPORT_COLS});
+  const csv=XLSX.utils.sheet_to_csv(ws);
+  downloadBlob(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),aggExportName('csv'));
+  toast('この条件のCSVを書き出しました');
+}
+function exportAggXLSX(){
+  const rows=aggExportRows();if(!rows)return;
+  const ws=XLSX.utils.json_to_sheet(rows,{header:IMPORT_COLS});
+  ws['!cols']=[
+    {wch:12},{wch:26},{wch:10},{wch:18},{wch:14},{wch:7},{wch:9},{wch:9},{wch:14},{wch:10},
+    {wch:8},{wch:8},{wch:8},{wch:8},{wch:8},{wch:10},{wch:14},{wch:22},{wch:26}
+  ];
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'邂逅録');
+  XLSX.writeFile(wb,aggExportName('xlsx'));
+  toast('この条件のExcelを書き出しました');
 }
 function exportTemplate(fmt){
   const example=[
@@ -3413,6 +4670,7 @@ function normMass(s){
   if(/ボス|boss|赤/i.test(v))return 'boss';
   if(/通常|normal|紫|道中/i.test(v))return 'normal';
   if(/検非違使|kebi|ケビ|◉/i.test(v))return 'kebi';
+  if(/苦無|くない|クナイ|kunai/i.test(v))return 'kunai';
   if(/資源|緑/i.test(v))return 'resource';
   if(/不明|unknown/i.test(v))return 'unknown';
   return 'unknown'; // 空欄・不明は「マス不明」（目玉ならインポート側でboss補正）
@@ -3470,9 +4728,12 @@ function normImportRecordId(raw){
   return /^[A-Za-z0-9_-]{1,80}$/.test(v)?v:'';
 }
 // 男士名を表記揺れ込みで解決
-function resolveSword(name){
+function resolveSword(name,placeId){
   const v=normStr(name);
   if(!v)return null;
+  // 「目玉なし」は場所によって意味が変わる。連隊戦はもともとボタンが1つで、
+  // その表記がずっと「目玉なし」だったので NODROP のまま（昔のCSVの往復を壊さない）
+  if(/^(目玉なし|目玉無し|目玉が?出なかった|お迎えなし)$/.test(v))return (placeId&&isRentaiPlace(placeId))?NODROP:NOFEAT;
   if(/ドロップ無|空振|なし|無し|none/i.test(v))return NODROP;
   // 完全一致
   let hit=MR.find(s=>s[1]===v);if(hit)return hit[1];
@@ -3484,10 +4745,47 @@ function resolveSword(name){
   return undefined; // 見つからない
 }
 // 場所名を解決（プリセットになければ大阪城に寄せる、なお無ければ最初の場所）
+// 場所名の照合用に整える：波線のゆれ（全角チルダ～ U+FF5E／波ダッシュ〜 U+301C／半角~）と
+// 空白を吸収する。ここを揃えないと、書き出したCSVを取り込むときに場所を取り違える恐れがある
+// 取り込みの照合用に、名前を「記号を抜いた形」に均す。
+// 中黒・ハイフン・丸括弧も抜くので、「連隊戦・海辺の陣」「連隊戦 海辺の陣」
+// 「連隊戦-海辺の陣」「大阪城（地下に眠る千両箱）」が同じ鍵になる。
+function placeKey(s){
+  return String(s==null?'':s)
+    .replace(/[\uFF5E\u301C\u007E]/g,'')
+    .replace(/[\s\u3000]/g,'')
+    .replace(/[・･\-‐‑‒–—―ー－]/g,'')
+    .replace(/[（）()［］\[\]｛｝{}]/g,'');
+}
 function resolvePlace(name){
   const v=normStr(name);
   const places=activePlaces();
-  let hit=places.find(p=>p.name===v||p.name.replace(/（.*）/,'')===v||p.name.includes(v)||(v&&v.includes(p.name.replace(/（.*）/,''))));
+  const vk=placeKey(v);
+  const bare=p=>p.name.replace(/（.*）/,'');
+  // ① 記号を抜いた形でぴったり一致（現在の名前・括弧落とし・短い呼び名）
+  let hit=places.find(p=>placeKey(p.name)===vk||placeKey(bare(p))===vk||placeKey(shortName(p))===vk);
+  // ② 旧名でぴったり一致。改名前に書き出したCSVを迷子にしないため。
+  //    部分一致より先に見る（「連隊戦・海辺の陣」が「連隊戦」に吸われないように）
+  if(!hit&&vk){
+    const o=PLACE_OLD_NAMES.find(x=>x.names.some(n=>placeKey(n)===vk));
+    if(o)hit=places.find(p=>p.id===o.id);
+  }
+  // ③ 部分一致。ここは「いちばん長く一致したもの」を選ぶ。
+  //    先頭から順に拾うと、短い名前（例：「連隊戦」）が
+  //    「連隊戦・海辺の陣」まで総取りしてしまうため。
+  if(!hit&&vk){
+    let best=null,bestLen=-1;
+    for(const p of places){
+      const cands=[placeKey(p.name),placeKey(bare(p)),placeKey(shortName(p))];
+      for(const c of cands){
+        if(!c)continue;
+        if(c.includes(vk)||vk.includes(c)){
+          if(c.length>bestLen){best=p;bestLen=c.length;}
+        }
+      }
+    }
+    hit=best;
+  }
   if(hit)return hit.id;
   if(/大阪城|大坂城/.test(v)){const o=places.find(p=>p.type==='osaka')||places[0];if(o)return o.id;}
   if(places[0])return places[0].id;
@@ -3541,6 +4839,7 @@ function importJSON(text,mode){
     Object.keys(inUD.onkeikoByStage).forEach(k=>{if(inUD.onkeikoByStage[k]&&UD.kebiByStage&&UD.kebiByStage[k])UD.onkeikoByStage[k]=true;});
   }
   if(inUD.wishlist&&mode!=='replace')inUD.wishlist.forEach(w=>{if(!UD.wishlist.includes(w))UD.wishlist.push(w);});
+  fixRentaiName(); // 古いバックアップを「置き換え」で戻したときに旧名が復活しないように
   save();afterImport();
   showImportReport({added:UD.records.length-before,total:UD.records.length,fmt:'JSON'});
 }
@@ -3554,12 +4853,12 @@ function parseImportFloor(placeId,floorRaw){
   if(pType==='osaka')return parseInt(raw.replace(/[^0-9]/g,''))||null;
   if(!raw)return null;
   const v=raw.replace(/[－ー―‐−–—]/g,'-');
-  if(pType==='rentai'){
-    const idHit=rentaiDiffById(v)||rentaiDiffById(v.toLowerCase());
+  if(diffSetOfType(pType)){
+    const idHit=diffById(placeId,v)||diffById(placeId,v.toLowerCase());
     if(idHit)return idHit.id;
     // 表示名は厳密な形だけ解決（「ちょい難」等が「難」に化けるのを防ぐ）
-    const m=v.match(/^(?:(特別合戦場|特別|特)[・\-\s]?)?(超難|難|普|易)$/);
-    if(m){const d=RENTAI_DIFF.find(x=>x.sp===!!m[1]&&x.label===m[2]);if(d)return d.id;}
+    const nameHit=diffIdFromName(placeId,v);
+    if(nameHit)return nameHit;
     return v;
   }
   if(pType==='kako'){
@@ -3616,8 +4915,8 @@ function importTable(raw,ext,mode){
       errors.push(`${lineNo}行目：ステージ「${floorRaw}」を確認できませんでした`);
       return;
     }
-    if(floorRaw&&pType==='rentai'&&!isRentaiDiff(floor)){
-      errors.push(`${lineNo}行目：連隊戦の難易度「${floorRaw}」を確認できませんでした`);
+    if(floorRaw&&diffSetOfType(pType)&&!isDiffId(placeId,floor)){
+      errors.push(`${lineNo}行目：${diffLabel(placeId)}「${floorRaw}」を確認できませんでした`);
       return;
     }
     const mass=normMass(massRaw);
@@ -3634,14 +4933,18 @@ function importTable(raw,ext,mode){
     // 男士解決
     let swName=null;
     if(normStr(swRaw)){
-      swName=resolveSword(swRaw);
+      swName=resolveSword(swRaw,placeId);
       if(swName===undefined){errors.push(`${lineNo}行目：男士「${normStr(swRaw)}」が見つかりませんでした`);return;}
     }
     // マス不明でも目玉男士ならボス由来とみなす（かんたん記録と同じ判定）
     let useMass=mass;
-    if(useMass==='unknown'&&swName&&swName!==NODROP&&isFeatured(swName,placeId,floor))useMass='boss';
+    if(useMass==='unknown'&&swName&&!isNoDropName(swName)&&isFeatured(swName,placeId,floor))useMass='boss';
     const gkey=sourceId?('id:'+sourceId):[date,placeId,floor,kills,koban,hakata,hasHrate?_hr:'',at===undefined?'':at].join('|');
-    if(!groups[gkey])groups[gkey]={sourceId:sourceId||null,at,date,placeId,floor,kills,koban,hakata,hrate:hasHrate?_hr:undefined,swords:{},res:{},mins:0};
+    if(!groups[gkey])groups[gkey]={sourceId:sourceId||null,at,date,placeId,floor,kills,koban,hakata,hrate:hasHrate?_hr:undefined,swords:{},res:{},mins:0,lapsOk:false};
+    // 場所と撃破回数の両方が実際に書かれている行だけ、
+    // ドロップが無くても「周回だけの記録」として受け取る。
+    // （場所が空でも resolvePlace は先頭の場所を返すので、空行を弾くにはこの確認が要る）
+    if(normStr(placeRaw)&&killRaw)groups[gkey].lapsOk=true;
     if(groups[gkey].at===undefined&&at!==undefined)groups[gkey].at=at;
     // 資源は行に値があれば取り込む（エクスポートは先頭行のみ値を持つ）
     Object.keys(resRaw).forEach(rk=>{
@@ -3664,7 +4967,10 @@ function importTable(raw,ext,mode){
   Object.values(groups).forEach(g=>{
     const swords=Object.values(g.swords);
     const hasRes=Object.keys(g.res).length>0;
-    if(swords.length===0&&g.koban===0&&!hasRes)return;
+    // 男士も小判も資源も無い行は「周回だけの記録」。
+    // ただし場所と撃破回数が書かれている行にかぎる（空行は今までどおり捨てる）
+    const lapsOnly=(swords.length===0&&g.koban===0&&!hasRes);
+    if(lapsOnly&&!g.lapsOk)return;
     if(swords.some(s=>s.mass==='kebi')&&(placeById(g.placeId)||{}).type==='kako'){
       if(!UD.kebiByStage)UD.kebiByStage={};
       UD.kebiByStage[g.placeId+'@'+g.floor]=true;
@@ -3675,6 +4981,7 @@ function importTable(raw,ext,mode){
     if(typeof g.at==='number'&&isFinite(g.at))rec.at=g.at;
     if(g.kobanHits!==undefined)rec.kobanHits=g.kobanHits;
     if(typeof g.hrate==='number'&&g.hrate>0)rec.hrate=g.hrate;
+    if(lapsOnly)rec.lapsOnly=true;   // 取り込んだ周回だけの記録も自動削除から守る
     UD.records.push(rec);
     added++;
   });
@@ -3972,6 +5279,8 @@ function applyCloudData(cloud){
   UD.onkeikoByStage=(cloud.onkeikoByStage&&typeof cloud.onkeikoByStage==='object')?cloud.onkeikoByStage:{};
   UD.wishlist=Array.isArray(cloud.wishlist)?cloud.wishlist:[];
   UD.updatedAt=cloud.updatedAt||Date.now();
+  // 古い端末から旧名のまま同期されてくることがあるので、ここでも改名を当てておく
+  fixRentaiName();
 }
 // ── クラウドへ保存（この端末 → クラウドに上書き。マージしない） ──
 async function gdSaveToCloud(){
@@ -4012,8 +5321,39 @@ async function gdLoadFromCloud(){
   }finally{_gdBusy=false;renderSyncUI();}
 }
 // 確認つきの入口
-function askSaveToCloud(){
+/* ── 手元が空のまま上書きするのを止める ──────────────
+   機種変更・ブラウザの乗り換え・サイトデータの削除・アプリ内ブラウザなどで
+   この端末の記録が空になっていることがある。その状態で保存すると
+   クラウドの記録まで空で塗りつぶされ、元に戻せない。 */
+function gdLocalEmpty(){
+  /* 見るのは記録だけ。場所は起動時に種データが必ず入るので、
+     いっしょに見ると「空っぽの端末」を見つけられなくなる。 */
+  return !(UD.records||[]).length;
+}
+function gdForceSaveAnyway(){
+  const bg=document.getElementById('confirmModal');
+  if(bg)bg.classList.remove('show');
+  gdSaveToCloud();
+}
+async function gdAskIfEmpty(){
+  if(!gdLocalEmpty())return false;
+  let fid=null;
+  try{ fid=_gdFileId||await gdFindFile(); }catch(e){ return false; }
+  if(!fid)return false;   /* クラウドに何も無いなら、空を保存しても失うものが無い */
+  confirmDialogHtml(
+    '<b>手元に記録がありません</b><br><br>'
+    +'このまま保存すると、クラウドに残っている記録が空の状態で上書きされます。元に戻せません。<br><br>'
+    +'以前この道具に記録していた場合は、先に「⬇ 読み込む」を押してください。'
+    +'<div style="text-align:center;margin-top:14px">'
+    +'<a href="#" onclick="gdForceSaveAnyway();return false;" '
+    +'style="font-size:11px;color:var(--text2);text-decoration:underline">それでも保存する</a></div>',
+    '⬇ 読み込む', gdLoadFromCloud, false);
+  return true;
+}
+
+async function askSaveToCloud(){
   if(!_gdToken)return;
+  if(await gdAskIfEmpty())return;
   if(ST.confirmSave===false){gdSaveToCloud();return;}
   confirmDialogHtml('<b>クラウドへ保存</b><br>この端末のデータで、クラウドの内容を<b>上書き</b>します。<br>クラウドにある内容は、この端末の内容に置き換わります。<label class="sync-check" style="margin-top:12px"><input type="checkbox" id="saveSkipChk"> 次回から確認しない</label>','保存する',function(){var sk=document.getElementById('saveSkipChk');if(sk&&sk.checked){ST.confirmSave=false;saveST();var c=document.getElementById('confirmSaveChk');if(c)c.checked=false;}gdSaveToCloud();},false);
 }
@@ -4072,26 +5412,205 @@ function fmtSyncTime(t){
   const d=new Date(t);
   return '最終同期：'+(d.getMonth()+1)+'/'+d.getDate()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
 }
-// ── 使い方ガイド（？ボタン） ──
+// ══ 更新履歴（🆕 更新ボタン） ══
+// 更新のたびに、この NEWS のいちばん上に1件足すだけ。ほかは何も書き換えなくていい。
+//   v : 版番号（日付。新しいものほど上）
+//   b : 本文（<b> や <br> が使える）
+// いちばん上が最新版になり、まだ読んでいない人のヘッダーに「🆕 更新」が出る。
+const NEWS=[
+ {v:'2026.08.25',
+  b:'<b>夜花奪還作戦に対応しました。</b>出た敵を<b>ボス・苦無・不明</b>の3つに分けて記録できます。木炭・玉鋼・冷却材・砥石も残せます（小判の欄は出ません）。'
+   +'<br><b>連隊戦を3つに分けました。</b>冬の「連隊戦」・「連隊戦・海辺の陣」・「連隊戦・初夏の陣」です。冬の記録を海辺の陣に入れていた方には、移し替えのご案内が一度だけ出ます。'
+   +'<br><b>場所の名前を整えました。</b>「大阪城・地下に眠る千両箱」「連隊戦・海辺の陣」になりました。<b>記録はそのままです。</b>'
+   +'<br><b>開催回でしぼりこめるようになりました。</b>集計の📅期間に、その場所の開催回が金色で並びます。'},
+];
+// 最新の版番号は NEWS の先頭から自動で読む（書き換えるのは NEWS だけでよい）
+const NEWS_VER=NEWS.length?NEWS[0].v:'';
+
+// ══ 使い方ガイド（？ボタン） ══
+const GUIDE_LEAD='ドロップを記録して、何がどれくらい出たか集計できるツールです。<br>見たいところをタップして開いてください。';
+// open:1 のカードだけ最初から開いている
+const GUIDE_CARDS=[
+ {id:'basic', cls:'gbasic', open:1, t:'🔰 はじめての方へ（3ステップ）',
+  b:'<div class="gstep"><span class="n">1</span><span><b>場所とステージをえらぶ</b>：記録タブのいちばん上です。</span></div>'
+   +'<div class="gstep"><span class="n">2</span><span><b>出た男士をえらぶ</b>：名前で探すか、よく出る候補から押します。</span></div>'
+   +'<div class="gstep"><span class="n">3</span><span><b>何周したか入れて「記録する」</b>：これで1件です。あとから直せます。</span></div>'},
+
+ {id:'place', t:'📍 場所と周回をえらぶ',
+  b:'記録タブのいちばん上で、場所とステージ（階・難易度・迎撃ライン）をえらびます。えらべる場所は「過去（恒常マップ）」「大阪城・地下に眠る千両箱」「連隊戦」（冬）「連隊戦・海辺の陣」「連隊戦・初夏の陣」「対百鬼夜行迎撃作戦」「夜花奪還作戦」です。'
+   +'<br>場所によって出るものが違うので、画面もそれに合わせて変わります。過去は資源と検非違使マス、大阪城は階と小判と資源、夜花はボス・苦無の区別と資源、連隊戦と百鬼夜行はマスの区別がありません。'
+   +'<br>終わったイベント（連隊戦・初夏の陣）は、記録タブのえらぶ欄からは畳んであります。すぐ下の「終わったイベントも出す」で出せます。'},
+
+ {id:'rec', t:'⚔ ドロップを記録',
+  b:'出た男士を選んで「記録する」。周回数や、大阪城では小判も記録できます。<br>1周ごとに記録しても、何周かまとめて記録してもかまいません。まとめるときは「何周した？」にその周回数を入れてください。'},
+
+ {id:'edit', t:'✏ 記録を見なおす・直す',
+  b:'記録タブの下「最近の記録」は、<b>2つの見かた</b>を切り替えられます。<br>・<b>日ごと</b>…その日その場所でどれだけ出たかを合算して見ます（表示専用）<br>・<b>記録の編集</b>…1回ごとの記録カードが並び、ここで直します<br>日ごとで気になるところの「<b>✏ 編集へ</b>」を押すと、記録の編集に切り替わってその記録まで移動します。<br>記録カードでは、個数の＋−、マスの変更、男士の追加、資源や小判の直し、記録ごとの削除ができます。'},
+
+ {id:'meda', t:'⭐ 目玉を指定',
+  b:'<b>エリア設定タブ</b>で、ステージ・難易度・迎撃ラインごとに目玉（レアドロップ）の男士を指定できます。指定したステージには⭐が付きます。<br>連隊戦や百鬼夜行のように区分が多い場所では、「<b>この指定を◯つすべてに入れる</b>」ボタンでまとめて入れられます。<br><b>夜花奪還作戦だけは、ステージではなく「出た敵」で分けます。</b>ボスと苦無で出る男士が違うためです。記録画面で「不明」を選んでいるときは、両方の目玉をまとめて出します。<br>百鬼夜行には、ここでしか手に入らない男士はいません。<b>指定しなくても集計は出ます</b>ので、追いかけたい男士の目印としてお使いください。'},
+
+ {id:'rate', t:'🎯 目玉の実ドロップ率',
+  b:'目玉（★）が「何周で何％落ちるか」を知りたいときは、<b>目玉が出なかった周も記録</b>します。<br>・連隊戦…「目玉なしで記録（周回だけ）」<br>・百鬼夜行…「ドロップ無し（空振り）として記録」／★だけを追いかけている方は「お迎えしたい男士は出なかった（周回だけ）」<br>どちらも「何周した？」に周回数を入れて保存してください。集計を「実ドロップ率」で見ると、目玉の率（＝目玉が出た回数 ÷ 総周回数）が出ます。'},
+
+ {id:'agg', t:'📊 集計でふりかえり',
+  b:'集計タブで、場所やステージごとのドロップ率を見られます。男士の一覧のほか、大阪城では小判、過去・大阪城・夜花では資源もまとまります。'},
+
+ {id:'period', t:'📅 期間でしぼりこむ',
+  b:'集計タブの「🔍集計する条件」に<b>📅期間</b>があります。全期間・今月・先月・過去7日・過去30日から選ぶか、開始日と終了日を直接入れられます。<br>・その日を<b>含みます</b>（7/1〜7/10 なら、7/1と7/10の記録も入ります）<br>・片方だけでもかまいません（「7/10以降」「7/10まで」）<br>・この設定は<b>保存されません</b>。画面を開き直すと全期間に戻ります'},
+
+ {id:'term', tag:'新', t:'📅 開催回でふりかえる',
+  b:'期間限定のイベントには、これまでの開催回を登録してあります。集計タブの📅期間に、その場所の開催回が<b>金色</b>で並びます（記録がある回だけ出ます）。押すと、その回の記録だけになります。'
+   +'<br>エリア設定タブの「📅 開催期間」から、回を足したり直したりできます。<b>記録には何も足しません</b>——記録の日付から自動で振り分けています。'},
+
+ {id:'exp', t:'📤 この条件で書き出す',
+  b:'集計タブのいちばん下から、<b>いま画面で絞っている条件のまま</b>CSV／Excelに書き出せます。ファイル名にも場所・ステージ・期間が入ります。<br>効くのは<b>期間・場所・ステージ</b>までです。<b>マスのしぼりこみは効きません</b>——マスは記録の中身（男士1件ごと）の絞り込みなので、これで絞ると記録が欠けたまま出てしまい、取り込み直したときにデータが壊れるからです。<br>すべての記録を控えておきたいときは、設定タブの書き出し（全件）をお使いください。'},
+
+ {id:'csv', t:'📄 CSV・Excelでのやりとり',
+  b:'書き出したファイルには<b>記録ID</b>と<b>記録時刻</b>が入ります。そのまま取り込み直しても、<b>同じ記録が二重に増えません</b>（IDで見分けています）。<br>手で書き足すときは、記録IDの欄を空にしておけば新しい記録として入ります。<br>場所やステージの名前は、多少のゆれなら読み取ります（「大阪城」「百鬼夜行」などの短い呼び名、全角の記号、大文字小文字）。読み取れなかった行は取り込まず、何行目かをお知らせします。'},
+
+ {id:'fix', t:'🩹 古い記録の自動修復',
+  b:'以前のCSVの取り込みで、過去のステージ「8-4」が日付に化けたり、数字だけになってしまった記録があります。これを<b>一度だけ自動で直します</b>。日付が数字になってしまったものも直します。<br>健全な記録には触りません。何もしていただくことはありません。'},
+
+ {id:'save', t:'💾 データの保存',
+  b:'データはこの端末のブラウザに保存されます。ヘッダーの☁でGoogleにログインすると、↑保存・↓読み込みでクラウドにも置けます（書き出しや自動保存は設定から）。'},
+
+ {id:'bk', t:'🛟 読み込み前の控え（自動）',
+  b:'クラウドから読み込む直前と「置き換え」取り込みの直前に、その時点のデータを自動でひとつ控えます。設定の「この控えに戻す」で戻せます。今のデータと入れ替わる方式なので、もう一度押せば元に戻ります。'},
+
+ {id:'pc', t:'🖥 パソコンでも使えます',
+  b:'画面が広いときは、左に固定メニューが出るレイアウトに切り替わります。ヘッダー右の🖥ボタンで、スマホ表示とパソコン表示を切り替えられます。'},
+
+ {id:'bar', t:'📌 記録ボタンをいつも手元に',
+  b:'「🔁何周した？」と「記録する」を、スマホでは画面の下、パソコンでは左メニューに固定できます（設定でオフにもできます）。男士をたくさん選んでも、スクロールせずに記録できます。'},
+
+ {id:'sel', t:'🎴 選んだ男士の見せ方',
+  b:'記録するときに選んだ男士の並びを、リスト表示／チップ表示から選べます。折りたたみや、内側だけスクロールする表示も設定できます。'},
+
+ {id:'nav', t:'🧭 集計をすばやく移動',
+  b:'集計タブの上のチップ（⚔男士｜💰小判｜🟢資源）を押すと、見たい集計へジャンプできます。'},
+
+ {id:'misc', t:'🕐 ヘッダーの時計 ／ ⬆ 上に戻る',
+  b:'ヘッダーに日付と時刻を表示できます（設定でオフにできます）。下までスクロールすると「上に戻る」ボタンが出ます。'}
+];
+let _guideFold={};      // カードごとの畳み状態（開くたびに初期化）
+let _newsFold={};       // 更新履歴の畳み状態（開くたびに初期化）
+// このセッションで最初に更新履歴を開いたときの「最後に読んだ版」。
+// 読んだ扱いにしたあとも、閉じて開き直せば同じ「新着」が見られるように覚えておく。
+let _newsSeenAtOpen=null;
+
+// まだ読んでいない更新（版番号が「最後に読んだ版」より新しいもの）
+function newsUnread(){
+  const seen=ST.guideSeenVer||'';
+  return NEWS.filter(function(n){return n.v>seen;});
+}
+function newsHasUnread(){return newsUnread().length>0;}
+
+// ヘッダーの「🆕 更新」ボタンの出し入れ。未読があるときだけ出る
+function applyNewsBtn(){
+  const b=document.getElementById('hdrNewsBtn');
+  if(b)b.style.display=newsHasUnread()?'':'none';
+}
+
+// 更新履歴を開いた＝読んだ扱い。ボタンが消える
+function markNewsSeen(){
+  if(ST.guideSeenVer===NEWS_VER)return;
+  ST.guideSeenVer=NEWS_VER;saveST();
+  applyNewsBtn();
+}
+
+function renderNews(){
+  const body=document.getElementById('newsBody');
+  if(!body)return;
+  let h='<div class="modal-title">🆕 これまでの更新</div>';
+  if(!NEWS.length){
+    h+='<div class="glead">まだ更新はありません。</div>';
+  }else{
+    NEWS.forEach(function(n){
+      // 未読のぶんは開いた状態で「新着」を付ける。読んだぶんは畳む
+      const isNew=n.v>_newsSeenAtOpen;
+      const fold=(n.v in _newsFold)?_newsFold[n.v]:!isNew;
+      h+='<div class="gcard'+(isNew?' gnew':'')+(fold?' fold':'')+'">'
+        +'<div class="gcard-h" onclick="newsToggle(\''+n.v+'\')"><span class="arw">▼</span>'
+        +'<span class="ttl">'+n.v+'</span>'
+        +(isNew?'<span class="gnew-tag">新着</span>':'')+'</div>'
+        +'<div class="gcard-b">'+n.b+'</div></div>';
+    });
+  }
+  h+='<div class="gfoot">これより前の更新は<a href="changelog.html" style="color:var(--gold)">審神者の道具箱の更新履歴</a>でご覧いただけます。'
+   +'<span style="color:var(--text2)">この一覧は設定タブのいちばん上からいつでも開けます。</span></div>';
+  body.innerHTML=h;
+}
+function newsToggle(v){
+  const isNew=v>_newsSeenAtOpen;
+  const cur=(v in _newsFold)?_newsFold[v]:!isNew;
+  _newsFold[v]=!cur;renderNews();
+}
+
+function openNews(){
+  if(_newsSeenAtOpen===null)_newsSeenAtOpen=ST.guideSeenVer||'';
+  _newsFold={};
+  renderNews();
+  document.getElementById('newsModal').classList.add('show');
+  markNewsSeen();
+}
+
+// ══ 設定タブのカードの畳み ══
+// 既定は全部開いている。畳んだものだけ覚える（端末ごと。クラウドには乗らない）
+function presetToggle(id){
+  ST.presetFold=ST.presetFold||{};
+  if(ST.presetFold[id])delete ST.presetFold[id]; else ST.presetFold[id]=true;
+  saveST();applyPresetFold();
+}
+function applyPresetFold(){
+  const f=ST.presetFold||{};
+  const list=document.querySelectorAll('#preset .fcard');
+  for(let i=0;i<list.length;i++){
+    const el=list[i];
+    el.classList.toggle('fold', !!f[el.id.replace(/^pc-/,'')]);
+  }
+}
+
+function initGuideState(){
+  if(_firstEver){
+    // 正真正銘の初回。見逃した更新はないので「🆕 更新」は出さず、ガイドだけ1回開く
+    ST.guideSeenVer=NEWS_VER;
+    const openIt=!ST.guideShown;
+    ST.guideShown=true;saveST();
+    if(openIt){applyNewsBtn();openGuide();return;}
+  }
+  applyNewsBtn();
+}
+
+function renderGuide(){
+  const body=document.getElementById('guideBody');
+  if(!body)return;
+  let h='<div class="modal-title">⚔ 邂逅録へようこそ</div>'
+   +'<div class="glead">'+GUIDE_LEAD+'</div>'
+   +'<div class="gtools"><button onclick="guideFoldAll(0)">すべて開く</button><button onclick="guideFoldAll(1)">すべて閉じる</button></div>';
+  GUIDE_CARDS.forEach(function(c){
+    const fold=(c.id in _guideFold)?_guideFold[c.id]:!c.open;
+    const tag=c.tag?'<span class="gnew-tag">'+c.tag+'</span>':'';
+    h+='<div class="gcard '+(c.cls||'')+(fold?' fold':'')+'">'
+      +'<div class="gcard-h" onclick="guideToggle(\''+c.id+'\')"><span class="arw">▼</span><span class="ttl">'+c.t+'</span>'+tag+'</div>'
+      +'<div class="gcard-b">'+c.b+'</div></div>';
+  });
+  h+='<div class="gfoot">この案内はヘッダーの「？」からいつでも開けます。<span style="color:var(--text2)">「？」ボタン自体は下のチェックや設定で消すこともできます。</span></div>'
+   +'<label class="sync-check" style="margin-top:10px;font-size:12px"><input type="checkbox" id="guideHideBtnChk" '+(ST.hideHelpBtn?'checked':'')+' onchange="guideToggleHideBtn(this.checked)"> 「？ 使い方」ボタンを非表示にする（使い慣れた方向け）</label>';
+  body.innerHTML=h;
+}
+
+function guideToggle(id){
+  const c=GUIDE_CARDS.filter(function(x){return x.id===id;})[0];
+  if(!c)return;
+  const cur=(id in _guideFold)?_guideFold[id]:!c.open;
+  _guideFold[id]=!cur;renderGuide();
+}
+function guideFoldAll(on){GUIDE_CARDS.forEach(function(c){_guideFold[c.id]=!!on;});renderGuide();}
+
 function openGuide(){
-  document.getElementById('guideBody').innerHTML=`<div class="modal-title">⚔ 邂逅録へようこそ</div>
-  <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-bottom:12px">刀剣男士のドロップを記録して、どの男士がどれくらい出たか集計できるツールです。</div>
-  <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
-    <div style="background:var(--bg2);border-radius:8px;padding:9px 12px;line-height:1.75"><b style="color:var(--accent)">📍 場所と周回をえらぶ</b><br>記録タブで場所（過去・大阪城・夏の連隊戦）と、ステージ・階・難易度をえらびます。</div>
-    <div style="background:var(--bg2);border-radius:8px;padding:9px 12px;line-height:1.75"><b style="color:var(--accent)">⚔ ドロップを記録</b><br>出た男士を選んで保存。周回数や、大阪城では小判も記録できます。</div>
-    <div style="background:var(--bg2);border-radius:8px;padding:9px 12px;line-height:1.75"><b style="color:var(--accent)">⭐ 目玉を指定</b><br>エリア設定タブで、ステージや難易度ごとに目玉（レアドロップ）の男士を指定できます。</div>
-    <div style="background:var(--bg2);border-radius:8px;padding:9px 12px;line-height:1.75"><b style="color:var(--accent)">📊 集計でふりかえり</b><br>集計タブで、場所やステージごとのドロップ率を見られます。</div>
-    <div style="background:var(--bg2);border-radius:8px;padding:9px 12px;line-height:1.75"><b style="color:var(--accent)">🎯 目玉の実ドロップ率</b><br>目玉（★）が「何周で何％落ちるか」を知りたいときは、<b>目玉が出なかった周も記録</b>します。連隊戦なら「目玉なしで記録（周回だけ）」を押して「何周した？」に周回数を入れて保存。集計を「実ドロップ率」モードで見ると、目玉の率（＝目玉が出た回数 ÷ 総周回数）が出ます。</div>
-    <div style="background:var(--bg2);border-radius:8px;padding:9px 12px;line-height:1.75"><b style="color:var(--accent)">💾 データの保存</b><br>データはこの端末のブラウザに保存されます。ヘッダーの☁でGoogleにログインすると、↑保存・↓読み込みでクラウドにも置けます（書き出しや自動保存は設定から）。</div>
-    <div style="background:var(--bg2);border-radius:8px;padding:9px 12px;line-height:1.75"><b style="color:var(--accent)">🛟 読み込み前の控え（自動）</b><br>クラウドから読み込む直前と「置き換え」取り込みの直前に、その時点のデータを自動でひとつ控えます。設定の「この控えに戻す」で戻せます。今のデータと入れ替わる方式なので、もう一度押せば元に戻ります。</div>
-    <div style="background:var(--bg2);border-radius:8px;padding:9px 12px;line-height:1.75"><b style="color:var(--accent)">🖥 パソコンでも使えます</b><br>画面が広いときは、左に固定メニューが出るレイアウトに切り替わります。ヘッダー右の🖥ボタンで、スマホ表示とパソコン表示を切り替えられます。</div>
-    <div style="background:var(--bg2);border-radius:8px;padding:9px 12px;line-height:1.75"><b style="color:var(--accent)">📌 記録ボタンをいつも手元に</b><br>「🔁何周した？」と「記録する」を、スマホでは画面の下、パソコンでは左メニューに固定できます（設定でオフにもできます）。男士をたくさん選んでも、スクロールせずに記録できます。</div>
-    <div style="background:var(--bg2);border-radius:8px;padding:9px 12px;line-height:1.75"><b style="color:var(--accent)">🎴 選んだ男士の見せ方</b><br>記録するときに選んだ男士の並びを、リスト表示／チップ表示から選べます。折りたたみや、内側だけスクロールする表示も設定できます。</div>
-    <div style="background:var(--bg2);border-radius:8px;padding:9px 12px;line-height:1.75"><b style="color:var(--accent)">🧭 集計をすばやく移動</b><br>集計タブの上のチップ（⚔男士｜💰小判｜🟢資源）を押すと、見たい集計へジャンプできます。</div>
-    <div style="background:var(--bg2);border-radius:8px;padding:9px 12px;line-height:1.75"><b style="color:var(--accent)">🕐 ヘッダーの時計 ／ ⬆ 上に戻る</b><br>ヘッダーに日付と時刻を表示できます（設定でオフにできます）。下までスクロールすると「上に戻る」ボタンが出ます。</div>
-  </div>
-  <div style="font-size:11px;color:var(--text3);margin-top:12px;line-height:1.7">この案内はヘッダーの「？」からいつでも開けます。<span style="color:var(--text2)">「？」ボタン自体は下のチェックや設定で消すこともできます。</span></div>
-  <label class="sync-check" style="margin-top:10px;font-size:12px"><input type="checkbox" id="guideHideBtnChk" ${ST.hideHelpBtn?'checked':''} onchange="guideToggleHideBtn(this.checked)"> 「？ 使い方」ボタンを非表示にする（使い慣れた方向け）</label>`;
+  _guideFold={};
+  renderGuide();
   document.getElementById('guideModal').classList.add('show');
 }
 function guideToggleHideBtn(hide){
@@ -4258,20 +5777,15 @@ document.addEventListener('click',function(e){
 });
 
 // ══ 第2弾: サイドバーの「いまの周回」「きょう」 ══
-// 場所+階のラベル（最近の記録と同じ流儀）
-function sbStageLabel(placeId,floor){
-  const p=placeById(placeId);
-  if(p&&p.type==='kako'){const st=stageById(floor);return st?`${st.id} ${st.nm}`:(p?p.name.replace(/（.*）/,''):'');}
-  if(p&&p.type==='rentai'){return isRentaiDiff(floor)?rentaiDiffName(floor):(p?p.name.replace(/（.*）/,''):'');}
-  return floor?(floor+'階'):(p?p.name.replace(/（.*）/,''):'');
-}
+// 場所+階のラベル（stageLabel に一本化。呼び名は従来のまま残す）
+function sbStageLabel(placeId,floor){return stageLabel(placeId,floor);}
 function renderSbNow(){
   const box=document.getElementById('sbNow');
   if(!box)return;
   const p=placeById(recState.placeId);
   const pname=p?p.name:'';
   const fl=sbStageLabel(recState.placeId,recState.floor);
-  const feats=featuredList(recState.placeId,recState.floor)||[];
+  const feats=featuredList(recState.placeId,recState.floor,recState.mass)||[];
   let html=`<div class="sb-now-place">${pname}</div>`;
   html+=`<div class="sb-now-floor">${fl}</div>`;
   if(feats.length)html+=`<div class="sb-now-feat">★ 目玉: ${feats.join('・')}</div>`;
@@ -4296,7 +5810,7 @@ function renderSbToday(){
   let lines=order.slice(0,MAXP).map(k=>{
     const it=g[k];
     const p=placeById(it.placeId);
-    const pn=p?p.name.replace(/（.*）/,''):'';
+    const pn=shortName(p);
     return `<div>${pn} ${sbStageLabel(it.placeId,it.floor)} <span class="pk">×${it.kills}周</span></div>`;
   }).join('');
   if(order.length>MAXP)lines+=`<div style="color:var(--text3)">ほか${order.length-MAXP}か所</div>`;
@@ -4383,6 +5897,8 @@ function toggleConfirmSave(){
 // アプリ内ブラウザ（WebView）判定：確実なものだけ拾う保守的な判定。
 // 検出時のみ、同期カード内のお知らせを表示する（普通のブラウザでは常に非表示）。
 function isInAppBrowser(){
+  /* ホーム画面に追加して開いた場合はGoogleログインが使えるので、案内を出さない */
+  if(typeof isHomeScreen==="function" && isHomeScreen())return false;
   const ua=navigator.userAgent||'';
   // 主要アプリの明示的な識別子（誤検出しにくい）
   if(/FBAN|FBAV|FB_IAB|Instagram|Line\/|Twitter|TwitterAndroid|MicroMessenger|KAKAOTALK/i.test(ua))return true;
@@ -4453,7 +5969,18 @@ function init(){
   const ssSel=document.getElementById('selShapeSel');if(ssSel)ssSel.value=(ST.selShape==='chip')?'chip':'list';
   const sfChk=document.getElementById('selFoldChk');if(sfChk)sfChk.checked=(ST.selFold!==false);
   const scChk=document.getElementById('selScrollChk');if(scChk)scChk.checked=(ST.selScroll!==false);
+  seedTerms();
+  // 夜花2026年の「予想」外し（種を入れたあとに走らせる）
+  if(!ST.yobanaEstV1){
+    if(fixYobanaEst()){try{localStorage.setItem(SK,JSON.stringify(UD));}catch(e){}}
+    ST.yobanaEstV1=true;
+    try{saveST();}catch(e){}
+  }
+  applyMisfixBarVis();
+  renderRecPlaceExtras();
   applyHelpBtnVis();
+  initGuideState();
+  applyPresetFold();
   updateHdrSyncDot();
   renderHeaderSync();
   applyViewMode();
@@ -4473,11 +6000,20 @@ function init(){
     waitForGoogleAccounts(8000).then(()=>{renderSyncUI();}).catch(()=>{renderSyncUI();});
   }
 }
-// ガイド・同期メニューは、外側（暗い背景）をタップしても閉じる。
-// 確認ダイアログ（削除・保存・警告）は誤操作防止のため対象にしない。
-['guideModal'].forEach(function(id){
+// ガイドと更新履歴は、外側（暗い背景）をタップしても閉じる。
+// 確認ダイアログ（削除・保存・警告）と編集モーダルは、誤操作防止のため対象にしない。
+// 押し始めも背景だったときだけ閉じる。文章が多く、
+// 文字を選んでいる途中で指が枠の外に出ると閉じてしまうため。
+['guideModal','newsModal'].forEach(function(id){
   var bg=document.getElementById(id);
-  if(bg)bg.addEventListener('click',function(e){if(e.target===bg)bg.classList.remove('show');});
+  if(!bg)return;
+  var downOnBg=false;
+  bg.addEventListener('mousedown',function(e){downOnBg=(e.target===bg);});
+  bg.addEventListener('touchstart',function(e){downOnBg=(e.target===bg);},{passive:true});
+  bg.addEventListener('click',function(e){
+    if(e.target===bg&&downOnBg)bg.classList.remove('show');
+    downOnBg=false;
+  });
 });
 init();
 

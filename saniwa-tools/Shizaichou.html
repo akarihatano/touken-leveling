@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   資源帳 — 審神者の道具箱
-  秦野 / 審神者の道具箱
+  akari shizukuishi / 審神者の道具箱
   二次創作・非公式。個人利用のみ。
   無断転載・再配布・改変配布・広告目的での公開を禁じます。
 -->
@@ -12,6 +12,14 @@
 <title>資源帳 — 刀剣乱舞 資源管理</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- アクセス解析の停止設定を読む（プライバシーポリシーのボタンで切り替えます） -->
+<script>
+try {
+  if (localStorage.getItem('saniwa_ga_optout') === '1') {
+    window['ga-disable-G-QM317D9ESN'] = true;
+  }
+} catch (e) {}
+</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QM317D9ESN');</script>
 <style>
@@ -59,8 +67,55 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
 .col-swatch{width:26px;height:26px;border-radius:6px;border:2px solid var(--bd1);cursor:pointer;padding:0;transition:transform .1s}
 .col-swatch:hover{transform:scale(1.12)}
 .col-swatch.sel{border-color:var(--t1);box-shadow:0 0 0 2px var(--acc)}
+/* ── 覚え書き ── */
+.km-addbar{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.km-addbtn.open{border-color:var(--acc);color:var(--acc)}
+.km-hint{font-size:11px;color:var(--t4)}
+.km-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.km-tag{padding:4px 10px;font-size:12px;border:1px solid var(--bd1);border-radius:999px;background:transparent;color:var(--t4);cursor:pointer;font-family:inherit;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+.km-tag .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.km-tag.on{background:var(--bg2);color:var(--t1);border-color:var(--bd2)}
+.km-tag.free{border-style:dashed}
+.km-tag.free.on{border-style:solid;background:var(--bg2);color:var(--t1);border-color:var(--bd2)}
+.km-freeinput{display:flex;gap:6px;margin-top:4px}
+.km-freeinput input{flex:1;min-width:0}
+.km-freeinput button{padding:8px 14px;font-size:13px;flex-shrink:0}
+.km-picked{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.km-picked:empty{display:none}
+.km-picked-tag{padding:4px 6px 4px 10px;font-size:12px;border:1px dashed var(--bd2);border-radius:999px;background:var(--bg2);color:var(--t1);display:inline-flex;align-items:center;gap:6px}
+.km-picked-tag button{background:none;border:none;color:var(--t4);padding:0 2px;font-size:14px;line-height:1;cursor:pointer}
+.km-picked-tag button:hover{color:#e05555}
+.km-sugg{font-size:11px;color:var(--t4);margin-top:8px}
+.km-sugg button{padding:2px 8px;font-size:11px}
+.km-filter{background:var(--bg1);border:1px solid var(--bd1);border-radius:8px;padding:11px 13px;margin-bottom:10px}
+.km-filter-row{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+.km-search{flex:1;min-width:170px;font-size:13px;padding:6px 10px}
+.km-count{font-size:11px;color:var(--t4);white-space:nowrap;padding-top:7px}
+.km-flabel{flex-shrink:0;padding-top:8px;width:76px}
+.km-clear{font-size:11px;color:var(--t4);background:none;border:none;cursor:pointer;text-decoration:underline;padding:6px 0 0}
+.km-none{font-size:11px;color:var(--t4);padding-top:6px}
+.km-card{background:var(--bg1);border:1px solid var(--bd1);border-radius:8px;margin-bottom:8px;overflow:hidden;transition:border-color .15s}
+.km-card.pinned{border-color:rgba(219,168,32,.4)}
+.km-head{display:flex;align-items:flex-start;gap:9px;padding:11px 13px;cursor:pointer}
+.km-pin{flex-shrink:0;font-size:14px;line-height:1.4;opacity:.25;background:none;border:none;padding:0;cursor:pointer;color:var(--t3)}
+.km-pin.on{opacity:1;color:#dba820}
+.km-head-main{flex:1;min-width:0}
+.km-title{font-size:14px;font-weight:600;color:var(--t1);line-height:1.5;word-break:break-word}
+.km-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.km-chip{font-size:10px;padding:2px 7px;border-radius:999px;border:1px solid var(--bd1);color:var(--t3);display:inline-flex;align-items:center;gap:4px}
+.km-chip .dot{width:6px;height:6px;border-radius:50%}
+.km-chip.free{border-style:dashed;color:var(--t4)}
+.km-preview{font-size:12px;color:var(--t4);margin-top:5px;line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.km-meta{flex-shrink:0;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--t4)}
+.km-arrow{font-size:11px;transition:transform .18s;display:inline-block}
+.km-card.open .km-arrow{transform:rotate(180deg)}
+.km-body{display:none;padding:0 13px 13px;border-top:1px solid var(--bd1)}
+.km-card.open .km-body{display:block}
+.km-text{font-size:13px;line-height:2;color:var(--t2);white-space:pre-wrap;word-break:break-word;padding-top:11px}
+.km-acts{display:flex;gap:6px;margin-top:11px;flex-wrap:wrap}
+.km-empty{text-align:center;color:var(--t4);font-size:12px;padding:28px 12px;border:1px dashed var(--bd1);border-radius:8px;line-height:1.9}
 .xaxis-cust{cursor:pointer;margin-top:2px;padding-bottom:1px}
-.xaxis-cust-inner{display:flex;justify-content:space-between;font-size:10px;color:var(--t4)}
+.xaxis-cust-inner{position:relative;height:15px;font-size:10px;color:var(--t4)}
 .xaxis-cust-hint-row{display:flex;align-items:center;gap:8px;margin-top:2px;min-height:14px}
 .xaxis-cust-hint{font-size:10px;color:var(--bd2);white-space:nowrap;pointer-events:none;transition:color .2s}
 .xaxis-cust-cur{font-size:10px;color:var(--t4);white-space:nowrap;pointer-events:none}
@@ -214,6 +269,11 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
 .modal-bg.show{display:flex}
 .modal{background:var(--bg1);border:1px solid var(--bd2);border-radius:10px;padding:20px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
 .modal-h{font-size:15px;font-weight:600;color:var(--t2);margin-bottom:14px}
+/* ガイドを閉じる✕。画面下部が他のもの（SNSのアプリ内ブラウザのバーなど）に
+   塞がれても閉じられるよう、逃げ道を上にも用意する */
+.modal-x{background:none;border:0;color:var(--t4);font-size:16px;line-height:1;
+  padding:8px 10px;margin:-8px -10px -8px 0;border-radius:6px;cursor:pointer;flex-shrink:0}
+.modal-x:hover{background:var(--bg2);color:var(--t2)}
 .modal-foot{display:flex;gap:8px;margin-top:14px;justify-content:flex-end}
 .btn-save{background:var(--acc);border-color:var(--acc);color:#fff}
 .btn-save:hover{opacity:.9}
@@ -244,6 +304,72 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
 </style>
 </head>
 <body>
+<!-- ═══ SNSアプリの中で開いている人への案内 ═══════════════════
+     Xなどのアプリ内でリンクを開くと、ブラウザ本体とは別の場所に
+     データが保存される。同じ道具を開いても記録が見えず、
+     Googleログインも通らないことがある。
+     ここは案内を出すだけで、動きは何も変えない。 -->
+<div id="iab-bar" style="display:none"></div>
+<script>
+(function(){
+  var KEY='saniwa_iab_hide';
+  /* ホーム画面に追加して開いている状態。SNSアプリの中ではないので案内を出さない。
+     iOSは navigator.standalone、AndroidなどはCSSの display-mode で分かる。 */
+  function isHomeScreen(){
+    try{ if(navigator.standalone===true)return true; }catch(e){}
+    try{ if(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)return true; }catch(e){}
+    return false;
+  }
+  function isInApp(){
+    if(isHomeScreen())return false;
+    var ua=navigator.userAgent||'';
+    /* ①名乗っているアプリ ②AndroidのWebView ③iOSのWKWebView（Safari/の名乗りが無い） */
+    if(/FBAN|FBAV|FB_IAB|Instagram|\bLine\/|MicroMessenger|KAKAOTALK/.test(ua))return true;
+    if(/;\s*wv\)/.test(ua))return true;
+    if(/iPhone|iPad|iPod/.test(ua)&&ua.indexOf('AppleWebKit')>=0&&!/Safari\//.test(ua))return true;
+    return false;
+  }
+  function hidden(){ try{ return localStorage.getItem(KEY)==='1'; }catch(e){ return false; } }
+  function hasData(){ try{ return (typeof RES!=="undefined"&&RES.length>0)||(typeof EVS!=="undefined"&&EVS.length>0)||(typeof NTS!=="undefined"&&NTS.length>0)||(typeof MEMOS!=="undefined"&&MEMOS.length>0); }catch(e){ return false; } }
+  function close(never){
+    if(never){ try{ localStorage.setItem(KEY,'1'); }catch(e){} }
+    var el=document.getElementById('iab-bar');
+    if(el)el.style.display='none';
+  }
+  window.iabClose=function(){
+    var c=document.getElementById('iab-never');
+    close(c&&c.checked);
+  };
+  function show(){
+    var el=document.getElementById('iab-bar');
+    if(!el)return;
+    var body = hasData()
+      ? '<p style="margin:0 0 10px">ここでの記録は、<b>いま開いているアプリ（Xなど）の中</b>だけに保存されています。'
+        +'この道具ではなくそのアプリが管理している場所なので、アプリ側の都合でまとめて消えることがあります。</p>'
+        +'<p style="margin:0 0 10px"><b>いま画面に記録が見えているなら、先に書き出し（エクスポート）を取ってください。</b>'
+        +'そのファイルを、SafariやChromeで開いた同じ道具に読み込めば、そのまま続けられます。</p>'
+      : '<p style="margin:0 0 10px">このままでは記録が保存されない、以前の記録が見えない、Googleとつながらない、といったことが起きます。</p>'
+        +'<p style="margin:0"><b>メニューの「ブラウザで開く」から、SafariやChromeで開き直してください。</b>以前の記録がそのまま見えることがあります。</p>';
+    el.innerHTML=
+      '<div style="max-width:640px;margin:0 auto;padding:14px 16px;font-size:13px;line-height:1.85">'
+      +'<div style="font-weight:700;margin-bottom:8px">⚠ SNSアプリの中で開いています</div>'
+      +body
+      +'<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap">'
+      +'<label style="font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer">'
+      +'<input type="checkbox" id="iab-never"> このブラウザでは表示しない</label>'
+      +'<button onclick="iabClose()" style="padding:7px 18px;font-size:12px;border-radius:7px;'
+      +'border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer;font-family:inherit">閉じる</button>'
+      +'</div></div>';
+    el.setAttribute('style',
+      'display:block;background:#fff4d6;color:#5a4212;border-bottom:1px solid #e0c98a;'
+      +'position:relative;z-index:400');
+  }
+  function init(){ if(isInApp()&&!hidden())show(); }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
+<!-- ═══ ここまで ═══════════════════════════════════════════ -->
 <div class="app" id="app">
 <div class="hdr">
   <div class="hdr-left">
@@ -306,6 +432,7 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
     <button class="tab on"  onclick="ST('graph')">グラフ</button>
     <button class="tab"     onclick="ST('input')">資源入力</button>
     <button class="tab"     onclick="ST('event')">期間・日別メモ</button>
+    <button class="tab"     onclick="ST('memo')">覚え書き</button>
     <button class="tab"     onclick="ST('exped')">遠征</button>
     <button class="tab"     onclick="ST('repair')">手入れ</button>
     <button class="tab"     onclick="ST('forge')">鍛刀</button>
@@ -433,6 +560,61 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
   </div>
   <div id="evlist"></div>
   <div id="nlist" style="margin-top:10px"></div>
+</div>
+
+<!-- 覚え書き -->
+<div id="s-memo" class="sec">
+  <div class="km-addbar">
+    <button class="km-addbtn" id="km-addbtn" onclick="kmToggleForm()">＋ 新しい覚え書き</button>
+    <span class="km-hint">周回の手順や調べたことを、日付に関係なく残せます</span>
+  </div>
+
+  <div class="sub" id="km-addform" style="display:none">
+    <p class="sub-h">覚え書きの追加</p>
+    <div class="fld" style="margin-bottom:9px">
+      <label class="lbl">タイトル</label>
+      <input type="text" id="km-f-title" placeholder="例: 小判周回のやりかた">
+    </div>
+    <div class="fld" style="margin-bottom:9px">
+      <label class="lbl">内容</label>
+      <textarea id="km-f-body" rows="6" placeholder="調べたことや、自分で試した結果などを自由に書けます" style="font-size:14px;padding:8px 10px;border:1px solid var(--bd1);border-radius:6px;background:var(--bg2);color:var(--t1);font-family:inherit;width:100%;resize:vertical;line-height:1.8"></textarea>
+    </div>
+    <div class="fld">
+      <label class="lbl">関係する資源（いくつでも選べます・選ばなくてもOK）</label>
+      <div class="km-tags" id="km-f-tags"></div>
+    </div>
+    <div class="fld" style="margin-top:11px">
+      <label class="lbl">自由タグ（自分で好きな言葉を付けられます）</label>
+      <div class="km-freeinput">
+        <input type="text" id="km-f-free" placeholder="例: 検非違使　※Enterでも追加できます">
+        <button onclick="kmAddFree('new')">付ける</button>
+      </div>
+      <div class="km-picked" id="km-f-picked"></div>
+      <div class="km-sugg" id="km-f-sugg"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button onclick="kmAdd()">追加する</button>
+      <button class="io-btn" onclick="kmToggleForm()">やめる</button>
+    </div>
+  </div>
+
+  <div class="km-filter">
+    <div class="km-filter-row" style="margin-bottom:9px">
+      <input type="text" class="km-search" id="km-q" placeholder="タイトル・内容から探す" oninput="renderMemos()">
+      <span class="km-count" id="km-cnt"></span>
+    </div>
+    <div class="km-filter-row" style="margin-bottom:6px">
+      <span class="lbl km-flabel">資源で探す</span>
+      <div class="km-tags" id="km-filter-tags" style="margin-top:0;flex:1"></div>
+    </div>
+    <div class="km-filter-row">
+      <span class="lbl km-flabel">タグで探す</span>
+      <div class="km-tags" id="km-filter-free" style="margin-top:0;flex:1"></div>
+    </div>
+    <div id="km-clear-wrap" style="display:none"><button class="km-clear" onclick="kmClearFilter()">絞り込みを解除</button></div>
+  </div>
+
+  <div id="km-list"></div>
 </div>
 
 <!-- 遠征 -->
@@ -587,7 +769,7 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
     <div class="set-row">
       <div><div class="set-lbl">期間メモの表示スタイル</div><div class="set-sub">グラフ上での期間メモの見せ方を選択します</div></div>
       <div class="seg">
-        <button id="ps-band"    onclick="setPeriodStyle('band')"   >帯（現在）</button>
+        <button id="ps-band"    onclick="setPeriodStyle('band')"   >帯</button>
         <button id="ps-gantt"   onclick="setPeriodStyle('gantt')"  >ガントバー</button>
         <button id="ps-bracket" onclick="setPeriodStyle('bracket')">ブラケット</button>
       </div>
@@ -601,10 +783,48 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
       </div>
     </div>
     <div class="set-row">
-      <div><div class="set-lbl">お札グラフ</div><div class="set-sub">グラフタブにお札（松竹梅富士）の在庫推移グラフを表示します</div></div>
+      <div><div class="set-lbl">お札グラフ</div><div class="set-sub">グラフタブにお札（松竹梅富士）の在庫推移グラフを表示します。お札の記録が1件も無いあいだは自動で隠れます。</div></div>
       <div class="seg">
         <button id="fuda-on"  onclick="setFudaVis(1)">表示</button>
         <button id="fuda-off" onclick="setFudaVis(0)">非表示</button>
+      </div>
+    </div>
+    <div class="set-row">
+      <div><div class="set-lbl">境目の斜線</div><div class="set-sub">記録の先まで続く期間メモに、斜線で境目を付けます</div></div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start">
+        <div class="seg">
+          <button id="eh-off" onclick="setEdgeHatch(0)">表示しない</button>
+          <button id="eh-on"  onclick="setEdgeHatch(1)">表示する</button>
+        </div>
+        <div style="font-size:11px;color:var(--t4);max-width:320px;line-height:1.7">表示しない（既定）── 記録の終わりは、グラフ右端の点線だけで示します。<br>表示する ── 点線に加えて斜線が付き、境目がはっきりします（いちばん新しいデータに少し重なります）。</div>
+      </div>
+    </div>
+    <div class="set-row">
+      <div><div class="set-lbl">同じ日付の上書き</div><div class="set-sub">すでに記録がある日付に、もう一度資源を追加したときの動作</div></div>
+      <div style="display:flex;flex-direction:column;gap:7px;align-items:flex-start">
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--t3);cursor:pointer">
+          <input type="checkbox" id="overwrite-toggle" onchange="toggleOverwriteWarnSetting(this.checked)" checked>
+          同じ日付のデータを上書きするとき確認する
+        </label>
+      </div>
+    </div>
+    <div class="set-row">
+      <div><div class="set-lbl">クラウド同期（Google Drive）</div><div class="set-sub" id="sync-sub">Google アカウントでログインしてデータを同期します</div></div>
+      <div style="display:flex;flex-direction:column;gap:7px;align-items:flex-start">
+        <button class="io-btn" id="sync-login-btn"  onclick="gSignIn()">Google でログイン</button>
+        <button class="io-btn" id="sync-logout-btn" onclick="gSignOut()" style="display:none;color:#d87070">ログアウト</button>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--t3);cursor:pointer">
+          <input type="checkbox" id="warn-toggle" onchange="toggleSyncWarnSetting(this.checked)" checked>
+          クラウドが新しい場合に警告を表示する
+        </label>
+      </div>
+    </div>
+    <div class="set-row">
+      <div><div class="set-lbl">通知の許可</div><div class="set-sub">遠征・手入れ・鍛刀の終了時に通知</div></div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start">
+        <button class="io-btn" onclick="reqNotif()" id="notif-btn">許可を求める</button>
+        <button class="io-btn" onclick="fireNotif('テスト通知','動作確認です！',false)">テスト通知を送る</button>
+        <div style="font-size:11px;color:var(--t4);max-width:300px" id="notif-sub">遠征・手入れ・鍛刀の終了時にページ内バナーと効果音でお知らせします。</div>
       </div>
     </div>
     <div class="set-row">
@@ -628,40 +848,12 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
       </div>
     </div>
     <div class="set-row">
-      <div><div class="set-lbl">バージョン</div><div class="set-sub">資源帳 — 刀剣乱舞 資源管理ツール</div></div>
-      <div style="font-size:14px;font-weight:600;color:var(--t1)">v1.0023</div>
-    </div>
-    <div class="set-row">
-      <div><div class="set-lbl">通知の許可</div><div class="set-sub">遠征・手入れ・鍛刀の終了時に通知</div></div>
-      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start">
-        <button class="io-btn" onclick="reqNotif()" id="notif-btn">許可を求める</button>
-        <button class="io-btn" onclick="fireNotif('テスト通知','動作確認です！',false)">テスト通知を送る</button>
-        <div style="font-size:11px;color:var(--t4);max-width:300px" id="notif-sub">遠征・手入れ・鍛刀の終了時にページ内バナーと効果音でお知らせします。</div>
-      </div>
-    </div>
-    <div class="set-row">
-      <div><div class="set-lbl">クラウド同期（Google Drive）</div><div class="set-sub" id="sync-sub">Google アカウントでログインしてデータを同期します</div></div>
-      <div style="display:flex;flex-direction:column;gap:7px;align-items:flex-start">
-        <button class="io-btn" id="sync-login-btn"  onclick="gSignIn()">Google でログイン</button>
-        <button class="io-btn" id="sync-logout-btn" onclick="gSignOut()" style="display:none;color:#d87070">ログアウト</button>
-        <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--t3);cursor:pointer">
-          <input type="checkbox" id="warn-toggle" onchange="toggleSyncWarnSetting(this.checked)" checked>
-          クラウドが新しい場合に警告を表示する
-        </label>
-      </div>
-    </div>
-    <div class="set-row">
-      <div><div class="set-lbl">資源入力</div><div class="set-sub">資源データを追加するときの動作</div></div>
-      <div style="display:flex;flex-direction:column;gap:7px;align-items:flex-start">
-        <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--t3);cursor:pointer">
-          <input type="checkbox" id="overwrite-toggle" onchange="toggleOverwriteWarnSetting(this.checked)" checked>
-          同じ日付のデータを上書きするとき確認する
-        </label>
-      </div>
-    </div>
-    <div class="set-row" style="border-bottom:none">
       <div><div class="set-lbl">データのリセット</div><div class="set-sub">全資源データと記録を削除します</div></div>
       <button class="io-btn" onclick="resetAll()" style="color:#d87070;border-color:rgba(216,112,112,0.3)">リセット</button>
+    </div>
+    <div class="set-row" style="border-bottom:none">
+      <div><div class="set-lbl">バージョン</div><div class="set-sub">資源帳 — 刀剣乱舞 資源管理ツール</div></div>
+      <div style="font-size:14px;font-weight:600;color:var(--t1)">v1.0024</div>
     </div>
     <div style="margin-top:20px;font-size:12px;color:var(--t4);line-height:1.9;background:var(--bg1);border:1px solid var(--bd1);border-radius:8px;padding:14px">
       <strong style="color:var(--t3);font-size:13px">Excel 読み込みについて</strong><br>
@@ -696,6 +888,20 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
       <button id="conflict-merge" style="background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600">どちらも残して保存</button>
       <button id="conflict-overwrite" style="background:var(--bg2)">強制上書き（Driveのデータを消す）</button>
       <button id="conflict-cancel" class="io-btn">キャンセル</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="empty-modal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-h">⚠️ 手元に記録がありません</div>
+    <p style="font-size:13px;color:var(--t3);line-height:1.7;margin-bottom:16px">このまま保存すると、クラウドに残っている記録が空の状態で上書きされます。元に戻せません。<br><br>以前この道具に記録していた場合は、先に「読み込む」を押してください。</p>
+    <div class="modal-foot" style="flex-direction:column;gap:8px;align-items:stretch">
+      <button onclick="emptyWarnLoad()" style="background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600">&#8595; 読み込む</button>
+      <button onclick="closeEmptyWarn()" class="io-btn">やめる</button>
+    </div>
+    <div style="text-align:center;margin-top:12px">
+      <a href="#" onclick="emptyWarnSave();return false;" style="font-size:11px;color:var(--t4);text-decoration:underline">それでも保存する</a>
     </div>
   </div>
 </div>
@@ -753,6 +959,8 @@ function fmtXLabel(date,prev){
   if(curXFmt===1)return y!==py?y+'-'+m+'-'+d:m+'-'+d;
   if(y!==py)return y+'-'+m+'-'+d;if(m!==pm)return m+'-'+d;return d;
 }
+/* 横軸は本物の時間軸なので、目盛りは「記録N件ごと」ではなく「日数で等分」。
+   実際の位置に置かないとグラフと合わないので、絶対位置で並べる。 */
 function renderXAxisCust(){
   var el=document.getElementById('xaxis-cust-inner');
   var hint=document.getElementById('xaxis-cust-hint');
@@ -761,21 +969,35 @@ function renderXAxisCust(){
   var fmtNames=['① 年-月-日','② 年切替時のみ年','③ 年→月→日'];
   if(hint)hint.textContent='▶ タップで日付形式を切り替え';
   if(cur)cur.textContent='現在：'+fmtNames[curXFmt];
-  var ca=chart.chartArea,cw=chart.width;
-  if(!ca)return;
-  el.style.paddingLeft=(ca.left/cw*100).toFixed(2)+'%';
-  el.style.paddingRight=((cw-ca.right)/cw*100).toFixed(2)+'%';
-  var fd=getFD(),labs=fd.map(function(r){return r.date;});
-  if(!labs.length){el.innerHTML='';return;}
-  var step=Math.max(1,Math.floor(labs.length/10));
-  var ticks=[];for(var i=0;i<labs.length;i+=step)ticks.push(i);
-  if(ticks[ticks.length-1]!==labs.length-1)ticks.push(labs.length-1);
+  var ca=chart.chartArea,cw=chart.width,sc=chart.scales;
+  if(!ca||!sc||!sc.x)return;
   el.innerHTML='';
-  ticks.forEach(function(idx,ti){
-    if(idx>=labs.length)return;
+  var fd=getFD(),labs=fd.map(function(r){return r.date;});
+  if(!labs.length)return;
+  /* 幅に入るだけ目盛りを出す。桁数は日付形式で変わる */
+  var minGap=curXFmt===0?64:(curXFmt===1?54:38);
+  var n=Math.max(2,Math.min(10,Math.floor((ca.right-ca.left)/minGap)+1));
+  var t0=dts(labs[0]),t1=dts(labs[labs.length-1]);
+  var ticks=[];
+  if(isNaN(t0)||isNaN(t1)||t1<=t0)ticks.push(labs[0]);
+  else{
+    /* 期間が短いときに同じ日付が並ばないよう、日数より多くは出さない */
+    n=Math.max(2,Math.min(n,Math.round((t1-t0)/86400000)+1));
+    for(var i=0;i<n;i++){
+      var dd=isoOfTs(t0+(t1-t0)*i/(n-1));
+      if(ticks[ticks.length-1]!==dd)ticks.push(dd);
+    }
+  }
+  var prev=null,last=ticks.length-1;
+  ticks.forEach(function(d,ti){
+    var px=dateToPixel(d,labs,sc);
+    if(px==null)return;
     var sp=document.createElement('span');
-    sp.style.cssText='font-size:10px;color:var(--t4);user-select:none;';
-    sp.textContent=fmtXLabel(labs[idx],ti>0?labs[ticks[ti-1]]:null);
+    var tf=ti===0?'':(ti===last?'transform:translateX(-100%);':'transform:translateX(-50%);');
+    sp.style.cssText='position:absolute;top:0;white-space:nowrap;font-size:10px;color:var(--t4);user-select:none;'
+      +'left:'+(px/cw*100).toFixed(2)+'%;'+tf;
+    sp.textContent=fmtXLabel(d,prev);
+    prev=d;
     el.appendChild(sp);
   });
 }
@@ -834,6 +1056,7 @@ function renderPeriodBar(){
         row.style.cssText='position:relative;height:20px;margin-bottom:3px;background:var(--bg2);border-radius:3px;overflow:hidden;'
           +'margin-left:'+caLeftPct+';margin-right:'+caRightPct+';';
         activeEVS().filter(function(ev){return laneMap.get(evKey(ev))===laneIdx;}).forEach(function(ev){
+          var bs=evBandState(ev,labs).kind;if(bs!=='ok'&&bs!=='cut')return;
           var p1=dPct(ev.start),p2=dPct(ev.end);
           if(p1==null||p2==null)return;
           var caW=ca.right-ca.left;
@@ -862,6 +1085,7 @@ function renderPeriodBar(){
     wrap.style.cssText='position:relative;height:'+(numL*10+2)+'px;overflow:hidden;'
       +'margin-left:'+caLeftPct+';margin-right:'+caRightPct+';';
     activeEVS().forEach(function(ev){
+      var bs=evBandState(ev,labs).kind;if(bs!=='ok'&&bs!=='cut')return;
       var p1=dPct(ev.start),p2=dPct(ev.end);
       if(p1==null||p2==null)return;
       var caW2=ca.right-ca.left;
@@ -897,6 +1121,9 @@ function updUI(){
   if(fon)fon.classList.toggle('on',!!FUDAVIS);
   if(foff)foff.classList.toggle('on',!FUDAVIS);
   var ftog=document.getElementById('tfuda');if(ftog)ftog.classList.toggle('on',!!FUDAVIS);
+  var eho=document.getElementById('eh-on'),ehf=document.getElementById('eh-off');
+  if(eho)eho.classList.toggle('on',!!edgeHatch);
+  if(ehf)ehf.classList.toggle('on',!edgeHatch);
   var hbo=document.getElementById('help-btn-on'),hbf=document.getElementById('help-btn-off');
   if(hbo)hbo.classList.toggle('on',!helpBtnHidden);
   if(hbf)hbf.classList.toggle('on',helpBtnHidden);
@@ -905,6 +1132,7 @@ function updUI(){
   if(gaf)gaf.classList.toggle('on',guideAutoOff);
 }
 function setFudaVis(v){FUDAVIS=v;save();updUI();RCFuda();}
+function setEdgeHatch(v){edgeHatch=v;save();updUI();if(chart)RC();}
 /* ── 使い方ガイド ── */
 function applyHelpBtnVis(){var b=document.getElementById('hdr-help-btn');if(b)b.style.display=helpBtnHidden?'none':'';}
 function openGuide(){
@@ -918,6 +1146,11 @@ function closeGuide(){
   if(helpBtnHidden)guideAutoOff=true;
   save();applyHelpBtnVis();updUI();
   var m=document.getElementById('guide-modal');if(m)m.classList.remove('show');
+}
+/* ガイドの背景（黒い部分）を押したときだけ閉じる。
+   中身を押したときは e.target が子要素なので何も起きない */
+function guideBgClose(e){
+  if(e&&e.target&&e.target.id==='guide-modal')closeGuide();
 }
 function guideHideBtnChanged(cb){if(cb.checked){var a=document.getElementById('guide-cb-auto');if(a)a.checked=true;}}
 function setHelpBtnVis(v){helpBtnHidden=!v;if(helpBtnHidden)guideAutoOff=true;save();applyHelpBtnVis();updUI();}
@@ -1023,6 +1256,11 @@ function applyExpedPreset(){
 
 /* ─── State ─── */
 var RES=[],EVS=[],NTS=[],ROOMS={exped:[],repair:[],forge:[]},ELOG={exped:[],repair:[],forge:[]};
+var MEMOS=[];
+/* 覚え書きの作業用状態（保存対象ではない） */
+var kmNewTags=[],kmNewFree=[],kmEdTags=[],kmEdFree=[];
+var kmFilterTags=[],kmFilterFree=[],kmOpen={},kmEdId='';
+var _kmFreeSnap=[],_kmSuggSnap=[],_kmEdSuggSnap=[];
 var evSort={field:'start',dir:1};  /* field: start/end/name, dir: 1=昇順/-1=降順 */
 var ntSort={dir:1};                /* dir: 1=昇順/-1=降順 */
 var BANS=[],BLOG=[];
@@ -1038,6 +1276,8 @@ var KFL={mf:'松の札',tf:'竹の札',uf:'梅の札',ff:'富士の札'};
 var KFC={mf:'#52c878',tf:'#a8d060',uf:'#e87878',ff:'#7898e8'};
 var KFD={mf:[],tf:[4,3],uf:[],ff:[4,3]};
 var FUDAVIS=1;
+/* 記録の終わりを示す斜線。既定オフ（最新のデータに重なるため） */
+var edgeHatch=0;
 var fudaChart=null;
 var pf='all',csS='',csE='',diffOn=0,limOn=1,hlNote=null;
 var chart=null;
@@ -1048,6 +1288,7 @@ var RLABEL={exped:'遠征',repair:'手入れ',forge:'鍛刀'};
 /* deleted:true のレコードを除外して返す。表示・描画はすべてこれを通す */
 function activeEVS(){return EVS.filter(function(e){return !e.deleted;});}
 function activeNTS(){return NTS.filter(function(n){return !n.deleted;});}
+function activeMEMOS(){return MEMOS.filter(function(m){return !m.deleted;});}
 
 /* ─── LocalStorage ─── */
 var LS='shizai_';
@@ -1056,12 +1297,13 @@ function save(){
     localStorage.setItem(LS+'r',JSON.stringify(RES));
     localStorage.setItem(LS+'e',JSON.stringify(EVS));
     localStorage.setItem(LS+'n',JSON.stringify(NTS));
+    localStorage.setItem(LS+'memo',JSON.stringify(MEMOS));
     localStorage.setItem(LS+'el',JSON.stringify(ELOG));
     localStorage.setItem(LS+'rooms',JSON.stringify(ROOMS));
     localStorage.setItem(LS+'bans',JSON.stringify(BANS));
     localStorage.setItem(LS+'blog',JSON.stringify(BLOG));
     localStorage.setItem(LS+'rcnt',JSON.stringify(RCNT));
-    localStorage.setItem(LS+'cfg',JSON.stringify({theme:curTheme,mode:curMode,layout:curLayout,syncWarnDisabled:syncWarnDisabled,overwriteWarnDisabled:overwriteWarnDisabled,periodStyle:curPeriodStyle,xFmt:curXFmt,hlEvs:[...hlEvs],fudaVis:FUDAVIS,evSort:evSort,ntSort:ntSort,guideAutoOff:guideAutoOff,helpBtnHidden:helpBtnHidden,ntLegLayout:ntLegLayout}));
+    localStorage.setItem(LS+'cfg',JSON.stringify({theme:curTheme,mode:curMode,layout:curLayout,syncWarnDisabled:syncWarnDisabled,overwriteWarnDisabled:overwriteWarnDisabled,periodStyle:curPeriodStyle,xFmt:curXFmt,hlEvs:[...hlEvs],fudaVis:FUDAVIS,edgeHatch:edgeHatch,evSort:evSort,ntSort:ntSort,guideAutoOff:guideAutoOff,helpBtnHidden:helpBtnHidden,ntLegLayout:ntLegLayout}));
     var early={};
     ['exped','repair','forge','ban'].forEach(function(t){
       var cb=document.getElementById(t+'-early-cb');
@@ -1139,13 +1381,15 @@ function loadSaved(){
     var r=localStorage.getItem(LS+'r');if(r)RES=JSON.parse(r);
     var e=localStorage.getItem(LS+'e');if(e)EVS=JSON.parse(e);
     var n=localStorage.getItem(LS+'n');if(n)NTS=JSON.parse(n);
+    var mm=localStorage.getItem(LS+'memo');if(mm){try{MEMOS=JSON.parse(mm)||[];}catch(exm){MEMOS=[];}}
+    if(!Array.isArray(MEMOS))MEMOS=[];
     loadShared();
     var el=localStorage.getItem(LS+'el');if(el){var d=JSON.parse(el);if(d&&typeof d==='object')ELOG=Object.assign({exped:[],repair:[],forge:[]},d);}
     var rm=localStorage.getItem(LS+'rooms');if(rm){var rd=JSON.parse(rm);if(rd)ROOMS=Object.assign({exped:[],repair:[],forge:[]},rd);}
     var bns=localStorage.getItem(LS+'bans');if(bns){try{BANS=JSON.parse(bns);}catch(e){BANS=[];}}
     var blg=localStorage.getItem(LS+'blog');if(blg){try{BLOG=JSON.parse(blg);}catch(e){BLOG=[];}}
     var rc=localStorage.getItem(LS+'rcnt');if(rc){var rcd=JSON.parse(rc);if(rcd)RCNT=Object.assign({repair:0,forge:0},rcd);}
-    var c=localStorage.getItem(LS+'cfg');if(c){var cd=JSON.parse(c);curTheme=cd.theme||'白磁';curMode=cd.mode||'theme';curLayout=cd.layout||'auto';curPeriodStyle=cd.periodStyle||'band';curXFmt=cd.xFmt!=null?cd.xFmt:1;hlEvs=new Set(cd.hlEvs||[]);if(cd.syncWarnDisabled!==undefined)syncWarnDisabled=cd.syncWarnDisabled;if(cd.overwriteWarnDisabled!==undefined)overwriteWarnDisabled=cd.overwriteWarnDisabled;if(cd.fudaVis!==undefined)FUDAVIS=cd.fudaVis;if(cd.evSort)evSort=cd.evSort;if(cd.ntSort)ntSort=cd.ntSort;if(cd.guideAutoOff!==undefined)guideAutoOff=cd.guideAutoOff;if(cd.helpBtnHidden!==undefined)helpBtnHidden=cd.helpBtnHidden;if(cd.ntLegLayout)ntLegLayout=cd.ntLegLayout;}
+    var c=localStorage.getItem(LS+'cfg');if(c){var cd=JSON.parse(c);curTheme=cd.theme||'白磁';curMode=cd.mode||'theme';curLayout=cd.layout||'auto';curPeriodStyle=cd.periodStyle||'band';curXFmt=cd.xFmt!=null?cd.xFmt:1;hlEvs=new Set(cd.hlEvs||[]);if(cd.syncWarnDisabled!==undefined)syncWarnDisabled=cd.syncWarnDisabled;if(cd.overwriteWarnDisabled!==undefined)overwriteWarnDisabled=cd.overwriteWarnDisabled;if(cd.fudaVis!==undefined)FUDAVIS=cd.fudaVis;if(cd.edgeHatch!==undefined)edgeHatch=cd.edgeHatch;if(cd.evSort)evSort=cd.evSort;if(cd.ntSort)ntSort=cd.ntSort;if(cd.guideAutoOff!==undefined)guideAutoOff=cd.guideAutoOff;if(cd.helpBtnHidden!==undefined)helpBtnHidden=cd.helpBtnHidden;if(cd.ntLegLayout)ntLegLayout=cd.ntLegLayout;}
     var now=Date.now();
     Object.keys(ROOMS).forEach(function(tp){ROOMS[tp]=ROOMS[tp].filter(function(t){return t.endTime>now;});});
     BANS.forEach(function(b){
@@ -1178,15 +1422,53 @@ function loadSaved(){
 var DOW=['日','月','火','水','木','金','土'];
 function tickClock(){var n=new Date();var el=document.getElementById('clock');if(el)el.textContent=n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日（'+DOW[n.getDay()]+'）'+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');}
 
-/* ─── 共通：日付→X座標変換 ─── */
+/* ─── 共通：日付とX座標 ───
+   横軸は本物の時間軸（type:'linear'・値はミリ秒）なので、
+   日付をミリ秒に直して軸に聞くだけでよい。
+   ※ new Date('2026-05-16') はUTC扱いで1日ズレるので、必ず年月日を分けて渡すこと */
+function dts(d){
+  var p=String(d||'').split('-');
+  if(p.length!==3)return NaN;
+  var t=+new Date(+p[0],+p[1]-1,+p[2]);
+  return isNaN(t)?NaN:t;
+}
+/* ミリ秒 → 2026-05-16（ローカル時刻） */
+function isoOfTs(t){
+  var d=new Date(t);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
 function dateToPixel(d,labs,sc){
-  var i=labs.indexOf(d);
-  if(i>=0)return sc.x.getPixelForValue(i);
-  var bi=-1,bd=1e15;
-  labs.forEach(function(l,j){var df=Math.abs(+new Date(l)-+new Date(d));if(df<bd){bd=df;bi=j;}});
-  if(bi<0)return null;
-  var step=labs.length>1?sc.x.getPixelForValue(1)-sc.x.getPixelForValue(0):0;
-  return sc.x.getPixelForValue(bi)+(+new Date(d)-+new Date(labs[bi]))/86400000*step;
+  if(!labs||!labs.length||!sc||!sc.x)return null;
+  var t=dts(d);
+  if(isNaN(t))return null;
+  return sc.x.getPixelForValue(t);
+}
+
+/* ─── 期間メモの帯の状態を判定する ───
+   グラフの横軸は「資源を記録した日」だけで作られるので、
+   記録の外にある期間メモは帯を描く場所が無い。
+   その理由を1か所で判定して、描画と凡例の両方から使う。
+   返り値 kind: 'ok' | 'nodata' | 'outrange' | 'cut'
+     ok       … そのまま描ける
+     nodata   … その期間に資源の記録が無い
+     outrange … 記録はあるが、いま選んでいる表示期間の外
+     cut      … 開始は描けるが、終わりが記録より先にある（右端で途切れる） */
+function evBandState(ev,labs){
+  if(!labs||!labs.length)return{kind:'nodata'};
+  var s=ev.start||'',e=ev.end||'';
+  if(!s||!e)return{kind:'nodata'};
+  var first=labs[0],last=labs[labs.length-1];
+  var overlaps=(s<=last&&e>=first);
+  if(overlaps)return e>last?{kind:'cut',last:last}:{kind:'ok'};
+  /* 表示範囲と重ならない。全期間で見れば記録があるかどうかで理由が変わる */
+  var hasRec=RES.some(function(r){return r.date>=s&&r.date<=e;});
+  return hasRec?{kind:'outrange'}:{kind:'nodata'};
+}
+/* 2026-08-20 → 8/20 */
+function fmtMD(d){var p=String(d||'').split('-');return p.length===3?(+p[1])+'/'+(+p[2]):String(d||'');}
+/* 記録より先まで続く帯が1本でもあるか（境目を出すかどうかの判定） */
+function anyBandCut(labs){
+  return activeEVS().some(function(ev){return evBandState(ev,labs).kind==='cut';});
 }
 
 /* ─── Annotation Plugin ─── */
@@ -1198,17 +1480,42 @@ var annP={id:'ann',beforeDraw:function(ch){
   activeEVS().forEach(function(ev){var x1=dateToPixel(ev.start,labs,sc),x2=dateToPixel(ev.end,labs,sc);if(x1==null||x2==null)return;var cx1=Math.max(ca.left,Math.min(x1,ca.right)),cx2=Math.max(ca.left,Math.min(x2,ca.right));if(curPeriodStyle==='band'){ctx.fillStyle=ev.color+'22';ctx.fillRect(cx1,ca.top,cx2-cx1,ca.bottom-ca.top);ctx.strokeStyle=ev.color+'88';ctx.lineWidth=1.5;ctx.setLineDash([]);if(x1>=ca.left&&x1<=ca.right){ctx.beginPath();ctx.moveTo(cx1,ca.top);ctx.lineTo(cx1,ca.bottom);ctx.stroke();}if(x2>=ca.left&&x2<=ca.right){ctx.beginPath();ctx.moveTo(cx2,ca.top);ctx.lineTo(cx2,ca.bottom);ctx.stroke();}}});
   activeNTS().forEach(function(n){var x=dateToPixel(n.date,labs,sc);if(x==null||x<ca.left||x>ca.right)return;var hl=hlNote===n.date;ctx.strokeStyle=hl?'rgba(200,200,255,.95)':'rgba(140,135,160,.6)';ctx.lineWidth=hl?2.5:1;ctx.setLineDash(hl?[]:[3,3]);ctx.beginPath();ctx.moveTo(x,ca.top);ctx.lineTo(x,ca.bottom);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=hl?'rgba(200,200,255,.95)':'rgba(140,135,160,.8)';ctx.beginPath();ctx.moveTo(x-6,ca.top);ctx.lineTo(x+6,ca.top);ctx.lineTo(x,ca.top+9);ctx.closePath();ctx.fill();});
   if(limOn&&!diffOn){var y=sc.y,y2=sc['y2'];ctx.textAlign='right';if(y){var py=y.getPixelForValue(9999999);if(py>=ca.top&&py<=ca.bottom){ctx.strokeStyle='rgba(220,100,100,.4)';ctx.lineWidth=1;ctx.setLineDash([8,4]);ctx.beginPath();ctx.moveTo(ca.left,py);ctx.lineTo(ca.right,py);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='rgba(220,100,100,.6)';ctx.font='10px sans-serif';ctx.fillText('資源上限 9,999,999',ca.right-4,py-3);}}if(y2&&y2.axis==='y'){var py2=y2.getPixelForValue(99999);if(py2>=ca.top&&py2<=ca.bottom){ctx.strokeStyle='rgba(200,175,60,.4)';ctx.lineWidth=1;ctx.setLineDash([8,4]);ctx.beginPath();ctx.moveTo(ca.left,py2);ctx.lineTo(ca.right,py2);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='rgba(200,175,60,.6)';ctx.font='10px sans-serif';ctx.fillText('道具資源上限 99,999',ca.right-4,py2-3);}}ctx.textAlign='left';}
+  /* ── 記録の終わり（境目）──
+     記録より先まで続く帯が1本でもあるときだけ出す。
+     帯ごとではなくグラフ全体の事実なので、灰色で1組だけ引く。 */
+  if(anyBandCut(labs)){
+    /* 斜線ハッチ（既定オフ・設定で表示できる）。幅35px・濃さ50%・目7px・線2.0px */
+    if(edgeHatch){
+      var hw=Math.min(35,ca.right-ca.left);
+      ctx.save();
+      ctx.beginPath();ctx.rect(ca.right-hw,ca.top,hw,ca.bottom-ca.top);ctx.clip();
+      ctx.strokeStyle='rgba(90,86,78,.5)';ctx.lineWidth=2;ctx.setLineDash([]);
+      var gap=7*Math.SQRT2,h=ca.bottom-ca.top;
+      for(var hx=ca.right-hw-h;hx<=ca.right+h;hx+=gap){
+        ctx.beginPath();ctx.moveTo(hx,ca.bottom);ctx.lineTo(hx+h,ca.top);ctx.stroke();
+      }
+      ctx.restore();
+    }
+    /* 二重点線（常に出す） */
+    ctx.strokeStyle='rgba(90,86,78,.75)';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);
+    [ca.right-7,ca.right-1].forEach(function(ex){
+      if(ex<=ca.left)return;
+      ctx.beginPath();ctx.moveTo(ex,ca.top);ctx.lineTo(ex,ca.bottom);ctx.stroke();
+    });
+    ctx.setLineDash([]);
+  }
   ctx.restore();
 }};
 Chart.register(annP);
 
 /* ─── Tabs ─── */
-var tabList=['graph','input','event','exped','repair','forge','ban','data','settings'];
+var tabList=['graph','input','event','memo','exped','repair','forge','ban','data','settings'];
 function ST(name){
   document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('on',tabList[i]===name);});
   tabList.forEach(function(t){var s=document.getElementById('s-'+t);if(s)s.classList.toggle('on',t===name);});
   if(name==='graph')RC();
   if(name==='data')renderDT();
+  if(name==='memo')renderMemos();
   if(['exped','repair','forge'].indexOf(name)>=0)renderRoomFull(name);
   if(name==='ban')renderBan();
   if(name==='settings'){updNotifBtn();updUI();}
@@ -1229,11 +1536,18 @@ function RC(){
   var fd=getFD(),wd=diffOn?getDiff(fd):fd,labs=wd.map(function(r){return r.date;});
   var y2v=KS.some(function(k){return (k==='r'||k==='h'||k==='kn'||k==='kj')&&VIS[k];});
   var t4=gCV('--t4'),bd1=gCV('--bd1'),bg1=gCV('--bg1'),t2=gCV('--t2'),t3=gCV('--t3');
-  var ds=KS.map(function(k){return{label:KL[k],data:wd.map(function(r){return r[k];}),borderColor:KC[k],backgroundColor:KC[k]+'10',borderWidth:2,borderDash:KD[k],pointRadius:labs.length>60?1:3,pointHoverRadius:5,tension:0.3,fill:false,spanGaps:true,yAxisID:YAX[k],hidden:!VIS[k]};});
+  var ds=KS.map(function(k){return{label:KL[k],data:wd.map(function(r){return{x:dts(r.date),y:r[k]};}),borderColor:KC[k],backgroundColor:KC[k]+'10',borderWidth:2,borderDash:KD[k],pointRadius:labs.length>60?1:3,pointHoverRadius:5,tension:0.3,fill:false,spanGaps:true,yAxisID:YAX[k],hidden:!VIS[k]};});
   var fY=function(v){return v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?(v/1000).toFixed(0)+'K':Math.round(v).toLocaleString();};
   var fY2=function(v){return v>=1000?(v/1000).toFixed(0)+'K':Math.round(v).toLocaleString();};
-  var scOpt={x:{display:false},y:{position:'left',ticks:{color:t4,font:{size:11},callback:fY},grid:{color:bd1+'88'},title:{display:true,text:diffOn?'資源 増減':'資源',color:t4,font:{size:11}}},y2:{position:'right',display:y2v,ticks:{color:t4,font:{size:11},callback:fY2},grid:{drawOnChartArea:false},title:{display:true,text:diffOn?'道具資源 増減':'道具資源',color:t4,font:{size:11}}}};
-  var ttip={backgroundColor:bg1+'f0',borderColor:bd1,borderWidth:1,titleColor:t2,bodyColor:t3,titleFont:{size:12},bodyFont:{size:12},padding:8,callbacks:{label:function(c){var v=c.parsed.y;if(v==null)return c.dataset.label+': —';return c.dataset.label+': '+(v<0?'-':'')+Math.abs(v).toLocaleString();}}};
+  /* 横軸は本物の時間軸。min/maxを明示しないとChart.jsが範囲を勝手に広げ、
+     「右端＝最後に記録した日」という前提（二重点線）が崩れる */
+  var xScale={type:'linear',display:false};
+  if(labs.length){
+    var xa=dts(labs[0]),xb=dts(labs[labs.length-1]);
+    if(!isNaN(xa)&&!isNaN(xb)){if(xa===xb){xa-=43200000;xb+=43200000;}xScale.min=xa;xScale.max=xb;}
+  }
+  var scOpt={x:xScale,y:{position:'left',ticks:{color:t4,font:{size:11},callback:fY},grid:{color:bd1+'88'},title:{display:true,text:diffOn?'資源 増減':'資源',color:t4,font:{size:11}}},y2:{position:'right',display:y2v,ticks:{color:t4,font:{size:11},callback:fY2},grid:{drawOnChartArea:false},title:{display:true,text:diffOn?'道具資源 増減':'道具資源',color:t4,font:{size:11}}}};
+  var ttip={backgroundColor:bg1+'f0',borderColor:bd1,borderWidth:1,titleColor:t2,bodyColor:t3,titleFont:{size:12},bodyFont:{size:12},padding:8,callbacks:{title:function(items){return items&&items.length?isoOfTs(items[0].parsed.x):'';},label:function(c){var v=c.parsed.y;if(v==null)return c.dataset.label+': —';return c.dataset.label+': '+(v<0?'-':'')+Math.abs(v).toLocaleString();}}};
   var hAE=false;
   var topPad=6;
   if(chart){chart.data.labels=labs;chart.data.datasets=ds;chart.options.scales=scOpt;chart.options.plugins.tooltip=ttip;chart.options.layout.padding={top:topPad};chart.update();renderPeriodBar();renderXAxisCust();drawHlOverlay();RCFuda();return;}
@@ -1250,16 +1564,30 @@ function RC(){
 }
 function renderLeg(){document.getElementById('leg').innerHTML=KS.map(function(k){return '<span class="leg-i" onclick="TV(\''+k+'\')" style="opacity:'+(VIS[k]?1:0.3)+'"><span class="leg-dot" style="background:'+KC[k]+'"></span><span style="color:'+KC[k]+'">'+KL[k]+'</span></span>';}).join('');}
 function renderFudaLeg(){var el=document.getElementById('fleg');if(!el)return;el.innerHTML=KFS.map(function(k){var dot=KFD[k].length?'background:transparent;border-bottom:2px dashed '+KFC[k]+';height:0;width:18px;display:inline-block;vertical-align:middle':'background:'+KFC[k];return '<span class="leg-i"><span class="leg-dot" style="'+dot+'"></span><span style="color:'+KFC[k]+'">'+KFL[k]+'</span></span>';}).join('');}
+/* お札の記録が1件でもあるか。1件も無いあいだはグラフもトグルも出さない
+   （設定で吸収せず、設計側で消す） */
+function hasFudaData(){
+  return RES.some(function(r){return KFS.some(function(k){return r[k]!=null;});});
+}
 function RCFuda(){
   var wrap=document.getElementById('fuda-chart-wrap');
-  if(wrap)wrap.style.display=FUDAVIS?'block':'none';
-  if(!FUDAVIS){if(fudaChart){fudaChart.destroy();fudaChart=null;}return;}
+  var show=!!FUDAVIS&&hasFudaData();
+  if(wrap)wrap.style.display=show?'block':'none';
+  var ftog=document.getElementById('tfuda');
+  if(ftog)ftog.style.display=hasFudaData()?'':'none';
+  if(!show){if(fudaChart){fudaChart.destroy();fudaChart=null;}return;}
   renderFudaLeg();
   var fd=getFD(),wd=diffOn?getDiff(fd):fd,labs=wd.map(function(r){return r.date;});
   var t4=gCV('--t4'),bd1=gCV('--bd1'),bg1=gCV('--bg1'),t2=gCV('--t2'),t3=gCV('--t3');
-  var ds=KFS.map(function(k){return{label:KFL[k],data:wd.map(function(r){return r[k];}),borderColor:KFC[k],backgroundColor:KFC[k]+'10',borderWidth:1.5,borderDash:KFD[k],pointRadius:labs.length>60?1:3,pointHoverRadius:5,tension:0.3,fill:false,spanGaps:true};});
+  var ds=KFS.map(function(k){return{label:KFL[k],data:wd.map(function(r){return{x:dts(r.date),y:r[k]};}),borderColor:KFC[k],backgroundColor:KFC[k]+'10',borderWidth:1.5,borderDash:KFD[k],pointRadius:labs.length>60?1:3,pointHoverRadius:5,tension:0.3,fill:false,spanGaps:true};});
+  /* 資源グラフと同じ時間軸にする。ここがずれると帯の位置が2つのグラフで食い違う */
+  var xScaleF={type:'linear',display:false};
+  if(labs.length){
+    var fa=dts(labs[0]),fb=dts(labs[labs.length-1]);
+    if(!isNaN(fa)&&!isNaN(fb)){if(fa===fb){fa-=43200000;fb+=43200000;}xScaleF.min=fa;xScaleF.max=fb;}
+  }
   var scOpt={
-    x:{display:false},
+    x:xScaleF,
     y:{
       position:'left',
       afterFit:function(sc){if(chart&&chart.scales&&chart.scales.y)sc.width=chart.scales.y.width;},
@@ -1273,7 +1601,7 @@ function RCFuda(){
       afterFit:function(sc){if(chart&&chart.scales&&chart.scales.y2)sc.width=chart.scales.y2.width;}
     }
   };
-  var ttip={backgroundColor:bg1+'f0',borderColor:bd1,borderWidth:1,titleColor:t2,bodyColor:t3,titleFont:{size:12},bodyFont:{size:12},padding:8,callbacks:{title:function(items){return items[0]?items[0].label:'';},label:function(c){var v=c.parsed.y;if(v==null)return c.dataset.label+': —';return c.dataset.label+': '+(v<0?'-':'')+Math.abs(v).toLocaleString()+'枚';}}};
+  var ttip={backgroundColor:bg1+'f0',borderColor:bd1,borderWidth:1,titleColor:t2,bodyColor:t3,titleFont:{size:12},bodyFont:{size:12},padding:8,callbacks:{title:function(items){return items&&items.length?isoOfTs(items[0].parsed.x):'';},label:function(c){var v=c.parsed.y;if(v==null)return c.dataset.label+': —';return c.dataset.label+': '+(v<0?'-':'')+Math.abs(v).toLocaleString()+'枚';}}};
   if(fudaChart){fudaChart.data.labels=labs;fudaChart.data.datasets=ds;fudaChart.options.scales=scOpt;fudaChart.update();return;}
   fudaChart=new Chart(document.getElementById('fc'),{type:'line',data:{labels:labs,datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:ttip},scales:scOpt}});
 }
@@ -1292,7 +1620,18 @@ function renderEvLeg(){
   var today=localDateStr();
   var ongoing=[],finished=[];
   sorted.forEach(function(ev){if((ev.end||'')<today)finished.push(ev);else ongoing.push(ev);});
-  function item(ev){var hl=hlEvs.has(evKey(ev));return '<div class="evleg-item'+(hl?' hl':'')+'" onclick="toggleHlEv(\''+evKey(ev).replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')"><span style="font-size:11px;color:'+(hl?ev.color:ev.color+'99')+';flex-shrink:0">'+ev.start+'～'+ev.end+'</span><span style="width:10px;height:10px;border-radius:2px;background:'+ev.color+(hl?'':'88')+';display:inline-block;flex-shrink:0"></span><span>'+ev.name+'</span></div>';}
+  var _legLabs=getFD().map(function(r){return r.date;});
+  var _legAny=false;
+  function bandTag(ev){
+    var st=evBandState(ev,_legLabs);
+    if(st.kind==='ok')return '';
+    _legAny=true;
+    var txt=st.kind==='cut'
+      ? fmtMD(st.last)+'で途切れ'
+      : (st.kind==='outrange'?'表示期間の外':'記録がないため未表示');
+    return '<span style="font-size:10px;color:var(--t4);border:1px solid var(--bd1);border-radius:3px;padding:1px 5px;flex-shrink:0">'+txt+'</span>';
+  }
+  function item(ev){var hl=hlEvs.has(evKey(ev));return '<div class="evleg-item'+(hl?' hl':'')+'" onclick="toggleHlEv(\''+evKey(ev).replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')"><span style="font-size:11px;color:'+(hl?ev.color:ev.color+'99')+';flex-shrink:0">'+ev.start+'～'+ev.end+'</span><span style="width:10px;height:10px;border-radius:2px;background:'+ev.color+(hl?'':'88')+';display:inline-block;flex-shrink:0"></span><span>'+ev.name+'</span>'+bandTag(ev)+'</div>';}
   var html='<div class="evleg-hdr"><span class="evleg-title">期間メモ</span><div class="evleg-acts"><button onclick="selectAllEvs()">全選択</button><button onclick="clearAllEvs()">全解除</button></div></div><div class="evleg-items">';
   html+=ongoing.map(item).join('');
   if(finished.length){
@@ -1300,6 +1639,10 @@ function renderEvLeg(){
     if(evLegFinOpen)html+='<div style="display:flex;flex-direction:column;gap:2px;margin-top:2px;opacity:.72">'+finished.map(item).join('')+'</div>';
   }
   html+='</div>';
+  /* 帯が出ていないものがあるときだけ、まとめて1行だけ添える */
+  if(_legAny){
+    html+='<div style="font-size:11px;color:var(--t4);margin-top:6px;line-height:1.7">※ 未表示の期間メモは、資源を記録するか、表示期間を「全期間」にすると出てきます。</div>';
+  }
   wrap.innerHTML=html;
 }/* グラフタブのメモ凡例：クリックで強調 */
 function toggleNtLegMonth(mk){ntLegOpen[mk]=!ntLegOpen[mk];renderNLeg();}
@@ -1505,6 +1848,26 @@ function showConflictDialog(){
 }
 function editResModal(d){var r=RES.find(function(x){return x.date===d;});if(!r)return;_mType='res';_mDate=d;document.getElementById('edit-modal-h').textContent='資源データを編集';var ids=['m-c','m-s','m-l','m-w','m-ko','m-r','m-h','m-kn','m-kj'];document.getElementById('edit-modal-body').innerHTML='<div class="row" style="grid-template-columns:1fr;max-width:200px;margin-bottom:10px"><div class="fld"><label class="lbl">日付</label><input type="date" id="m-date" value="'+r.date+'"></div></div><div class="row">'+KS.map(function(k,i){var v=r[k]!=null?r[k].toLocaleString('ja-JP'):'';return '<div class="fld"><label class="lbl" style="color:'+KC[k]+'">'+KL[k]+'</label><div class="num-wrap"><input type="text" inputmode="numeric" id="'+ids[i]+'" value="'+v+'" data-val="'+(r[k]!=null?r[k]:'')+'" oninput="fmtN(this)" placeholder="0"></div></div>';}).join('')+'</div>'+'<div class="row" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--bd1)">'+KFS.map(function(k){var fids={mf:'m-mf',tf:'m-tf',uf:'m-uf',ff:'m-ff'};var v=r[k]!=null?r[k].toLocaleString('ja-JP'):'';return '<div class="fld"><label class="lbl" style="color:'+KFC[k]+'">'+KFL[k]+'</label><div class="num-wrap"><input type="text" inputmode="numeric" id="'+fids[k]+'" value="'+v+'" data-val="'+(r[k]!=null?r[k]:'')+'" oninput="fmtN(this)" placeholder="0"></div></div>';}).join('')+'</div>';openModal();}
 function editEvModal(i){var ev=EVS[i];if(!ev)return;_mType='ev';_mIdx=i;document.getElementById('edit-modal-h').textContent='期間メモを編集';document.getElementById('edit-modal-body').innerHTML='<div class="row"><div class="fld" style="grid-column:span 2"><label class="lbl">期間メモ名</label><input type="text" id="m-ename" value="'+esc(ev.name)+'"></div><div class="fld"><label class="lbl">開始日</label><input type="date" id="m-es" value="'+ev.start+'"></div><div class="fld"><label class="lbl">終了日</label><input type="date" id="m-ee" value="'+ev.end+'"></div><div class="fld"><label class="lbl">色</label><input type="color" id="m-ecol" value="'+ev.color+'" style="height:36px;width:100%" oninput="syncSwatchSel(\'m-ecol\')"></div></div><div class="fld" style="margin-top:6px"><label class="lbl">色見本（ワンタップ）</label><div class="col-palette" id="m-ecol-palette">'+swatchesHTML('m-ecol')+'</div></div>';openModal();syncSwatchSel('m-ecol');}
+/* 覚え書きの編集モーダル */
+function editMemoModal(id){
+  var m=MEMOS.find(function(x){return x.id===id;});
+  if(!m)return;
+  _mType='memo';kmEdId=id;
+  kmEdTags.length=0;(m.tags||[]).forEach(function(k){kmEdTags.push(k);});
+  kmEdFree.length=0;(m.free||[]).forEach(function(t){kmEdFree.push(t);});
+  document.getElementById('edit-modal-h').textContent='覚え書きを編集';
+  document.getElementById('edit-modal-body').innerHTML=
+    '<div class="fld" style="margin-bottom:9px"><label class="lbl">タイトル</label><input type="text" id="km-ed-title" value="'+esc(m.title)+'"></div>'
+    +'<div class="fld" style="margin-bottom:9px"><label class="lbl">内容</label><textarea id="km-ed-body" rows="8" style="font-size:14px;padding:8px 10px;border:1px solid var(--bd1);border-radius:6px;background:var(--bg2);color:var(--t1);font-family:inherit;width:100%;resize:vertical;line-height:1.8">'+esc(m.body||'')+'</textarea></div>'
+    +'<div class="fld"><label class="lbl">関係する資源</label><div class="km-tags" id="km-ed-tags"></div></div>'
+    +'<div class="fld" style="margin-top:11px"><label class="lbl">自由タグ</label>'
+      +'<div class="km-freeinput"><input type="text" id="km-ed-free" placeholder="例: 検非違使"><button type="button" onclick="kmAddFree(\'ed\')">付ける</button></div>'
+      +'<div class="km-picked" id="km-ed-picked"></div><div class="km-sugg" id="km-ed-sugg"></div></div>';
+  openModal();
+  kmDrawForm('ed');
+  var ef=document.getElementById('km-ed-free');
+  if(ef)ef.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();kmAddFree('ed');}});
+}
 function editNModal(i){var n=NTS[i];if(!n)return;_mType='note';_mIdx=i;document.getElementById('edit-modal-h').textContent='メモを編集';document.getElementById('edit-modal-body').innerHTML='<div class="row"><div class="fld"><label class="lbl">日付</label><input type="date" id="m-nd" value="'+n.date+'"></div><div class="fld" style="grid-column:span 2"><label class="lbl">内容</label><input type="text" id="m-nt" value="'+esc(n.text)+'"></div></div>';openModal();}
 /* Room edit modal */
 function editRoomModal(type,id){
@@ -1538,6 +1901,19 @@ function saveModal(){
   if(_mType==='res'){var nd=document.getElementById('m-date').value;if(!nd){alert('日付を入力してください');return;}var mids=['m-c','m-s','m-l','m-w','m-ko','m-r','m-h','m-kn','m-kj'];var nr={date:nd,_ts:Date.now()};KS.forEach(function(k,i){nr[k]=getN(mids[i]);});var fmids={mf:'m-mf',tf:'m-tf',uf:'m-uf',ff:'m-ff'};KFS.forEach(function(k){nr[k]=getN(fmids[k]);});var oi=RES.findIndex(function(r){return r.date===_mDate;});if(oi>=0)RES.splice(oi,1);var ei=RES.findIndex(function(r){return r.date===nd;});if(ei>=0)RES[ei]=nr;else RES.push(nr);RES.sort(function(a,b){return a.date.localeCompare(b.date);});save();renderDT();if(chart)RC();}
   else if(_mType==='ev'){var nm=document.getElementById('m-ename').value.trim(),s=document.getElementById('m-es').value,e=document.getElementById('m-ee').value;if(!nm||!s||!e){alert('全て入力してください');return;}if(s>e){alert('開始日が終了日より後です');return;}var old=EVS[_mIdx]||{};EVS[_mIdx]={name:nm,start:s,end:e,color:document.getElementById('m-ecol').value,updatedAt:Date.now(),deleted:false,source:old.source||'shizai'};save();renderEvList();RC();}
   else if(_mType==='note'){var d=document.getElementById('m-nd').value,t=document.getElementById('m-nt').value.trim();if(!d||!t){alert('日付と内容を入力してください');return;}var old2=NTS[_mIdx]||{};NTS[_mIdx]={date:d,text:t,updatedAt:Date.now(),deleted:false,source:old2.source||'shizai'};NTS.sort(function(a,b){return a.date.localeCompare(b.date);});save();renderNList();RC();}
+  else if(_mType==='memo'){
+    var mt=document.getElementById('km-ed-title').value.trim();
+    if(!mt){alert('タイトルを入力してください');return;}
+    var mm2=MEMOS.find(function(x){return x.id===kmEdId;});
+    if(!mm2){closeModal();return;}
+    mm2.title=mt;
+    mm2.body=document.getElementById('km-ed-body').value;
+    mm2.tags=kmEdTags.slice();
+    mm2.free=kmEdFree.slice();
+    mm2.updatedAt=Date.now();
+    mm2.deleted=false;
+    save();renderMemos();
+  }
   else if(_mType==='room'){
     var item=ROOMS[_mRmType].find(function(x){return x.id===_mRmId;});if(!item){closeModal();return;}
     var newName=document.getElementById('m-rmname').value.trim();if(newName)item.name=newName;
@@ -1825,7 +2201,7 @@ function masterTick(){
 
 /* ─── Export/Import ─── */
 function dlBlob(b,fn){var u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=fn;a.click();URL.revokeObjectURL(u);}
-function expJSON(){dlBlob(new Blob([JSON.stringify({resources:RES,events:activeEVS(),notes:activeNTS()},null,2)],{type:'application/json'}),'shizai_data.json');}
+function expJSON(){dlBlob(new Blob([JSON.stringify({resources:RES,events:activeEVS(),notes:activeNTS(),memos:activeMEMOS()},null,2)],{type:'application/json'}),'shizai_data.json');}
 function expCSV(){var ak=KS.concat(KFS);var al=Object.assign({},KL,KFL);var h='date,'+ak.map(function(k){return al[k];}).join(',')+'\n';var rows=RES.slice().sort(function(a,b){return a.date.localeCompare(b.date);}).map(function(r){return r.date+','+ak.map(function(k){return r[k]!=null?r[k]:'';}).join(',');}).join('\n');dlBlob(new Blob(['\uFEFF'+h+rows],{type:'text/csv;charset=utf-8'}),'shizai_data.csv');}
 function expXLSX(){function doExp(){try{var ak=KS.concat(KFS);var al=Object.assign({},KL,KFL);
   var resAOA=[['日付'].concat(ak.map(function(k){return al[k];}))];
@@ -1844,13 +2220,235 @@ if(typeof XLSX==='undefined'){var s=document.createElement('script');s.src='http
 function normDate(s){var str=String(s).trim().replace(/\//g,'-');if(/^\d{4}-\d{1,2}-\d{1,2}$/.test(str)){var p=str.split('-');return p[0]+'-'+p[1].padStart(2,'0')+'-'+p[2].padStart(2,'0');}return str;}
 function addKAlias(cm,h,hn,i){KS.forEach(function(k){if(h===KL[k]||hn===k)cm[k]=i;});KFS.forEach(function(k){if(h===KFL[k]||hn===k)cm[k]=i;});if(h==='冷却水'||hn==='冷却水')cm.l=i;if(h==='金平糖・並')cm.kn=i;if(h==='金平糖・上')cm.kj=i;}
 function upsertRes(row){var ei=RES.findIndex(function(r){return r.date===row.date;});if(ei>=0)RES[ei]=row;else RES.push(row);}
-function impJSON(inp){if(!inp.files.length)return;var fr=new FileReader();fr.onload=function(e){try{var d=JSON.parse(e.target.result);var rc=0,ec=0,nc=0;
+function impJSON(inp){if(!inp.files.length)return;var fr=new FileReader();fr.onload=function(e){try{var d=JSON.parse(e.target.result);var rc=0,ec=0,nc=0,mc=0;
   if(d.resources&&d.resources.length){d.resources.forEach(function(r){if(r&&r.date){upsertRes(r);rc++;}});RES.sort(function(a,b){return a.date.localeCompare(b.date);});}
   if(d.events&&d.events.length){var evKF=function(ev){return ev.name+'||'+(ev.start||'')+'||'+(ev.end||'');};var evMap={};EVS.forEach(function(ev){evMap[evKF(ev)]=ev;});d.events.forEach(function(ev){var norm={name:ev.name,start:ev.start||ev.startDate||'',end:ev.end||ev.endDate||'',color:ev.color||'#8888ff',updatedAt:ev.updatedAt||Date.now(),deleted:!!ev.deleted,source:ev.source||'shizai'};var k=evKF(norm);if(!evMap[k]||(norm.updatedAt||0)>(evMap[k].updatedAt||0)){evMap[k]=norm;ec++;}});EVS=Object.values(evMap);}
   if(d.notes&&d.notes.length){var ntKF=function(n){return n.date+'||'+n.text;};var ntMap={};NTS.forEach(function(n){ntMap[ntKF(n)]=n;});d.notes.forEach(function(n){var norm={date:n.date,text:n.text,updatedAt:n.updatedAt||Date.now(),deleted:!!n.deleted,source:n.source||'shizai'};var k=ntKF(norm);if(!ntMap[k]||(norm.updatedAt||0)>(ntMap[k].updatedAt||0)){ntMap[k]=norm;nc++;}});NTS=Object.values(ntMap).sort(function(a,b){return a.date.localeCompare(b.date);});}
-  save();renderEvList();renderNList();renderDT();if(chart)RC();alert('インポートしました（日付でマージ）\n資源 '+rc+'件 / 期間メモ '+ec+'件 / 日メモ '+nc+'件');}catch(ex){alert('JSONの解析に失敗:\n'+ex.message);}inp.value='';};fr.readAsText(inp.files[0]);}
+  if(d.memos&&d.memos.length){var mMap={};MEMOS.forEach(function(m){mMap[m.id]=m;});d.memos.forEach(function(m){var norm=kmNorm(m);if(!mMap[norm.id]||(norm.updatedAt||0)>(mMap[norm.id].updatedAt||0)){mMap[norm.id]=norm;mc++;}});MEMOS=Object.values(mMap);}
+  save();renderEvList();renderNList();renderDT();renderMemos();if(chart)RC();alert('インポートしました（日付でマージ）\n資源 '+rc+'件 / 期間メモ '+ec+'件 / 日メモ '+nc+'件 / 覚え書き '+mc+'件');}catch(ex){alert('JSONの解析に失敗:\n'+ex.message);}inp.value='';};fr.readAsText(inp.files[0]);}
 function impCSV(inp){if(!inp.files.length)return;var fr=new FileReader();fr.onload=function(e){var txt=e.target.result.replace(/^\uFEFF/,'');var lines=txt.split(/\r?\n/).filter(function(l){return l.trim();});if(lines.length<2){alert('データが見つかりません');return;}var hdr=lines[0].split(',').map(function(h){return h.trim().replace(/^"|"$/g,'');});var cm={};hdr.forEach(function(h,i){var hn=h.toLowerCase();if(hn==='date'||h==='日付')cm.date=i;addKAlias(cm,h,hn,i);});if(cm.date==null)cm.date=0;var cnt=0;for(var i=1;i<lines.length;i++){var cols=lines[i].split(',').map(function(c){return c.trim().replace(/^"|"$/g,'');});var dt=normDate(cols[cm.date]||'');if(!dt||!/^\d{4}-\d{2}-\d{2}$/.test(dt))continue;var row={date:dt};KS.concat(KFS).forEach(function(k){var v=cm[k]!=null?cols[cm[k]]:'';row[k]=(v===''||v==null)?null:(parseInt(v)||null);});upsertRes(row);cnt++;}RES.sort(function(a,b){return a.date.localeCompare(b.date);});save();renderDT();if(chart)RC();alert(cnt+'件インポートしました');inp.value='';};fr.readAsText(inp.files[0],'utf-8');}
 function impXLSX(inp){if(!inp.files.length)return;function doImp(){var fr=new FileReader();fr.onload=function(e){try{var wb=XLSX.read(e.target.result,{type:'binary',cellDates:true});var ws=wb.Sheets[wb.SheetNames[0]];var rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:false,dateNF:'yyyy-mm-dd'});if(rows.length<2){alert('データが見つかりません');return;}var hdr=rows[0].map(function(h){return h!=null?String(h).trim():'';});var cm={};hdr.forEach(function(h,i){var hn=h.toLowerCase();if(h==='日付'||hn==='date')cm.date=i;addKAlias(cm,h,hn,i);});if(cm.date==null)cm.date=0;var memoCols=[];hdr.forEach(function(h,i){if(h===''&&i!==cm.date){var ht=false;for(var r=1;r<Math.min(rows.length,20);r++){var v=rows[r][i];if(v!=null&&isNaN(parseFloat(v))&&String(v).trim()!==''){ht=true;break;}}if(ht)memoCols.push(i);}});var cnt=0,nc=0;for(var i=1;i<rows.length;i++){var row=rows[i];var dtv=row[cm.date];if(dtv==null)continue;var dt=/^\d{4}-\d{2}-\d{2}/.test(String(dtv))?String(dtv).substring(0,10):normDate(dtv);if(!dt||!/^\d{4}-\d{2}-\d{2}$/.test(dt))continue;var r={date:dt};KS.concat(KFS).forEach(function(k){if(cm[k]==null){r[k]=null;return;}var v=row[cm[k]];r[k]=(v==null||String(v).trim()==='')?null:(parseInt(String(v).replace(/,/g,''))||null);});upsertRes(r);cnt++;memoCols.forEach(function(mc){var mv=row[mc];if(mv!=null&&String(mv).trim()!==''){var txt=String(mv).trim();if(!NTS.find(function(n){return n.date===dt&&n.text===txt;})){NTS.push({date:dt,text:txt});nc++;}}});}NTS.sort(function(a,b){return a.date.localeCompare(b.date);});RES.sort(function(a,b){return a.date.localeCompare(b.date);});save();renderEvList();renderNList();renderDT();if(chart)RC();var msg=cnt+'件インポートしました';if(nc)msg+='\n（メモ '+nc+'件も取り込みました）';alert(msg);}catch(ex){alert('Excelの読み込みに失敗:\n'+ex.message);}inp.value='';};fr.readAsBinaryString(inp.files[0]);}if(typeof XLSX==='undefined'){var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=doImp;document.head.appendChild(s);}else doImp();}
+
+/* ─── 覚え書き ─── */
+/* データ形は {id,title,body,tags,free,pinned,createdAt,updatedAt,deleted,source}
+   タイトルを編集しても同じ1件だと分かるように、内容ではなく id で同一判定する */
+function kmNewId(){return 'km'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
+function kmNorm(m){
+  return {
+    id:m.id||kmNewId(),
+    title:String(m.title||''),
+    body:String(m.body||''),
+    tags:Array.isArray(m.tags)?m.tags.filter(function(k){return KS.indexOf(k)>=0;}):[],
+    free:Array.isArray(m.free)?m.free.map(function(t){return String(t);}).filter(function(t){return t!=='';}):[],
+    pinned:!!m.pinned,
+    createdAt:m.createdAt||Date.now(),
+    updatedAt:m.updatedAt||Date.now(),
+    deleted:!!m.deleted,
+    source:m.source||'shizai'
+  };
+}
+/* 使われている自由タグを重複なく集める（削除済みは除く） */
+function kmAllFree(){
+  var seen={},out=[];
+  activeMEMOS().forEach(function(m){
+    (m.free||[]).forEach(function(t){if(!seen[t]){seen[t]=1;out.push(t);}});
+  });
+  return out.sort();
+}
+/* 作業用状態のスコープ切替（'new'=追加フォーム / 'ed'=編集モーダル） */
+function kmSc(sc){
+  return sc==='ed'
+    ? {tags:kmEdTags,free:kmEdFree,tagsEl:'km-ed-tags',pickEl:'km-ed-picked',suggEl:'km-ed-sugg',inpEl:'km-ed-free'}
+    : {tags:kmNewTags,free:kmNewFree,tagsEl:'km-f-tags',pickEl:'km-f-picked',suggEl:'km-f-sugg',inpEl:'km-f-free'};
+}
+function kmDrawTagBtns(sc){
+  var s=kmSc(sc),el=document.getElementById(s.tagsEl);
+  if(!el)return;
+  el.innerHTML=KS.map(function(k){
+    return '<button type="button" class="km-tag'+(s.tags.indexOf(k)>=0?' on':'')+'" onclick="kmTglTag(\''+sc+'\',\''+k+'\')"><span class="dot" style="background:'+KC[k]+'"></span>'+KL[k]+'</button>';
+  }).join('');
+}
+function kmTglTag(sc,k){
+  var s=kmSc(sc),i=s.tags.indexOf(k);
+  if(i>=0)s.tags.splice(i,1);else s.tags.push(k);
+  kmDrawTagBtns(sc);
+}
+function kmDrawPicked(sc){
+  var s=kmSc(sc),el=document.getElementById(s.pickEl);
+  if(!el)return;
+  el.innerHTML=s.free.map(function(t,i){
+    return '<span class="km-picked-tag">＃'+esc(t)+'<button type="button" onclick="kmRmFree(\''+sc+'\','+i+')" title="外す">&times;</button></span>';
+  }).join('');
+}
+function kmDrawSugg(sc){
+  var s=kmSc(sc),el=document.getElementById(s.suggEl);
+  if(!el)return;
+  var list=kmAllFree().filter(function(t){return s.free.indexOf(t)<0;});
+  if(sc==='ed')_kmEdSuggSnap=list;else _kmSuggSnap=list;
+  el.innerHTML=list.length
+    ? '前に使ったタグ： '+list.map(function(t,i){
+        return '<button type="button" class="km-tag free" onclick="kmUseSugg(\''+sc+'\','+i+')">＃'+esc(t)+'</button>';
+      }).join(' ')
+    : '';
+}
+function kmDrawForm(sc){kmDrawTagBtns(sc);kmDrawPicked(sc);kmDrawSugg(sc);}
+function kmAddFree(sc){
+  var s=kmSc(sc),el=document.getElementById(s.inpEl);
+  if(!el)return;
+  var v=el.value.trim();
+  if(!v)return;
+  if(v.length>20){alert('自由タグは20文字までにしてください');return;}
+  if(s.free.indexOf(v)<0)s.free.push(v);
+  el.value='';
+  kmDrawPicked(sc);kmDrawSugg(sc);
+}
+function kmUseSugg(sc,i){
+  var s=kmSc(sc),list=(sc==='ed'?_kmEdSuggSnap:_kmSuggSnap);
+  var t=list[i];
+  if(t==null)return;
+  if(s.free.indexOf(t)<0)s.free.push(t);
+  kmDrawPicked(sc);kmDrawSugg(sc);
+}
+function kmRmFree(sc,i){
+  var s=kmSc(sc);
+  s.free.splice(i,1);
+  kmDrawPicked(sc);kmDrawSugg(sc);
+}
+/* 追加フォームの開閉 */
+function kmToggleForm(){
+  var f=document.getElementById('km-addform'),b=document.getElementById('km-addbtn');
+  if(!f||!b)return;
+  var closed=(f.style.display==='none');
+  f.style.display=closed?'':'none';
+  b.classList.toggle('open',closed);
+  b.textContent=closed?'× 閉じる':'＋ 新しい覚え書き';
+  if(closed)kmDrawForm('new');
+}
+function kmAdd(){
+  var t=document.getElementById('km-f-title').value.trim();
+  var b=document.getElementById('km-f-body').value;
+  if(!t){alert('タイトルを入力してください');return;}
+  var now=Date.now();
+  MEMOS.unshift(kmNorm({id:kmNewId(),title:t,body:b,tags:kmNewTags.slice(),free:kmNewFree.slice(),pinned:false,createdAt:now,updatedAt:now}));
+  document.getElementById('km-f-title').value='';
+  document.getElementById('km-f-body').value='';
+  kmNewTags.length=0;kmNewFree.length=0;
+  save();kmToggleForm();renderMemos();
+}
+function kmTglOpen(id){kmOpen[id]=!kmOpen[id];renderMemos();}
+function kmTglPin(id,ev){
+  if(ev)ev.stopPropagation();
+  var m=MEMOS.find(function(x){return x.id===id;});
+  if(!m)return;
+  m.pinned=!m.pinned;m.updatedAt=Date.now();
+  save();renderMemos();
+}
+/* 削除は墓標方式。他の端末で復活しないように deleted を立てて残す */
+function kmDel(id,ev){
+  if(ev)ev.stopPropagation();
+  var m=MEMOS.find(function(x){return x.id===id;});
+  if(!m)return;
+  if(!confirm('「'+m.title+'」を削除しますか？'))return;
+  m.deleted=true;m.updatedAt=Date.now();
+  delete kmOpen[id];
+  save();renderMemos();
+}
+function kmTglFilterTag(k){
+  var i=kmFilterTags.indexOf(k);
+  if(i>=0)kmFilterTags.splice(i,1);else kmFilterTags.push(k);
+  renderMemos();
+}
+function kmTglFilterFree(i){
+  var t=_kmFreeSnap[i];
+  if(t==null)return;
+  var j=kmFilterFree.indexOf(t);
+  if(j>=0)kmFilterFree.splice(j,1);else kmFilterFree.push(t);
+  renderMemos();
+}
+function kmClearFilter(){
+  kmFilterTags.length=0;kmFilterFree.length=0;
+  var q=document.getElementById('km-q');if(q)q.value='';
+  renderMemos();
+}
+function renderMemos(){
+  var listEl=document.getElementById('km-list');
+  if(!listEl)return;
+  var qEl=document.getElementById('km-q');
+  var q=qEl?qEl.value.trim().toLowerCase():'';
+  /* 資源で探す */
+  var ftEl=document.getElementById('km-filter-tags');
+  if(ftEl){
+    ftEl.innerHTML=KS.map(function(k){
+      return '<button type="button" class="km-tag'+(kmFilterTags.indexOf(k)>=0?' on':'')+'" onclick="kmTglFilterTag(\''+k+'\')"><span class="dot" style="background:'+KC[k]+'"></span>'+KL[k]+'</button>';
+    }).join('');
+  }
+  /* タグで探す（実際に使われているものだけ並べる） */
+  _kmFreeSnap=kmAllFree();
+  /* 消えたタグが絞り込みに残らないように掃除する */
+  for(var fi=kmFilterFree.length-1;fi>=0;fi--){
+    if(_kmFreeSnap.indexOf(kmFilterFree[fi])<0)kmFilterFree.splice(fi,1);
+  }
+  var ffEl=document.getElementById('km-filter-free');
+  if(ffEl){
+    ffEl.innerHTML=_kmFreeSnap.length
+      ? _kmFreeSnap.map(function(t,i){
+          return '<button type="button" class="km-tag free'+(kmFilterFree.indexOf(t)>=0?' on':'')+'" onclick="kmTglFilterFree('+i+')">＃'+esc(t)+'</button>';
+        }).join('')
+      : '<span class="km-none">（まだありません）</span>';
+  }
+  var all=activeMEMOS();
+  var arr=all.filter(function(m){
+    if(q&&(m.title+' '+m.body+' '+(m.free||[]).join(' ')).toLowerCase().indexOf(q)<0)return false;
+    /* グループの中はOR、グループをまたぐとAND */
+    if(kmFilterTags.length&&!kmFilterTags.some(function(k){return (m.tags||[]).indexOf(k)>=0;}))return false;
+    if(kmFilterFree.length&&!kmFilterFree.some(function(t){return (m.free||[]).indexOf(t)>=0;}))return false;
+    return true;
+  });
+  arr.sort(function(a,b){
+    if(a.pinned!==b.pinned)return a.pinned?-1:1;
+    return (b.updatedAt||0)-(a.updatedAt||0);
+  });
+  var cntEl=document.getElementById('km-cnt');
+  if(cntEl)cntEl.textContent=all.length?(arr.length+' / '+all.length+' 件'):'';
+  var anyF=(kmFilterTags.length||kmFilterFree.length||q);
+  var cw=document.getElementById('km-clear-wrap');
+  if(cw)cw.style.display=anyF?'':'none';
+  if(!arr.length){
+    listEl.innerHTML='<div class="km-empty">'+(all.length
+      ? '条件に合う覚え書きがありません'
+      : 'まだ覚え書きがありません。<br>「＋ 新しい覚え書き」から追加できます')+'</div>';
+    return;
+  }
+  listEl.innerHTML=arr.map(function(m){
+    var op=kmOpen[m.id]?' open':'';
+    var chips=(m.tags||[]).map(function(k){
+        return '<span class="km-chip"><span class="dot" style="background:'+KC[k]+'"></span>'+KL[k]+'</span>';
+      }).join('')
+      +(m.free||[]).map(function(t){return '<span class="km-chip free">＃'+esc(t)+'</span>';}).join('');
+    var firstLine=(m.body||'').split('\n')[0];
+    var prev=firstLine?'<div class="km-preview">'+esc(firstLine)+'</div>':'';
+    var dt=new Date(m.updatedAt||Date.now());
+    var dstr=dt.getFullYear()+'.'+('0'+(dt.getMonth()+1)).slice(-2)+'.'+('0'+dt.getDate()).slice(-2);
+    return '<div class="km-card'+op+(m.pinned?' pinned':'')+'">'
+      +'<div class="km-head" onclick="kmTglOpen(\''+m.id+'\')">'
+        +'<button type="button" class="km-pin'+(m.pinned?' on':'')+'" onclick="kmTglPin(\''+m.id+'\',event)" title="ピン留め">&#9733;</button>'
+        +'<div class="km-head-main">'
+          +'<div class="km-title">'+esc(m.title)+'</div>'
+          +(chips?'<div class="km-chips">'+chips+'</div>':'')
+          +(kmOpen[m.id]?'':prev)
+        +'</div>'
+        +'<div class="km-meta"><span>'+dstr+'</span><span class="km-arrow">&#9660;</span></div>'
+      +'</div>'
+      +'<div class="km-body">'
+        +'<div class="km-text">'+esc(m.body||'（内容なし）')+'</div>'
+        +'<div class="km-acts">'
+          +'<button type="button" class="io-btn" onclick="editMemoModal(\''+m.id+'\')">編集</button>'
+          +'<button type="button" class="io-btn" onclick="kmDel(\''+m.id+'\',event)">削除</button>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+}
 
 /* ─── Settings ─── */
 /* ─── In-page toast + beep ─── */
@@ -1906,6 +2504,9 @@ function resetAll(){if(!confirm('全データを削除します。よろしい�
 var syncWarnDisabled=false;
 var overwriteWarnDisabled=false;
 var _lastSyncTime=null;
+/* 最終同期の時刻を保存して、次に開いたときも覚えておく（保存前の上書き警告で使う） */
+(function(){try{var _t=localStorage.getItem(LS+'lastsync');if(_t)_lastSyncTime=new Date(_t);}catch(e){}})();
+function setLastSync(d){_lastSyncTime=d;try{localStorage.setItem(LS+'lastsync',d.toISOString());}catch(e){}}
 var _gdFileId=null;
 
 function updHdrLayoutBtn(){
@@ -1980,7 +2581,10 @@ function showSyncWarn(cloudTime,localTime){
   var chk=document.getElementById('warn-neverchk');
   if(!el)return;
   var fmt=function(d){return d?d.toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'不明';};
-  if(txt)txt.innerHTML='クラウド: '+fmt(cloudTime)+'&nbsp;／&nbsp;最終同期: '+fmt(localTime)+'<br>上書きするとクラウドのデータが失われます。続けますか？';
+  var _msg='クラウド: '+fmt(cloudTime)+'&nbsp;／&nbsp;最終同期: '+fmt(localTime)+'<br>上書きするとクラウドのデータが失われます。続けますか？';
+  /* 最終同期が分からないときは、先に読み込むよう促す */
+  if(!localTime)_msg+='<br><b>クラウドに保存されたデータがあります。手元のデータが消えている場合は、先に「↓ 読み込み」を押してください。</b>';
+  if(txt)txt.innerHTML=_msg;
   if(chk)chk.checked=false;
   el.classList.add('show');
   el.scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -1995,19 +2599,52 @@ async function doOverwriteSave(){
   dismissWarn();
   await gdSave();
 }
+/* ── 手元が空のまま上書きするのを止める ──────────────
+   機種変更・ブラウザの乗り換え・サイトデータの削除・アプリ内ブラウザなどで
+   この端末の記録が空になっていることがある。その状態で保存すると
+   クラウドの記録まで空で塗りつぶされ、元に戻せない。
+   最終同期の時刻が残っていない人ほど危ないので、
+   syncWarnDisabled の判定より手前に置く。 */
+function gdLocalEmpty(){
+  /* 見るのは「残す記録」だけ。ROOMS・BANS・BLOG は動いているものと
+     終わった内番の控えで、起動のたびに古いものが捨てられる。
+     これらを見ると、内番を1回まわしただけで守りが外れてしまう。 */
+  return !(RES||[]).length
+      && !(EVS||[]).length
+      && !(NTS||[]).length
+      && !(MEMOS||[]).length;
+}
+function closeEmptyWarn(){
+  var el=document.getElementById('empty-modal');
+  if(el)el.classList.remove('show');
+}
+function emptyWarnLoad(){ closeEmptyWarn(); gdLoad(); }
+async function emptyWarnSave(){ closeEmptyWarn(); await gdSave(); }
+async function gdAskIfEmpty(){
+  if(!gdLocalEmpty())return false;
+  var fid=null;
+  try{ fid=_gdFileId||await gdFindFile(); }catch(e){ return false; }
+  if(!fid)return false;   /* クラウドに何も無いなら、空を保存しても失うものが無い */
+  var el=document.getElementById('empty-modal');
+  if(!el)return false;
+  el.classList.add('show');
+  return true;
+}
 async function gdSaveWithCheck(){
   if(!gdToken){showToast('先にGoogleログインしてください','',true);return;}
+  if(await gdAskIfEmpty())return;
   if(syncWarnDisabled){await gdSave();return;}
   /* クラウドの更新日時チェック */
   try{
     var fid=_gdFileId||(await gdFindFile());
-    if(fid&&_lastSyncTime){
+    if(fid){
       var res=await gdFetch('https://www.googleapis.com/drive/v3/files/'+fid+'?fields=modifiedTime',
         {headers:{}});
       if(res.ok){
         var d=await res.json();
         var cloudMod=d.modifiedTime?new Date(d.modifiedTime):null;
-        if(cloudMod&&_lastSyncTime&&cloudMod>_lastSyncTime){
+        /* 最終同期が分からないとき（保存領域が消えたあとなど）も警告する */
+        if(cloudMod&&(!_lastSyncTime||cloudMod>_lastSyncTime)){
           showSyncWarn(cloudMod,_lastSyncTime);return;
         }
       }
@@ -2144,10 +2781,19 @@ async function gdSave(){
           });
           NTS=Object.values(ntMapSv).sort(function(a,b){return a.date.localeCompare(b.date);});
         }
-        save();renderEvList();renderNList();if(chart)RC();
+        if(driveD.memos){
+          var mMapSv={};
+          MEMOS.forEach(function(m){mMapSv[m.id]=m;});
+          driveD.memos.forEach(function(m){
+            var norm=kmNorm(m);
+            if(!mMapSv[norm.id]||(norm.updatedAt||0)>(mMapSv[norm.id].updatedAt||0))mMapSv[norm.id]=norm;
+          });
+          MEMOS=Object.values(mMapSv);
+        }
+        save();renderEvList();renderNList();renderMemos();if(chart)RC();
       }
     }
-    var payload=JSON.stringify({resources:RES,events:EVS,notes:NTS,rooms:ROOMS,bans:BANS,blog:BLOG,settings:{theme:curTheme,mode:curMode,layout:curLayout,guideAutoOff:guideAutoOff,helpBtnHidden:helpBtnHidden}},null,2);
+    var payload=JSON.stringify({resources:RES,events:EVS,notes:NTS,memos:MEMOS,rooms:ROOMS,bans:BANS,blog:BLOG,settings:{theme:curTheme,mode:curMode,layout:curLayout,guideAutoOff:guideAutoOff,helpBtnHidden:helpBtnHidden}},null,2);
     var resp;
     if(fid){
       resp=await gdFetch('https://www.googleapis.com/upload/drive/v3/files/'+fid+'?uploadType=media',
@@ -2165,7 +2811,7 @@ async function gdSave(){
          headers:{'Content-Type':'multipart/related; boundary='+bd},
          body:parts.join(NL)});
     }
-    if(resp.ok){_lastSyncTime=new Date();updHdrSync();gdSetSub('Drive に保存しました ✓ ('+_lastSyncTime.toLocaleTimeString('ja-JP')+')');}
+    if(resp.ok){setLastSync(new Date());updHdrSync();gdSetSub('Drive に保存しました ✓ ('+_lastSyncTime.toLocaleTimeString('ja-JP')+')');}
     else{var e2=await resp.json();gdSetSub('保存に失敗: '+((e2.error&&e2.error.message)||resp.status));}
   }catch(e){gdSetSub('エラー: '+e.message);}
 }
@@ -2221,6 +2867,16 @@ async function gdLoad(){
       });
       NTS=Object.values(ntMapGd).sort(function(a,b){return a.date.localeCompare(b.date);});
     }
+    /* ── MEMOS updatedAt マージ（id で同一判定） ── */
+    if(d.memos){
+      var mMapGd={};
+      MEMOS.forEach(function(m){mMapGd[m.id]=m;});
+      d.memos.forEach(function(m){
+        var norm=kmNorm(m);
+        if(!mMapGd[norm.id]||(norm.updatedAt||0)>(mMapGd[norm.id].updatedAt||0))mMapGd[norm.id]=norm;
+      });
+      MEMOS=Object.values(mMapGd);
+    }
     if(d.rooms){
       var roomsEmpty=!ROOMS.exped.length&&!ROOMS.repair.length&&!ROOMS.forge.length;
       if(roomsEmpty)ROOMS=d.rooms;
@@ -2228,8 +2884,8 @@ async function gdLoad(){
     if(d.bans){var nowMs=Date.now();var cloudBans=d.bans.filter(function(b){return b.endTime>nowMs;});if(!BANS.length&&cloudBans.length)BANS=cloudBans;}
     if(d.blog&&!BLOG.length)BLOG=d.blog;
     if(d.settings){if(d.settings.theme)curTheme=d.settings.theme;if(d.settings.mode)curMode=d.settings.mode;if(d.settings.layout)curLayout=d.settings.layout;if(d.settings.guideAutoOff!==undefined)guideAutoOff=d.settings.guideAutoOff;if(d.settings.helpBtnHidden!==undefined)helpBtnHidden=d.settings.helpBtnHidden;applyVars();applyHelpBtnVis();}
-    _lastSyncTime=new Date();updHdrSync();
-    save();renderEvList();renderNList();renderDT();['exped','repair','forge'].forEach(renderRoomFull);renderBan();if(chart)RC();
+    setLastSync(new Date());updHdrSync();
+    save();renderEvList();renderNList();renderDT();renderMemos();['exped','repair','forge'].forEach(renderRoomFull);renderBan();if(chart)RC();
     gdSetSub('マージ完了 ✓ ('+new Date().toLocaleTimeString('ja-JP')+')');
     showToast('同期完了','Drive とデータをマージしました',false);
   }catch(e){gdSetSub('エラー: '+e.message);}
@@ -2419,6 +3075,13 @@ if(iDateEl&&iDateEl.value){
   if(iDateText)iDateText.textContent=iDateEl.value;
 }
 renderEvList();renderNList();
+renderMemos();
+kmDrawForm('new');
+/* 追加フォームの自由タグ欄：Enterでも付けられるように */
+(function(){
+  var kf=document.getElementById('km-f-free');
+  if(kf)kf.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();kmAddFree('new');}});
+})();
 ['exped','repair','forge'].forEach(renderRoomFull);
 renderBan();
 RC();
@@ -2438,10 +3101,9 @@ if(guideModalEl)guideModalEl.addEventListener('click',function(e){if(e.target===
 if(!guideAutoOff)setTimeout(openGuide,300);
 </script>
 <footer style="margin-top:32px;padding:18px 16px 24px;border-top:1px solid var(--bd1);text-align:center">
-  <p style="font-size:11px;color:var(--t4);margin-bottom:12px">関連ツール</p>
+  <p style="font-size:11px;color:var(--t4);margin-bottom:12px">ほかの道具</p>
   <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:16px">
-    <a href="saniwa_top.html" style="display:inline-block;padding:7px 18px;font-size:12px;color:var(--t3);border:1px solid var(--bd1);border-radius:6px;text-decoration:none;background:var(--bg1);transition:all .15s" onmouseover="this.style.color='var(--t1)';this.style.borderColor='var(--bd2)'" onmouseout="this.style.color='var(--t3)';this.style.borderColor='var(--bd1)'">審神者の道具箱</a>
-    <a href="keikoroku.html" style="display:inline-block;padding:7px 18px;font-size:12px;color:var(--t3);border:1px solid var(--bd1);border-radius:6px;text-decoration:none;background:var(--bg1);transition:all .15s" onmouseover="this.style.color='var(--t1)';this.style.borderColor='var(--bd2)'" onmouseout="this.style.color='var(--t3)';this.style.borderColor='var(--bd1)'">稽古録</a>
+    <a href="keikoroku.html" style="display:inline-block;padding:7px 18px;font-size:12px;color:var(--t3);border:1px solid var(--bd1);border-radius:6px;text-decoration:none;background:var(--bg1)">稽古録</a>
   </div>
   <p style="font-size:11px;color:var(--t4);margin-bottom:8px">データ入出力</p>
   <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
@@ -2452,18 +3114,23 @@ if(!guideAutoOff)setTimeout(openGuide,300);
     <button onclick="document.getElementById('fi-csv').click()" style="padding:5px 12px;font-size:11px;color:var(--t3);border:1px solid var(--bd1);border-radius:5px;background:var(--bg1);cursor:pointer">↓ CSV</button>
     <button onclick="document.getElementById('fi-xlsx').click()" style="padding:5px 12px;font-size:11px;color:var(--t3);border:1px solid var(--bd1);border-radius:5px;background:var(--bg1);cursor:pointer">↓ Excel</button>
   </div>
-  <p style="font-size:11px;color:var(--t4);margin-top:20px;line-height:1.8">秦野 / 審神者の道具箱<br>二次創作・非公式。個人利用のみ。無断転載・再配布・改変配布・広告目的での公開を禁じます。</p>
+  <div style="height:1px;background:currentColor;opacity:.14;margin:22px auto 16px;max-width:280px"></div>
+  <div style="font-size:11px;line-height:2"><a href="saniwa_top.html" style="color:inherit;opacity:.85">審神者の道具箱</a><span style="opacity:.5">　・　</span><a href="privacy.html" style="color:inherit;opacity:.85">プライバシーポリシー</a><br><span style="opacity:.5">このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari shizukuishi</span><br><span style="opacity:.5">無断転載・再配布・広告目的での公開を禁じます。</span></div>
 </footer>
 <!-- 使い方ガイド -->
-<div class="modal-bg" id="guide-modal">
+<div class="modal-bg" id="guide-modal" onclick="guideBgClose(event)">
   <div class="modal" style="max-width:460px">
-    <div class="modal-h">資源帳へようこそ</div>
+    <div class="modal-h" style="display:flex;align-items:center;gap:10px">
+      <span style="flex:1">資源帳へようこそ</span>
+      <button type="button" class="modal-x" onclick="closeGuide()" title="閉じる" aria-label="閉じる">✕</button>
+    </div>
     <div style="font-size:13px;color:var(--t3);line-height:1.85">
       <p style="margin:0 0 12px">刀剣乱舞の資源を記録して、推移をグラフで見られるツールです。まずは軽く流れだけ。</p>
       <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:14px">
         <div><span style="color:var(--acc);font-weight:600">資源入力</span> … 日付ごとに資源やお札の数を記録します。「引き継ぐ」で前回値をコピーできます。</div>
         <div><span style="color:var(--acc);font-weight:600">グラフ</span> … 記録した資源の推移を表示。凡例タップで線の表示・非表示を切り替えられます。</div>
         <div><span style="color:var(--acc);font-weight:600">期間・日別メモ</span> … イベント期間や日ごとのメモをグラフに重ねられます。</div>
+        <div><span style="color:var(--acc);font-weight:600">覚え書き</span> … 周回のコツや調べたことを、日付に関係なく残しておけます。</div>
         <div><span style="color:var(--acc);font-weight:600">遠征 / 手入れ / 鍛刀 / 内番</span> … 進行中の作業の残り時間を管理できます。</div>
         <div><span style="color:var(--acc);font-weight:600">設定</span> … テーマ、クラウド同期（Google ドライブ）などはこちらから。</div>
       </div>

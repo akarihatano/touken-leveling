@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  審神者の道具箱 sitemap.xml
+
+  置き場所： https://suwachan.sakura.ne.jp/saniwa-tools/sitemap.xml
+  つまり saniwa_top.html と同じフォルダに、この名前のまま置いてください。
+
+  2026-08-29、実物のファイルで確認しました。
+    - Shizaichou_manual.html … 頭が大文字のSで合っています
+    - contact.html / reply.html … どちらも実在します
+    - shusekichou_manual.html … まだ無いので載せていません。作ったら1行足してください
+    - complete.html（送信完了ページ）… 検索結果に出す必要がないため、載せていません
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- トップ -->
+  <url><loc>https://suwachan.sakura.ne.jp/saniwa-tools/saniwa_top.html</loc></url>
+
+  <!-- 道具本体 -->
+  <url><loc>https://suwachan.sakura.ne.jp/saniwa-tools/Shizaichou.html</loc></url>
+  <url><loc>https://suwachan.sakura.ne.jp/saniwa-tools/keikoroku.html</loc></url>
+  <url><loc>https://suwachan.sakura.ne.jp/saniwa-tools/ichinokura.html</loc></url>
+  <url><loc>https://suwachan.sakura.ne.jp/saniwa-tools/shitakubeya.html</loc></url>
+  <url><loc>https://suwachan.sakura.ne.jp/saniwa-tools/kaikouroku.html</loc></url>
+  <url><loc>https://suwachan.sakura.ne.jp/saniwa-tools/shusekichou.html</loc></url>
+  <url><loc>https://suwachan.sakura.ne.jp/saniwa-tools/tantouroku.html</loc></url>
+
+  <!-- 説明書 -->
+  <url><loc>https://suwachan.sakura.ne.jp/saniwa-tools/Shizaichou_manual.html</loc></url>
+  <url><loc>https://suwachan.sakura.ne.jp/saniwa-tools/keikoroku_manual.html</loc></url>
+  <url><loc>https://suwachan.sakura.ne.jp/saniwa-tools/ichinokura_manual.html</loc></url>
+  <url><loc>https://suwachan.sakura.ne.jp/saniwa-tools/shitakubeya_manual.html</loc></url>
+  <url><loc>https://suwachan.sakura.ne.jp/saniwa-tools/kaikouroku_manual.html</loc></url>
+
+  <!-- そのほか -->
+  <url><loc>https://suwachan.sakura.ne.jp/saniwa-tools/changelog.html</loc></url>
+  <url><loc>https://suwachan.sakura.ne.jp/saniwa-tools/reply.html</loc></url>
+  <url><loc>https://suwachan.sakura.ne.jp/saniwa-tools/contact.html</loc></url>
+  <url><loc>https://suwachan.sakura.ne.jp/saniwa-tools/privacy.html</loc></url>
+
+</urlset>

@@ -3,9 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>愛蔵の一ノ倉</title>
+<title>刀剣乱舞 断片・宝物・回想 管理帳</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- アクセス解析の停止設定を読む（プライバシーポリシーのボタンで切り替えます） -->
+<script>
+try {
+  if (localStorage.getItem('saniwa_ga_optout') === '1') {
+    window['ga-disable-G-QM317D9ESN'] = true;
+  }
+} catch (e) {}
+</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QM317D9ESN');</script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
@@ -152,6 +160,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans JP',sans-serif;
 .fcard-detail.open{display:block;}
 .mobile-only{display:none;}
 .app.mobile .mobile-only{display:block;}
+.pc-only{display:block;}
+.app.mobile .pc-only{display:none;}
+.hsub-txt{font-size:10px;letter-spacing:0.06em;}
 /* 断片・刀装のテーブル/カード切替 */
 .frag-cards{display:none;}
 #pane-frag.fv-card .frag-table-wrap{display:none;}
@@ -372,9 +383,109 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans JP',sans-serif;
 /* 削除確認 */
 .delconf{text-align:center;padding:8px 0 4px;}
 .delconf p{font-size:13px;color:var(--tx);line-height:1.6;margin-bottom:12px;}
+/* ── 追想録 ── */
+.tsgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:9px;}
+@media (max-width:520px){.tsgrid{grid-template-columns:repeat(2,1fr);}}
+.tscard{background:var(--bgC);border-radius:10px;border:0.5px solid var(--bd);border-left:3px solid var(--bd);display:flex;flex-direction:column;}
+.tscard.on{border-left-color:var(--ac);}
+.tshd{padding:8px 10px 0;display:flex;align-items:center;justify-content:space-between;gap:6px;}
+.tsno{font-size:11px;color:var(--tx3);letter-spacing:0.04em;flex-shrink:0;}
+.tschk{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--tx3);cursor:pointer;user-select:none;flex-shrink:0;}
+.tscard.on .tschk{color:var(--acTx);}
+.tschk input{accent-color:var(--ac);cursor:pointer;margin:0;}
+.tsbd{padding:5px 10px 8px;flex:1;}
+.tstl{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;color:var(--tx);line-height:1.35;}
+.tsyomi{font-size:11px;color:var(--tx3);margin-top:1px;line-height:1.3;}
+.tsplace{font-size:11px;color:var(--tx2);margin-top:6px;line-height:1.4;}
+.tsnames{font-size:13px;color:var(--tx);margin-top:3px;line-height:1.45;}
+.tscond{font-size:11px;color:var(--tx3);margin-top:3px;line-height:1.4;}
+.tsmore{color:var(--acTx);cursor:pointer;border-bottom:1px dotted var(--acTx);}
+.tsdim{color:var(--tx3);}
+.tsstg{color:var(--acTx);font-weight:700;}
+.tsopt{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:-4px 0 12px;}
+.tsopt-l{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--tx2);cursor:pointer;user-select:none;}
+.tsopt-l input{accent-color:var(--ac);cursor:pointer;margin:0;}
+.tsopt-n{font-size:11px;color:var(--tx3);}
+.tsdone,.tsnone{grid-column:1/-1;text-align:center;padding:30px 14px;font-size:12px;line-height:2;color:var(--tx2);}
+.tsdone{font-family:'Noto Serif JP',serif;}
+.tsfil{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:9px;}
+.tsq{width:auto;flex:1 1 170px;max-width:300px;}
+.tspanel{background:var(--bgC);border:0.5px solid var(--bd);border-radius:8px;padding:9px 11px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:8px 13px;align-items:center;}
+.tspf{display:flex;align-items:center;gap:5px;}
+.tspf-l{font-size:10px;color:var(--tx3);white-space:nowrap;}
+.tspanel .fsel{width:auto;max-width:230px;font-size:11px;}
+.dirbtn.on{background:var(--bgH);color:var(--hTx);border-color:var(--bgH);}
+.btn:disabled{opacity:0.45;cursor:default;}
+.tsrel{font-size:10px;color:var(--tx3);margin-top:3px;line-height:1.5;}
+.tslink{color:var(--acTx);cursor:pointer;border-bottom:1px dotted var(--acTx);}
+.tscard.flash{animation:tsflash 1.6s ease-out;}
+@keyframes tsflash{0%{box-shadow:0 0 0 3px var(--ac);}100%{box-shadow:0 0 0 0 rgba(0,0,0,0);}}
+.tscard.hid .tstl{color:var(--tx3);letter-spacing:0.08em;}
+.tscard.hid .tsnames{color:var(--tx3);}
+.tsmemo{width:100%;display:block;border:none;border-top:0.5px dashed var(--bd);border-radius:0 0 10px 10px;background:transparent;color:var(--tx2);font-size:11px;line-height:1.5;padding:6px 10px 8px;resize:none;overflow:hidden;min-height:32px;}
+.tsmemo::placeholder{color:var(--tx3);opacity:0.55;}
+.tsmemo:focus{outline:none;background:var(--bg2);}
 </style>
 </head>
 <body>
+<!-- ═══ SNSアプリの中で開いている人への案内 ═══════════════════
+     Xなどのアプリ内でリンクを開くと、ブラウザ本体とは別の場所に
+     データが保存される。同じ道具を開いても記録が見えず、
+     Googleログインも通らないことがある。
+     ここは案内を出すだけで、動きは何も変えない。 -->
+<div id="iab-bar" style="display:none"></div>
+<script>
+(function(){
+  var KEY='saniwa_iab_hide';
+  function isInApp(){
+    var ua=navigator.userAgent||'';
+    /* ①名乗っているアプリ ②AndroidのWebView ③iOSのWKWebView（Safari/の名乗りが無い） */
+    if(/FBAN|FBAV|FB_IAB|Instagram|\bLine\/|MicroMessenger|KAKAOTALK/.test(ua))return true;
+    if(/;\s*wv\)/.test(ua))return true;
+    if(/iPhone|iPad|iPod/.test(ua)&&ua.indexOf('AppleWebKit')>=0&&!/Safari\//.test(ua))return true;
+    return false;
+  }
+  function hidden(){ try{ return localStorage.getItem(KEY)==='1'; }catch(e){ return false; } }
+  function hasData(){ return typeof gdLocalEmpty==="function" ? !gdLocalEmpty() : false; }
+  function close(never){
+    if(never){ try{ localStorage.setItem(KEY,'1'); }catch(e){} }
+    var el=document.getElementById('iab-bar');
+    if(el)el.style.display='none';
+  }
+  window.iabClose=function(){
+    var c=document.getElementById('iab-never');
+    close(c&&c.checked);
+  };
+  function show(){
+    var el=document.getElementById('iab-bar');
+    if(!el)return;
+    var body = hasData()
+      ? '<p style="margin:0 0 10px">ここでの記録は、<b>いま開いているアプリ（Xなど）の中</b>だけに保存されています。'
+        +'この道具ではなくそのアプリが管理している場所なので、アプリ側の都合でまとめて消えることがあります。</p>'
+        +'<p style="margin:0 0 10px"><b>いま画面に記録が見えているなら、先に書き出し（エクスポート）を取ってください。</b>'
+        +'そのファイルを、SafariやChromeで開いた同じ道具に読み込めば、そのまま続けられます。</p>'
+      : '<p style="margin:0 0 10px">このままでは記録が保存されない、以前の記録が見えない、Googleとつながらない、といったことが起きます。</p>'
+        +'<p style="margin:0"><b>メニューの「ブラウザで開く」から、SafariやChromeで開き直してください。</b>以前の記録がそのまま見えることがあります。</p>';
+    el.innerHTML=
+      '<div style="max-width:640px;margin:0 auto;padding:14px 16px;font-size:13px;line-height:1.85">'
+      +'<div style="font-weight:700;margin-bottom:8px">⚠ SNSアプリの中で開いています</div>'
+      +body
+      +'<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap">'
+      +'<label style="font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer">'
+      +'<input type="checkbox" id="iab-never"> このブラウザでは表示しない</label>'
+      +'<button onclick="iabClose()" style="padding:7px 18px;font-size:12px;border-radius:7px;'
+      +'border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer;font-family:inherit">閉じる</button>'
+      +'</div></div>';
+    el.setAttribute('style',
+      'display:block;background:#fff4d6;color:#5a4212;border-bottom:1px solid #e0c98a;'
+      +'position:relative;z-index:400');
+  }
+  function init(){ if(isInApp()&&!hidden())show(); }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
+<!-- ═══ ここまで ═══════════════════════════════════════════ -->
 <div class="app" id="app">
 
   <!-- ヘッダー -->
@@ -392,7 +503,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans JP',sans-serif;
     <div class="hinner">
       <div>
         <div class="htitle">愛蔵の一ノ倉</div>
-        <div class="hsub">AIZO NO ICHINOKURA</div>
+        <div class="hsub hsub-txt pc-only">刀剣乱舞の宝物・断片・回想を記録する帳面</div>
+        <div class="hsub mobile-only">AIZO NO ICHINOKURA</div>
       </div>
       <div class="hbtns">
         <button class="hbtn" onclick="openOv('ov-guide')">？ 使い方</button>
@@ -406,6 +518,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans JP',sans-serif;
   <div class="tabbar" id="pctabs">
     <div class="tab on" data-tab="frag" onclick="switchTab('frag',this)">断片管理</div>
     <div class="tab" data-tab="treasure" onclick="switchTab('treasure',this)">宝物帳</div>
+    <div class="tab" data-tab="tsuisou" onclick="switchTab('tsuisou',this)">追想録</div>
     <div class="tab" data-tab="tosou" onclick="switchTab('tosou',this)">刀装</div>
     <div class="tab" data-tab="uma" onclick="switchTab('uma',this)">馬</div>
     <div class="tab" data-tab="memo" onclick="switchTab('memo',this)">暦メモ</div>
@@ -521,6 +634,31 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans JP',sans-serif;
           </table>
         </div>
       </div>
+    </div>
+
+    <!-- ── 追想録タブ ── -->
+    <div class="tab-pane" id="pane-tsuisou">
+      <div class="smbar" id="tsuisou-summary"></div>
+      <div class="tsopt" id="tsuisou-opt"></div>
+      <div class="sort-area">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span class="sort-area-lbl">絞り込み</span>
+          <div class="stags" id="tsuisou-filter-tags">
+            <div class="stag on" data-f="all" onclick="setTsuiFilter('all')">すべて</div>
+            <div class="stag" data-f="got" onclick="setTsuiFilter('got')">入手済み</div>
+            <div class="stag" data-f="not" onclick="setTsuiFilter('not')">未入手</div>
+          </div>
+          <button class="dirbtn" id="tsuisou-dirbtn" onclick="toggleTsuiDir()">▲ 昇順</button>
+          <button class="btn" id="tsuisou-allon" onclick="askTsuiBulk(1)">すべてに☑</button>
+          <button class="btn" id="tsuisou-alloff" onclick="askTsuiBulk(0)">☑を外す</button>
+        </div>
+      </div>
+      <div class="tsfil">
+        <input type="text" class="fin tsq" id="tsuisou-q" placeholder="文字で探す（題・読み・男士・メモ）" oninput="setTsuiQ(this.value)">
+        <button class="dirbtn" id="tsuisou-panelbtn" onclick="toggleTsuiPanel()">詳しく絞る ▼</button>
+      </div>
+      <div class="tspanel" id="tsuisou-panel" style="display:none;"></div>
+      <div class="tsgrid" id="tsuisou-grid"></div>
     </div>
 
     <!-- ── 暦メモタブ ── -->
@@ -641,6 +779,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans JP',sans-serif;
         </table>
       </div>
     </div>
+    <footer style="margin-top:36px;padding:20px 16px 28px;text-align:center;font-size:11px;line-height:2">
+      <div style="height:1px;background:currentColor;opacity:.14;margin:0 auto 16px;max-width:280px"></div>
+      <a href="saniwa_top.html" style="color:inherit;opacity:.85">審神者の道具箱</a><span style="opacity:.5">　・　</span><a href="privacy.html" style="color:inherit;opacity:.85">プライバシーポリシー</a><br><span style="opacity:.5">このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari shizukuishi</span><br><span style="opacity:.5">無断転載・再配布・広告目的での公開を禁じます。</span>
+    </footer>
   </div>
 
   <!-- スマホタブバー -->
@@ -648,6 +790,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans JP',sans-serif;
     <div class="mtab-items">
       <button class="mtab on" data-tab="frag" onclick="switchTab('frag',this)"><span class="mtab-icon">🔮</span>断片</button>
       <button class="mtab" data-tab="treasure" onclick="switchTab('treasure',this)"><span class="mtab-icon">🏆</span>宝物</button>
+      <button class="mtab" data-tab="tsuisou" onclick="switchTab('tsuisou',this)"><span class="mtab-icon">💭</span>追想</button>
       <button class="mtab" data-tab="tosou" onclick="switchTab('tosou',this)"><span class="mtab-icon">⚔️</span>刀装</button>
       <button class="mtab" data-tab="uma" onclick="switchTab('uma',this)"><span class="mtab-icon">🐎</span>馬</button>
       <button class="mtab" data-tab="memo" onclick="switchTab('memo',this)"><span class="mtab-icon">📅</span>暦メモ</button>
@@ -766,7 +909,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans JP',sans-serif;
         <input type="text" class="fin" id="edit-name" placeholder="例：へし切長谷部">
       </div>
       <div class="frow"><div class="flbl">愛用度（0〜10000）</div>
-        <input type="text" class="fin" id="edit-aiyo" value="0" maxlength="5" autocomplete="off" oninput="this.value=this.value.replace(/[０-９]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-65248)}).replace(/[^0-9]/g,'')">
+        <input type="text" class="fin" id="edit-aiyo" value="0" maxlength="5" autocomplete="off" onfocus="aiyoFocus(this)" oninput="aiyoFilter(this,event)">
       </div>
       <div class="frow"><div class="flbl">メモ</div>
         <textarea class="fta" id="edit-memo" placeholder="自由記述"></textarea>
@@ -789,6 +932,20 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans JP',sans-serif;
     <div class="mft">
       <button class="btn" onclick="closeOv('ov-delete')">キャンセル</button>
       <button class="btn btnd" onclick="confirmDelete()">削除する</button>
+    </div>
+  </div>
+</div>
+
+<!-- 追想録 まとめて記録 -->
+<div class="ov" id="ov-tsui-bulk">
+  <div class="modal" style="max-width:360px;">
+    <div class="mhd"><div class="mtitle">まとめて記録</div><button class="mcls" onclick="closeOv('ov-tsui-bulk')">✕</button></div>
+    <div class="mbdy">
+      <div class="delconf"><p id="tsui-bulk-msg"></p></div>
+    </div>
+    <div class="mft">
+      <button class="btn" onclick="closeOv('ov-tsui-bulk')">キャンセル</button>
+      <button class="btn btnp" id="tsui-bulk-ok" onclick="doTsuiBulk()">続ける</button>
     </div>
   </div>
 </div>
@@ -939,10 +1096,13 @@ var UD = {
   treasures: [],   // 個体配列
   events: [],      // 期間メモ
   notes: [],       // 日メモ
+  tsuisou: {},     // 追想録 回想番号 -> {c:1, m:'メモ'}
   settings: { theme:'ai-light', view:'grid', layout:'pc',
     sortKey:'bookorder', sortAsc:false,
     tosouGrade:'特上', tosouEquip:'all', tosouSort:'default', tosouAsc:false,
-    umaSort:'default', umaAsc:false
+    umaSort:'default', umaAsc:false,
+    tsuiHide:true, tsuiFilter:'all', tsuiAsc:true,
+    tsuiQ:'', tsuiEra:'', tsuiCat:'', tsuiMan:'', tsuiBand:'', tsuiMemoOnly:false
   }
 };
 
@@ -1153,6 +1313,7 @@ function switchTab(name, el) {
   save();
   if (name === 'frag') renderFragment();
   if (name === 'treasure') renderTreasure();
+  if (name === 'tsuisou') renderTsuisou();
   if (name === 'tosou') renderTosou();
   if (name === 'uma') renderUma();
   if (name === 'memo') renderMemo();
@@ -2453,18 +2614,71 @@ async function gdSyncDown() {
       if (!UD.treasures) UD.treasures = [];
       if (!UD.events) UD.events = [];
       if (!UD.notes) UD.notes = [];
+      if (!UD.tsuisou) UD.tsuisou = {};
       loadShared();
       save();
       renderFragment();
       renderTreasure();
       renderMemo();
+      renderTsuisou();
       toast('クラウドからデータを読み込みました ↓');
     }
   } catch(e) { toast('読み込み失敗：' + e.message); }
 }
 
-async function gdSyncUp(silent) {
+/* ── 手元が空のまま上書きするのを止める ──────────────
+   機種変更・ブラウザの乗り換え・サイトデータの削除・アプリ内ブラウザなどで
+   この端末の記録が空になっていることがある。その状態で保存すると
+   クラウドの記録まで空で塗りつぶされ、元に戻せない。
+   断片は 0 のキーが残るので、値が 1 以上のものだけ数える。 */
+function gdLocalEmpty() {
+  var fr = UD.fragments || {};
+  var hasFr = Object.keys(fr).some(function(k){ return (fr[k] || 0) > 0; });
+  return !hasFr
+      && !(UD.treasures || []).length
+      && !(UD.events || []).length
+      && !(UD.notes || []).length
+      && !Object.keys(UD.tsuisou || {}).length;
+}
+function gdCloseEmptyWarn() {
+  var el = document.getElementById('ov-gd-empty');
+  if (el) el.remove();
+}
+function gdEmptyWarnLoad() { gdCloseEmptyWarn(); gdSyncDown(); }
+function gdEmptyWarnSave() { gdCloseEmptyWarn(); gdSyncUp(false, true); }
+async function gdAskIfEmpty() {
+  if (!gdLocalEmpty()) return false;
+  var fid = null;
+  try { fid = _gdFileId || (await gdFindFile()); } catch (e) { return false; }
+  if (!fid) return false;   /* クラウドに何も無いなら、空を保存しても失うものが無い */
+  gdCloseEmptyWarn();
+  var d = document.createElement('div');
+  d.className = 'ov op';
+  d.id = 'ov-gd-empty';
+  d.innerHTML =
+    '<div class="modal" style="max-width:440px;">'
+    + '<div class="mhd"><div class="mtitle">手元に記録がありません</div></div>'
+    + '<div class="mbdy" style="line-height:1.9;font-size:13px;color:var(--tx2);">'
+    +   'このまま保存すると、クラウドに残っている記録が空の状態で上書きされます。元に戻せません。'
+    +   '<br><br>以前この道具に記録していた場合は、先に「↓ 読み込む」を押してください。'
+    + '</div>'
+    + '<div style="padding:0 16px 14px;display:flex;gap:8px;">'
+    +   '<button class="btn btnp" style="flex:1;padding:9px;" onclick="gdEmptyWarnLoad()">↓ 読み込む</button>'
+    +   '<button class="btn" style="flex:1;padding:9px;" onclick="gdCloseEmptyWarn()">やめる</button>'
+    + '</div>'
+    + '<div style="text-align:center;padding:0 0 14px;">'
+    +   '<a href="#" onclick="gdEmptyWarnSave();return false;" '
+    +   'style="font-size:11px;color:var(--tx3);text-decoration:underline;">それでも保存する</a>'
+    + '</div>'
+    + '</div>';
+  d.addEventListener('click', function(e){ if (e.target === d) gdCloseEmptyWarn(); });
+  document.body.appendChild(d);
+  return true;
+}
+
+async function gdSyncUp(silent, skipEmptyCheck) {
   if (!_gdToken) { toast('先にGoogleログインしてください'); return; }
+  if (!silent && !skipEmptyCheck && await gdAskIfEmpty()) return;
   try {
     if (!silent) toast('クラウドへ保存中…');
     var fid = _gdFileId || (await gdFindFile());
@@ -2711,6 +2925,902 @@ function renderUma() {
   tbody.innerHTML = html;
 }
 
+// ── 追想録マスターデータ ────────────────────────────────
+/* 合戦場32か所（時代8×地域4）。e:時代番号 en:時代名 a:地域番号 an:地域名 */
+var KASSENBA = [
+  {e:1,en:'維新の記憶',a:1,an:'函館'},
+  {e:1,en:'維新の記憶',a:2,an:'会津'},
+  {e:1,en:'維新の記憶',a:3,an:'宇都宮'},
+  {e:1,en:'維新の記憶',a:4,an:'鳥羽'},
+  {e:2,en:'江戸の記憶',a:1,an:'鳥羽'},
+  {e:2,en:'江戸の記憶',a:2,an:'江戸'},
+  {e:2,en:'江戸の記憶',a:3,an:'江戸（元禄）'},
+  {e:2,en:'江戸の記憶',a:4,an:'大阪（大阪冬の陣）'},
+  {e:3,en:'織豊の記憶',a:1,an:'関ヶ原'},
+  {e:3,en:'織豊の記憶',a:2,an:'本能寺'},
+  {e:3,en:'織豊の記憶',a:3,an:'越前'},
+  {e:3,en:'織豊の記憶',a:4,an:'安土'},
+  {e:4,en:'戦国の記憶',a:1,an:'長篠'},
+  {e:4,en:'戦国の記憶',a:2,an:'三方ヶ原'},
+  {e:4,en:'戦国の記憶',a:3,an:'桶狭間'},
+  {e:4,en:'戦国の記憶',a:4,an:'京都（西陣）'},
+  {e:5,en:'武家の記憶',a:1,an:'鎌倉（元弘の乱）'},
+  {e:5,en:'武家の記憶',a:2,an:'博多湾（元寇）'},
+  {e:5,en:'武家の記憶',a:3,an:'墨俣（承久の乱）'},
+  {e:5,en:'武家の記憶',a:4,an:'厚樫山（阿津賀志山の戦い）'},
+  {e:6,en:'池田屋の記憶',a:1,an:'京都（市中）'},
+  {e:6,en:'池田屋の記憶',a:2,an:'京都（三条大橋）'},
+  {e:6,en:'池田屋の記憶',a:3,an:'京都（池田屋二階）'},
+  {e:6,en:'池田屋の記憶',a:4,an:'京都（池田屋一階）'},
+  {e:7,en:'延享の記憶',a:1,an:'江戸（新橋）'},
+  {e:7,en:'延享の記憶',a:2,an:'江戸（白金台）'},
+  {e:7,en:'延享の記憶',a:3,an:'江戸（江戸城下）'},
+  {e:7,en:'延享の記憶',a:4,an:'江戸（江戸城内）'},
+  {e:8,en:'青野原の記憶',a:1,an:'京都（阿弥陀ヶ峰）'},
+  {e:8,en:'青野原の記憶',a:2,an:'信濃（上田城）'},
+  {e:8,en:'青野原の記憶',a:3,an:'美濃（青野原）'},
+  {e:8,en:'青野原の記憶',a:4,an:'京都（五条）'},
+];
+
+/* 刀剣男士128振り。n:名前 c:刀種
+   内訳は 短刀24／脇差11／打刀35／太刀41／大太刀6／槍5／薙刀3／剣3。
+   並びは稽古録の MR と同じ（刀剣男士のNo順）。選択肢もこの順で出る */
+var DANSHI = [
+  {n:'童子切安綱 剥落',c:'太刀'},
+  {n:'三日月宗近',c:'太刀'},
+  {n:'小狐丸',c:'太刀'},
+  {n:'石切丸',c:'大太刀'},
+  {n:'岩融',c:'薙刀'},
+  {n:'今剣',c:'短刀'},
+  {n:'大典太光世',c:'太刀'},
+  {n:'ソハヤノツルキ',c:'太刀'},
+  {n:'数珠丸恒次',c:'太刀'},
+  {n:'にっかり青江',c:'脇差'},
+  {n:'鬼丸国綱',c:'太刀'},
+  {n:'鳴狐',c:'打刀'},
+  {n:'一期一振',c:'太刀'},
+  {n:'鯰尾藤四郎',c:'脇差'},
+  {n:'骨喰藤四郎',c:'脇差'},
+  {n:'平野藤四郎',c:'短刀'},
+  {n:'厚藤四郎',c:'短刀'},
+  {n:'後藤藤四郎',c:'短刀'},
+  {n:'信濃藤四郎',c:'短刀'},
+  {n:'前田藤四郎',c:'短刀'},
+  {n:'秋田藤四郎',c:'短刀'},
+  {n:'博多藤四郎',c:'短刀'},
+  {n:'乱藤四郎',c:'短刀'},
+  {n:'五虎退',c:'短刀'},
+  {n:'薬研藤四郎',c:'短刀'},
+  {n:'包丁藤四郎',c:'短刀'},
+  {n:'大包平',c:'太刀'},
+  {n:'鶯丸',c:'太刀'},
+  {n:'明石国行',c:'太刀'},
+  {n:'蛍丸',c:'大太刀'},
+  {n:'愛染国俊',c:'短刀'},
+  {n:'千子村正',c:'打刀'},
+  {n:'蜻蛉切',c:'槍'},
+  {n:'物吉貞宗',c:'脇差'},
+  {n:'太鼓鐘貞宗',c:'短刀'},
+  {n:'亀甲貞宗',c:'打刀'},
+  {n:'燭台切光忠',c:'太刀'},
+  {n:'大般若長光',c:'太刀'},
+  {n:'小竜景光',c:'太刀'},
+  {n:'江雪左文字',c:'太刀'},
+  {n:'宗三左文字',c:'打刀'},
+  {n:'小夜左文字',c:'短刀'},
+  {n:'加州清光',c:'打刀'},
+  {n:'大和守安定',c:'打刀'},
+  {n:'歌仙兼定',c:'打刀'},
+  {n:'和泉守兼定',c:'打刀'},
+  {n:'陸奥守吉行',c:'打刀'},
+  {n:'山姥切国広',c:'打刀'},
+  {n:'山伏国広',c:'太刀'},
+  {n:'堀川国広',c:'脇差'},
+  {n:'蜂須賀虎徹',c:'打刀'},
+  {n:'浦島虎徹',c:'脇差'},
+  {n:'長曽祢虎徹',c:'打刀'},
+  {n:'髭切',c:'太刀'},
+  {n:'膝丸',c:'太刀'},
+  {n:'大倶利伽羅',c:'打刀'},
+  {n:'へし切長谷部',c:'打刀'},
+  {n:'不動行光',c:'短刀'},
+  {n:'獅子王',c:'太刀'},
+  {n:'小烏丸',c:'太刀'},
+  {n:'抜丸',c:'太刀'},
+  {n:'同田貫正国',c:'打刀'},
+  {n:'鶴丸国永',c:'太刀'},
+  {n:'太郎太刀',c:'大太刀'},
+  {n:'次郎太刀',c:'大太刀'},
+  {n:'日本号',c:'槍'},
+  {n:'御手杵',c:'槍'},
+  {n:'巴形薙刀',c:'薙刀'},
+  {n:'毛利藤四郎',c:'短刀'},
+  {n:'篭手切江',c:'脇差'},
+  {n:'謙信景光',c:'短刀'},
+  {n:'小豆長光',c:'太刀'},
+  {n:'日向正宗',c:'短刀'},
+  {n:'静形薙刀',c:'薙刀'},
+  {n:'南泉一文字',c:'打刀'},
+  {n:'千代金丸',c:'太刀'},
+  {n:'山姥切長義',c:'打刀'},
+  {n:'豊前江',c:'打刀'},
+  {n:'祢々切丸',c:'大太刀'},
+  {n:'白山吉光',c:'剣'},
+  {n:'南海太郎朝尊',c:'打刀'},
+  {n:'肥前忠広',c:'脇差'},
+  {n:'北谷菜切',c:'短刀'},
+  {n:'桑名江',c:'打刀'},
+  {n:'水心子正秀',c:'打刀'},
+  {n:'源清麿',c:'打刀'},
+  {n:'松井江',c:'打刀'},
+  {n:'山鳥毛',c:'太刀'},
+  {n:'古今伝授の太刀',c:'太刀'},
+  {n:'地蔵行平',c:'打刀'},
+  {n:'治金丸',c:'脇差'},
+  {n:'日光一文字',c:'太刀'},
+  {n:'太閤左文字',c:'短刀'},
+  {n:'五月雨江',c:'打刀'},
+  {n:'大千鳥十文字槍',c:'槍'},
+  {n:'泛塵',c:'脇差'},
+  {n:'一文字則宗',c:'太刀'},
+  {n:'村雲江',c:'打刀'},
+  {n:'姫鶴一文字',c:'太刀'},
+  {n:'福島光忠',c:'太刀'},
+  {n:'七星剣',c:'剣'},
+  {n:'丙子椒林剣',c:'剣'},
+  {n:'稲葉江',c:'打刀'},
+  {n:'笹貫',c:'太刀'},
+  {n:'人間無骨',c:'槍'},
+  {n:'八丁念仏',c:'太刀'},
+  {n:'石田正宗',c:'打刀'},
+  {n:'実休光忠',c:'太刀'},
+  {n:'京極正宗',c:'短刀'},
+  {n:'孫六兼元',c:'打刀'},
+  {n:'後家兼光',c:'打刀'},
+  {n:'火車切',c:'脇差'},
+  {n:'富田江',c:'打刀'},
+  {n:'大慶直胤',c:'打刀'},
+  {n:'九鬼正宗',c:'短刀'},
+  {n:'雲生',c:'太刀'},
+  {n:'道誉一文字',c:'太刀'},
+  {n:'雲次',c:'太刀'},
+  {n:'面影',c:'太刀'},
+  {n:'古備前信房',c:'太刀'},
+  {n:'倶利伽羅江',c:'短刀'},
+  {n:'三郎国宗',c:'太刀'},
+  {n:'安宅切',c:'打刀'},
+  {n:'二筋樋貞宗',c:'打刀'},
+  {n:'雲重',c:'打刀'},
+  {n:'柏太刀',c:'大太刀'},
+  {n:'波平行安',c:'太刀'},
+  {n:'狐ヶ崎為次',c:'太刀'},
+];
+
+/* 回想195件。
+   n:番号 t:タイトル y:読み e:時代番号 a:地域番号 d:編成男士
+   x:追加男士 p:前提回想 k:条件種別 b:備考
+   e と a の 0 は「指定なし」（両方とも0か、両方とも0以外のどちらか）。
+   e-a はそのままゲームのステージ番号（1-1 函館 など）。
+   x・p・b は無いとき省略。k は省略時 '出陣'。
+   p は '32'＝単一／'93|94'＝どちらか／'84&85&86'＝3件そろって必要。
+   y は題を丸ごと読んだもの（漢字はふりがなに開き、仮名と片仮名はそのまま）。
+   空なのは題が仮名だけの12件。
+   cd:条件の文。ゲームの条件欄に合わせて出す（其の22と145だけ）。
+   ゲームは男士が左にあるので「左記」だが、追想録は上にあるので「上記」にしてある。
+   出どころ：195件すべてをあかりのゲーム画面と1件ずつ突き合わせて確かめた
+   （時代・地域・編成／追加男士・前提回想・条件種別・読み）。食い違いはゼロ。
+   h:未回収のあいだゲームが？？？にする男士の位置（d の何人目か。1始まり）。
+   これは回想ごとに決まっていて審神者によらない。其の150（地蔵行平）と
+   其の179（古今伝授の太刀）が、未回収なのに顔が出ていることで確かめた。
+   タイトルの？？？は h があるかどうかで決まる（17件とも一致）。
+   ただしあかりが回収済みの34件は、ゲームが開けてしまうので確かめようがない。
+   17件は下限。104・143・158 はたぶん h 付きだが（105/106・144・159〜161と
+   同じお披露目の組）、あかりの画面では3件とも回収済みで開いてしまっていて
+   確かめようがなかった。回収の少ない審神者に見てもらえれば判る。 */
+var TSUISOU = [
+  {n:1,t:'土方の話',y:'ひじかたのはなし',e:1,a:1,d:['和泉守兼定','堀川国広']},
+  {n:2,t:'沖田の話',y:'おきたのはなし',e:1,a:4,d:['加州清光','大和守安定']},
+  {n:3,t:'太郎と次郎',y:'たろうとじろう',e:2,a:1,d:['太郎太刀','次郎太刀']},
+  {n:4,t:'無用の長物',y:'むようのちょうぶつ',e:2,a:2,d:['同田貫正国','御手杵']},
+  {n:5,t:'悲しみの剣たち',y:'かなしみのつるぎたち',e:2,a:4,d:['一期一振','鯰尾藤四郎']},
+  {n:6,t:'安土の名工',y:'あづちのめいこう',e:3,a:4,d:['山姥切国広','山伏国広']},
+  {n:7,t:'今川の剣',y:'いまがわのつるぎ',e:4,a:3,d:['江雪左文字','宗三左文字']},
+  {n:8,t:'義経の話',y:'よしつねのはなし',e:5,a:4,d:['岩融','今剣']},
+  {n:9,t:'神剣までの道',y:'しんけんまでのみち',e:0,a:0,d:['石切丸','にっかり青江']},
+  {n:10,t:'藤四郎だらけなのは',y:'とうしろうだらけなのは',e:0,a:0,d:['厚藤四郎','五虎退']},
+  {n:11,t:'来派の話',y:'らいはのはなし',e:0,a:0,d:['蛍丸','愛染国俊']},
+  {n:12,t:'足利家の話',y:'あしかがけのはなし',e:0,a:0,d:['三日月宗近','骨喰藤四郎']},
+  {n:13,t:'狐の話',y:'きつねのはなし',e:0,a:0,d:['小狐丸','鳴狐']},
+  {n:14,t:'近藤ＶＳ龍馬',y:'こんどうＶＳりょうま',e:1,a:4,d:['陸奥守吉行','長曽祢虎徹']},
+  {n:15,t:'池田屋事件 市中',y:'いけだやじけん しちゅう',e:6,a:1,d:['和泉守兼定','堀川国広','長曽祢虎徹']},
+  {n:16,t:'池田屋事件 大橋にて',y:'いけだやじけん おおはしにて',e:6,a:2,d:['大和守安定','和泉守兼定']},
+  {n:17,t:'池田屋事件 突入',y:'いけだやじけん とつにゅう',e:6,a:3,d:['加州清光','大和守安定']},
+  {n:18,t:'池田屋事件 裏庭へ',y:'いけだやじけん うらにわへ',e:6,a:4,d:['加州清光','長曽祢虎徹']},
+  {n:19,t:'博多の話',y:'はかたのはなし',e:5,a:2,d:['博多藤四郎','日本号']},
+  {n:20,t:'三本の槍',y:'さんぼんのやり',e:0,a:0,d:['蜻蛉切','日本号','御手杵']},
+  {n:21,t:'黒田家の話',y:'くろだけのはなし',e:0,a:0,d:['へし切長谷部','日本号']},
+  {n:22,t:'黒田家の話 その後',y:'くろだけのはなし そのご',e:0,a:0,d:['へし切長谷部','日本号'],k:'20回出陣',cd:['上記の刀剣男士を編成し20回出陣']},
+  {n:23,t:'幸運の刀',y:'こううんのかたな',e:4,a:2,d:['後藤藤四郎','物吉貞宗']},
+  {n:24,t:'源氏の宝剣',y:'げんじのほうけん',e:5,a:3,d:['髭切','膝丸']},
+  {n:25,t:'悲しみと、なぐさめ',y:'かなしみと、なぐさめ',e:3,a:2,d:['へし切長谷部','不動行光']},
+  {n:26,t:'僧と山伏',y:'そうとやまぶし',e:0,a:0,d:['数珠丸恒次','山伏国広']},
+  {n:27,t:'関ヶ原へは……',y:'せきがはらへは……',e:3,a:1,d:['太鼓鐘貞宗','大倶利伽羅']},
+  {n:28,t:'幕府の霊的な守り',y:'ばくふのれいてきなまもり',e:1,a:2,d:['大典太光世','ソハヤノツルキ']},
+  {n:29,t:'写しの悲哀',y:'うつしのひあい',e:0,a:0,d:['ソハヤノツルキ','山姥切国広']},
+  {n:30,t:'前田家の話',y:'まえだけのはなし',e:0,a:0,d:['大典太光世','前田藤四郎']},
+  {n:31,t:'天下人の霊剣',y:'てんかびとのれいけん',e:0,a:0,d:['ソハヤノツルキ','物吉貞宗']},
+  {n:32,t:'九曜と竹雀のえにし 発端',y:'くようとたけすずめのえにし ほったん',e:7,a:1,d:['小夜左文字','歌仙兼定']},
+  {n:33,t:'九曜と竹雀のえにし 勃発',y:'くようとたけすずめのえにし ぼっぱつ',e:7,a:1,d:['歌仙兼定','大倶利伽羅'],p:'32'},
+  {n:34,t:'九曜と竹雀のえにし 接触',y:'くようとたけすずめのえにし せっしょく',e:7,a:2,d:['燭台切光忠','小夜左文字','大倶利伽羅'],p:'33'},
+  {n:35,t:'九曜と竹雀のえにし 接触・続',y:'くようとたけすずめのえにし せっしょく ぞく',e:7,a:2,d:['燭台切光忠','小夜左文字','鶴丸国永'],p:'34'},
+  {n:36,t:'九曜と竹雀のえにし 協力',y:'くようとたけすずめのえにし きょうりょく',e:7,a:2,d:['燭台切光忠','小夜左文字'],x:['歌仙兼定','大倶利伽羅'],p:'34'},
+  {n:37,t:'九曜と竹雀のえにし 協力・続',y:'くようとたけすずめのえにし きょうりょく ぞく',e:7,a:2,d:['太鼓鐘貞宗','燭台切光忠','小夜左文字'],x:['歌仙兼定','大倶利伽羅'],p:'36'},
+  {n:38,t:'九曜と竹雀のえにし 団結',y:'くようとたけすずめのえにし だんけつ',e:7,a:3,d:['燭台切光忠','小夜左文字'],p:'36'},
+  {n:39,t:'九曜と竹雀のえにし 団結・続',y:'くようとたけすずめのえにし だんけつ ぞく',e:7,a:3,d:['太鼓鐘貞宗','燭台切光忠','小夜左文字'],p:'38'},
+  {n:40,t:'九曜と竹雀のえにし 真心',y:'くようとたけすずめのえにし まごころ',e:7,a:3,d:['燭台切光忠','小夜左文字'],p:'38'},
+  {n:41,t:'九曜と竹雀のえにし 真心・続',y:'くようとたけすずめのえにし まごころ ぞく',e:7,a:3,d:['燭台切光忠','小夜左文字','鶴丸国永'],p:'40'},
+  {n:42,t:'九曜と竹雀のえにし 落着',y:'くようとたけすずめのえにし らくちゃく',e:7,a:4,d:['歌仙兼定','大倶利伽羅'],x:['燭台切光忠'],p:'40'},
+  {n:43,t:'九曜と竹雀のえにし 縁故',y:'くようとたけすずめのえにし えんこ',e:7,a:4,d:['小夜左文字','歌仙兼定'],x:['燭台切光忠','大倶利伽羅'],p:'42'},
+  {n:44,t:'じっちゃんと一緒',y:'じっちゃんといっしょ',e:0,a:0,d:['獅子王','小烏丸']},
+  {n:45,t:'童子切はどこだ？',y:'どうじぎりはどこだ？',e:2,a:3,d:['大包平','鶯丸']},
+  {n:46,t:'困った癖',y:'こまったくせ',e:0,a:0,d:['千子村正','蜻蛉切']},
+  {n:47,t:'命を果たすのは俺だ',y:'めいをはたすのはおれだ',e:0,a:0,d:['へし切長谷部','巴形薙刀']},
+  {n:48,t:'関ヶ原の両大将',y:'せきがはらのりょうたいしょう',e:3,a:1,d:['ソハヤノツルキ','毛利藤四郎']},
+  {n:49,t:'歌のかたち今昔',y:'うたのかたちこんじゃく',e:0,a:0,d:['歌仙兼定','篭手切江']},
+  {n:50,t:'輝く星を目指して',y:'かがやくほしをめざして',e:0,a:0,d:['平野藤四郎','篭手切江']},
+  {n:51,t:'謙信の話',y:'けんしんのはなし',e:3,a:3,d:['謙信景光','小豆長光']},
+  {n:52,t:'西軍の刀たち',y:'せいぐんのかたな',e:3,a:1,d:['毛利藤四郎','日向正宗']},
+  {n:53,t:'戦況の行方',y:'せんきょうのゆくえ',e:0,a:0,d:['巴形薙刀','静形薙刀']},
+  {n:54,t:'呪い仲間',y:'のろいなかま',e:0,a:0,d:['山姥切国広','南泉一文字']},
+  {n:55,t:'猫斬りと山姥切',y:'ねこぎりとやまんばぎり',e:0,a:0,d:['南泉一文字','山姥切長義']},
+  {n:56,t:'ふたつの山姥切',y:'ふたつのやまんばぎり',e:0,a:0,d:['山姥切国広','山姥切長義'],h:[2]},
+  {n:57,t:'ふたつの山姥切',y:'ふたつのやまんばぎり',e:0,a:0,d:['山姥切国広【極】','山姥切長義'],b:'山姥切国広は極のみ'},
+  {n:58,t:'すていじ あくと１',y:'',e:0,a:0,d:['篭手切江','豊前江'],b:'ふりがな無し'},
+  {n:59,t:'槍への対抗心',y:'やりへのたいこうしん',e:0,a:0,d:['御手杵','静形薙刀']},
+  {n:60,t:'過去はなくとも',y:'かこはなくとも',e:0,a:0,d:['骨喰藤四郎','静形薙刀']},
+  {n:61,t:'阿吽の長物',y:'あうんのちょうぶつ',e:8,a:1,d:['同田貫正国','御手杵']},
+  {n:62,t:'阿吽の大小',y:'あうんのだいしょう',e:8,a:1,d:['骨喰藤四郎','同田貫正国'],p:'61'},
+  {n:63,t:'同病相憐れむ',y:'どうびょうあいあわれむ',e:8,a:1,d:['骨喰藤四郎','御手杵'],p:'62'},
+  {n:64,t:'つるぎの兄弟',y:'つるぎのきょうだい',e:0,a:0,d:['一期一振','白山吉光']},
+  {n:65,t:'由来は近くも今は遠く',y:'ゆらいはちかくもいまはとおく',e:0,a:0,d:['陸奥守吉行','肥前忠広']},
+  {n:66,t:'由来は近く、心も近く',y:'ゆらいはちかく、こころもちかく',e:0,a:0,d:['陸奥守吉行','南海太郎朝尊','肥前忠広']},
+  {n:67,t:'風が全てを押し流す',y:'かぜがすべてをおしながす',e:2,a:3,d:['千代金丸','北谷菜切']},
+  {n:68,t:'信用と亀の間に',y:'しんようとかめのあいだに',e:0,a:0,d:['浦島虎徹','千代金丸','北谷菜切']},
+  {n:69,t:'海を思い',y:'うみをおもい',e:0,a:0,d:['浦島虎徹','千代金丸','北谷菜切'],p:'68'},
+  {n:70,t:'石投げの見物',y:'いしなげのけんぶつ',e:8,a:2,d:['同田貫正国','御手杵'],p:'63'},
+  {n:71,t:'ここから生まれしもの',y:'ここからうまれしもの',e:8,a:2,d:['骨喰藤四郎','同田貫正国','御手杵'],p:'70'},
+  {n:72,t:'風に乗れ',y:'かぜにのれ',e:0,a:0,d:['豊前江','桑名江']},
+  {n:73,t:'すていじ あくと２',y:'',e:0,a:0,d:['豊前江','桑名江'],p:'58',b:'ふりがな無し'},
+  {n:74,t:'新々刀の系譜',y:'しんしんとうのけいふ',e:0,a:0,d:['南海太郎朝尊','水心子正秀'],h:[2]},
+  {n:75,t:'名を分かつ',y:'なをわかつ',e:0,a:0,d:['長曽祢虎徹','源清麿'],h:[2]},
+  {n:76,t:'言えない過去',y:'いえないかこ',e:3,a:1,d:['豊前江','松井江']},
+  {n:77,t:'すていじ あくと３',y:'',e:0,a:0,d:['篭手切江','豊前江','桑名江','松井江'],p:'73',b:'ふりがな無し'},
+  {n:78,t:'一文字一家の長',y:'いちもんじいっかのちょう',e:0,a:0,d:['南泉一文字','山鳥毛']},
+  {n:79,t:'予想外の再会',y:'よそうがいのさいかい',e:0,a:0,d:['小豆長光','山鳥毛']},
+  {n:80,t:'見ることのなかった世界',y:'みることのなかったせかい',e:0,a:0,d:['大典太光世','秋田藤四郎']},
+  {n:81,t:'秀吉と信長の話',y:'ひでよしとのぶながのはなし',e:3,a:4,d:['鬼丸国綱','薬研藤四郎']},
+  {n:82,t:'粟田口の',y:'あわたぐちの',e:8,a:1,d:['鬼丸国綱','乱藤四郎']},
+  {n:83,t:'鬼丸と鬼切',y:'おにまるとおにきり',e:5,a:1,d:['鬼丸国綱','髭切']},
+  {n:84,t:'天下五剣がまた一つ',y:'てんがごけんがまたひとつ',e:4,a:4,d:['三日月宗近','鬼丸国綱']},
+  {n:85,t:'天下五剣が集うとき',y:'てんがごけんがつどうとき',e:0,a:0,d:['数珠丸恒次','鬼丸国綱']},
+  {n:86,t:'妖物斬りの 陰気',y:'ようぶつぎりの いんき',e:4,a:4,d:['大典太光世','鬼丸国綱']},
+  {n:87,t:'妖物斬りの 陽気',y:'ようぶつぎりの ようき',e:4,a:4,d:['大典太光世','鬼丸国綱'],p:'86'},
+  {n:88,t:'妖物斬りの 酒気',y:'ようぶつぎりの しゅき',e:4,a:4,d:['大典太光世','鬼丸国綱'],p:'87'},
+  {n:89,t:'いくさのあと',y:'',e:5,a:1,d:['古今伝授の太刀','地蔵行平'],h:[1,2]},
+  {n:90,t:'本丸という歌集',y:'ほんまるというかしゅう',e:2,a:4,d:['歌仙兼定','古今伝授の太刀'],h:[2]},
+  {n:91,t:'僧と地蔵',y:'そうとじぞう',e:0,a:0,d:['江雪左文字','地蔵行平'],h:[2]},
+  {n:92,t:'揃いし沖縄の宝剣',y:'そろいしおきなわのほうけん',e:0,a:0,d:['千代金丸','北谷菜切','治金丸']},
+  {n:93,t:'兄の影として 花',y:'あにのかげとして はな',e:0,a:0,d:['北谷菜切','治金丸'],x:['千代金丸']},
+  {n:94,t:'兄の影として 波',y:'あにのかげとして なみ',e:0,a:0,d:['千代金丸','治金丸'],x:['北谷菜切']},
+  {n:95,t:'翼顕現 桜',y:'つばさけんげん さくら',e:0,a:0,d:['山鳥毛','日光一文字']},
+  {n:96,t:'一文字一家の躾',y:'いちもんじいっかのしつけ',e:0,a:0,d:['南泉一文字','日光一文字'],p:'78'},
+  {n:97,t:'黒田家の弟分',y:'くろだけのおとうとぶん',e:0,a:0,d:['日本号','日光一文字'],p:'21'},
+  {n:98,t:'雪睦み',y:'ゆきむつみ',e:3,a:1,d:['江雪左文字','太閤左文字']},
+  {n:99,t:'花綻ぶ',y:'はなほころぶ',e:3,a:4,d:['宗三左文字','太閤左文字'],p:'7'},
+  {n:100,t:'月冴え',y:'つきさえ',e:3,a:4,d:['小夜左文字','太閤左文字']},
+  {n:101,t:'同類異形',y:'どうるいいぎょう',e:0,a:0,d:['巴形薙刀','静形薙刀','大千鳥十文字槍']},
+  {n:102,t:'塵芥',y:'じんかい',e:8,a:2,d:['大千鳥十文字槍','泛塵']},
+  {n:103,t:'紅塵',y:'こうじん',e:8,a:2,d:['日向正宗','泛塵'],p:'102'},
+  {n:104,t:'一文字一家の隠居',y:'いちもんじいっかのいんきょ',e:0,a:0,d:['日光一文字','一文字則宗'],p:'95'},
+  {n:105,t:'猫と隠居と歪と',y:'ねこといんきょといびつと',e:0,a:0,d:['南泉一文字','一文字則宗'],h:[2]},
+  {n:106,t:'これもまたひとつの',y:'',e:0,a:0,d:['大和守安定','一文字則宗'],p:'2',h:[2]},
+  {n:107,t:'雨雲のお犬様',y:'あめくものいぬさま',e:2,a:3,d:['五月雨江','村雲江']},
+  {n:108,t:'すていじ あくと４',y:'',e:0,a:0,d:['篭手切江','豊前江','桑名江','松井江','五月雨江','村雲江'],p:'77',b:'ふりがな無し'},
+  {n:109,t:'一文字一家の白風',y:'いちもんじいっかのはくふう',e:0,a:0,d:['日光一文字','姫鶴一文字'],p:'95'},
+  {n:110,t:'あまえとがまん',y:'',e:0,a:0,d:['謙信景光','姫鶴一文字'],b:'ふりがな無し'},
+  {n:111,t:'鶴の一笑',y:'つるのいっしょう',e:2,a:4,d:['太閤左文字','姫鶴一文字']},
+  {n:112,t:'光忠の兄',y:'みつただのあに',e:0,a:0,d:['燭台切光忠','福島光忠']},
+  {n:113,t:'正則の話',y:'まさのりのはなし',e:3,a:1,d:['日本号','福島光忠']},
+  {n:114,t:'万葉の時を越え',y:'まんようのときをこえ',e:0,a:0,d:['小烏丸','七星剣']},
+  {n:115,t:'すていじ あくと５',y:'',e:0,a:0,d:['篭手切江','稲葉江'],p:'108',b:'ふりがな無し'},
+  {n:116,t:'琵琶湖のほとりの',y:'びわこのほとりの',e:3,a:1,d:['蜂須賀虎徹','浦島虎徹']},
+  {n:117,t:'彦根と虎徹',y:'ひこねとこてつ',e:8,a:3,d:['小竜景光','蜂須賀虎徹']},
+  {n:118,t:'風浪',y:'ふうろう',e:1,a:4,d:['治金丸','笹貫'],p:'93|94',b:'前提回想は「其の93または其の94」'},
+  {n:119,t:'こがらすとこがらし',y:'',e:0,a:0,d:['小烏丸','抜丸'],b:'ふりがな無し'},
+  {n:120,t:'胡蝶は香に誘われ',y:'こちょうはこうにさそわれ',e:0,a:0,d:['石切丸','抜丸']},
+  {n:121,t:'之定の同士',y:'のさだのどうし',e:0,a:0,d:['歌仙兼定','人間無骨']},
+  {n:122,t:'兼定の先輩',y:'かねさだのせんぱい',e:0,a:0,d:['和泉守兼定','人間無骨']},
+  {n:123,t:'武蔵坊と鬼武蔵',y:'むさしぼうとおにむさし',e:0,a:0,d:['岩融','人間無骨']},
+  {n:124,t:'森家の話',y:'もりけのはなし',e:3,a:4,d:['不動行光','人間無骨']},
+  {n:125,t:'惟有黒鉄而已',y:'ただくろがねとあるのみ',e:4,a:1,d:['大般若長光','八丁念仏']},
+  {n:126,t:'夏塵',y:'かじん',e:2,a:4,d:['泛塵','八丁念仏']},
+  {n:127,t:'ひょうたんとたぬき 青柿',y:'ひょうたんとたぬき あおがき',e:8,a:3,d:['一期一振','同田貫正国'],p:'62',b:'ふりがなは「青柿」のみ'},
+  {n:128,t:'ひょうたんとたぬき 渋柿',y:'ひょうたんとたぬき しぶがき',e:8,a:4,d:['一期一振','同田貫正国'],p:'127',b:'ふりがなは「渋柿」のみ'},
+  {n:129,t:'正宗の話',y:'まさむねのはなし',e:2,a:2,d:['日向正宗','石田正宗']},
+  {n:130,t:'正宗と虎徹',y:'まさむねとこてつ',e:8,a:3,d:['蜂須賀虎徹','石田正宗']},
+  {n:131,t:'栄誉と名声の狭間で',y:'えいよとめいせいのはざまで',e:8,a:4,d:['蜂須賀虎徹','石田正宗'],p:'130'},
+  {n:132,t:'毒と薬',y:'どくとくすり',e:3,a:4,d:['薬研藤四郎','実休光忠']},
+  {n:133,t:'仇も巡れば他生の縁',y:'あだもめぐればたしょうのえにし',e:3,a:2,d:['宗三左文字','実休光忠']},
+  {n:134,t:'京極の丹碧',y:'きょうごくのたんぺき',e:2,a:4,d:['にっかり青江','京極正宗']},
+  {n:135,t:'正宗の兄弟',y:'まさむねのきょうだい',e:5,a:1,d:['石田正宗','京極正宗']},
+  {n:136,t:'関の義兄弟',y:'せきのぎきょうだい',e:0,a:0,d:['人間無骨','孫六兼元']},
+  {n:137,t:'新々刀の推し事',y:'しんしんとうのおしごと',e:0,a:0,d:['水心子正秀','孫六兼元'],p:'74'},
+  {n:138,t:'最強と無敵',y:'さいきょうとむてき',e:1,a:3,d:['一文字則宗','孫六兼元']},
+  {n:139,t:'咆哮、遠く',y:'ほうこう、とおく',e:0,a:0,d:['肥前忠広','孫六兼元'],p:'66'},
+  {n:140,t:'葦辺の鶴雀',y:'あしべのかくじゃく',e:0,a:0,d:['姫鶴一文字','後家兼光']},
+  {n:141,t:'無頼の桜梅',y:'ぶらいのおうばい',e:3,a:1,d:['山姥切長義','後家兼光']},
+  {n:142,t:'あこがれとげんじつ',y:'',e:0,a:0,d:['五虎退','後家兼光'],b:'ふりがな無し'},
+  {n:143,t:'竜の弟子',y:'りゅうのでし',e:0,a:0,d:['大倶利伽羅','火車切']},
+  {n:144,t:'謙信のおこころ',y:'けんしんのおこころ',e:3,a:3,d:['謙信景光','火車切'],p:'51',h:[2]},
+  {n:145,t:'すていじ あくと６',y:'',e:0,a:0,d:['篭手切江','豊前江','桑名江','松井江','五月雨江','村雲江','稲葉江','富田江'],p:'115',k:'特殊',cd:['稲葉江、富田江を所持','上記を除く6振りを編成し出陣'],b:'ふりがな無し。条件が特殊：稲葉江・富田江は「所持」のみでよく、それを除く6振りを編成して出陣する'},
+  {n:146,t:'ばっくすていじ',y:'',e:0,a:0,d:['篭手切江','富田江'],p:'145',b:'ふりがな無し'},
+  {n:147,t:'夢のあとさき',y:'ゆめのあとさき',e:0,a:0,d:['稲葉江','富田江']},
+  {n:148,t:'光と闇のさきへと',y:'ひかりとやみのさきへと',e:0,a:0,d:['豊前江','富田江'],p:'147'},
+  {n:149,t:'秋元家の話',y:'あきもとけのはなし',e:0,a:0,d:['鳴狐','大慶直胤']},
+  {n:150,t:'洞に地蔵',y:'うろにじぞう',e:5,a:4,d:['地蔵行平','大慶直胤']},
+  {n:151,t:'鋼の先に',y:'はがねのさきに',e:1,a:1,d:['笹貫','大慶直胤']},
+  {n:152,t:'新々刀の秘め事',y:'しんしんとうのひめごと',e:5,a:1,d:['南海太郎朝尊','大慶直胤'],p:'74'},
+  {n:153,t:'江戸紫花合 花菖蒲',y:'えどむらさきはなあわせ はなしょうぶ',e:0,a:0,d:['水心子正秀','大慶直胤']},
+  {n:154,t:'江戸紫花合 雪割草',y:'えどむらさきはなあわせ ゆきわりそう',e:0,a:0,d:['源清麿','大慶直胤'],p:'153'},
+  {n:155,t:'江戸紫花合 朝顔',y:'えどむらさきはなあわせ あさがお',e:2,a:2,d:['源清麿','大慶直胤'],p:'154'},
+  {n:156,t:'モテモテが世を救う？',y:'モテモテがよをすくう？',e:0,a:0,d:['包丁藤四郎','丙子椒林剣'],b:'ふりがなは「世を救う」のみ'},
+  {n:157,t:'太子の話',y:'たいしのはなし',e:2,a:4,d:['七星剣','丙子椒林剣']},
+  {n:158,t:'正宗の役目',y:'まさむねのやくめ',e:0,a:0,d:['石田正宗','九鬼正宗']},
+  {n:159,t:'夢を運ぶ船',y:'ゆめをはこぶふね',e:0,a:0,d:['陸奥守吉行','九鬼正宗'],h:[2]},
+  {n:160,t:'三本の矢の刀たち',y:'さんぼんのやのかたなたち',e:0,a:0,d:['毛利藤四郎','九鬼正宗'],h:[2]},
+  {n:161,t:'友だち、あらためて',y:'ともだち、あらためて',e:0,a:0,d:['火車切','九鬼正宗'],h:[1,2]},
+  {n:162,t:'翼をもとめて',y:'つばさをもとめて',e:0,a:0,d:['秋田藤四郎','雲生']},
+  {n:163,t:'一家一線',y:'いっかいっせん',e:0,a:0,d:['姫鶴一文字','道誉一文字']},
+  {n:164,t:'対極の好敵手',y:'たいきょくのとりっくすたー',e:0,a:0,d:['小竜景光','道誉一文字']},
+  {n:165,t:'目に見えぬ束縛',y:'めにみえぬそくばく',e:0,a:0,d:['亀甲貞宗','道誉一文字']},
+  {n:166,t:'婆娑羅の深層',y:'ばさらのしんそう',e:0,a:0,d:['京極正宗','道誉一文字']},
+  {n:167,t:'雲居なす予報図',y:'くもいなすよほうず',e:0,a:0,d:['雲生','雲次']},
+  {n:168,t:'蛍火と陽炎',y:'ほたるびとかげろう',e:0,a:0,d:['蛍丸','面影']},
+  {n:169,t:'陽炎にゆらめく',y:'かげろうにゆらめく',e:0,a:0,d:['明石国行','面影'],p:'168'},
+  {n:170,t:'蛍火に明からむ',y:'ほたるびにあからむ',e:0,a:0,d:['明石国行','蛍丸'],p:'169'},
+  {n:171,t:'漬物は辛じょっぱで',y:'つけものはからじょっぱで',e:1,a:2,d:['信濃藤四郎','古備前信房']},
+  {n:172,t:'波乗りらぶぴーす',y:'なみのりらぶぴーす',e:0,a:0,d:['笹貫','古備前信房']},
+  {n:173,t:'バリのり古備前！',y:'バリのりこびぜん！',e:0,a:0,d:['八丁念仏','古備前信房'],b:'ふりがなは「古備前」のみ'},
+  {n:174,t:'童子切はここか？',y:'どうじぎりはここか？',e:0,a:0,d:['大包平','童子切安綱 剥落'],p:'45',h:[2]},
+  {n:175,t:'天下五剣は揃えども',y:'てんがごけんはそろえども',e:0,a:0,d:['三日月宗近','童子切安綱 剥落'],p:'84&85&86',b:'前提回想が3件そろって必要',h:[2]},
+  {n:176,t:'津山の赤と白',y:'つやまのあかとしろ',e:0,a:0,d:['石田正宗','童子切安綱 剥落'],h:[2]},
+  {n:177,t:'星の索を編んで',y:'ほしのさくをあんで',e:0,a:0,d:['篭手切江','倶利伽羅江']},
+  {n:178,t:'蠍炎',y:'さそりのひ',e:3,a:3,d:['松井江','倶利伽羅江']},
+  {n:179,t:'本丸からの百韻',y:'ほんまるからのひゃくいん',e:0,a:0,d:['古今伝授の太刀','倶利伽羅江'],p:'90'},
+  {n:180,t:'孝行刀の話',y:'こうこうがたなのはなし',e:0,a:0,d:['不動行光','倶利伽羅江'],p:'124'},
+  {n:181,t:'山と歌と温泉と',y:'やまとうたとおんせんと',e:0,a:0,d:['祢々切丸','三郎国宗']},
+  {n:182,t:'大江戸物見遊山',y:'おおえどものみゆさん',e:2,a:3,d:['ソハヤノツルキ','三郎国宗'],p:'28'},
+  {n:183,t:'眠れる猫と遠鳴きの鶴',y:'ねむれるねこととおなきのつる',e:5,a:2,d:['鶴丸国永','三郎国宗']},
+  {n:184,t:'本科と写し',y:'ほんかとうつし',e:0,a:0,d:['へし切長谷部','安宅切'],p:'22'},
+  {n:185,t:'紫紺の薔薇',y:'しこんのばら',e:3,a:4,d:['実休光忠','安宅切']},
+  {n:186,t:'英雄を追って',y:'えいゆうをおって',e:2,a:4,d:['大千鳥十文字槍','二筋樋貞宗'],p:'102'},
+  {n:187,t:'初めまして、改めて',y:'はじめまして、あらためて',e:0,a:0,d:['鯰尾藤四郎','二筋樋貞宗']},
+  {n:188,t:'空を目指し集え',y:'そらをめざしつどえ',e:0,a:0,d:['雲生','雲次','雲重']},
+  {n:189,t:'日光の神刀',y:'にっこうのしんとう',e:0,a:0,d:['祢々切丸','柏太刀']},
+  {n:190,t:'元気百倍柏餅',y:'げんきひゃくばいかしわもち',e:0,a:0,d:['厚藤四郎','柏太刀']},
+  {n:191,t:'薩摩の刀の話',y:'さつまのかたなのはなし',e:0,a:0,d:['笹貫','波平行安']},
+  {n:192,t:'蒼浪',y:'そうろう',e:0,a:0,d:['千代金丸','波平行安'],p:'118'},
+  {n:193,t:'波濤を行く志士',y:'はとうをゆくしし',e:0,a:0,d:['陸奥守吉行','波平行安']},
+  {n:194,t:'敵か味方かともだちか',y:'てきかみかたかともだちか',e:5,a:4,d:['今剣','狐ヶ崎為次'],h:[2]},
+  {n:195,t:'狐の監査 白山吉光',y:'きつねのかんさ はくさんよしみつ',e:0,a:0,d:['白山吉光','狐ヶ崎為次'],h:[2]},
+];
+
+// ── 追想録 ──────────────────────────────────────────────
+/* UD.tsuisou は 回想番号 -> {c:1, m:'メモ'}。
+   ☑もメモも無い器は残さない（gdLocalEmpty がキーの数で空を判定するため） */
+function tsuiStore() {
+  if (!UD.tsuisou) UD.tsuisou = {};
+  return UD.tsuisou;
+}
+function tsuiGot(n) { var o = tsuiStore()[n]; return !!(o && o.c); }
+function tsuiMemoOf(n) { var o = tsuiStore()[n]; return (o && o.m) || ''; }
+function tsuiSet(n, key, val) {
+  var st = tsuiStore();
+  var o = st[n] || (st[n] = {});
+  if (val) o[key] = val; else delete o[key];
+  if (!o.c && !o.m) delete st[n];
+  save();
+}
+
+var _kbMap = null;
+function kassenbaName(e, a) {
+  if (!e) return '指定なし';
+  if (!_kbMap) {
+    _kbMap = {};
+    KASSENBA.forEach(function(k) { _kbMap[k.e + '-' + k.a] = k; });
+  }
+  /* 時代番号-地域番号 が、そのままゲームのステージ番号になっている（1-1 函館 など） */
+  var stage = e + '-' + a + ' ';
+  var hit = _kbMap[e + '-' + a];
+  if (hit) return stage + hit.en + '・' + hit.an;
+  for (var i = 0; i < KASSENBA.length; i++) {
+    if (KASSENBA[i].e === e) return stage + KASSENBA[i].en;
+  }
+  return '指定なし';
+}
+
+/* 場所の行。ステージ番号は今の濃さのまま、時代・地域名だけ一段薄くする */
+function kassenbaHtml(e, a) {
+  if (!e) return '<span class="tsdim">指定なし</span>';
+  var s = kassenbaName(e, a);
+  var sp = s.indexOf(' ');
+  if (sp < 0) return esc(s);
+  return '<span class="tsstg">' + esc(s.slice(0, sp)) + '</span> ' +
+         '<span class="tsdim">' + esc(s.slice(sp + 1)) + '</span>';
+}
+
+/* メモ欄は書くほど伸びる。隠れている間は測れないので何もしない */
+function tsuiFit(el) {
+  if (!el || el.offsetParent === null) return;
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
+/* 伏せるのは「h がある」「☑が付いていない」「スイッチON」の3つがそろったときだけ。
+   ☑を付けるとその回想だけ開く（ゲームと同じ） */
+function tsuiHidden(r) {
+  if (!r.h) return false;
+  if (UD.settings.tsuiHide === false) return false;
+  return !tsuiGot(r.n);
+}
+
+function tsuiById(n) {
+  for (var i = 0; i < TSUISOU.length; i++) {
+    if (TSUISOU[i].n === n) return TSUISOU[i];
+  }
+  return null;
+}
+
+/* ── 前提回想 ──
+   p は '32'＝単一／'93|94'＝どちらか／'84&85&86'＝全部そろって必要。
+   つづきは p を逆から引いて作る（其の32を見ると其の33が出る、の向き） */
+var _nextMap = null;
+function tsuiNext(n) {
+  if (!_nextMap) {
+    _nextMap = {};
+    TSUISOU.forEach(function(r) {
+      if (!r.p) return;
+      r.p.split(/[|&]/).forEach(function(p) {
+        if (!_nextMap[p]) _nextMap[p] = [];
+        _nextMap[p].push(r.n);
+      });
+    });
+  }
+  return _nextMap[String(n)] || [];
+}
+
+function tsuiLinkHtml(n) {
+  return '<span class="tslink" onclick="tsuiJump(' + n + ')">其の' + n + '</span>';
+}
+
+function tsuiRelHtml(r) {
+  var html = '';
+  if (r.p) {
+    var ids = r.p.split(/[|&]/);
+    var links = [];
+    ids.forEach(function(p) { links.push(tsuiLinkHtml(p)); });
+    if (r.p.indexOf('|') >= 0) {
+      html += '<div class="tsrel">↑ 前提：' + links.join(' または ') + '</div>';
+    } else if (r.p.indexOf('&') >= 0) {
+      html += '<div class="tsrel">↑ 前提：' + links.join('・') + ' が全部</div>';
+    } else {
+      html += '<div class="tsrel">↑ 前提：' + links[0] + '</div>';
+    }
+  }
+  var nx = tsuiNext(r.n);
+  if (nx.length) {
+    var ls = [];
+    nx.forEach(function(x) { ls.push(tsuiLinkHtml(x)); });
+    html += '<div class="tsrel">↓ つづき：' + ls.join('・') + '</div>';
+  }
+  return html;
+}
+
+/* 飛び先が絞り込みで出ていないことがあるので、そのときは黙って何もせず知らせる */
+function tsuiJump(n) {
+  var card = document.getElementById('tsc-' + n);
+  if (!card) { toast('其の' + n + ' は今の絞り込みでは出ていません'); return; }
+  try { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  catch (e) { card.scrollIntoView(); }
+  card.classList.remove('flash');
+  void card.offsetWidth;          /* 続けて同じ札を押したときも光らせ直す */
+  card.classList.add('flash');
+  setTimeout(function() { card.classList.remove('flash'); }, 1700);
+}
+
+/* ── 一括入力 ──
+   絞り込んでからボタンを押す形。ボタンに件数が出るので、押す前に何件動くか判る */
+var _tsuiBulkOn = 0;
+function askTsuiBulk(on) {
+  var list = tsuiList();
+  if (!list.length) { toast('表示中の回想がありません'); return; }
+  _tsuiBulkOn = on;
+  var l1 = on
+    ? '表示中の ' + list.length + '件 すべてに☑を入れます。よろしいですか？'
+    : '表示中の ' + list.length + '件 の☑を外します。よろしいですか？';
+  var l2 = on ? 'メモはそのまま残ります。' : 'メモは消えません。';
+  var l3 = 'クラウド同期を使っていると、他の端末にも広がります。';
+  var el = document.getElementById('tsui-bulk-msg');
+  if (el) el.innerHTML = esc(l1) + '<br>' + esc(l2) + '<br>' + esc(l3);
+  var ok = document.getElementById('tsui-bulk-ok');
+  if (ok) ok.textContent = on ? '☑を入れる' : '☑を外す';
+  openOv('ov-tsui-bulk');
+}
+
+function doTsuiBulk() {
+  var list = tsuiList();
+  var st = tsuiStore();
+  list.forEach(function(r) {
+    var o = st[r.n] || (st[r.n] = {});
+    if (_tsuiBulkOn) o.c = 1; else delete o.c;
+    if (!o.c && !o.m) delete st[r.n];   /* ☑もメモも無い器は残さない */
+  });
+  save();                                /* 1件ずつではなく、まとめて1回だけ */
+  closeOv('ov-tsui-bulk');
+  renderTsuisou();
+  toast(list.length + '件を' + (_tsuiBulkOn ? '入手済みにしました' : '未入手に戻しました'));
+}
+
+/* 画面に出る編成男士。伏せているときは h の位置が？？？になる。
+   カードもこれを使い、絞り込みもこれを見る（＝画面に出ている文字にかかる） */
+function tsuiShownD(r) {
+  if (!tsuiHidden(r)) return r.d;
+  return r.d.map(function(nm, i) {
+    return r.h.indexOf(i + 1) >= 0 ? '？？？' : nm;
+  });
+}
+
+var TOSHU = ['短刀', '脇差', '打刀', '太刀', '大太刀', '槍', '薙刀', '剣'];
+
+var _catMap = null;
+function danshiCat(name) {
+  if (!_catMap) {
+    _catMap = {};
+    DANSHI.forEach(function(d) { _catMap[d.n] = d.c; });
+  }
+  return _catMap[name.replace('【極】', '')] || '';
+}
+
+/* 探すときは空白を落とし、片仮名をひらがなに開く。
+   ゲームの題に空白が入るものがあり、「そはやのつるき」「もてもて」でも
+   ソハヤノツルキ・モテモテに当たってほしいため */
+function tsuiNorm(s) {
+  return String(s).replace(/[\s\u3000]/g, '').toLowerCase()
+    .replace(/[\u30a1-\u30f6]/g, function(c) {
+      return String.fromCharCode(c.charCodeAt(0) - 0x60);
+    });
+}
+
+function tsuiHaystack(r) {
+  var hid = tsuiHidden(r);
+  var parts = ['其の' + r.n, hid ? '？？？' : r.t];
+  if (!hid && r.y) parts.push(r.y);
+  parts.push(tsuiShownD(r).join(''));
+  if (r.x) parts.push(r.x.join(''));
+  parts.push(tsuiMemoOf(r.n));
+  return tsuiNorm(parts.join(' '));
+}
+
+function tsuiMatch(r) {
+  var s = UD.settings;
+  var f = tsuiFilterNow();
+  if (f === 'got' && !tsuiGot(r.n)) return false;
+  if (f === 'not' && tsuiGot(r.n)) return false;
+  if (s.tsuiMemoOnly && !tsuiMemoOf(r.n)) return false;
+
+  var era = s.tsuiEra || '';
+  if (era === 'none') { if (r.e) return false; }
+  else if (era && (r.e + '-' + r.a) !== era) return false;
+
+  var band = parseInt(s.tsuiBand, 10);
+  if (band) {
+    if (r.n < (band - 1) * 50 + 1 || r.n > band * 50) return false;
+  }
+
+  var names = tsuiShownD(r).concat(r.x || []);
+  var man = s.tsuiMan || '';
+  var cat = s.tsuiCat || '';
+  var i, hit;
+  if (man) {
+    /* 57の「山姥切国広【極】」は、山姥切国広で絞ったときに出てほしい */
+    hit = false;
+    for (i = 0; i < names.length; i++) {
+      if (names[i].replace('【極】', '') === man) { hit = true; break; }
+    }
+    if (!hit) return false;
+  } else if (cat) {
+    hit = false;
+    for (i = 0; i < names.length; i++) {
+      if (danshiCat(names[i]) === cat) { hit = true; break; }
+    }
+    if (!hit) return false;
+  }
+
+  var q = tsuiNorm(s.tsuiQ || '');
+  if (q && tsuiHaystack(r).indexOf(q) < 0) return false;
+  return true;
+}
+
+var _tsuiQTimer = null;
+function setTsuiQ(v) {
+  UD.settings.tsuiQ = v;
+  clearTimeout(_tsuiQTimer);
+  _tsuiQTimer = setTimeout(function() { save(); renderTsuisou(); }, 250);
+}
+function setTsuiSel(key, v) {
+  UD.settings[key] = v;
+  if (key === 'tsuiCat') UD.settings.tsuiMan = '';   /* 刀種を変えたら男士は選び直し */
+  save();
+  renderTsuisou();
+}
+function setTsuiMemoOnly(on) {
+  UD.settings.tsuiMemoOnly = !!on;
+  save();
+  renderTsuisou();
+}
+function resetTsuiFilter() {
+  var s = UD.settings;
+  s.tsuiFilter = 'all'; s.tsuiQ = ''; s.tsuiEra = '';
+  s.tsuiCat = ''; s.tsuiMan = ''; s.tsuiBand = ''; s.tsuiMemoOnly = false;
+  save();
+  renderTsuisou();
+}
+
+function tsuiPanelCount() {
+  var s = UD.settings, n = 0;
+  if (s.tsuiEra) n++;
+  if (s.tsuiCat) n++;
+  if (s.tsuiMan) n++;
+  if (s.tsuiBand) n++;
+  if (s.tsuiMemoOnly) n++;
+  return n;
+}
+
+/* 箱の開け閉めは覚えない。開いた状態で始まるのは、中の絞り込みが効いているときだけ */
+var _tsuiPanelOpen = null;
+function toggleTsuiPanel() {
+  _tsuiPanelOpen = !_tsuiPanelOpen;
+  renderTsuisou();
+}
+
+function tsuiOptTag(val, cur, label) {
+  return '<option value="' + esc(val) + '"' + (val === cur ? ' selected' : '') + '>' + esc(label) + '</option>';
+}
+
+function renderTsuiPanel() {
+  var el = document.getElementById('tsuisou-panel');
+  var btn = document.getElementById('tsuisou-panelbtn');
+  if (!el || !btn) return;
+  var n = tsuiPanelCount();
+  btn.textContent = '詳しく絞る' + (n ? ' ' + n : '') + (_tsuiPanelOpen ? ' ▲' : ' ▼');
+  btn.classList.toggle('on', n > 0);
+  if (!_tsuiPanelOpen) { el.style.display = 'none'; el.innerHTML = ''; return; }
+  el.style.display = '';
+
+  var s = UD.settings;
+  var era = s.tsuiEra || '', cat = s.tsuiCat || '', man = s.tsuiMan || '', band = s.tsuiBand || '';
+
+  var eraOpts = tsuiOptTag('', era, 'すべて') + tsuiOptTag('none', era, '指定なし');
+  KASSENBA.forEach(function(k) {
+    eraOpts += tsuiOptTag(k.e + '-' + k.a, era, k.e + '-' + k.a + ' ' + k.en + '・' + k.an);
+  });
+
+  /* DANSHI はNo順なので、出てきた順に拾うと刀種がばらばらに並ぶ。並びは決め打ちにする */
+  var have = {}, cats = [];
+  DANSHI.forEach(function(d) { have[d.c] = 1; });
+  TOSHU.forEach(function(c) { if (have[c]) { cats.push(c); delete have[c]; } });
+  DANSHI.forEach(function(d) { if (have[d.c]) { cats.push(d.c); delete have[d.c]; } });
+  var catOpts = tsuiOptTag('', cat, 'すべて');
+  cats.forEach(function(c) { catOpts += tsuiOptTag(c, cat, c); });
+
+  var manOpts = tsuiOptTag('', man, 'すべて');
+  DANSHI.forEach(function(d) {
+    if (!cat || d.c === cat) manOpts += tsuiOptTag(d.n, man, d.n);
+  });
+
+  var bandOpts = tsuiOptTag('', band, 'すべて');
+  [[1, '其の1〜50'], [2, '其の51〜100'], [3, '其の101〜150'], [4, '其の151〜195']].forEach(function(b) {
+    bandOpts += tsuiOptTag(String(b[0]), band, b[1]);
+  });
+
+  el.innerHTML =
+    '<div class="tspf"><span class="tspf-l">時代・地域</span>' +
+      '<select class="fsel" onchange="setTsuiSel(\'tsuiEra\',this.value)">' + eraOpts + '</select></div>' +
+    '<div class="tspf"><span class="tspf-l">刀種</span>' +
+      '<select class="fsel" onchange="setTsuiSel(\'tsuiCat\',this.value)">' + catOpts + '</select></div>' +
+    '<div class="tspf"><span class="tspf-l">男士</span>' +
+      '<select class="fsel" onchange="setTsuiSel(\'tsuiMan\',this.value)">' + manOpts + '</select></div>' +
+    '<div class="tspf"><span class="tspf-l">番号帯</span>' +
+      '<select class="fsel" onchange="setTsuiSel(\'tsuiBand\',this.value)">' + bandOpts + '</select></div>' +
+    '<label class="tsopt-l"><input type="checkbox"' + (s.tsuiMemoOnly ? ' checked' : '') +
+      ' onchange="setTsuiMemoOnly(this.checked)">メモあり</label>' +
+    '<button class="btn" onclick="resetTsuiFilter()">絞り込みを全部戻す</button>';
+}
+
+/* 絞り込みと並び。どちらも古い保存データに項目が無くても既定に倒れる書きかた */
+function tsuiFilterNow() {
+  var f = UD.settings.tsuiFilter;
+  return (f === 'got' || f === 'not') ? f : 'all';
+}
+function tsuiAscNow() { return UD.settings.tsuiAsc !== false; }
+
+function setTsuiFilter(f) {
+  UD.settings.tsuiFilter = f;
+  save();
+  renderTsuisou();
+}
+function toggleTsuiDir() {
+  UD.settings.tsuiAsc = !tsuiAscNow();
+  save();
+  renderTsuisou();
+}
+
+/* TSUISOU は番号の昇順で並んでいるので、降順は絞ったあとの控えを逆さにするだけ */
+function tsuiList() {
+  var list = TSUISOU.filter(tsuiMatch);
+  if (!tsuiAscNow()) list.reverse();
+  return list;
+}
+
+function tsuiEmptyHtml() {
+  if (tsuiFilterNow() === 'not' && !tsuiPanelCount() && !(UD.settings.tsuiQ || '')) {
+    return '<div class="tsdone">今回収できる回想は全て集め終えました。<br>「扉」の奥から何かが聞こえてきそうです。</div>';
+  }
+  return '<div class="tsnone">この絞り込みに合う回想はありません。</div>';
+}
+
+/* 絞り込みの札・並べ替えのボタン・件数を、いまの状態に合わせ直す */
+function syncTsuiBar(n) {
+  var f = tsuiFilterNow();
+  var tags = document.getElementById('tsuisou-filter-tags');
+  if (tags) {
+    [].forEach.call(tags.querySelectorAll('.stag'), function(t) {
+      t.classList.toggle('on', t.getAttribute('data-f') === f);
+    });
+  }
+  var b = document.getElementById('tsuisou-dirbtn');
+  if (b) b.textContent = tsuiAscNow() ? '▲ 昇順' : '▼ 降順';
+  var on = document.getElementById('tsuisou-allon');
+  var off = document.getElementById('tsuisou-alloff');
+  if (on)  { on.textContent  = n + '件に☑';      on.disabled  = !n; }
+  if (off) { off.textContent = n + '件の☑を外す'; off.disabled = !n; }
+  var q = document.getElementById('tsuisou-q');
+  if (q && q.value !== (UD.settings.tsuiQ || '')) q.value = UD.settings.tsuiQ || '';
+}
+
+function renderTsuisou() {
+  var g = document.getElementById('tsuisou-grid');
+  if (!g) return;
+  if (_tsuiPanelOpen === null) _tsuiPanelOpen = tsuiPanelCount() > 0;
+  renderTsuiPanel();
+  var list = tsuiList();
+  var html = '';
+  list.forEach(function(r) { html += makeTsuiCard(r); });
+  g.innerHTML = html || tsuiEmptyHtml();
+  renderTsuisouSummary();
+  renderTsuisouOpt();
+  syncTsuiBar(list.length);
+  [].forEach.call(g.querySelectorAll('.tsmemo'), tsuiFit);
+}
+
+function makeTsuiCard(r) {
+  var got = tsuiGot(r.n);
+  var hid = tsuiHidden(r);
+  var names = tsuiShownD(r);
+  var namesHtml;
+  if (names.length > 3) {
+    namesHtml = esc(names.slice(0, 3).join('／')) +
+      '／<span class="tsmore" onclick="tsuiShowAll(this,' + r.n + ')">ほか' + (names.length - 3) + '振り</span>';
+  } else {
+    namesHtml = esc(names.join('／'));
+  }
+  var extra = '';
+  if (r.x) extra += '<div class="tscond">条件：さらに' + esc(r.x.join('、')) + 'が必要です。</div>';
+  if (r.cd) {
+    r.cd.forEach(function(t) { extra += '<div class="tscond">条件：' + esc(t) + '</div>'; });
+  } else if (r.k) {
+    extra += '<div class="tscond">条件：' + esc(r.k) + '</div>';
+  }
+  return '<div class="tscard' + (got ? ' on' : '') + (hid ? ' hid' : '') + '" id="tsc-' + r.n + '">' +
+    '<div class="tshd">' +
+      '<span class="tsno">其の' + r.n + '</span>' +
+      '<label class="tschk"><input type="checkbox"' + (got ? ' checked' : '') +
+        ' onchange="toggleTsui(' + r.n + ',this)">入手</label>' +
+    '</div>' +
+    '<div class="tsbd">' +
+      '<div class="tstl">' + (hid ? '？？？' : esc(r.t)) + '</div>' +
+      (!hid && r.y ? '<div class="tsyomi">' + esc(r.y) + '</div>' : '') +
+      '<div class="tsplace">' + kassenbaHtml(r.e, r.a) + '</div>' +
+      '<div class="tsnames">' + namesHtml + '</div>' +
+      extra + tsuiRelHtml(r) +
+    '</div>' +
+    '<textarea class="tsmemo" placeholder="メモ" oninput="tsuiMemoInput(this,' + r.n + ')"' +
+      ' onchange="tsuiMemoSave(this,' + r.n + ')">' + esc(tsuiMemoOf(r.n)) + '</textarea>' +
+    '</div>';
+}
+
+/* 4振り以上の6件（36・37・43・77・108・145）で「ほか◯振り」を開く */
+function tsuiShowAll(el, n) {
+  for (var i = 0; i < TSUISOU.length; i++) {
+    if (TSUISOU[i].n === n) {
+      el.parentNode.innerHTML = esc(TSUISOU[i].d.join('／'));
+      return;
+    }
+  }
+}
+
+function toggleTsui(n, el) {
+  tsuiSet(n, 'c', el.checked ? 1 : 0);
+  if (tsuiFilterNow() !== 'all') { renderTsuisou(); return; }  /* 一覧の顔ぶれが変わる */
+  var r = tsuiById(n);
+  var card = document.getElementById('tsc-' + n);
+  if (card && r && r.h) {
+    /* 伏せ字の回想は☑で中身が開く／閉じるので、カードごと作り直す */
+    card.outerHTML = makeTsuiCard(r);
+    var again = document.getElementById('tsc-' + n);
+    if (again) [].forEach.call(again.querySelectorAll('.tsmemo'), tsuiFit);
+  } else if (card) {
+    card.classList.toggle('on', el.checked);
+  }
+  renderTsuisouSummary();
+  renderTsuisouOpt();
+}
+
+/* 打っている途中でも取りこぼさないよう、離れる前にも一度しまう */
+var _tsuiMemoTimer = null;
+function tsuiMemoInput(el, n) {
+  tsuiFit(el);
+  clearTimeout(_tsuiMemoTimer);
+  _tsuiMemoTimer = setTimeout(function() { tsuiMemoSave(el, n); }, 600);
+}
+function tsuiMemoSave(el, n) {
+  clearTimeout(_tsuiMemoTimer);
+  tsuiSet(n, 'm', el.value.trim());
+  renderTsuisouSummary();
+}
+
+function renderTsuisouOpt() {
+  var el = document.getElementById('tsuisou-opt');
+  if (!el) return;
+  var on = UD.settings.tsuiHide !== false;
+  var n = 0;
+  TSUISOU.forEach(function(r) { if (tsuiHidden(r)) n++; });
+  el.innerHTML = '<label class="tsopt-l"><input type="checkbox"' + (on ? ' checked' : '') +
+    ' onchange="toggleTsuiHide(this)">ゲームで？？？になる回想を伏せる</label>' +
+    (on && n ? '<span class="tsopt-n">' + n + '件を伏せています</span>' : '');
+}
+
+function toggleTsuiHide(el) {
+  UD.settings.tsuiHide = el.checked;
+  save();
+  renderTsuisou();
+}
+
+function renderTsuisouSummary() {
+  var sm = document.getElementById('tsuisou-summary');
+  if (!sm) return;
+  var st = tsuiStore();
+  var got = 0, memo = 0;
+  TSUISOU.forEach(function(r) {
+    var o = st[r.n];
+    if (o && o.c) got++;
+    if (o && o.m) memo++;
+  });
+  sm.innerHTML = '<div class="smcard"><b>' + got + '</b>入手済み</div>' +
+    '<div class="smcard"><b>' + (TSUISOU.length - got) + '</b>未入手</div>' +
+    '<div class="smcard"><b>' + memo + '</b>メモあり</div>';
+}
+
 // ── メモ 編集・削除 ─────────────────────────────────────
 var _editEvId = null;
 var _editNoteDate = null;
@@ -2794,6 +3904,39 @@ function setEvCol(id,c,btn){var el=document.getElementById(id);if(el)el.value=c;
 /* 色入力の現在値と一致する見本に .sel を付ける（一致なしなら全解除）。コンテナidは「<入力id>-palette」規約 */
 function syncSwatchSel(id){var el=document.getElementById(id),pal=document.getElementById(id+'-palette');if(!el||!pal)return;[].forEach.call(pal.children,function(b){b.classList.toggle('sel',(b.title||'').toLowerCase()===(el.value||'').toLowerCase());});}
 
+/* 愛用度欄の入力フィルタ（全角→半角、数字以外を除去、先頭の余分な0を除去）
+   ・IME変換中（isComposing）は value を書き換えない。書き換えるとIMEが入力位置を
+     見失い、確定時に未確定分がもう一度書き込まれて数字が二重になるため。
+   ・変換確定後の処理は init 内の compositionend リスナが担当（下記コメント参照）。
+   ・先頭の0は "05000" → "5000" のように詰める。ただし "0" 単独と空文字は残す。
+   ・値が変わらないときは value に触らない。触るとカーソルが末尾へ飛ぶため。 */
+function aiyoFilter(el, ev) {
+  if (!el) return;
+  if (ev && ev.isComposing) return;
+  var v = el.value
+    .replace(/[０-９]/g, function(c){ return String.fromCharCode(c.charCodeAt(0) - 65248); })
+    .replace(/[^0-9]/g, '')
+    .replace(/^0+(?=[0-9])/, '');
+  if (v !== el.value) el.value = v;
+}
+
+/* 愛用度欄：フォーカス時に中身を全選択する。
+   この欄は開いた時点で数字が入っている（追加なら "0"、編集なら既存の愛用度）ため、
+   クリック／タップでカーソルを置いただけだと打った数字が既存の数字に連結され、
+   maxlength で切り捨てられて意図しない値になる
+   （例：3500 の欄に 4000 と打つ → "35004" → 上限クランプで 10000 になる）。
+   Tab で移動した場合はブラウザが自動で全選択するので、クリック／タップもそれに揃える。
+   iOS Safari は focus ハンドラ内の選択を直後のキャレット配置で打ち消すため、
+   setTimeout で 1 手遅らせてから選択する。 */
+function aiyoFocus(el) {
+  if (!el) return;
+  setTimeout(function () {
+    if (document.activeElement !== el) return;
+    try { el.setSelectionRange(0, el.value.length); }
+    catch (e) { try { el.select(); } catch (e2) {} }
+  }, 0);
+}
+
 function init() {
   load();
   applyTheme(UD.settings.theme || 'ai-light');
@@ -2851,13 +3994,20 @@ function init() {
     var txt = document.getElementById(id + '-text'); if (txt) txt.textContent = ts;
   });
   renderNoteEmojiRow();
-  /* 愛用度欄：タッチ端末のみ数字キーパッドを出す。
-     PCでは inputmode を付けない（付けると Chrome/Firefox/Opera が日本語IMEを抑制し、
-     直後にテキスト欄へ戻った際に英数入力のまま固定される不具合が出るため） */
+  /* 愛用度欄のIME対策
+     ・タッチ端末のみ数字キーパッドを出す。PCでは inputmode を付けない
+       （付けると Chrome/Firefox/Opera が日本語IMEを抑制し、直後にテキスト欄へ戻った際に
+       英数入力のまま固定される不具合が出るため）。
+     ・compositionend は端末を問わず登録する。Chrome は変換確定時に
+       input（isComposing=true）→ compositionend の順で発火するため、
+       input 側だけでは確定後の全角文字が残ってしまう。 */
   try {
-    if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
-      var aiyoEl = document.getElementById('edit-aiyo');
-      if (aiyoEl) aiyoEl.setAttribute('inputmode', 'numeric');
+    var aiyoEl = document.getElementById('edit-aiyo');
+    if (aiyoEl) {
+      if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
+        aiyoEl.setAttribute('inputmode', 'numeric');
+      }
+      aiyoEl.addEventListener('compositionend', function () { aiyoFilter(this, null); });
     }
   } catch (e) {}
   /* 色見本パレットを流し込み（期間メモ・日メモ） */

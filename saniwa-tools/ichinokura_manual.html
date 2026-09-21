@@ -7,6 +7,14 @@
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- アクセス解析の停止設定を読む（プライバシーポリシーのボタンで切り替えます） -->
+<script>
+try {
+  if (localStorage.getItem('saniwa_ga_optout') === '1') {
+    window['ga-disable-G-QM317D9ESN'] = true;
+  }
+} catch (e) {}
+</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
 <script>
@@ -478,6 +486,8 @@ footer {
   margin-top: 10px;
   background: var(--footer-bg);
 }
+footer a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+footer a:hover { opacity: .75; }
 
 /* スクロールトップ */
 .scroll-top {
@@ -554,6 +564,7 @@ footer {
     <a class="toc-btn" href="#frag">断片管理</a>
     <a class="toc-btn" href="#treasure">宝物帳</a>
     <a class="toc-btn" href="#shugou">習合</a>
+    <a class="toc-btn" href="#tsuisou">追想録</a>
     <a class="toc-btn" href="#tosou">刀装</a>
     <a class="toc-btn" href="#uma">馬</a>
     <a class="toc-btn" href="#memo">暦メモ</a>
@@ -570,7 +581,7 @@ footer {
   <div class="block">
     <div class="label">概要</div>
     <div class="text">
-      <em>愛蔵の一ノ倉</em>は、刀剣乱舞の<em>宝物・断片・刀装・馬</em>を管理するツールです。<br>
+      <em>愛蔵の一ノ倉</em>は、刀剣乱舞の<em>宝物・断片・回想・刀装・馬</em>を管理するツールです。<br>
       手に入れた宝物を個体ごとに記録し、レベル・愛用度・刻名を残したり、ステータスで並べ替えて装備の検討に使えます。<br>
       ゲーム内のデータを自動取得することはありません。<em>すべて審神者本人の手入力</em>によって記録していくツールです。
     </div>
@@ -579,10 +590,11 @@ footer {
   <div class="divider"></div>
 
   <div class="block">
-    <div class="label">📑 5つのタブ</div>
+    <div class="label">📑 6つのタブ</div>
     <ul class="list">
       <li><em>断片管理</em>：断片の所持数を記録し、宝物の製作計画を立てる</li>
       <li><em>宝物帳</em>：所持している宝物を個体ごとに管理する</li>
+      <li><em>追想録</em>：回想195件を集めたかどうか記録する</li>
       <li><em>刀装</em>：刀装のステータス一覧を閲覧・並べ替える</li>
       <li><em>馬</em>：馬のステータス一覧を閲覧・並べ替える</li>
       <li><em>暦メモ</em>：イベント期間や日々のメモをカレンダーに記録する</li>
@@ -782,6 +794,86 @@ footer {
     <div class="hint-text">
       素材<em>1個につきレベルが1上がり</em>、最大 Lv5 まで上がります。<br>
       素材にした個体は習合すると<em>なくなります</em>のでご注意ください。
+    </div>
+  </div>
+</section>
+
+<!-- 追想録 -->
+<section class="section" id="tsuisou">
+  <div class="section-heading"><span class="section-icon">💭</span>追想録タブ</div>
+
+  <div class="block">
+    <div class="text">
+      ゲーム内の<em>回想</em>195件を、集めたかどうか記録できるタブです。<br>
+      題・出陣先・登場する刀剣男士がひと目でわかるので、<em>まだ集めていない回想を探す</em>ときにお使いください。
+    </div>
+  </div>
+
+  <div class="sub-section">
+    <div class="sub-heading">＋ 一覧とカード</div>
+    <div class="text">
+      回想は<em>番号順のカード</em>で並びます。1枚に、番号・題・読み・出陣先・登場する刀剣男士が入ります。<br>
+      出陣先は<em>「1-1 維新の記憶・函館」</em>のように、ゲームのステージ番号つきで表示されます。<br>
+      右上の<em>「入手」</em>に印を付けると集めた印になります。カードの下のメモ欄は、書いた分だけ縦に伸びます。
+    </div>
+    <div class="note">
+      刀剣男士が4振り以上の回想は3振りまで表示し、「ほか◯振り」を押すと全員出ます。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">＋ 探しかた</div>
+    <div class="text">
+      <em>すべて／入手済み／未入手</em>の切り替えと、番号の<em>昇順・降順</em>を選べます。<br>
+      <em>文字で探す</em>欄は、題・読み・刀剣男士名・メモ・「其の◯」の番号を見ます。空白は無視するので、「妖物斬りの陰気」でも「妖物斬りの 陰気」でも見つかります。<br>
+      片仮名はひらがなでも探せます（「そはやのつるき」で ソハヤノツルキ が見つかります）。<br><br>
+      <em>「詳しく絞る」</em>を開くと、さらに<em>時代・地域／刀種／刀剣男士／番号帯／メモあり</em>で絞れます。刀種を選ぶと、刀剣男士の選択肢がその刀種だけになります。<br>
+      条件は重ねてかけられ、<em>「絞り込みを全部戻す」</em>で一度に戻せます。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">＋ ？？？（伏せ字）</div>
+    <div class="text">
+      ゲームの回想一覧では、一部の回想が<em>題も刀剣男士も ？？？</em> で伏せられています。追想録もそれに合わせて伏せた状態から始まります。<br>
+      <em>「ゲームで？？？になる回想を伏せる」</em>の印を外すと、伏せずに全部表示します。印を付けたままでも、<em>「入手」に印を付けた回想はその場で開きます</em>（ゲームと同じです）。
+    </div>
+    <div class="note">
+      伏せているあいだは、その題と伏せられた刀剣男士では検索・絞り込みに引っかかりません。先にお伝えしてしまわないためです。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">＋ 前提回想</div>
+    <div class="text">
+      先に別の回想を集めておく必要があるものには<em>「↑ 前提：其の◯」</em>、その回想を集めると出てくる回想には<em>「↓ つづき：其の◯」</em>が出ます。<br>
+      番号を押すと、その回想のカードまで移動して光ります。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-section">
+    <div class="sub-heading">＋ まとめて記録</div>
+    <div class="text">
+      <em>「◯件に☑」「◯件の☑を外す」</em>は、<em>いま表示されている回想</em>にまとめて印を付け外しします。<br>
+      絞り込まずに押せば195件すべて、時代や番号帯で絞ってから押せばその範囲だけになります。押す前に確認が出ます。
+    </div>
+    <div class="note">
+      印を外してもメモは消えません。Google ドライブ同期をお使いの場合は、ほかの端末にも反映されます。
+    </div>
+  </div>
+
+  <div class="hint">
+    <div class="hint-head">💭 ？？？になる回想について</div>
+    <div class="hint-text">
+      どの回想が伏せられるかは<em>回想ごとに決まっていて</em>、審神者によって変わりません。
     </div>
   </div>
 </section>
@@ -1040,7 +1132,7 @@ footer {
 </div><!-- /bg -->
 
 <footer>
-  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari hatano
+  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari shizukuishi<br><a href="privacy.html">プライバシーポリシー</a>
 </footer>
 
 <a class="scroll-top" id="scroll-top" href="#top" title="トップへ戻る">▲</a>

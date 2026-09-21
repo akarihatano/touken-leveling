@@ -6,6 +6,14 @@
 <title>お返事 — 審神者の道具箱</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- アクセス解析の停止設定を読む（プライバシーポリシーのボタンで切り替えます） -->
+<script>
+try {
+  if (localStorage.getItem('saniwa_ga_optout') === '1') {
+    window['ga-disable-G-QM317D9ESN'] = true;
+  }
+} catch (e) {}
+</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
 <script>
@@ -406,6 +414,8 @@ footer {
   font-size: 11px; color: rgba(240,220,190,.55); letter-spacing: .15em;
   font-family: 'Noto Sans JP', sans-serif;
 }
+footer a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+footer a:hover { opacity: .75; }
 
 /* トップへ戻るボタン（テーマ連動） */
 .scroll-top {
@@ -606,7 +616,7 @@ footer {
 </div>
 
 <footer>
-  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari hatano
+  審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari shizukuishi<br><a href="privacy.html">プライバシーポリシー</a>
 </footer>
 </div>
 

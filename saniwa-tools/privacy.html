@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>プライバシーポリシー — 審神者の道具箱</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!--
+  ============================================================
+  ★ このページには Google アナリティクス（GA4）のタグを入れていません ★
+
+  アクセス解析について説明し、断る方法を案内するためのページなので、
+  このページ自体は計測しない、と決めたためです。（2026-08-29）
+
+  他のページと揃えようとして、あとから GA4 のタグを足さないでください。
+  ============================================================
+-->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a1a; }
+.bg {
+  min-height: 100vh;
+  background-image: url('background.jpg');
+  background-size: cover; background-position: center;
+  position: relative; display: flex; flex-direction: column;
+}
+.bg::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(45deg, rgba(0,0,0,.05) 0px, rgba(0,0,0,.05) 1px, transparent 1px, transparent 9px),
+    repeating-linear-gradient(-45deg, rgba(0,0,0,.04) 0px, rgba(0,0,0,.04) 1px, transparent 1px, transparent 9px);
+  pointer-events: none;
+}
+.layout {
+  position: relative; z-index: 1; flex: 1;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 44px 20px 44px;
+}
+.container { width: 100%; max-width: 600px; }
+.site-title {
+  display: inline-block;
+  background: rgba(255,255,255,.88); border: 2px solid rgba(180,120,80,.4);
+  border-radius: 12px; padding: 10px 24px;
+  font-size: 22px; font-weight: 700; letter-spacing: .15em; color: #2c1a10;
+  box-shadow: 2px 3px 14px rgba(0,0,0,.22); margin-bottom: 24px; text-decoration: none;
+}
+.site-title:hover { background: rgba(255,255,255,.95); }
+
+.panel {
+  background: rgba(255,255,255,.85); border: 1.5px solid rgba(180,120,80,.3);
+  border-radius: 16px; padding: 32px 32px 30px; box-shadow: 3px 4px 16px rgba(0,0,0,.2);
+}
+.panel-heading {
+  font-size: 20px; font-weight: 700; letter-spacing: .2em; color: #2c1a10;
+  text-align: center; margin-bottom: 6px;
+}
+.panel-sub {
+  font-size: 12px; text-align: center; color: #7a5030; letter-spacing: .1em;
+  font-family: 'Noto Sans JP', sans-serif; font-weight: 400;
+  margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid rgba(160,100,60,.2);
+}
+.lead {
+  font-size: 12.5px; line-height: 2.1; color: #4a3020;
+  font-family: 'Noto Sans JP', sans-serif; font-weight: 400;
+  margin-bottom: 28px;
+}
+
+.sec { margin-bottom: 30px; }
+.sec:last-of-type { margin-bottom: 0; }
+.sec-head {
+  font-size: 14px; font-weight: 600; letter-spacing: .12em; color: #5a3010;
+  font-family: 'Noto Serif JP', serif;
+  margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 1px solid rgba(160,100,60,.2);
+}
+.sec-text {
+  font-size: 12.5px; line-height: 2.1; color: #4a3020;
+  font-family: 'Noto Sans JP', sans-serif; font-weight: 400;
+  margin-bottom: 12px;
+}
+.sec > *:last-child { margin-bottom: 0; }
+.sec-text em { font-style: normal; font-weight: 500; color: #8b1a1a; }
+
+.sub-head {
+  font-size: 12px; font-weight: 500; letter-spacing: .1em; color: #4a2010;
+  font-family: 'Noto Sans JP', sans-serif;
+  margin-top: 18px; margin-bottom: 8px;
+}
+.sec-note {
+  font-size: 11.5px; line-height: 1.95; color: #7a5030;
+  font-family: 'Noto Sans JP', sans-serif;
+  padding: 10px 14px; background: rgba(200,150,80,.07);
+  border-left: 2px solid rgba(180,120,60,.28); border-radius: 0 6px 6px 0;
+  margin-bottom: 12px;
+}
+.ext-link, .page-link {
+  display: inline-block;
+  font-size: 12px; line-height: 1.8; color: #8b4513;
+  font-family: 'Noto Sans JP', sans-serif;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(139,69,19,.3); padding-bottom: 1px;
+  margin-bottom: 12px;
+}
+.ext-link:hover, .page-link:hover { color: #5a2a08; border-bottom-color: rgba(139,69,19,.6); }
+
+.onegai-img { display: block; width: 150px; height: auto; margin: 6px auto 0; }
+
+/* ── アクセス解析の停止ボタン ── */
+.optout-box {
+  background: rgba(139,26,26,.05); border: 1px solid rgba(139,26,26,.22);
+  border-radius: 12px; padding: 18px 20px 16px; margin-bottom: 18px; text-align: center;
+}
+.optout-status {
+  font-size: 12px; line-height: 1.95; color: #5a3010;
+  font-family: 'Noto Sans JP', sans-serif; font-weight: 500; margin-bottom: 12px;
+}
+.optout-status.off { color: #8b1a1a; }
+.optout-btn {
+  display: inline-block; max-width: 100%;
+  background: #8b1a1a; color: rgba(255,235,200,.95);
+  border: 1px solid #8b1a1a; border-radius: 10px; padding: 11px 26px;
+  font-size: 12.5px; font-weight: 700; letter-spacing: .12em;
+  font-family: 'Noto Serif JP', serif;
+  cursor: pointer; transition: background .2s, transform .15s;
+}
+.optout-btn:hover { background: #701515; transform: translateY(-1px); }
+.optout-btn:active { transform: translateY(0); }
+.optout-btn:focus-visible { outline: 2px solid #8b1a1a; outline-offset: 3px; }
+.optout-btn.on {
+  background: rgba(255,255,255,.7); color: #7a5030; border: 1px solid rgba(160,100,60,.4);
+}
+.optout-btn.on:hover { background: rgba(255,255,255,.92); }
+.optout-note {
+  font-size: 11px; line-height: 1.9; color: #7a5030;
+  font-family: 'Noto Sans JP', sans-serif;
+  margin-top: 14px; padding-top: 12px; text-align: left;
+  border-top: 1px solid rgba(160,100,60,.18);
+}
+.optout-note em { font-style: normal; font-weight: 500; color: #8b1a1a; }
+
+.sub-section {
+  font-size: 12.5px; font-weight: 600; letter-spacing: .12em; color: #5a3010;
+  font-family: 'Noto Serif JP', serif;
+  margin-top: 22px; margin-bottom: 10px;
+  padding-top: 14px; border-top: 1px solid rgba(160,100,60,.18);
+}
+
+.btn-wrap { text-align: center; margin-top: 30px; }
+.btn-primary {
+  display: inline-block; background: #8b1a1a; color: rgba(255,235,200,.95);
+  border: none; border-radius: 10px; padding: 12px 52px;
+  font-size: 14px; font-weight: 700; letter-spacing: .25em;
+  font-family: 'Noto Serif JP', serif;
+  cursor: pointer; text-decoration: none;
+  transition: background .2s, transform .15s;
+}
+.btn-primary:hover { background: #701515; transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+
+footer {
+  position: relative; z-index: 1; text-align: center; padding: 18px;
+  background: rgba(0,0,0,.4); font-size: 11px; color: rgba(240,220,190,.55);
+  letter-spacing: .15em; font-family: 'Noto Sans JP', sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary, .optout-btn { transition: none; }
+  .btn-primary:hover, .optout-btn:hover { transform: none; }
+}
+
+@media (max-width: 600px) {
+  .layout { padding: 28px 16px 36px; }
+  .panel { padding: 24px 20px 24px; }
+  .site-title { font-size: 18px; }
+  .btn-primary { width: 100%; text-align: center; padding: 12px 20px; letter-spacing: .2em; }
+  .optout-btn { width: 100%; padding: 12px 14px; letter-spacing: .08em; }
+  .optout-box { padding: 16px 14px 14px; }
+}
+</style>
+</head>
+<body>
+<!-- ═══ SNSアプリの中で開いている人への案内 ═══════════════════
+     Xなどのアプリ内でリンクを開くと、ブラウザ本体とは別の場所に
+     データが保存される。同じ道具を開いても記録が見えず、
+     Googleログインも通らないことがある。
+     ここは案内を出すだけで、動きは何も変えない。 -->
+<div id="iab-bar" style="display:none"></div>
+<script>
+(function(){
+  var KEY='saniwa_iab_hide';
+  function isInApp(){
+    var ua=navigator.userAgent||'';
+    /* ①名乗っているアプリ ②AndroidのWebView ③iOSのWKWebView（Safari/の名乗りが無い） */
+    if(/FBAN|FBAV|FB_IAB|Instagram|\bLine\/|MicroMessenger|KAKAOTALK/.test(ua))return true;
+    if(/;\s*wv\)/.test(ua))return true;
+    if(/iPhone|iPad|iPod/.test(ua)&&ua.indexOf('AppleWebKit')>=0&&!/Safari\//.test(ua))return true;
+    return false;
+  }
+  function hidden(){ try{ return localStorage.getItem(KEY)==='1'; }catch(e){ return false; } }
+  function hasData(){ return false; }
+  function close(never){
+    if(never){ try{ localStorage.setItem(KEY,'1'); }catch(e){} }
+    var el=document.getElementById('iab-bar');
+    if(el)el.style.display='none';
+  }
+  window.iabClose=function(){
+    var c=document.getElementById('iab-never');
+    close(c&&c.checked);
+  };
+  function show(){
+    var el=document.getElementById('iab-bar');
+    if(!el)return;
+    var body = hasData()
+      ? '<p style="margin:0 0 10px">ここでの記録は、<b>いま開いているアプリ（Xなど）の中</b>だけに保存されています。'
+        +'この道具ではなくそのアプリが管理している場所なので、アプリ側の都合でまとめて消えることがあります。</p>'
+        +'<p style="margin:0 0 10px"><b>いま画面に記録が見えているなら、先に書き出し（エクスポート）を取ってください。</b>'
+        +'そのファイルを、SafariやChromeで開いた同じ道具に読み込めば、そのまま続けられます。</p>'
+      : '<p style="margin:0 0 10px">このままでは道具の記録が保存されなかったり、Googleとつながらないことがあります。</p>'
+        +'<p style="margin:0"><b>メニューの「ブラウザで開く」から、SafariやChromeで開き直してください。</b></p>';
+    el.innerHTML=
+      '<div style="max-width:640px;margin:0 auto;padding:14px 16px;font-size:13px;line-height:1.85">'
+      +'<div style="font-weight:700;margin-bottom:8px">⚠ SNSアプリの中で開いています</div>'
+      +body
+      +'<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap">'
+      +'<label style="font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer">'
+      +'<input type="checkbox" id="iab-never"> このブラウザでは表示しない</label>'
+      +'<button onclick="iabClose()" style="padding:7px 18px;font-size:12px;border-radius:7px;'
+      +'border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer;font-family:inherit">閉じる</button>'
+      +'</div></div>';
+    el.setAttribute('style',
+      'display:block;background:#fff4d6;color:#5a4212;border-bottom:1px solid #e0c98a;'
+      +'position:relative;z-index:400');
+  }
+  function init(){ if(isInApp()&&!hidden())show(); }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
+<!-- ═══ ここまで ═══════════════════════════════════════════ -->
+<div class="bg">
+<div class="layout">
+<div class="container">
+
+  <a class="site-title" href="saniwa_top.html">審神者の道具箱</a>
+
+  <div class="panel">
+
+    <h1 class="panel-heading">プライバシーポリシー</h1>
+    <div class="panel-sub">当サイトが扱う情報について</div>
+
+    <p class="lead">
+      審神者の道具箱をご利用いただき、ありがとうございます。<br>
+      このページでは、当サイトが扱う情報についてご説明します。
+    </p>
+
+    <div class="sec">
+      <h2 class="sec-head">🏯 本丸の記録について</h2>
+      <p class="sec-text">
+        稽古録・資源帳などの各ツールで記録したデータは、お使いの端末のブラウザの中だけに保存されます。管理人のもとへ送られることはなく、<em>管理人が中身を見ることもできません</em>。
+      </p>
+      <p class="sec-text">
+        Googleドライブ同期をお使いの場合も、保存先はあなたご自身のGoogleドライブです。管理人はそこにアクセスできません。
+      </p>
+    </div>
+
+    <div class="sec">
+      <h2 class="sec-head">📊 アクセス状況の記録について</h2>
+      <p class="sec-text">
+        上とは別に、当サイトではGoogleアナリティクス4（GA4）というサービスを使って、サイトの利用状況を記録しています。
+      </p>
+      <p class="sec-text">
+        ここで見ているのは、どのページが何回開かれたか、どんな端末やブラウザで見られているか、といった<em>サイト全体の使われ方</em>です。<em>あなたが記録した本丸の中身ではありません。</em>この二つはまったく別のものです。個人を特定する目的で利用することはありません。
+      </p>
+      <p class="sec-text">
+        この記録には、ブラウザに保存される小さなデータ（Cookie）を使っています。集めた情報はGoogleへ送られ、Googleによって処理・保存されます。Googleが情報をどのように扱うかについては、こちらをご覧ください。
+      </p>
+      <a class="ext-link" href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">
+        → Googleのサービスを使用するサイトやアプリから収集した情報のGoogleによる使用
+      </a>
+      <p class="sec-text">
+        どのツールがよく使われているか、どんな画面で見られているかが分かると、次に直すところの見当がつきます。可能でしたら、ご協力いただけますと嬉しいです。
+      </p>
+      <!-- ファイル名を onegai.png にして、このHTMLと同じフォルダに置いてください -->
+      <img class="onegai-img" src="onegai.png" alt="「よろしくお願いします」とお辞儀をしている管理人のイラスト" width="448" height="336">
+    </div>
+
+    <div class="sec">
+      <h2 class="sec-head">🚫 アクセス解析を希望されない場合</h2>
+      <p class="sec-text">
+        ご希望でない場合は、下のボタンで止めることができます。パソコン・スマートフォン・タブレットのどれでもお使いいただけます。
+      </p>
+
+      <div class="optout-box">
+        <p class="optout-status" id="optout-status" aria-live="polite">
+          JavaScriptが無効のため、この切り替えはお使いいただけません。なお、JavaScriptが無効の場合は、アクセス解析も動きません。
+        </p>
+        <button type="button" class="optout-btn" id="optout-btn" hidden></button>
+        <p class="optout-note">
+          この設定はこのブラウザに保存されます。ブラウザのデータを消したときや、別のブラウザ・別の端末をお使いのときは、もう一度設定してください。<em>iPhone・iPadでは、しばらく開かないでいると設定が消えることがあります。</em>
+        </p>
+      </div>
+
+      <h3 class="sub-section">そのほかの方法</h3>
+      <p class="sec-text">
+        上のボタンを使わずに、ご自身の側で止める方法もあります。
+      </p>
+
+      <div class="sub-head">パソコンをお使いの方</div>
+      <p class="sec-text">
+        Googleが配布している「Googleアナリティクス オプトアウト アドオン」をブラウザに入れると、そのブラウザからGoogleアナリティクスへ情報が送られなくなります。Chrome・Firefox・Safari・Edgeに対応しています。
+      </p>
+      <a class="ext-link" href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">
+        → Googleアナリティクス オプトアウト アドオン
+      </a>
+
+      <div class="sub-head">スマートフォン・タブレットをお使いの方</div>
+      <p class="sec-text">
+        正直にお伝えします。<em>上のGoogleのアドオンは、スマートフォンとタブレットには対応していません。</em>Googleは同じ手段を用意していません。
+      </p>
+      <p class="sec-text">
+        コンテンツブロッカーや、トラッキング防止機能を備えたブラウザを使う方法はありますが、何をどこまで止められるかは製品や設定によって異なり、「これを使えば必ず止まります」と言い切れるものではありません。
+      </p>
+      <p class="sec-note">
+        スマートフォン・タブレットをお使いの場合は、<em>このページの上にあるボタン</em>をお使いいただくのが確実です。
+      </p>
+    </div>
+
+    <div class="sec">
+      <h2 class="sec-head">✉ お問い合わせフォームについて</h2>
+      <p class="sec-text">
+        お問い合わせフォームの送信時に、<em>ご使用のブラウザの種類・OSなどの端末環境情報</em>を収集します。これはバグの再現・調査を目的としたものであり、それ以外の目的には使用しません。
+      </p>
+      <p class="sec-text">
+        いただいた個人情報（返信用メールアドレス）は、お問い合わせへの対応のみに使用し、第三者への提供は行いません。
+      </p>
+      <a class="page-link" href="contact.html">→ お問い合わせフォームへ</a>
+    </div>
+
+    <div class="sec">
+      <h2 class="sec-head">🔗 外部のサービスについて</h2>
+      <p class="sec-text">
+        当サイトには、Googleフォーム・X（旧Twitter）などの外部サービスへのリンクがあります。リンク先で扱われる情報については、それぞれのサービスの方針をご確認ください。
+      </p>
+      <p class="sec-text">
+        また、Googleドライブ同期をご利用の場合は、Googleアカウントへのログインが必要になります。
+      </p>
+    </div>
+
+    <div class="btn-wrap">
+      <a class="btn-primary" href="saniwa_top.html">トップへ戻る</a>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<footer>審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari shizukuishi</footer>
+</div>
+
+<script>
+/* アクセス解析の停止スイッチ
+   localStorage の 'saniwa_ga_optout' が '1' のとき、各ページの
+   window['ga-disable-G-QM317D9ESN'] = true が立ち、GA4が動かなくなります。
+   （このページ自体には GA4 を入れていないので、ここでは何も止めていません） */
+(function () {
+  var KEY = 'saniwa_ga_optout';
+  var statusEl = document.getElementById('optout-status');
+  var btnEl = document.getElementById('optout-btn');
+
+  /* true=停止中 / false=有効 / null=localStorageが使えない */
+  function read() {
+    try { return localStorage.getItem(KEY) === '1'; }
+    catch (e) { return null; }
+  }
+
+  function draw() {
+    var v = read();
+    if (v === null) {
+      statusEl.textContent = 'このブラウザでは設定を保存できないため、ここから切り替えることができません。下の「そのほかの方法」をご覧ください。';
+      statusEl.className = 'optout-status';
+      btnEl.hidden = true;
+      return;
+    }
+    btnEl.hidden = false;
+    if (v) {
+      statusEl.textContent = 'このブラウザでは、審神者の道具箱のアクセス解析を行いません。';
+      statusEl.className = 'optout-status off';
+      btnEl.textContent = 'アクセス解析を再び有効にする';
+      btnEl.className = 'optout-btn on';
+    } else {
+      statusEl.textContent = '現在、このブラウザではアクセス解析が有効です。';
+      statusEl.className = 'optout-status';
+      btnEl.textContent = 'このブラウザでアクセス解析を無効にする';
+      btnEl.className = 'optout-btn';
+    }
+  }
+
+  btnEl.addEventListener('click', function () {
+    var v = read();
+    if (v === null) { return; }
+    try {
+      if (v) { localStorage.removeItem(KEY); }
+      else   { localStorage.setItem(KEY, '1'); }
+    } catch (e) { return; }
+    draw();
+  });
+
+  draw();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,3904 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>集積帳 - 収集物ノルマ表</title>
+<!-- アクセス解析の停止設定を読む（プライバシーポリシーのボタンで切り替えます） -->
+<script>
+try {
+  if (localStorage.getItem('saniwa_ga_optout') === '1') {
+    window['ga-disable-G-QM317D9ESN'] = true;
+  }
+} catch (e) {}
+</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QM317D9ESN');
+</script>
+<!-- グラフはPhase2から。土台として稽古録・資源帳と同じ Chart.js 4.4.1 を先に読み込む -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<!-- Googleドライブ同期（段階3）。稽古録・資源帳と同じ Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async></script>
+<style>
+/* ===== ダーク（既定） ===== */
+:root{
+  --bg0:#130f0b;--bg1:#1e1610;--bg2:#261d16;--bg3:#2f241b;
+  --bd1:#342820;--bd2:#4a3a2c;
+  --t1:#e8ddd0;--t2:#d0c4b0;--t3:#c0b0a0;--t4:#908070;
+  --acc:#d9a960;--acc-dim:rgba(217,169,96,.15);
+  --acc2:#5b9fe8;--ok:#7ec98a;--warn:#e08a8a;--warn-dim:rgba(224,138,138,.15);
+  --shadow:rgba(0,0,0,.5);
+  --cal-sat:#5b9fe8;--cal-sun:#e8874a; /* カレンダーの曜日色（土＝青／日＝橙） */
+}
+/* ===== ライト ===== */
+.light{
+  --bg0:#faf5ee;--bg1:#ffffff;--bg2:#f5ede2;--bg3:#efe4d4;
+  --bd1:#e6dccc;--bd2:#d0c0a8;
+  --t1:#1e1710;--t2:#3a2e20;--t3:#5a4a38;--t4:#8a7860;
+  --acc:#b3822f;--acc-dim:rgba(179,130,47,.12);
+  --acc2:#3a7fd0;--ok:#4fa860;--warn:#c85a5a;--warn-dim:rgba(200,90,90,.12);
+  --shadow:rgba(90,70,40,.3);
+  --cal-sat:#3a7fd0;--cal-sun:#c25f28; /* カレンダーの曜日色（土＝青／日＝橙） */
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sans-serif;font-size:14px;background:var(--bg0);color:var(--t1);min-height:100vh;-webkit-tap-highlight-color:transparent;padding-bottom:60px;transition:background .2s,color .2s}
+.wrap{max-width:760px;margin:0 auto;padding:14px 12px}
+
+.hdr{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;padding:6px 2px 12px;border-bottom:1px solid var(--bd1);margin-bottom:14px}
+.hdr h1{font-size:20px;font-weight:700;letter-spacing:.12em}
+.hdr h1 small{font-size:11px;font-weight:400;color:var(--t4);letter-spacing:.06em;display:block;margin-top:2px}
+.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.mode-seg{display:flex;border:1px solid var(--bd1);border-radius:7px;overflow:hidden}
+.mode-seg button{padding:4px 9px;font-size:11px;border:none;border-right:1px solid var(--bd1);background:transparent;color:var(--t4);cursor:pointer;font-family:inherit}
+.mode-seg button:last-child{border-right:none}
+.mode-seg button.on{background:var(--bg2);color:var(--acc)}
+.hdr-ver{font-size:11px;color:var(--t4)}
+/* ☁ボタンはテーマ切替と同じ行の右隣に置く */
+.hdr-row{display:flex;align-items:center;gap:6px}
+
+/* =========================================================
+   バックアップまわり（丙案 段階2）
+   ========================================================= */
+/* ☁ボタン（モック shusekichou_cloud_mock.html のとおり）
+     つながっているか … 塗りの有無と色（色だけに頼らない。⚠ で形も変える）
+     新しいものがあるか … 右上の小さな青い点
+     回線が無い … 全体を薄く（ログインの塗りは残す。回線とGoogleは別もの）  */
+.cloud-btn{position:relative;padding:4px 10px;font-size:13px;border:1px solid var(--bd1);
+  border-radius:7px;background:transparent;color:var(--t4);cursor:pointer;
+  font-family:inherit;line-height:1.4;transition:border-color .15s,color .15s,background .15s}
+.cloud-btn:not(.in):not(.ng):hover{border-color:var(--acc);color:var(--acc)}
+.cloud-btn.in {background:var(--acc-dim); border-color:var(--acc); color:var(--acc)}
+.cloud-btn.ng {background:var(--warn-dim);border-color:var(--warn);color:var(--warn)}
+.cloud-btn.noline{opacity:.4}
+.cloud-btn .dot{position:absolute;top:-3px;right:-3px;width:9px;height:9px;border-radius:50%;
+  background:var(--acc2);border:2px solid var(--bg0);box-sizing:content-box}
+.cloud-btn.open{box-shadow:0 0 0 2px var(--acc-dim)}
+
+#cloudPanel{display:none;position:fixed;z-index:60;
+  width:274px;max-width:calc(100vw - 16px);
+  background:var(--bg1);border:1px solid var(--bd2);border-radius:10px;padding:13px;
+  box-shadow:0 6px 20px var(--shadow)}
+.cp-h{font-size:11px;color:var(--t4);letter-spacing:.08em;margin-bottom:8px}
+.cp-state{font-size:12px;color:var(--t2);margin-bottom:10px;display:flex;align-items:flex-start;
+  gap:7px;line-height:1.6}
+.cp-dot{width:7px;height:7px;border-radius:50%;background:var(--t4);flex-shrink:0;margin-top:5px}
+.cp-dot.on{background:var(--ok)}
+.cp-dot.warn{background:var(--warn)}
+.cp-sub{color:var(--t4);font-size:11px}
+.cp-row{display:flex;gap:6px;margin-bottom:8px}
+.cp-row .btn{flex:1;text-align:center;padding:7px 4px}
+.cp-sep{border-top:1px solid var(--bd1);margin:11px 0 10px}
+.cp-note{font-size:10px;color:var(--t4);line-height:1.6;margin-top:8px}
+.cp-chk{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--t2);cursor:pointer;
+  margin-bottom:9px}
+.cp-chk input{width:15px;height:15px;accent-color:var(--acc)}
+.cp-seg{display:flex;border:1px solid var(--bd2);border-radius:7px;overflow:hidden;margin-top:5px}
+.cp-seg button{flex:1;padding:6px 3px;font-size:11px;border:none;border-right:1px solid var(--bd2);
+  background:transparent;color:var(--t4);cursor:pointer;font-family:inherit}
+.cp-seg button:last-child{border-right:none}
+.cp-seg button.on{background:var(--acc-dim);color:var(--acc)}
+.cp-lbl{font-size:11px;color:var(--t3);line-height:1.6}
+/* はじめて別の端末とやりとりする人への案内。読み飛ばされないよう少しだけ立たせる */
+.cp-first{font-size:10px;color:var(--t3);line-height:1.7;margin-top:10px;
+  background:var(--bg2);border:1px solid var(--bd2);border-radius:7px;padding:8px 9px}
+.cp-first .cp-first-h{display:block;color:var(--acc);font-weight:600;margin-bottom:3px}
+.cp-first b{color:var(--t1);font-weight:600}
+
+/* 保険①：失われるものの知らせ */
+.time-cmp{font-size:12px;color:var(--t3);line-height:1.9;background:var(--bg2);
+  border:1px solid var(--bd1);border-radius:8px;padding:9px 11px;font-variant-numeric:tabular-nums}
+.time-cmp b{color:var(--t1);font-weight:600}
+.lose-box{background:var(--bg2);border:1px solid var(--warn);border-radius:8px;padding:11px 12px;margin:12px 0}
+.lose-h{font-size:12px;color:var(--warn);font-weight:600;margin-bottom:8px;line-height:1.6}
+.lose-list{list-style:none;font-size:12px;color:var(--t2);line-height:1.7}
+.lose-list li{padding:5px 0 5px 14px;position:relative;border-top:1px solid var(--bd1)}
+.lose-list li:first-child{border-top:none}
+.lose-list li::before{content:'・';position:absolute;left:0;color:var(--t4)}
+.lose-list b{color:var(--t1);font-weight:600}
+.lose-sub{display:block;font-size:11px;color:var(--t4);margin-top:3px;line-height:1.6}
+.safe-note{font-size:11px;color:var(--t4);line-height:1.7;margin-top:10px}
+
+/* 保険②：読み込みを取り消せる間だけ出る帯 */
+.undo-bar{position:sticky;top:0;z-index:40;
+  background:var(--acc-dim);border:1px solid var(--acc);border-radius:9px;
+  padding:9px 11px;margin-bottom:12px;
+  display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.undo-txt{flex:1;min-width:150px;font-size:12px;color:var(--acc);line-height:1.6}
+.undo-txt small{display:block;color:var(--t4);font-size:10px;margin-top:2px}
+.undo-bar .btn{flex-shrink:0}
+
+.card{background:var(--bg1);border:1px solid var(--bd1);border-radius:10px;padding:14px;margin-bottom:12px}
+.card-h{font-size:12px;color:var(--t4);letter-spacing:.08em;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.btn{padding:7px 14px;font-size:13px;border:1px solid var(--bd2);border-radius:7px;background:var(--bg2);color:var(--t2);cursor:pointer;font-family:inherit;transition:all .15s}
+.btn:hover{color:var(--t1);border-color:var(--acc)}
+.btn.pri{background:var(--acc-dim);border-color:var(--acc);color:var(--acc)}
+.btn.sm{padding:4px 10px;font-size:12px;border-radius:6px}
+.btn.danger{color:var(--warn);border-color:var(--warn)}
+.btn.danger:hover{background:rgba(224,138,138,.12)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:disabled:hover{color:var(--t2);border-color:var(--bd2)}
+
+/* 一覧 */
+.ev-item{display:block;width:100%;text-align:left;background:var(--bg2);border:1px solid var(--bd1);border-radius:9px;padding:12px 14px;margin-bottom:9px;cursor:pointer;font-family:inherit;color:var(--t1);transition:border-color .15s}
+.ev-item:hover{border-color:var(--acc)}
+.ev-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.ev-name{font-size:15px;font-weight:600}
+.ev-badge{font-size:10px;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.ev-badge.live{background:var(--acc-dim);color:var(--acc);border:1px solid var(--acc)}
+.ev-badge.done{background:var(--bg3);color:var(--t4);border:1px solid var(--bd2)}
+.ev-sub{font-size:12px;color:var(--t4);margin-bottom:8px}
+.ev-bar{height:6px;background:var(--bg0);border-radius:3px;overflow:hidden;margin-bottom:6px}
+.ev-bar i{display:block;height:100%;border-radius:3px}
+.ev-stat{display:flex;justify-content:space-between;font-size:12px;color:var(--t3)}
+.ev-stat b{color:var(--acc);font-weight:600}
+.arch-h{font-size:12px;color:var(--t4);letter-spacing:.08em;margin:18px 0 8px;padding-left:2px}
+
+.empty{text-align:center;color:var(--t4);padding:34px 16px;line-height:1.9}
+.empty .big{font-size:15px;color:var(--t3);margin-bottom:4px}
+
+/* 詳細（Phase1はスタブ） */
+.back{background:none;border:none;color:var(--t4);font-size:13px;cursor:pointer;padding:4px 2px;margin-bottom:8px;font-family:inherit}
+.back:hover{color:var(--t2)}
+.dtl-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px}
+.dtl-head h2{font-size:18px;font-weight:700}
+.dtl-period{font-size:12px;color:var(--t4);margin-bottom:12px}
+.meta-row{display:flex;justify-content:space-between;gap:8px;padding:8px 4px;border-bottom:1px solid var(--bd1);font-size:13px}
+.meta-row:last-child{border-bottom:none}
+.meta-row .k{color:var(--t4)}
+.meta-row .v{color:var(--t2);text-align:right;font-variant-numeric:tabular-nums}
+.stub-note{background:var(--acc-dim);border:1px dashed var(--acc);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--acc);line-height:1.7;margin-bottom:12px}
+
+/* モーダル / フォーム */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-start;justify-content:center;padding:24px 12px;overflow-y:auto;z-index:50}
+.modal{background:var(--bg1);border:1px solid var(--bd2);border-radius:12px;width:100%;max-width:520px;padding:18px 16px;margin:auto}
+.modal-h{font-size:16px;font-weight:700;margin-bottom:14px}
+.fld{margin-bottom:13px}
+.lbl{display:block;font-size:11px;color:var(--t4);margin-bottom:5px}
+.lbl .opt{color:var(--t4);font-weight:400}
+.fld input[type=text]{width:100%;padding:9px 10px;font-size:15px;border:1px solid var(--bd2);border-radius:7px;background:var(--bg0);color:var(--t1);font-family:inherit}
+.fld input:focus{outline:none;border-color:var(--acc)}
+.fld-row{display:flex;gap:8px}
+.fld-row .fld{flex:1;margin-bottom:0}
+.seg{display:flex;border:1px solid var(--bd2);border-radius:7px;overflow:hidden}
+.seg button{flex:1;padding:8px 6px;font-size:12px;border:none;border-right:1px solid var(--bd2);background:transparent;color:var(--t4);cursor:pointer;font-family:inherit}
+.seg button:last-child{border-right:none}
+.seg button.on{background:var(--acc-dim);color:var(--acc)}
+.hint{font-size:11px;color:var(--t4);margin-top:5px;line-height:1.6}
+.hint b{color:var(--t3);font-weight:600}
+.mat-edit{border:1px solid var(--bd1);border-radius:8px;padding:10px;background:var(--bg2)}
+.mat-erow{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.mat-erow:last-of-type{margin-bottom:0}
+/* .fld input[type=text] より詳細度を高くして、行内の幅指定を確実に効かせる */
+.mat-edit .mat-erow input[type=text]{padding:8px 9px;font-size:14px;border:1px solid var(--bd2);border-radius:6px;background:var(--bg0);color:var(--t1);font-family:inherit}
+.mat-edit .mat-erow .mn{flex:1 1 auto;width:auto;min-width:0}
+.mat-edit .mat-erow .mt{flex:0 0 116px;width:116px;min-width:0}
+.mat-erow .mdel{background:none;border:none;color:var(--t4);font-size:15px;cursor:pointer;padding:2px 5px;flex-shrink:0}
+.mat-erow .mdel:hover{color:var(--warn)}
+.mat-erow .mspacer{width:23px;flex-shrink:0}
+@media(max-width:400px){.mat-edit .mat-erow .mt{flex:0 0 96px;width:96px}}
+.mat-add{margin-top:8px}
+.err{color:var(--warn);font-size:12px;margin-top:4px;min-height:0}
+.modal-foot{display:flex;justify-content:space-between;gap:8px;margin-top:18px;align-items:center}
+.modal-foot .right{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end}
+
+/* 確認ダイアログ */
+.confirm-box{max-width:380px;text-align:center}
+.confirm-box .cmsg{font-size:14px;line-height:1.8;margin-bottom:16px;color:var(--t2)}
+.confirm-box .cfoot{display:flex;gap:8px;justify-content:center}
+
+/* ノルマ機能スイッチ */
+.norma-sw{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg2);border:1px solid var(--bd1);border-radius:9px;padding:11px 14px;margin-bottom:12px}
+.norma-sw-txt{font-size:13px}
+.norma-sw-txt small{display:block;font-size:11px;color:var(--t4);margin-top:3px;line-height:1.5}
+.switch{position:relative;width:46px;height:26px;flex-shrink:0;border-radius:13px;background:var(--bd2);cursor:pointer;transition:background .2s}
+.switch.on{background:var(--acc)}
+.switch i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s}
+.switch.on i{left:23px}
+
+/* 記録入力行 */
+.in-row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+.in-row .fld{flex:1;min-width:120px;margin-bottom:0}
+.in-row input{width:100%;padding:8px 10px;font-size:15px;border:1px solid var(--bd2);border-radius:7px;background:var(--bg0);color:var(--t1);font-family:inherit}
+.in-row input:focus{outline:none;border-color:var(--acc)}
+/* ブラウザ標準の日付欄は、iPhone で指定した幅より縮まず、隣の欄に食い込んでいた。
+   日付は下の「装飾カレンダー」に置き換えたので、ここは数値欄と
+   「記録する日」の箱の高さをそろえるだけでよい。                          */
+.in-row input,.in-row .rec-fixdate{height:38px}
+.in-note{font-size:11px;color:var(--t4);margin-top:8px;line-height:1.7}
+.in-note b{color:var(--acc);font-weight:600}
+/* 「合計で入れる」の記録先の日（入力欄ではなく表示だけ・1行に収めて高さをそろえる） */
+.rec-fixdate{display:flex;align-items:center;padding:0 10px;font-size:15px;border:1px dashed var(--bd2);border-radius:7px;background:var(--bg2);color:var(--t3);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* 「今日にまとめて」を選んだとき、記録がないまま残る日の案内 */
+.rec-left{font-size:11px;color:var(--t3);margin-top:8px;line-height:1.7;background:var(--bg2);border:1px solid var(--bd1);border-radius:7px;padding:8px 10px}
+.rec-left b{color:var(--t1);font-weight:600}
+
+/* =========================================================
+   装飾カレンダー
+   稽古録（keikoroku.html）から移植。集積帳の書き方（var / function）に
+   直してある。見た目は稽古録・資源帳と同じ「日付が左・📅が右」。
+   集積帳だけの上乗せは data-min / data-max による「選べる日の制限」。
+   ========================================================= */
+.cal-wrapper{position:relative;width:100%}
+.cal-pick-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:9px 10px;font-size:15px;font-family:inherit;line-height:1.2;text-align:left;
+  border:1px solid var(--bd2);border-radius:7px;background:var(--bg0);color:var(--t1);
+  cursor:pointer;user-select:none;white-space:nowrap;transition:border-color .15s}
+.cal-pick-btn:hover{border-color:var(--acc)}
+.cal-pick-btn.open{border-color:var(--acc)}
+.cal-pick-btn .cal-val{font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.cal-pick-btn .cal-val.none{color:var(--t4)}
+.cal-pick-btn .cal-ico{font-size:12px;opacity:.55;flex-shrink:0}
+/* 記録行では隣の数値欄と高さをそろえる。
+   この行は幅の取り合いが厳しい（390px の画面でちょうど埋まる）ので、
+   余白・間隔・アイコンを少しずつ詰めて、日付が「…」で切れないようにしてある */
+.in-row .cal-pick-btn{height:38px;padding:0 8px;gap:6px}
+.in-row .cal-pick-btn .cal-ico{font-size:11px}
+
+#calPicker{display:none;position:fixed;z-index:200;
+  width:288px;max-width:calc(100vw - 16px);
+  background:var(--bg1);border:1px solid var(--bd2);border-radius:10px;padding:12px;
+  box-shadow:0 6px 20px var(--shadow)}
+.cal-head{display:flex;align-items:center;gap:6px;margin-bottom:9px}
+.cal-nav{padding:4px 9px;font-size:12px;border:1px solid var(--bd2);border-radius:6px;
+  background:var(--bg2);color:var(--t2);cursor:pointer;font-family:inherit;flex-shrink:0}
+.cal-nav:disabled{opacity:.3;cursor:default}
+.cal-selwrap{flex:1;display:flex;gap:4px;justify-content:center}
+.cal-sel{font-size:12px;font-weight:600;color:var(--t1);background:var(--bg2);
+  border:1px solid var(--bd2);border-radius:6px;padding:4px 5px;font-family:inherit;cursor:pointer}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-dow{font-size:10px;font-weight:600;color:var(--t4);text-align:center;padding:3px 0}
+.cal-day{padding:8px 1px;text-align:center;border-radius:5px;cursor:pointer;font-size:13px;
+  background:var(--bg2);color:var(--t1);border:1px solid var(--bd1);font-family:inherit;line-height:1.2;
+  font-variant-numeric:tabular-nums}
+.cal-day:hover{border-color:var(--bd2)}
+.cal-day.other{opacity:.45}
+.cal-day.sat{color:var(--cal-sat)}
+.cal-day.sun{color:var(--cal-sun)}
+/* 今日は枠で示す。太い枠にするとマスの大きさが変わるので、内側の線で描く */
+.cal-day.today{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc);font-weight:700}
+.cal-day.selected{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700;box-shadow:none}
+.cal-day.selected.sat,.cal-day.selected.sun{color:#fff}
+/* 選べない日（イベント期間の外・まだ来ていない日） */
+.cal-day:disabled{opacity:.22;cursor:default;background:transparent;box-shadow:none}
+.cal-day:disabled:hover{border-color:var(--bd1)}
+.cal-foot{font-size:10px;color:var(--t4);text-align:center;margin-top:9px;
+  border-top:1px solid var(--bd1);padding-top:8px;line-height:1.6}
+
+/* グラフ */
+.chart-box{position:relative;height:280px}
+@media(max-width:520px){.chart-box{height:230px}}
+.gleg{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--t4);margin-top:10px}
+.gleg span{display:inline-flex;align-items:center;gap:5px}
+.gleg i{width:14px;height:3px;border-radius:2px;display:inline-block}
+.section-note{font-size:11px;color:var(--t4);text-align:center;padding:8px 6px 0}
+
+/* 日別記録
+   「累計」「手形」の文字は各行ではなく列見出し(.day-hd)に1回だけ出し、
+   列の幅を決めて数字を縦に揃える。✎ は流れから外して右端に固定し、
+   その分を padding-right で空けてある。こうすると幅が足りないときに
+   手形だけが下の段へ落ちる（✎ が道連れにならず、累計も途中で割れない）。 */
+.day-row,.day-hd{display:flex;flex-wrap:wrap;align-items:center;gap:3px 8px;
+  padding:8px 30px 8px 4px;position:relative;font-size:13px}
+.day-row{border-bottom:1px solid var(--bd1)}
+.day-row:last-child{border-bottom:none}
+.day-hd{color:var(--t4);font-size:10px;letter-spacing:.06em;border-bottom:1px solid var(--bd2);
+  padding-top:0;padding-bottom:5px}
+.day-d{color:var(--t4);font-size:12px;flex:0 0 auto;white-space:nowrap;font-variant-numeric:tabular-nums}
+.day-got{flex:1 1 auto;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.day-got b{color:var(--acc)}
+.day-got.none{color:var(--t4)}
+.day-cum{width:68px;flex-shrink:0;text-align:right;white-space:nowrap;
+  color:var(--t3);font-size:12px;font-variant-numeric:tabular-nums}
+/* 手形を使うイベントだけ出る列。1段目では .day-got が伸びるので auto余白は効かず、
+   2段目（手形だけの行）では伸びる相手がいないので右に寄る */
+.day-tk{width:42px;flex-shrink:0;margin-left:auto;text-align:right;
+  font-size:11px;color:var(--t4);font-variant-numeric:tabular-nums;white-space:nowrap}
+.day-tk b{color:var(--acc);font-weight:600}
+.day-hd .day-cum,.day-hd .day-tk{color:var(--t4);font-size:10px}
+.day-edit{background:none;border:none;color:var(--t4);cursor:pointer;font-size:13px;padding:3px 5px;
+  position:absolute;right:0;top:50%;transform:translateY(-50%)}
+.day-edit:hover{color:var(--acc)}
+
+/* トースト */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(12px);background:var(--bg2);border:1px solid var(--acc);color:var(--t1);font-size:13px;padding:10px 18px;border-radius:9px;box-shadow:0 4px 16px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:80;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* 先取りヒーロー */
+.hero{background:linear-gradient(160deg,var(--bg1),var(--bg2));border:1px solid var(--acc);border-radius:12px;padding:16px 14px 14px;margin-bottom:12px;position:relative;overflow:hidden}
+.hero.behind{border-color:var(--warn)}
+.hero.doneall{border-color:var(--ok)}
+.hero::before{content:'';position:absolute;top:-30px;right:-30px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,var(--acc-dim),transparent 70%)}
+.hero-lbl{font-size:11px;color:var(--t4);letter-spacing:.1em;margin-bottom:4px;position:relative}
+.hero-main{font-size:21px;font-weight:700;color:var(--acc);letter-spacing:.02em;position:relative;line-height:1.35}
+.hero.behind .hero-main{color:var(--warn)}
+.hero.doneall .hero-main{color:var(--ok)}
+.hero-main small{font-size:13px;color:var(--t3);font-weight:400;margin-left:6px}
+.hero-sub{font-size:12px;color:var(--t3);margin-top:6px;line-height:1.7;position:relative}
+.gauge{margin-top:12px;position:relative}
+.gauge-track{position:relative;height:10px;background:var(--bg0);border-radius:5px}
+.gauge-fill{position:absolute;left:0;top:0;height:100%;border-radius:5px;background:linear-gradient(90deg,#a8843f,var(--acc));transition:width .3s}
+.hero.behind .gauge-fill{background:linear-gradient(90deg,#9c5f5f,var(--warn))}
+.hero.doneall .gauge-fill{background:linear-gradient(90deg,#4f8a5c,var(--ok))}
+.gauge-today{position:absolute;top:-4px;width:2px;height:18px;background:var(--t2)}
+.gauge-cap{display:flex;justify-content:space-between;font-size:10px;color:var(--t4);margin-top:6px}
+
+/* 数値カード3枚 */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat{background:var(--bg1);border:1px solid var(--bd1);border-radius:9px;padding:11px 10px;text-align:center}
+.stat-l{font-size:10px;color:var(--t4);letter-spacing:.05em;margin-bottom:5px;line-height:1.4}
+.stat-v{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}
+.stat-v small{font-size:11px;font-weight:400;color:var(--t4)}
+.stat-v.gold{color:var(--acc)}.stat-v.blue{color:var(--acc2)}.stat-v.ok{color:var(--ok)}
+@media(max-width:430px){.stat-v{font-size:15px}.stat{padding:9px 6px}}
+
+/* 小判カード（モック shusekichou_koban_mock.html の .koban 一式）
+   第1段階では2セル（使った小判／買った手形）だけ。見込みは第2段階。 */
+.koban{background:var(--bg1);border:1px solid var(--bd1);border-radius:10px;padding:13px 14px;margin-bottom:12px}
+.koban-h{font-size:11px;color:var(--t4);letter-spacing:.08em;margin-bottom:11px}
+.koban-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.koban-cell{text-align:center}
+.koban-l{font-size:10px;color:var(--t4);letter-spacing:.05em;margin-bottom:5px;line-height:1.4}
+.koban-v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--acc)}
+.koban-v small{font-size:11px;font-weight:400;color:var(--t4)}
+.koban-v.est{color:var(--acc2)}
+.koban-v.none{color:var(--t4);font-size:13px;font-weight:400}
+.koban-note{font-size:10px;color:var(--t4);line-height:1.7;margin-top:11px;border-top:1px solid var(--bd1);padding-top:9px}
+.koban-note b{color:var(--t3);font-weight:600}
+@media(max-width:430px){.koban-v{font-size:17px}}
+
+/* 目標未設定のうながし */
+.need-target{background:var(--bg2);border:1px dashed var(--bd2);border-radius:9px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:var(--t3);line-height:1.7}
+.need-target b{color:var(--acc)}
+
+/* グラフのトグル */
+.chart-tools{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.tog{padding:4px 10px;font-size:11px;border:1px solid var(--bd2);border-radius:12px;background:transparent;color:var(--t4);cursor:pointer;font-family:inherit}
+.tog.on{background:var(--acc-dim);border-color:var(--acc);color:var(--acc)}
+
+/* マイルストーン */
+.ms-item{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--bd1)}
+.ms-item:last-child{border-bottom:none}
+.ms-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;color:transparent}
+.ms-check.done{border-color:var(--ok);background:rgba(126,201,138,.12);color:var(--ok)}
+.ms-body{flex:1;min-width:0}
+.ms-name{font-size:13px}
+.ms-name.done{color:var(--t4);text-decoration:line-through}
+.ms-need{font-size:11px;color:var(--t4);margin-top:2px}
+.ms-need b{color:var(--acc);font-weight:600}
+.ms-memo{font-size:11px;color:var(--t4);margin-top:2px}
+.ms-edit{background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px;padding:4px;flex-shrink:0}
+.ms-edit:hover{color:var(--acc)}
+.ms-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--bd1);font-size:11px;color:var(--t4)}
+.ms-toast-sw{display:flex;align-items:center;gap:7px}
+.switch.sm{width:36px;height:20px;border-radius:10px}
+.switch.sm i{width:15px;height:15px;top:2.5px;left:2.5px}
+.switch.sm.on i{left:18.5px}
+
+/* 到達演出トースト */
+#toast.big{border-color:var(--ok);font-size:14px;padding:13px 22px}
+
+/* 素材タブ（異去） */
+.mat-tabs{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.mat-tabs-lbl{font-size:11px;color:var(--t4);margin-right:2px}
+.mat-tab{padding:6px 13px;font-size:13px;border:1px solid var(--bd1);border-radius:16px;background:transparent;color:var(--t4);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;user-select:none;
+  transition:background .15s,color .15s,border-color .15s,transform .12s,box-shadow .12s,opacity .12s}
+.mat-tab.on{background:var(--acc-dim);color:var(--acc);border-color:var(--acc)}
+.mat-tab.add{border-style:dashed}
+/* 掴んでいる間: 影で持ち上げ、少し拡大して傾ける（沈ませない） */
+.mat-tab.dragging{opacity:1;border-color:var(--acc);background:var(--bg3);
+  transform:scale(1.08) rotate(-2deg);box-shadow:0 8px 20px var(--shadow);
+  position:relative;z-index:5;cursor:grabbing}
+/* 掴んでいる間、他のタブは控えめにして掴んだものを目立たせる */
+.mat-tabs.dragging-on .mat-tab:not(.dragging){opacity:.38}
+.mat-tabs.dragging-on .mat-tabs-lbl{opacity:.38}
+/* つまみは濃く・大きめに。指で掴みやすいよう当たり判定も広げる */
+.mat-tab .grip{font-size:14px;line-height:1;letter-spacing:-2px;color:var(--t2);opacity:.9;
+  cursor:grab;touch-action:none;padding:3px 3px 3px 1px;margin:-3px 0 -3px -3px}
+.mat-tab.on .grip{color:var(--acc);opacity:1}
+.mat-tab.dragging .grip{color:var(--acc);opacity:1;cursor:grabbing}
+.mat-tab .del{font-size:12px;opacity:.6;margin-left:2px;cursor:pointer;padding:2px 1px}
+.mat-tab .del:hover{opacity:1;color:var(--warn)}
+
+/* 全素材まとめ */
+.sum-row{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--bd1);font-size:13px;cursor:pointer}
+.sum-row:last-child{border-bottom:none}
+.sum-row:hover{background:var(--bg2)}
+.sum-row.on .sum-n{color:var(--acc)}
+.sum-n{width:110px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sum-v{flex:1;color:var(--t3);font-size:12px;font-variant-numeric:tabular-nums}
+.sum-d{font-size:11px;flex-shrink:0}
+
+/* 合計から差分入力（B） */
+.bulk-cur{background:var(--bg2);border:1px solid var(--bd1);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--t3);line-height:1.8;margin-bottom:13px}
+.bulk-cur b{color:var(--acc);font-weight:600}
+.bulk-prev{background:var(--bg0);border:1px solid var(--bd1);border-radius:8px;padding:8px 10px;max-height:190px;overflow-y:auto}
+.bulk-prow{display:flex;justify-content:space-between;gap:8px;font-size:12px;padding:4px 2px;border-bottom:1px solid var(--bd1);font-variant-numeric:tabular-nums}
+.bulk-prow:last-child{border-bottom:none}
+.bulk-prow .pd{color:var(--t4)}
+.bulk-prow .pv b{color:var(--acc)}
+.bulk-warn{font-size:11px;color:var(--warn);margin-top:7px;line-height:1.6}
+.bulk-empty{font-size:12px;color:var(--t4);text-align:center;padding:12px 4px}
+
+.hide{display:none}
+</style>
+</head>
+<body>
+<!-- ═══ SNSアプリの中で開いている人への案内 ═══════════════════
+     Xなどのアプリ内でリンクを開くと、ブラウザ本体とは別の場所に
+     データが保存される。同じ道具を開いても記録が見えず、
+     Googleログインも通らないことがある。
+     ここは案内を出すだけで、動きは何も変えない。 -->
+<div id="iab-bar" style="display:none"></div>
+<script>
+(function(){
+  var KEY='saniwa_iab_hide';
+  /* ホーム画面に追加して開いている状態。SNSアプリの中ではないので案内を出さない。
+     iOSは navigator.standalone、AndroidなどはCSSの display-mode で分かる。 */
+  function isHomeScreen(){
+    try{ if(navigator.standalone===true)return true; }catch(e){}
+    try{ if(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)return true; }catch(e){}
+    return false;
+  }
+  function isInApp(){
+    if(isHomeScreen())return false;
+    var ua=navigator.userAgent||'';
+    /* ①名乗っているアプリ ②AndroidのWebView ③iOSのWKWebView（Safari/の名乗りが無い） */
+    if(/FBAN|FBAV|FB_IAB|Instagram|\bLine\/|MicroMessenger|KAKAOTALK/.test(ua))return true;
+    if(/;\s*wv\)/.test(ua))return true;
+    if(/iPhone|iPad|iPod/.test(ua)&&ua.indexOf('AppleWebKit')>=0&&!/Safari\//.test(ua))return true;
+    return false;
+  }
+  function hidden(){ try{ return localStorage.getItem(KEY)==='1'; }catch(e){ return false; } }
+  function hasData(){ return typeof gdLocalEmpty==="function" ? !gdLocalEmpty() : false; }
+  function close(never){
+    if(never){ try{ localStorage.setItem(KEY,'1'); }catch(e){} }
+    var el=document.getElementById('iab-bar');
+    if(el)el.style.display='none';
+  }
+  window.iabClose=function(){
+    var c=document.getElementById('iab-never');
+    close(c&&c.checked);
+  };
+  function show(){
+    var el=document.getElementById('iab-bar');
+    if(!el)return;
+    var body = hasData()
+      ? '<p style="margin:0 0 10px">ここでの記録は、<b>いま開いているアプリ（Xなど）の中</b>だけに保存されています。'
+        +'この道具ではなくそのアプリが管理している場所なので、アプリ側の都合でまとめて消えることがあります。</p>'
+        +'<p style="margin:0 0 10px"><b>いま画面に記録が見えているなら、先に書き出し（エクスポート）を取ってください。</b>'
+        +'そのファイルを、SafariやChromeで開いた同じ道具に読み込めば、そのまま続けられます。</p>'
+      : '<p style="margin:0 0 10px">このままでは記録が保存されない、以前の記録が見えない、Googleとつながらない、といったことが起きます。</p>'
+        +'<p style="margin:0"><b>メニューの「ブラウザで開く」から、SafariやChromeで開き直してください。</b>以前の記録がそのまま見えることがあります。</p>';
+    el.innerHTML=
+      '<div style="max-width:640px;margin:0 auto;padding:14px 16px;font-size:13px;line-height:1.85">'
+      +'<div style="font-weight:700;margin-bottom:8px">⚠ SNSアプリの中で開いています</div>'
+      +body
+      +'<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap">'
+      +'<label style="font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer">'
+      +'<input type="checkbox" id="iab-never"> このブラウザでは表示しない</label>'
+      +'<button onclick="iabClose()" style="padding:7px 18px;font-size:12px;border-radius:7px;'
+      +'border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer;font-family:inherit">閉じる</button>'
+      +'</div></div>';
+    el.setAttribute('style',
+      'display:block;background:#fff4d6;color:#5a4212;border-bottom:1px solid #e0c98a;'
+      +'position:relative;z-index:400');
+  }
+  function init(){ if(isInApp()&&!hidden())show(); }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
+<!-- ═══ ここまで ═══════════════════════════════════════════ -->
+<div class="wrap">
+
+  <div class="hdr">
+    <h1>集積帳<small>― 収集物ノルマ表 ―</small></h1>
+    <div class="hdr-right">
+      <div class="hdr-row">
+        <div class="mode-seg" id="modeSeg">
+          <button data-mode="system" onclick="setMode('system')">システム</button>
+          <button data-mode="light" onclick="setMode('light')">ライト</button>
+          <button data-mode="dark" onclick="setMode('dark')">ダーク</button>
+        </div>
+        <button class="cloud-btn" id="cloudBtn" onclick="toggleCloud(this)" aria-label="クラウド同期">☁</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 読み込みを取り消せる間だけ、ここに帯が出る（保険②） -->
+  <div id="undoHost"></div>
+
+  <!-- ============ 一覧 ============ -->
+  <div id="scr-list">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+      <button class="btn pri" onclick="openCreate()">＋ 新しいイベントを作る</button>
+    </div>
+    <div id="listBody"></div>
+  </div>
+
+  <!-- ============ 詳細（Phase1スタブ） ============ -->
+  <div id="scr-detail" class="hide">
+    <button class="back" onclick="go('list')">← イベント一覧へ戻る</button>
+    <div id="detailBody"></div>
+  </div>
+
+  <footer style="margin-top:36px;padding:20px 16px 28px;text-align:center;font-size:11px;line-height:2">
+    <div style="height:1px;background:currentColor;opacity:.14;margin:0 auto 16px;max-width:280px"></div>
+    <a href="saniwa_top.html" style="color:inherit;opacity:.85">審神者の道具箱</a><span style="opacity:.5">　・　</span><a href="privacy.html" style="color:inherit;opacity:.85">プライバシーポリシー</a><br><span style="opacity:.5">このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari shizukuishi</span><br><span style="opacity:.5">無断転載・再配布・広告目的での公開を禁じます。</span>
+  </footer>
+</div>
+
+<!-- モーダル置き場 -->
+<div id="modalHost"></div>
+<!-- ☁ パネル（モーダルより上に出るよう本文の外に置く） -->
+<div id="cloudPanel"></div>
+<!-- 読み込むファイルを選ぶための隠し入力 -->
+<input type="file" id="importFile" accept="application/json,.json" style="display:none" onchange="onImportPicked(this)">
+
+<script>
+/* =========================================================
+   集積帳 - 収集物ノルマ表
+   Phase 1: 骨格（テーマ3モード / データ層CRUD / fmtN移植 /
+            イベント一覧・新規作成・編集・削除 / 詳細スタブ）
+   ========================================================= */
+
+/* ---- データ層 ---------------------------------------- */
+var SK='shuseki_data_v1';
+/* バックアップまわり（段階2）。控えは1世代だけ別キーに置く */
+var TOOL_ID='shuseki';
+var UNDO_KEY=SK+'_undo';
+var DB={events:[],settings:{}};
+
+function load(){
+  try{var d=localStorage.getItem(SK);if(d)DB=JSON.parse(d);}catch(e){}
+  if(!DB||typeof DB!=='object')DB={};
+  if(!Array.isArray(DB.events))DB.events=[];
+  if(!DB.settings||typeof DB.settings!=='object')DB.settings={};
+  /* ---- 丙案の下ごしらえ ----------------------------------
+     この更新より前のデータには updatedAt も recAt も無い。
+     無いものは「時刻0」として扱う＝いちばん古い、という約束にする。   */
+  if(typeof DB.updatedAt!=='number')DB.updatedAt=0;
+  (DB.events||[]).forEach(function(ev){
+    /* ---- 手形（周回に使う券）の下ごしらえ --------------------
+       手形はイベント共通のものなので、素材の中ではなく**イベント直下**に持つ。
+       既にあるイベントには無いので、無い＝「手形を使わない」から始める。
+       ここで埋めておかないと、あとから足したときにデータの引っ越しが要る。  */
+    if(typeof ev.useTicket!=='boolean')ev.useTicket=false;
+    if(ev.ticketName!=='提灯')ev.ticketName='手形';   /* 想定外の値も手形へ寄せる */
+    if(typeof ev.ticketCost!=='number')ev.ticketCost=0;
+    if(!ev.tickets||typeof ev.tickets!=='object')ev.tickets={};   /* {'2026-08-02':6} その日買った枚数 */
+    if(!ev.ticketAt||typeof ev.ticketAt!=='object')ev.ticketAt={};/* 日ごとの更新時刻（recAt と同じ役目） */
+    (ev.materials||[]).forEach(function(m){
+      if(!m.records||typeof m.records!=='object')m.records={};
+      if(!m.recAt||typeof m.recAt!=='object')m.recAt={};
+    });
+  });
+}
+/* 保存。丙案では「どちらが新しいか」を DB.updatedAt で比べるので、
+   保存のたびに必ず時刻を打つ。これが無いと丙案は成り立たない。      */
+function save(){
+  DB.updatedAt=Date.now();
+  saveKeepTime();
+  dropUndo(); // 何か変わったら、読み込み前の控えはもう戻せる状態ではない
+  scheduleAutoSync(); // 段階3-d。自動保存がONのときだけ、少し待ってからクラウドへ上げる
+}
+/* 時刻を打たずに保存する。クラウドや控えから読み込んだ塊を
+   そのままの時刻で保つときに使う（段階2以降）。                    */
+function saveKeepTime(){
+  try{localStorage.setItem(SK,JSON.stringify(DB));}catch(e){}
+}
+/* 見た目や入力の好みを保存する。記録は変わっていないので時刻は打たないし、
+   読み込みの控えも捨てない。
+   ここを save() にしてしまうと、テーマを切り替えただけでこの端末が
+   「新しい方」に化けて、もう片方の端末で足した記録を押しのける立場になる。  */
+function saveSetting(){saveKeepTime();}
+
+/* ---- この端末だけの設定（同期しない） -------------------
+   同期の設定は端末ごとのもの。Googleのログインそのものが端末ごとなので、
+   「自動で保存する」が iPhone から届いても Windows が未ログインなら意味をなさない。
+   なので DB とは別のキーに置いて、同期の対象から外す。                    */
+var PK='shuseki_pref_v1';
+var PREF={
+  gdAuto:false,          /* 変わったら自動で保存する（段階3-d） */
+  gdNotify:'dialog',     /* 起動時の知らせ方 dialog / dot / none（段階3-c） */
+  gdWarnOff:false,       /* 自動保存を見送ったときの警告を出さない（段階3-d） */
+  gdWasIn:false          /* 前にGoogleとつないでいた。開き直したとき裏で取り直す目印 */
+};
+function loadPref(){
+  try{
+    var s=localStorage.getItem(PK);
+    if(!s)return;
+    var p=JSON.parse(s);
+    if(!p||typeof p!=='object')return;
+    for(var k in PREF){
+      if(PREF.hasOwnProperty(k)&&Object.prototype.hasOwnProperty.call(p,k))PREF[k]=p[k];
+    }
+    if(PREF.gdNotify!=='dialog'&&PREF.gdNotify!=='dot'&&PREF.gdNotify!=='none')PREF.gdNotify='dialog';
+    PREF.gdAuto=!!PREF.gdAuto;
+    PREF.gdWarnOff=!!PREF.gdWarnOff;
+    PREF.gdWasIn=!!PREF.gdWasIn;
+  }catch(e){}
+}
+function savePref(){
+  try{localStorage.setItem(PK,JSON.stringify(PREF));}catch(e){}
+}
+
+/* ---- 合流（丙案の心臓部） ------------------------------
+   まだ画面のどこからも呼んでいない。段階2で JSON 読み込みが、
+   段階3で Drive の読み込みが、ここを通る。
+
+   考え方（甲＋記録の合流）:
+     ・全体の新旧は DB.updatedAt で比べ、**新しい側の構造にそのまま従う**
+       （イベントの増減・素材の増減・名前・期間などは全部そちらのもの）
+     ・ただし記録（records）だけは、**両方が持っているイベント・素材**について
+       日付ごとに突き合わせて合流させる
+     ・イベントも素材も id で見分ける。名前や期間では見ない。
+       同じ名前でもぶつからない代わりに、両方の端末で別々に作ったものは
+       別物として扱われる（片方は消える。保険①で数えて見せる予定）
+
+   日付ひとつの決め方:
+     1. recAt が違う → 新しい方に従う
+        （新しい方に値が無ければ「そのとき消された」ので、消えたままにする）
+     2. recAt が同じ（両方とも時刻なし＝0 を含む）
+        a. 片方にしか値が無い → 値がある方を残す（消える方向には倒さない）
+        b. 両方に値がある     → 全体の updatedAt が新しい側の値（案A）
+*/
+function _deepCopy(o){try{return JSON.parse(JSON.stringify(o));}catch(e){return null;}}
+
+/* 記録ひと組ぶんの合流。a が「新しい側」。返すのは新しい入れ物 */
+function mergeRecords(aRec,aAt,bRec,bAt,aIsNewer){
+  aRec=aRec||{};aAt=aAt||{};bRec=bRec||{};bAt=bAt||{};
+  var keys={};
+  [aRec,aAt,bRec,bAt].forEach(function(o){
+    Object.keys(o).forEach(function(k){keys[k]=1;});
+  });
+  var out={},outAt={};
+  Object.keys(keys).forEach(function(d){
+    var aHas=Object.prototype.hasOwnProperty.call(aRec,d);
+    var bHas=Object.prototype.hasOwnProperty.call(bRec,d);
+    var at=+aAt[d]||0, bt=+bAt[d]||0;
+    var take;
+    if(at!==bt)            take=(at>bt)?'a':'b';   // 1. 新しい方
+    else if(aHas&&!bHas)   take='a';               // 2a. 値がある方
+    else if(bHas&&!aHas)   take='b';
+    else if(aHas&&bHas)    take=aIsNewer?'a':'b';  // 2b. 案A
+    else                   take=null;              // どちらでも消えている
+    if(take==='a'&&aHas)      out[d]=aRec[d];
+    else if(take==='b'&&bHas) out[d]=bRec[d];
+    /* 採る側に値が無い＝その時刻に消された、ということ。記録は入れない */
+    var t=Math.max(at,bt);
+    if(t>0)outAt[d]=t;   // 0 のままなら「時刻なし」を保つ（あとの書き込みに必ず負ける）
+  });
+  return {records:out,recAt:outAt};
+}
+
+/* 手元の塊と、外から来た塊を合流させて新しい塊を返す。
+   引数はどちらも変更しない。片方が壊れていればもう片方をそのまま返す。 */
+function mergeDB(local,cloud){
+  var lOk=local&&typeof local==='object'&&Array.isArray(local.events);
+  var cOk=cloud&&typeof cloud==='object'&&Array.isArray(cloud.events);
+  if(!cOk)return _deepCopy(local);
+  if(!lOk)return _deepCopy(cloud);
+
+  var lAt=+local.updatedAt||0, cAt=+cloud.updatedAt||0;
+  var cloudIsNewer=(cAt>=lAt);   // 同じときはクラウド側（読み込む操作なので）
+  var base =_deepCopy(cloudIsNewer?cloud:local);
+  var other=            cloudIsNewer?local:cloud;
+  if(!base)return _deepCopy(cloudIsNewer?local:cloud);
+
+  var otherEv={};
+  (other.events||[]).forEach(function(e){if(e&&e.id)otherEv[e.id]=e;});
+
+  (base.events||[]).forEach(function(ev){
+    var oev=ev&&ev.id?otherEv[ev.id]:null;
+    if(!oev)return;                       // 片方にしか無いイベントはそのまま
+    /* 手形はイベント直下にあるので、素材の中の records とは別にもう一本合流させる。
+       日付キーの塊であることしか見ていないので mergeRecords をそのまま使える。
+       ここで新しい合流の規則を書かないこと（規則が二本になると必ず食い違う）。   */
+    var tk=mergeRecords(ev.tickets,ev.ticketAt,oev.tickets,oev.ticketAt,true);
+    ev.tickets=tk.records;
+    ev.ticketAt=tk.recAt;
+    var oMat={};
+    (oev.materials||[]).forEach(function(m){if(m&&m.id)oMat[m.id]=m;});
+    (ev.materials||[]).forEach(function(m){
+      var om=m&&m.id?oMat[m.id]:null;
+      if(!om)return;                      // 片方にしか無い素材はそのまま
+      var r=mergeRecords(m.records,m.recAt,om.records,om.recAt,true);
+      m.records=r.records;
+      m.recAt=r.recAt;
+    });
+  });
+
+  base.updatedAt=Math.max(lAt,cAt);
+  return base;
+}
+
+/* ---- 記録の書き込み・削除 --------------------------------
+   記録は必ずこの2つを通す。日付ごとの更新時刻（recAt）を打ち忘れると、
+   別の端末と合流したときに「消したはずの記録」が蘇ってしまう。
+   削除のときにも時刻を打つのが肝。                                */
+function setRec(mat,d,n){
+  if(!mat.records)mat.records={};
+  if(!mat.recAt)mat.recAt={};
+  mat.records[d]=n;
+  mat.recAt[d]=Date.now();
+}
+function delRec(mat,d){
+  if(!mat.records)mat.records={};
+  if(!mat.recAt)mat.recAt={};
+  delete mat.records[d];
+  mat.recAt[d]=Date.now(); // 消したことも「いつ消したか」で覚えておく
+}
+/* ---- 手形の書き込み・削除 --------------------------------
+   記録（records）と同じで、書き込みは必ずこの2つを通す。時刻を打ち忘れると
+   別の端末と合流したときに「消したはずの手形」が蘇る。
+
+   addTicket は**足し算**。朝に6枚、夕方に6枚買うことがあり、上書きだと
+   夕方に 6 と入れた時点で朝の6枚が黙って消えてしまうため。
+   setTicket は**上書き**（日別記録の編集画面から使う）。0 にしたら消す。    */
+function addTicket(ev,d,n){
+  if(!ev.tickets)ev.tickets={};
+  if(!ev.ticketAt)ev.ticketAt={};
+  var next=(+ev.tickets[d]||0)+(+n||0);
+  if(next>0)ev.tickets[d]=next;
+  else delete ev.tickets[d];
+  ev.ticketAt[d]=Date.now();
+}
+function setTicket(ev,d,n){
+  if(!ev.tickets)ev.tickets={};
+  if(!ev.ticketAt)ev.ticketAt={};
+  var v=+n||0;
+  if(v>0)ev.tickets[d]=v;
+  else delete ev.tickets[d];   /* 0 は「その日は買っていない」＝残さない */
+  ev.ticketAt[d]=Date.now();   /* 消したときにも必ず打つ（ここが肝） */
+}
+
+/* ---- 手形の読み取り（表示用） ----------------------------
+   小判は保存しない。表示のたびに「枚数 × 1枚の値段」で出す。
+   こうしておくと、値段を打ち間違えて直したとき過去の分もまとめて直る。  */
+function ticketName(ev){return (ev&&ev.ticketName==='提灯')?'提灯':'手形';}
+function ticketUnit(ev){return (ev&&ev.ticketName==='提灯')?'個':'枚';}  /* 提灯は「個」で数える */
+function ticketCost(ev){return Math.max(0,+((ev||{}).ticketCost)||0);}
+function ticketOn(ev){return !!(ev&&ev.useTicket);}
+/* その日買った枚数 */
+function ticketOf(ev,d){return +(((ev||{}).tickets||{})[d])||0;}
+/* イベント全体で買った枚数 */
+function ticketTotal(ev){
+  var t=(ev&&ev.tickets)||{},s=0;
+  for(var k in t){if(t.hasOwnProperty(k))s+=(+t[k]||0);}
+  return s;
+}
+/* イベント全体で使った小判 */
+function kobanTotal(ev){return ticketTotal(ev)*ticketCost(ev);}
+/* 「6枚（1,200小判）」のような書き方。値段が未設定なら小判は書かない */
+function ticketTxt(ev,n){
+  var s=n.toLocaleString('ja-JP')+ticketUnit(ev);
+  var c=ticketCost(ev);
+  if(c>0)s+='（'+(n*c).toLocaleString('ja-JP')+'小判）';
+  return s;
+}
+
+function uid(prefix){
+  return prefix+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+}
+
+/* CRUD */
+function getEvent(id){return DB.events.find(function(e){return e.id===id;})||null;}
+function deleteEvent(id){DB.events=DB.events.filter(function(e){return e.id!==id;});save();}
+
+/* ---- 日付ユーティリティ（ローカル時刻・TZずれ回避） ---- */
+function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function todayStr(){return ymd(new Date());}
+function parseYmd(s){var p=(s||'').split('-').map(Number);return new Date(p[0],(p[1]||1)-1,p[2]||1);}
+function diffDays(a,b){return Math.round((parseYmd(b)-parseYmd(a))/86400000);} // b - a （日数）
+var WD=['日','月','火','水','木','金','土'];
+function fmtDate(s){var d=parseYmd(s);return (d.getMonth()+1)+'/'+d.getDate();}
+function fmtDateFull(s){var d=parseYmd(s);return d.getFullYear()+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0');}
+
+/* 期間まわり（includeEndDay を反映） */
+/* 期間まわり
+   spanDays  = 開始〜終了のカレンダー上の日数。記録・グラフはいつもこちらを使う
+   periodDays= ノルマ計算の分母。includeEndDay=false なら最終日を数えない        */
+function spanDays(ev){return diffDays(ev.start,ev.end)+1;}
+function periodDays(ev){var base=diffDays(ev.start,ev.end);return ev.includeEndDay?base+1:base;} // ノルマの分母日数
+function isEnded(ev){return todayStr()>ev.end;} // 終了日を過ぎたら終了区分
+function remainDays(ev){var base=diffDays(todayStr(),ev.end);return ev.includeEndDay?base+1:base;}
+
+/* 集計（累計は records から動的計算・保持しない） */
+function matCum(mat){var s=0,r=mat.records||{};for(var k in r){if(r.hasOwnProperty(k))s+=(+r[k]||0);}return s;}
+function evCum(ev){return (ev.materials||[]).reduce(function(a,m){return a+matCum(m);},0);}
+function evTarget(ev){return (ev.materials||[]).reduce(function(a,m){return a+(+m.target||0);},0);}
+
+/* 全角数字を半角へ。IMEの確定が届かず全角のまま残ることがあるため、
+   画面表示だけでなく「値を読む側」でも必ず通す */
+function toHalfDigits(s){
+  return String(s==null?'':s).replace(/[０-９]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-0xFF10+0x30);});
+}
+/* 入力欄から数値の文字列を取り出す（全角・カンマ・空白すべて吸収） */
+function readNum(el){
+  if(!el)return '';
+  var v=toHalfDigits(el.value);
+  var raw=v.replace(/[^\d]/g,'');
+  if(!raw&&el.dataset&&el.dataset.val)raw=String(el.dataset.val).replace(/[^\d]/g,'');
+  if(raw.length>NUM_MAXLEN)raw=raw.slice(0,NUM_MAXLEN);
+  return raw;
+}
+/* IMEが確定イベントを返さない環境向けの保険。キーを離した時点で変換中でなければ整形し直す */
+function fmtNKeyup(el,e){
+  if(e&&e.isComposing)return;
+  if(e&&(e.key==='Process'||e.keyCode===229))return;
+  if(/[０-９]/.test(el.value))fmtN(el);
+}
+
+/* ---- カンマ区切り数値入力（稽古録から移植・そのまま） ---- */
+var isBrave=false;
+if(navigator.brave&&typeof navigator.brave.isBrave==='function'){
+  navigator.brave.isBrave().then(function(b){isBrave=b;});
+}
+var NUM_MAXLEN=15; // 数値入力の桁数上限（JSの安全整数=16桁。15桁に収めて丸めを防ぐ）
+function fmtN(el,e){
+  if(isBrave)return;
+  if(e&&e.isComposing)return; // IME変換中は割り込まない
+  // 整形前にカーソル左側の「数字の桁数」を同期で記録（全角数字も数える）
+  var _sel=el.selectionStart;
+  var _digitsBefore=(_sel==null)?-1:el.value.slice(0,_sel).replace(/[^\d０-９]/g,'').length;
+  requestAnimationFrame(function(){
+    // 全角→半角に変換してから数字だけ抽出
+    var v=el.value.replace(/[０-９]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-0xFF10+0x30);});
+    var raw=v.replace(/[^\d]/g,'');
+    if(raw.length>NUM_MAXLEN)raw=raw.slice(0,NUM_MAXLEN); // 桁数上限（丸め防止）
+    el.dataset.val=raw;
+    if(!raw){el.value='';return;}
+    var formatted=parseInt(raw).toLocaleString('ja-JP');
+    if(el.value!==formatted)el.value=formatted;
+    // カーソルを「同じ桁数だけ進めた位置」に戻す（末尾固定をやめる）
+    if(_digitsBefore<0){return;}
+    var pos=0,seen=0;
+    while(pos<formatted.length&&seen<_digitsBefore){
+      var cc=formatted.charCodeAt(pos);
+      if(cc>=48&&cc<=57)seen++; // 0-9
+      pos++;
+    }
+    try{el.setSelectionRange(pos,pos);}catch(_e){}
+  });
+}
+function fmtNFocus(el){
+  var raw=el.dataset.val||el.value.replace(/[０-９]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-0xFF10+0x30);}).replace(/[^\d]/g,'');
+  if(raw.length>NUM_MAXLEN)raw=raw.slice(0,NUM_MAXLEN);
+  el.dataset.val=raw;
+  el.value=raw||'';
+}
+function fmtNBlur(el){
+  var v=el.value.replace(/[０-９]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-0xFF10+0x30);});
+  var raw=v.replace(/[^\d]/g,'');
+  if(raw.length>NUM_MAXLEN)raw=raw.slice(0,NUM_MAXLEN);
+  el.dataset.val=raw;
+  if(!raw){el.value='';return;}
+  el.value=parseInt(raw).toLocaleString('ja-JP');
+}
+function numFromEl(el){if(!el)return 0;return parseInt((el.value||'').replace(/[^\d]/g,''))||0;}
+
+/* ---- テーマ / モード（3択・system追従） ------------- */
+function effMode(){
+  var m=DB.settings.mode||'system';
+  if(m==='light')return 'light';
+  if(m==='dark')return 'dark';
+  return (window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';
+}
+function applyTheme(){
+  document.body.className=(effMode()==='light')?'light':'';
+  renderModeSeg();
+  // グラフの配色はCSS変数/明暗依存なので、テーマ変更時に描き直す
+  if(_chart&&document.getElementById('scr-detail')&&document.getElementById('scr-detail').className===''){
+    drawChart();
+  }
+}
+function renderModeSeg(){
+  var cur=DB.settings.mode||'system';
+  document.querySelectorAll('#modeSeg button').forEach(function(b){
+    b.classList.toggle('on',b.dataset.mode===cur);
+  });
+}
+function setMode(m){DB.settings.mode=m;saveSetting();applyTheme();}
+if(window.matchMedia){
+  window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',function(){
+    if((DB.settings.mode||'system')==='system')applyTheme();
+  });
+}
+
+/* ---- 画面遷移 ---------------------------------------- */
+function go(scr){
+  document.getElementById('scr-list').className=(scr==='list')?'':'hide';
+  document.getElementById('scr-detail').className=(scr==='detail')?'':'hide';
+  window.scrollTo(0,0);
+}
+
+/* ---- 一覧描画 ---------------------------------------- */
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+function evBadge(ev){
+  if(isEnded(ev))return '<span class="ev-badge done">終了</span>';
+  var r=remainDays(ev);
+  var txt='開催中';
+  if(r>0)txt+='・残り'+r+'日';
+  else if(r===0)txt+='・本日まで';
+  return '<span class="ev-badge live">'+txt+'</span>';
+}
+function evSubLine(ev){
+  var mats=ev.materials||[];
+  var matTxt;
+  if(ev.multi)matTxt='断片 '+mats.length+'種';
+  else matTxt=(mats[0]&&mats[0].name)?esc(mats[0].name):'素材未設定';
+  return fmtDateFull(ev.start)+' 〜 '+fmtDateFull(ev.end)+'（'+spanDays(ev)+'日間）・'+matTxt;
+}
+function evCardHtml(ev){
+  var cum=evCum(ev),tgt=evTarget(ev);
+  var barW,barColor,statL,statR;
+  if(ev.normaOn&&tgt>0){
+    // ノルマON: 収集進捗（累計/目標）を琥珀バーで。右肩は先取り/遅れ
+    barW=Math.min(100,Math.round(cum/tgt*100));
+    barColor='linear-gradient(90deg,var(--acc),#e8c88a)';
+    statL=cum.toLocaleString('ja-JP')+' / '+tgt.toLocaleString('ja-JP')+' 個';
+    var m0=(ev.materials||[])[0];
+    var nc0=m0?normaCalc(ev,m0):null;
+    if(!ev.multi&&nc0){
+      if(nc0.done)statR='<b style="color:var(--ok)">達成 🎉</b>';
+      else if(isEnded(ev))statR='<span>未達で終了</span>';
+      else if(nc0.diff>0)statR='<b>＋'+nc0.diff+'日 先取り中</b>';
+      else if(nc0.diff===0)statR='<b>ペース通り</b>';
+      else statR='<b style="color:var(--warn)">−'+(-nc0.diff)+'日 遅れ</b>';
+    }else{
+      // 異去は素材ごとに進み方が違うので、いちばん遅れている素材を代表に出す
+      var mats=(ev.materials||[]).filter(function(m){return (+m.target||0)>0;});
+      statL='素材'+(ev.materials||[]).length+'種 合計 '+cum.toLocaleString('ja-JP')+' / '+tgt.toLocaleString('ja-JP')+' 個';
+      if(!mats.length){statR='<span>'+barW+'%</span>';}
+      else{
+        var worst=mats.map(function(m){return normaCalc(ev,m);})
+                      .sort(function(a,b){return a.diff-b.diff;})[0];
+        if(mats.every(function(m){return normaCalc(ev,m).done;}))statR='<b style="color:var(--ok)">全素材 達成 🎉</b>';
+        else if(isEnded(ev))statR='<span>未達で終了</span>';
+        else if(worst.diff>0)statR='<b>いちばん遅い素材で ＋'+worst.diff+'日</b>';
+        else if(worst.diff===0)statR='<b>ペース通り</b>';
+        else statR='<b style="color:var(--warn)">いちばん遅い素材で −'+(-worst.diff)+'日</b>';
+      }
+    }
+  }else{
+    // ノルマOFF: 期間の経過（日付ベース）を青バーで。数値は累計のみ
+    var total=Math.max(1,diffDays(ev.start,ev.end));
+    var passed=Math.min(total,Math.max(0,diffDays(ev.start,todayStr())));
+    barW=Math.round(passed/total*100);
+    barColor='var(--acc2)';
+    statL='累計 '+cum.toLocaleString('ja-JP')+' 個';
+    statR='<span>グラフ記録のみ</span>';
+  }
+  return '<button class="ev-item" onclick="openDetail(\''+ev.id+'\')">'
+    +'<div class="ev-top"><span class="ev-name">'+esc(ev.name)+'</span>'+evBadge(ev)+'</div>'
+    +'<div class="ev-sub">'+evSubLine(ev)+'</div>'
+    +'<div class="ev-bar"><i style="width:'+barW+'%;background:'+barColor+'"></i></div>'
+    +'<div class="ev-stat"><span>'+statL+'</span>'+statR+'</div>'
+    +'</button>';
+}
+function renderList(){
+  var host=document.getElementById('listBody');
+  if(!DB.events.length){
+    host.innerHTML='<div class="empty"><div class="big">まだイベントがありません</div>'
+      +'収集イベントを作って、毎日の集めた数を記録していきましょう。<br>'
+      +'右上の「＋ 新しいイベントを作る」から始められます。</div>';
+    return;
+  }
+  // 並び: 開催中を上（開始日の新しい順）、終了は下（終了日の新しい順）
+  var live=DB.events.filter(function(e){return !isEnded(e);}).sort(function(a,b){return b.start.localeCompare(a.start);});
+  var done=DB.events.filter(function(e){return isEnded(e);}).sort(function(a,b){return b.end.localeCompare(a.end);});
+  var html=live.map(evCardHtml).join('');
+  if(done.length){
+    html+='<div class="arch-h">📁 終了したイベント</div>'+done.map(evCardHtml).join('');
+  }
+  host.innerHTML=html;
+}
+
+/* ---- ノルマ計算（計画書3節） ------------------------- */
+function addDaysStr(s,n){var d=parseYmd(s);return ymd(new Date(d.getFullYear(),d.getMonth(),d.getDate()+n));}
+function normaCalc(ev,mat){
+  var target=+(mat&&mat.target)||0;
+  var cum=mat?matCum(mat):0;
+  var pdays=Math.max(1,periodDays(ev));
+  var fixed=target>0?Math.ceil(target/pdays):0;      // 固定ノルマ = 目標 ÷ 分母日数
+  var rem=remainDays(ev);                            // 残り日数（0以下は締切扱い）
+  var left=Math.max(0,target-cum);
+  var recovery=(left>0&&rem>0)?Math.ceil(left/rem):0; // リカバリー = 残り ÷ 残り日数
+  var todayNo=diffDays(ev.start,todayStr())+1;        // 今日が何日目
+  var achDay=fixed>0?Math.floor(cum/fixed):0;         // 何日目の分まで集まったか
+  var achDayCap=Math.min(achDay,pdays);
+  var achDate=achDayCap>=1?addDaysStr(ev.start,achDayCap-1):null;
+  return {target:target,cum:cum,pdays:pdays,fixed:fixed,rem:rem,left:left,
+          recovery:recovery,todayNo:todayNo,achDay:achDay,achDayCap:achDayCap,
+          achDate:achDate,diff:achDay-todayNo,done:(target>0&&cum>=target)};
+}
+
+/* ヒーロー（先取り表示＋ゲージ） */
+function heroHtml(ev,mat,nc){
+  var cls='',lbl='現在のペース',main='',sub='';
+  var ended=isEnded(ev);
+
+  if(nc.done){
+    cls=' doneall';
+    main='🎉 目標達成';
+    sub='累計 '+nc.cum.toLocaleString('ja-JP')+' 個。目標 '+nc.target.toLocaleString('ja-JP')+' 個を達成しました。';
+    if(nc.cum>nc.target)sub+='（'+(nc.cum-nc.target).toLocaleString('ja-JP')+' 個 超過）';
+  }else if(ended){
+    cls=' behind';lbl='結果';
+    main='未達で終了';
+    sub='累計 '+nc.cum.toLocaleString('ja-JP')+' / '+nc.target.toLocaleString('ja-JP')+' 個。'
+      +'あと '+nc.left.toLocaleString('ja-JP')+' 個 届きませんでした。';
+  }else if(nc.achDay<1){
+    cls=' behind';
+    main='まだ1日目の分に届いていません';
+    sub='固定ノルマは 1日 '+nc.fixed.toLocaleString('ja-JP')+' 個。'
+      +'累計 '+nc.cum.toLocaleString('ja-JP')+' 個です。';
+  }else{
+    var d=nc.diff;
+    if(d>0){main=fmtDate(nc.achDate)+' の分まで先取り中<small>（'+nc.achDayCap+'日目まで・＋'+d+'日）</small>';}
+    else if(d===0){main=fmtDate(nc.achDate)+' の分まで<small>（'+nc.achDayCap+'日目まで・ぴったり）</small>';}
+    else{cls=' behind';main=fmtDate(nc.achDate)+' の分まで<small>（'+nc.achDayCap+'日目まで・−'+(-d)+'日 遅れ）</small>';}
+    sub='累計 '+nc.cum.toLocaleString('ja-JP')+' 個。固定ノルマ換算で、'
+      +fmtDateFull(nc.achDate)+'（'+nc.achDayCap+'日目）のぶんまで集まっています。';
+    if(d<0&&nc.recovery>0)sub+='<br>今日は リカバリーノルマ '+nc.recovery.toLocaleString('ja-JP')+' 個/日 が目安です。';
+  }
+
+  // ゲージ: 塗り=累計/目標、縦線=今日の位置
+  var fillPct=nc.target>0?Math.min(100,nc.cum/nc.target*100):0;
+  var todayPct=Math.min(100,Math.max(0,(nc.todayNo-.5)/nc.pdays*100));
+  var lastDay=addDaysStr(ev.start,nc.pdays-1);
+  var todayCap=ended?'終了済み':'今日 '+fmtDateFull(todayStr()).slice(5);
+
+  return '<div class="hero'+cls+'">'
+    +'<div class="hero-lbl">'+lbl+'</div>'
+    +'<div class="hero-main">'+main+'</div>'
+    +'<div class="hero-sub">'+sub+'</div>'
+    +'<div class="gauge"><div class="gauge-track">'
+      +'<div class="gauge-fill" style="width:'+fillPct.toFixed(1)+'%"></div>'
+      +(ended?'':'<div class="gauge-today" style="left:'+todayPct.toFixed(1)+'%"></div>')
+    +'</div>'
+    +'<div class="gauge-cap"><span>'+fmtDateFull(ev.start).slice(5)+' 開始</span>'
+      +'<span>'+todayCap+'</span>'
+      +'<span>'+fmtDateFull(lastDay).slice(5)+' 締切</span></div></div>'
+  +'</div>';
+}
+
+/* 数値カード3枚 */
+function statsHtml(ev,nc){
+  var remTxt=nc.rem>0?('残'+nc.rem+'日'):'締切';
+  var recVal=nc.done?'—':(nc.rem>0?nc.recovery.toLocaleString('ja-JP'):'—');
+  var recCls=nc.done?'ok':'blue';
+  return '<div class="stat-grid">'
+    +'<div class="stat"><div class="stat-l">累計 / 目標</div>'
+      +'<div class="stat-v gold">'+nc.cum.toLocaleString('ja-JP')
+      +'<small> / '+nc.target.toLocaleString('ja-JP')+'</small></div></div>'
+    +'<div class="stat"><div class="stat-l">固定ノルマ<br>（目標÷'+nc.pdays+'日）</div>'
+      +'<div class="stat-v">'+nc.fixed.toLocaleString('ja-JP')+'<small> /日</small></div></div>'
+    +'<div class="stat"><div class="stat-l">リカバリー<br>（残り÷'+remTxt+'）</div>'
+      +'<div class="stat-v '+recCls+'">'+recVal+(recVal==='—'?'':'<small> /日</small>')+'</div></div>'
+  +'</div>';
+}
+
+/* 小判カード（2枚）。第1段階では実績だけを出す。
+   「あと何小判いるか」の見込みは第2段階で、実際に使ってみてから決める。
+   小判は保存していないので、ここで毎回「枚数 × 値段」を計算する。      */
+function kobanHtml(ev){
+  if(!ticketOn(ev))return '';
+  var n=ticketTotal(ev),c=ticketCost(ev),u=ticketUnit(ev),nm=esc(ticketName(ev));
+  var note;
+  if(c>0){
+    note='1'+u+' '+c.toLocaleString('ja-JP')+'小判 で計算しています。';
+  }else{
+    note='<b>'+nm+'1'+u+'の値段がまだ未設定です。</b>「⚙ 編集」から入れると、使った小判が出ます。';
+  }
+  return '<div class="koban">'
+    +'<div class="koban-h">小判</div>'
+    +'<div class="koban-grid">'
+      +'<div class="koban-cell"><div class="koban-l">このイベントで使った</div>'
+        +'<div class="koban-v'+(c>0?'':' none')+'">'
+          +(c>0?(n*c).toLocaleString('ja-JP')+'<small> 枚</small>':'—')+'</div></div>'
+      +'<div class="koban-cell"><div class="koban-l">買った'+nm+'</div>'
+        +'<div class="koban-v">'+n.toLocaleString('ja-JP')+'<small> '+u+'</small></div></div>'
+    +'</div>'
+    +'<div class="koban-note">'+note+'</div>'
+  +'</div>';
+}
+
+/* ---- マイルストーン ---------------------------------- */
+function msSorted(mat){
+  return ((mat&&mat.milestones)||[]).slice().sort(function(a,b){
+    if((+a.need||0)!==(+b.need||0))return (+a.need||0)-(+b.need||0);
+    return (a.order||0)-(b.order||0);
+  });
+}
+function achievedIds(mat){
+  var cum=matCum(mat);
+  return msSorted(mat).filter(function(m){return cum>=(+m.need||0);}).map(function(m){return m.id;});
+}
+function milestoneHtml(ev,mat,nc){
+  var list=msSorted(mat),cum=nc.cum;
+  var rows=list.map(function(m){
+    var need=+m.need||0;
+    var done=cum>=need;
+    var rest=Math.max(0,need-cum);
+    var nameTxt=need.toLocaleString('ja-JP')+'個'+(m.reward?' ｜ '+esc(m.reward):'');
+    var body='<div class="ms-name'+(done?' done':'')+'">'+nameTxt+'</div>';
+    if(!done){
+      var needLine='達成まで あと <b>'+rest.toLocaleString('ja-JP')+'</b> 個';
+      if(nc.fixed>0)needLine+='（固定ノルマ換算で 約'+Math.ceil(rest/nc.fixed)+'日）';
+      body+='<div class="ms-need">'+needLine+'</div>';
+    }
+    if(m.memo)body+='<div class="ms-memo">メモ: '+esc(m.memo)+'</div>';
+    return '<div class="ms-item">'
+      +'<div class="ms-check'+(done?' done':'')+'">'+(done?'✓':'')+'</div>'
+      +'<div class="ms-body">'+body+'</div>'
+      +'<button class="ms-edit" onclick="openMsEdit(\''+m.id+'\')" title="編集">✎</button>'
+    +'</div>';
+  }).join('');
+
+  if(!list.length){
+    rows='<div class="empty" style="padding:18px 8px">まだ登録がありません。<br>'
+      +'「◯個で△△がもらえる」を登録すると、達成が自動でチェックされます。</div>';
+  }
+  return '<div class="card">'
+    +'<div class="card-h">途中報酬（マイルストーン）'
+      +'<button class="btn sm" onclick="openMsEdit(null)">＋ 追加</button></div>'
+    +rows
+    +'<div class="ms-foot"><span>到達したときのお知らせ</span>'
+      +'<div class="ms-toast-sw"><span>'+(ev.milestoneToast?'ON':'OFF')+'</span>'
+      +'<div class="switch sm'+(ev.milestoneToast?' on':'')+'" onclick="toggleMsToast()"><i></i></div></div></div>'
+  +'</div>';
+}
+
+var _msForm=null;
+function openMsEdit(id){
+  var mat=curMat();if(!mat)return;
+  var m=id?(mat.milestones||[]).find(function(x){return x.id===id;}):null;
+  _msForm={id:id||null,need:m?String(+m.need||0):'',reward:m?(m.reward||''):'',memo:m?(m.memo||''):''};
+  var host=document.getElementById('modalHost');
+  host.innerHTML=
+   '<div class="modal-ov" id="_msOv"><div class="modal" style="max-width:420px">'
+    +'<div class="modal-h">'+(id?'マイルストーンを編集':'マイルストーンを追加')+'</div>'
+    +'<div class="fld"><label class="lbl">必要な累計数</label>'
+      +'<input type="text" id="msNeed" inputmode="numeric" placeholder="例: 7,000" '
+        +'value="'+(_msForm.need?parseInt(_msForm.need).toLocaleString('ja-JP'):'')+'" '
+        +'oninput="fmtN(this,event)" oncompositionend="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)" onkeyup="fmtNKeyup(this,event)">'
+      +'<div class="err" id="msErr"></div></div>'
+    +'<div class="fld"><label class="lbl">報酬名 <span class="opt">（任意）</span></label>'
+      +'<input type="text" id="msReward" placeholder="例: 手伝い札 ×10" value="'+esc(_msForm.reward)+'"></div>'
+    +'<div class="fld"><label class="lbl">メモ <span class="opt">（任意）</span></label>'
+      +'<input type="text" id="msMemo" placeholder="例: 7/20に受け取り済み" value="'+esc(_msForm.memo)+'"></div>'
+    +'<div class="modal-foot">'
+      +(id?'<button class="btn danger sm" onclick="confirmDeleteMs(\''+id+'\')">削除</button>':'')
+      +'<div class="right"><button class="btn" onclick="closeModal()">キャンセル</button>'
+      +'<button class="btn pri" onclick="saveMs()">保存</button></div>'
+    +'</div>'
+   +'</div></div>';
+  document.getElementById('_msOv').addEventListener('click',function(e){if(e.target.id==='_msOv')closeModal();});
+}
+function saveMs(){
+  var ev=curEv(),mat=curMat();if(!ev||!mat)return;
+  var el=document.getElementById('msNeed');
+  var raw=readNum(el);
+  var err=document.getElementById('msErr');
+  if(err)err.textContent='';
+  if(!raw||parseInt(raw,10)<=0){if(err)err.textContent='必要な累計数を入力してください（1以上）。';return;}
+  var need=parseInt(raw,10);
+  var reward=(document.getElementById('msReward')||{}).value||'';
+  var memo=(document.getElementById('msMemo')||{}).value||'';
+  if(!mat.milestones)mat.milestones=[];
+
+  var before=achievedIds(mat);
+  if(_msForm.id){
+    var m=mat.milestones.find(function(x){return x.id===_msForm.id;});
+    if(m){m.need=need;m.reward=reward.trim();m.memo=memo.trim();}
+  }else{
+    mat.milestones.push({id:uid('sms'),need:need,reward:reward.trim(),memo:memo.trim(),
+                         order:mat.milestones.length});
+  }
+  ev.updatedAt=Date.now();save();closeModal();renderDetail();
+  // 追加した時点ですでに達成済みなら、演出ではなく静かに反映（記録操作ではないため）
+  void before;
+}
+function confirmDeleteMs(id){
+  closeModal();
+  askConfirm('このマイルストーンを削除します。よろしいですか？',function(){
+    var ev=curEv(),mat=curMat();if(!ev||!mat)return;
+    mat.milestones=(mat.milestones||[]).filter(function(x){return x.id!==id;});
+    ev.updatedAt=Date.now();save();renderDetail();
+    toast('マイルストーンを削除しました');
+  },'削除する',true);
+}
+function toggleMsToast(){
+  var ev=curEv();if(!ev)return;
+  ev.milestoneToast=!ev.milestoneToast;ev.updatedAt=Date.now();save();renderDetail();
+}
+
+/* ---- 素材タブ（異去） -------------------------------- */
+function matName(m,i){return (m&&m.name)?m.name:('素材'+(i+1));}
+
+function matTabsHtml(ev){
+  var cur=curMat();
+  var tabs=(ev.materials||[]).map(function(m,i){
+    var canDel=(ev.materials.length>1);
+    return '<div class="mat-tab'+(cur&&m.id===cur.id?' on':'')+'" data-id="'+m.id+'" '
+      +'onclick="selectMat(\''+m.id+'\')" role="button" tabindex="0">'
+      +'<span class="grip" title="ドラッグで並べ替え" onpointerdown="tabDragStart(event,\''+m.id+'\')">⋮⋮</span>'
+      +esc(matName(m,i))
+      +(canDel?'<span class="del" title="この素材を削除" onclick="event.stopPropagation();confirmDeleteMat(\''+m.id+'\')">✕</span>':'')
+      +'</div>';
+  }).join('');
+  return '<div class="mat-tabs" id="matTabs">'
+    +'<span class="mat-tabs-lbl">素材（⋮⋮をドラッグで並べ替え）:</span>'
+    +tabs
+    +'<div class="mat-tab add" onclick="openMatAdd()" role="button" tabindex="0">＋ 素材追加</div>'
+    +'</div>';
+}
+
+/* ドラッグ並べ替え（マウス・タッチ共通のポインタイベント）
+   移動中に要素をDOMで動かすため、追跡は document で受ける
+   （つまんだ要素自身に setPointerCapture すると、並べ替えの瞬間に追跡が切れてしまう） */
+var _drag=null;
+function tabDragStart(e,id){
+  e.preventDefault();e.stopPropagation();
+  var el=e.target.parentNode;
+  if(!el||!el.classList.contains('mat-tab'))return;
+  _drag={id:id,el:el,moved:false};
+  el.classList.add('dragging');
+  var wrap=document.getElementById('matTabs');
+  if(wrap)wrap.classList.add('dragging-on'); // 掴んでいる間、他のタブを控えめにする
+  if(navigator.vibrate){try{navigator.vibrate(12);}catch(_v){}} // 掴んだ合図（対応端末のみ）
+  document.addEventListener('pointermove',tabDragMove,{passive:false});
+  document.addEventListener('pointerup',tabDragEnd);
+  document.addEventListener('pointercancel',tabDragEnd);
+}
+function tabDragMove(e){
+  if(!_drag)return;
+  e.preventDefault();
+  var wrap=document.getElementById('matTabs');if(!wrap)return;
+  var items=[].slice.call(wrap.querySelectorAll('.mat-tab[data-id]'));
+  for(var i=0;i<items.length;i++){
+    var it=items[i];
+    if(it===_drag.el)continue;
+    var r=it.getBoundingClientRect();
+    if(e.clientY<r.top||e.clientY>r.bottom)continue; // 折り返した場合は同じ行だけ見る
+    var mid=r.left+r.width/2;
+    var dragIsAfter=!!(it.compareDocumentPosition(_drag.el)&Node.DOCUMENT_POSITION_FOLLOWING);
+    if(e.clientX<mid&&dragIsAfter){wrap.insertBefore(_drag.el,it);_drag.moved=true;break;}
+    if(e.clientX>mid&&!dragIsAfter){wrap.insertBefore(_drag.el,it.nextSibling);_drag.moved=true;break;}
+  }
+}
+function tabDragEnd(){
+  document.removeEventListener('pointermove',tabDragMove);
+  document.removeEventListener('pointerup',tabDragEnd);
+  document.removeEventListener('pointercancel',tabDragEnd);
+  if(!_drag)return;
+  _drag.el.classList.remove('dragging');
+  var wrapEl=document.getElementById('matTabs');
+  if(wrapEl)wrapEl.classList.remove('dragging-on');
+  var moved=_drag.moved;
+  var tappedId=_drag.id;
+  _drag=null;
+  // 動かさずに離した＝ただのタップ。何も起きないと分かりにくいので、そのタブを選ぶ
+  if(!moved){selectMat(tappedId);return;}
+  var wrap=document.getElementById('matTabs');
+  var ev=curEv();
+  if(wrap&&ev){
+    var ids=[].slice.call(wrap.querySelectorAll('.mat-tab[data-id]')).map(function(el){return el.getAttribute('data-id');});
+    var byId={};(ev.materials||[]).forEach(function(m){byId[m.id]=m;});
+    var next=ids.map(function(id){return byId[id];}).filter(Boolean);
+    // 取りこぼしがあれば末尾に残す（記録を失わないため）
+    (ev.materials||[]).forEach(function(m){if(next.indexOf(m)<0)next.push(m);});
+    next.forEach(function(m,i){m.order=i;});
+    ev.materials=next;ev.updatedAt=Date.now();save();
+  }
+  renderDetail();
+}
+
+/* 素材の追加 */
+function openMatAdd(){
+  var ev=curEv();if(!ev)return;
+  var host=document.getElementById('modalHost');
+  host.innerHTML=
+   '<div class="modal-ov" id="_matOv"><div class="modal" style="max-width:400px">'
+    +'<div class="modal-h">素材を追加</div>'
+    +'<div class="fld"><label class="lbl">素材名</label>'
+      +'<input type="text" id="matAddName" placeholder="例: 曜変天目の断片">'
+      +'<div class="err" id="matAddErr"></div></div>'
+    +'<div class="fld"><label class="lbl">目標数 <span class="opt">（任意・ノルマ機能で使います）</span></label>'
+      +'<input type="text" id="matAddTgt" inputmode="numeric" placeholder="例: 450" '
+        +'oninput="fmtN(this,event)" oncompositionend="fmtN(this)" onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)" '
+        +'onkeyup="fmtNKeyup(this,event)" '
+        +'onkeydown="if(event.key===\'Enter\'&&!event.isComposing&&event.keyCode!==229)saveMatAdd()"></div>'
+    +'<div class="modal-foot"><div class="right">'
+      +'<button class="btn" onclick="closeModal()">キャンセル</button>'
+      +'<button class="btn pri" onclick="saveMatAdd()">追加</button></div></div>'
+   +'</div></div>';
+  document.getElementById('_matOv').addEventListener('click',function(e){if(e.target.id==='_matOv')closeModal();});
+  var el=document.getElementById('matAddName');if(el)el.focus();
+}
+function saveMatAdd(){
+  var ev=curEv();if(!ev)return;
+  var name=((document.getElementById('matAddName')||{}).value||'').trim();
+  var err=document.getElementById('matAddErr');
+  if(err)err.textContent='';
+  if(!name){if(err)err.textContent='素材名を入力してください。';return;}
+  var tEl=document.getElementById('matAddTgt');
+  var tgt=parseInt(readNum(tEl),10)||0;
+  if(!ev.materials)ev.materials=[];
+  var m={id:uid('smat'),name:name,target:tgt,order:ev.materials.length,records:{},recAt:{},milestones:[]};
+  ev.materials.push(m);
+  if(!ev.multi&&ev.materials.length>1)ev.multi=true; // 2つ目を足したら異去扱いにする
+  ev.updatedAt=Date.now();save();closeModal();
+  _curMatId=m.id;
+  renderDetail();renderList();
+  toast('「'+name+'」を追加しました');
+}
+
+/* 素材の削除 */
+function confirmDeleteMat(id){
+  var ev=curEv();if(!ev)return;
+  var ms=ev.materials||[];
+  if(ms.length<=1)return;
+  var m=ms.filter(function(x){return x.id===id;})[0];if(!m)return;
+  var i=ms.indexOf(m);
+  var n=Object.keys(m.records||{}).length;
+  askConfirm('「'+esc(matName(m,i))+'」を削除します。<br>'
+    +(n?'この素材の記録 <b>'+n+'日ぶん</b>も一緒に消えます。':'記録はまだありません。')
+    +'<br>元に戻せません。よろしいですか？',
+    function(){
+      ev.materials=ms.filter(function(x){return x.id!==id;});
+      ev.materials.forEach(function(x,j){x.order=j;});
+      if(ev.materials.length<2)ev.multi=false;
+      if(_curMatId===id)_curMatId=(ev.materials[0]||{}).id||null;
+      ev.updatedAt=Date.now();save();renderDetail();renderList();
+      toast('素材を削除しました');
+    },'削除する',true);
+}
+
+/* 全素材まとめ（並びはタブ順に追従） */
+function matSummaryHtml(ev){
+  var cur=curMat();
+  var rows=(ev.materials||[]).map(function(m,i){
+    var c=matCum(m),t=+m.target||0;
+    var v,d='';
+    if(ev.normaOn&&t>0){
+      var nc=normaCalc(ev,m);
+      v=c.toLocaleString('ja-JP')+' / '+t.toLocaleString('ja-JP')+'（'+Math.round(c/t*100)+'%）';
+      if(nc.done)d='<span class="sum-d" style="color:var(--ok)">達成</span>';
+      else if(isEnded(ev))d='<span class="sum-d" style="color:var(--t4)">未達</span>';
+      else if(nc.diff>0)d='<span class="sum-d" style="color:var(--acc)">＋'+nc.diff+'日</span>';
+      else if(nc.diff===0)d='<span class="sum-d" style="color:var(--t4)">±0日</span>';
+      else d='<span class="sum-d" style="color:var(--warn)">−'+(-nc.diff)+'日</span>';
+    }else{
+      v='累計 '+c.toLocaleString('ja-JP')+' 個';
+    }
+    return '<div class="sum-row'+(cur&&m.id===cur.id?' on':'')+'" onclick="selectMat(\''+m.id+'\')">'
+      +'<span class="sum-n">'+esc(matName(m,i))+'</span>'
+      +'<span class="sum-v">'+v+'</span>'+d+'</div>';
+  }).join('');
+  return '<div class="card"><div class="card-h">全素材まとめ '
+    +'<span style="font-weight:400;color:var(--t4)">（押すとその素材に切り替わります）</span></div>'
+    +rows+'</div>';
+}
+
+/* ---- 合計から差分入力（B） ---------------------------
+   もとはモーダル「合計から入れる」だったが、記録入力そのものを
+   「合計で入れる」を既定にする形へ作り替えたため、モーダルは廃止して
+   記録カードの中に取り込んだ（描画は renderRecBody 以下）。
+   ここに残るのは差分の配り方を決める計算だけ。                    */
+var _recBulkMode='today'; // 差の配り方 'today'（今日にまとめて）| 'even'（未記録の日に均等割り）
+
+/* 振り分け先の日: 最終記録日の翌日〜今日（なければ今日だけ） */
+function bulkDays(ev,mat){
+  var last=recordDates(mat)[0]||null;
+  var end=maxRecDate(ev);
+  var from=last?addDaysStr(last,1):ev.start;
+  if(from<ev.start)from=ev.start;
+  var out=[];
+  for(var d=from;d<=end;d=addDaysStr(d,1))out.push(d);
+  if(!out.length)out=[end];
+  return out;
+}
+/* 差分の配り方を決める（プレビューと確定で同じ結果になるよう一本化） */
+function bulkPlan(ev,mat,delta,mode){
+  var days=bulkDays(ev,mat);
+  if(mode==='even'&&days.length>1){
+    var base=Math.floor(delta/days.length);
+    var rest=delta-base*days.length;
+    return days.map(function(d,i){
+      return {date:d,add:base+(i===days.length-1?rest:0)}; // 端数は最後の日に寄せる
+    });
+  }
+  return [{date:days[days.length-1],add:delta}]; // 今日（記録できる最終日）にまとめて
+}
+
+/* ---- 詳細画面 ---------------------------------------- */
+var _curEvId=null;   // 表示中イベント
+var _curMatId=null;  // 表示中素材（並べ替えに強いようindexではなくidで保持）
+var _chart=null;     // Chart.js インスタンス
+
+function curEv(){return getEvent(_curEvId);}
+function curMat(){
+  var ev=curEv();if(!ev)return null;
+  var ms=ev.materials||[];
+  var m=ms.filter(function(x){return x.id===_curMatId;})[0];
+  return m||ms[0]||null;
+}
+
+function openDetail(id){
+  var ev=getEvent(id);if(!ev)return;
+  _curEvId=id;
+  _curMatId=((ev.materials||[])[0]||{}).id||null;
+  go('detail');
+  renderDetail();
+}
+function selectMat(id){
+  _curMatId=id;
+  renderDetail();
+}
+
+/* 記録のある日付を新しい順に */
+function recordDates(mat){
+  var r=(mat&&mat.records)||{};
+  return Object.keys(r).sort(function(a,b){return b.localeCompare(a);});
+}
+/* 指定日までの累計 */
+function cumUpTo(mat,date){
+  var r=(mat&&mat.records)||{},s=0;
+  for(var k in r){if(r.hasOwnProperty(k)&&k<=date)s+=(+r[k]||0);}
+  return s;
+}
+
+function renderDetail(){
+  closeCal(); // 描き直すと日付ボタンが作り直されるので、開いたままにしない
+  var ev=curEv();if(!ev){go('list');return;}
+  var mat=curMat();
+  var host=document.getElementById('detailBody');
+  var cum=mat?matCum(mat):0;
+
+  var periodTxt=fmtDateFull(ev.start)+' 〜 '+fmtDateFull(ev.end)+'（'+spanDays(ev)+'日間'
+    +(ev.normaOn?(ev.includeEndDay?'・メンテ日含む':'・ノルマは前日まで'+periodDays(ev)+'日で計算'):'')+'）';
+  if(!isEnded(ev)){
+    var dayNo=diffDays(ev.start,todayStr())+1;
+    var r=remainDays(ev);
+    if(dayNo>=1)periodTxt+=' ｜ 今日は'+dayNo+'日目';
+    periodTxt+=' ｜ '+(r>0?'残り'+r+'日':(r===0?'本日まで':'—'));
+  }else{
+    periodTxt+=' ｜ 終了';
+  }
+
+  var matLabel=(mat&&mat.name)?'― '+esc(mat.name):'';
+  var notStarted=(todayStr()<ev.start); // 開始前は記録できない（日付欄の範囲が逆転するのを防ぐ）
+  var tabsBlock=(ev.multi||((ev.materials||[]).length>1))?matTabsHtml(ev):'';
+
+  var nc=mat?normaCalc(ev,mat):null;
+  var normaBlock='',msBlock='';
+  if(ev.normaOn&&mat){
+    if(nc.target>0){
+      normaBlock=heroHtml(ev,mat,nc)+statsHtml(ev,nc);
+    }else{
+      normaBlock='<div class="need-target">ノルマ機能はONですが、<b>目標数がまだ未設定</b>です。<br>'
+        +'「⚙ 編集」から目標数を入れると、先取り表示・固定ノルマ・リカバリーノルマが出ます。</div>';
+    }
+    msBlock=milestoneHtml(ev,mat,nc);
+  }
+
+  host.innerHTML=
+    '<div class="dtl-head"><h2>'+esc(ev.name)+'</h2>'
+      +'<button class="btn sm" onclick="openEdit(\''+ev.id+'\')">⚙ 編集</button></div>'
+    +'<div class="dtl-period">'+periodTxt+'</div>'
+
+    +'<div class="norma-sw">'
+      +'<div class="norma-sw-txt">ノルマ計算・目標管理'
+        +'<small>目標数・1日ノルマ・先取り表示・理想ペース線・マイルストーンを使いたいときだけON。<br>'
+        +'既定はOFF＝日別と累計を記録するグラフだけのシンプルモード。</small></div>'
+      +'<div class="switch'+(ev.normaOn?' on':'')+'" onclick="toggleNorma()"><i></i></div>'
+    +'</div>'
+
+    +tabsBlock
+
+    +normaBlock
+
+    /* 小判カードはノルマのON/OFFによらず、いつもここ（記録カードの上）に出す。
+       ノルマONなら結果として数値カード3枚の真下になる。OFFのときは3枚が
+       そもそも出ないので、位置を変えずに済むこの場所に固定した。          */
+    +kobanHtml(ev)
+
+    +'<div class="card">'
+      +'<div class="card-h">収集数を記録 '+matLabel+'</div>'
+      +(notStarted
+        ? '<div class="bulk-empty">このイベントはまだ始まっていません。<br>'
+          +'開始日（'+fmtDateFull(ev.start)+'）になったら記録できます。</div>'
+        : '<div class="fld"><div class="seg" id="recSeg">'
+            +'<button data-v="total" onclick="setRecMode(\'total\')">合計で入れる</button>'
+            +'<button data-v="daily" onclick="setRecMode(\'daily\')">その日の数で入れる</button>'
+          +'</div></div>'
+          +'<div id="recBody"></div>')
+    +'</div>'
+
+    +'<div class="card">'
+      +'<div class="card-h">収集グラフ '+matLabel+'</div>'
+      +'<div class="chart-tools">'
+        +'<button class="tog'+(gTog('align')?' on':'')+'" onclick="toggleG(\'align\')">日別と累計を合わせる</button>'
+        +(ev.normaOn&&nc&&nc.target>0
+          ? '<button class="tog'+(gTog('ideal')?' on':'')+'" onclick="toggleG(\'ideal\')">理想ペース線</button>'
+            +'<button class="tog'+(gTog('ms')?' on':'')+'" onclick="toggleG(\'ms\')">マイルストーン線</button>'
+          : '')
+      +'</div>'
+      +'<div class="chart-box"><canvas id="chartCv"></canvas></div>'
+      +'<div class="gleg"><span><i style="background:var(--acc)"></i>日別収集数（棒）</span>'
+        +'<span><i style="background:var(--acc2)"></i>累計（折れ線）</span>'
+        +(ev.normaOn&&nc&&nc.target>0&&gTog('ideal')?'<span><i style="border-top:2px dashed var(--t4)"></i>理想ペース</span>':'')
+        +(ev.normaOn&&nc&&nc.target>0&&gTog('ms')&&msSorted(mat).length?'<span><i style="background:var(--ok)"></i>マイルストーン</span>':'')
+      +'</div>'
+      +(gTog('align')
+        ? '<div class="section-note">※左右の目盛りを同じにしています。棒と折れ線の高さをそのまま見比べられます。</div>'
+        : '<div class="section-note">※左右で目盛りが違います。高さを見比べたいときは「日別と累計を合わせる」を押してください。</div>')
+      +(ev.normaOn?'':'<div class="section-note">※ノルマOFFなので、目標・ノルマ・理想ペース線・マイルストーンは表示されません。</div>')
+    +'</div>'
+
+    +msBlock
+
+    +'<div class="card">'
+      +'<div class="card-h">日別記録 <span style="font-weight:400">（押すと修正できます）</span>'
+        +'<span style="color:var(--t4)">累計 '+cum.toLocaleString('ja-JP')+' 個</span></div>'
+      +'<div id="dayList"></div>'
+    +'</div>'
+
+    +(tabsBlock?matSummaryHtml(ev):'')
+
+    +'<div style="display:flex;justify-content:flex-end">'
+      +'<button class="btn danger sm" onclick="confirmDeleteEvent(\''+ev.id+'\')">このイベントを削除</button>'
+    +'</div>';
+
+  renderDayList();
+  renderRecBody();   // 「合計で入れる／その日の数で入れる」の中身（updateRecNote はこの中から呼ぶ）
+  drawChart();
+}
+
+/* 記録できる上限日: 終了日と今日の早いほう（未来の日には記録させない） */
+function maxRecDate(ev){var t=todayStr();return (t<ev.end)?t:ev.end;}
+/* 既定の記録日: 今日が期間内なら今日、期間前なら開始日、終了後なら終了日 */
+function defaultRecDate(ev){
+  var t=todayStr();
+  if(t<ev.start)return ev.start;
+  if(t>ev.end)return ev.end;
+  return t;
+}
+/* ===== 収集数の入力（合計で入れる／その日の数で入れる） =====
+   ゲーム画面には収集物の「合計」しか出ないため、既定は「合計で入れる」。
+   入れた合計と記録済み累計の差を、記録できる最終日（ふつうは今日）に入れる。
+   記録し忘れた日があるときだけ、差の配り方を選ばせる。               */
+function recMode(){return (DB.settings.recMode==='daily')?'daily':'total';}
+function setRecMode(m){
+  DB.settings.recMode=(m==='daily')?'daily':'total';
+  saveSetting();
+  renderRecBody();
+}
+/* 記録が入る日（終了後のイベントなら最終日）と、その呼び名 */
+function recLandDate(ev){return maxRecDate(ev);}
+function recLandLabel(ev){
+  var d=recLandDate(ev);
+  if(d===todayStr())return '今日';
+  return (d===ev.end)?'最終日':'';
+}
+/* 入力欄の文字から直接読む（カンマ整形の完了を待たずに済むよう dataset は使わない） */
+function readTypedTotal(){
+  var el=document.getElementById('recTotal');
+  if(!el)return null;
+  var raw=toHalfDigits(el.value||'').replace(/[^\d]/g,'');
+  return (raw==='')?null:parseInt(raw,10);
+}
+
+function renderRecBody(){
+  var host=document.getElementById('recBody');
+  if(!host)return;
+  var m=recMode();
+  var btns=document.querySelectorAll('#recSeg button');
+  for(var i=0;i<btns.length;i++)btns[i].classList.toggle('on',btns[i].dataset.v===m);
+  host.innerHTML=(m==='total')?recTotalHtml():recDailyHtml();
+  // 初回描画では入力欄を空のままにする（従来どおり）。日付を変えたときだけ onRecDateChange が現在値を出す
+  if(m==='total')updateRecPreview();
+  else updateRecNote();
+}
+
+/* --- 合計で入れる --- */
+function recTotalHtml(){
+  var ev=curEv(),mat=curMat();
+  if(!ev||!mat)return '<div class="bulk-empty">素材が登録されていません。「⚙ 編集」から素材を追加してください。</div>';
+  var land=recLandDate(ev),lab=recLandLabel(ev);
+  var days=bulkDays(ev,mat);
+  var h=''
+   +'<div class="in-row">'
+     +'<div class="fld" style="flex:0 0 auto;min-width:0"><label class="lbl">記録する日'+(lab?'（'+lab+'）':'')+'</label>'
+       +'<div class="rec-fixdate">'+fmtDateFull(land)+'</div></div>'
+     +'<div class="fld"><label class="lbl">いまの合計</label>'
+       +'<input type="text" id="recTotal" inputmode="numeric" placeholder="例: 8,680" '
+         +'oninput="fmtN(this,event);updateRecPreview()" oncompositionend="fmtN(this);updateRecPreview()" '
+         +'onfocus="fmtNFocus(this)" onblur="fmtNBlur(this);updateRecPreview()" '
+         +'onkeyup="fmtNKeyup(this,event);updateRecPreview()" '
+         +'onkeydown="if(event.key===\'Enter\'&&!event.isComposing&&event.keyCode!==229)submitTotal()"></div>'
+     +ticketInputHtml(ev)
+     +'<button class="btn pri" onclick="submitTotal()">記録する</button>'
+   +'</div>';
+  if(days.length>1){
+    h+='<div class="fld" style="margin-top:12px"><label class="lbl">'
+      +'記録がない日が '+days.length+' 日あります。差の分をどう入れますか</label>'
+      +'<div class="seg" id="recBulkSeg">'
+        +'<button data-v="today"'+(_recBulkMode==='today'?' class="on"':'')+' onclick="setRecBulkMode(\'today\')">今日にまとめて</button>'
+        +'<button data-v="even"'+(_recBulkMode==='even'?' class="on"':'')+' onclick="setRecBulkMode(\'even\')">未記録の日に均等割り</button>'
+      +'</div></div>';
+  }
+  h+='<div class="err" id="recErr"></div>'
+    +'<div id="recPrev"></div>'
+    +'<div class="in-note" id="recNote"></div>';
+  return h;
+}
+function setRecBulkMode(m){
+  _recBulkMode=(m==='even')?'even':'today';
+  var btns=document.querySelectorAll('#recBulkSeg button');
+  for(var i=0;i<btns.length;i++)btns[i].classList.toggle('on',btns[i].dataset.v===_recBulkMode);
+  updateRecPreview();
+}
+/* 「今日にまとめて」を選ぶと記録がないまま残る日を、選ぶ前から見せる */
+function leftOverHtml(ev,mat){
+  var days=bulkDays(ev,mat);
+  if(days.length<2||_recBulkMode!=='today')return '';
+  var left=days.slice(0,days.length-1);
+  var txt=(left.length===1)
+    ? mdwTxt(left[0])
+    : mdwTxt(left[0])+'〜'+mdwTxt(left[left.length-1])+' の '+left.length+'日';
+  return '<div class="rec-left">この入れ方だと、<b>'+txt+'</b>は記録がないまま残ります。<br>'
+    +'その日ぶんも形に残したいときは「未記録の日に均等割り」を選んでください。</div>';
+}
+function mdwTxt(d){return fmtDateFull(d).slice(5)+'（'+WD[parseYmd(d).getDay()]+'）';}
+
+/* 合計モードの手形の案内。
+   合計モードは「差」を日に振り分けるが、手形にはそれができない。何日に何枚買ったかが
+   合計からは分からないため（ゲームに「これまでに買った合計」という数字も無い）。
+   なので手形だけは、記録する日にまとめて足す。挙動が違うので必ず一言添える。   */
+function ticketTotalNote(ev){
+  if(!ticketOn(ev))return '';
+  var nm=esc(ticketName(ev));
+  var s='<br>※'+nm+'は日ごとに振り分けず、<b>'+fmtDateFull(recLandDate(ev))+'</b> にまとめて<b>足します</b>。';
+  var t=ticketOf(ev,recLandDate(ev));
+  if(t>0)s+='（この日はいま '+ticketTxt(ev,t)+'）';
+  return s;
+}
+function updateRecPreview(){
+  var ev=curEv(),mat=curMat();
+  var err=document.getElementById('recErr');
+  var prev=document.getElementById('recPrev');
+  var note=document.getElementById('recNote');
+  if(!ev||!mat||!prev||!note)return;
+  var cur=matCum(mat);
+  var typed=readTypedTotal();
+  var multiMat=((ev.materials||[]).length>1)
+    ? '<br>※素材タブを切り替えて素材ごとに入力します。グラフ・ノルマ・マイルストーンも素材ごとです。' : '';
+  multiMat=ticketTotalNote(ev)+multiMat;
+  if(err)err.textContent='';
+
+  if(typed===null){
+    prev.innerHTML=leftOverHtml(ev,mat);
+    note.innerHTML='※いま記録されている累計は <b>'+cur.toLocaleString('ja-JP')+'</b> 個です。'
+      +'ゲーム画面に出ている合計をそのまま入れてください。差の分だけが記録されます。'+multiMat;
+    return;
+  }
+  var delta=typed-cur;
+  if(delta<0){
+    prev.innerHTML='';
+    if(err)err.innerHTML='入力した合計（'+typed.toLocaleString('ja-JP')+'）が、記録済みの累計（'
+      +cur.toLocaleString('ja-JP')+'）より少ないです。数を減らすときは、下の「日別記録」から直してください。';
+    note.innerHTML='';
+    return;
+  }
+  if(delta===0){
+    prev.innerHTML='';
+    note.innerHTML=(ticketOn(ev)
+      ? '※記録済みの累計と同じです。集めた数として入れるものはありません。'
+      : '※記録済みの累計と同じです。入れるものはありません。')+multiMat;
+    return;
+  }
+  var plan=bulkPlan(ev,mat,delta,_recBulkMode);
+  if(plan.length>1){
+    prev.innerHTML='<div class="fld" style="margin-top:12px"><label class="lbl">こう入ります（確認）</label>'
+      +'<div class="bulk-prev">'+plan.map(function(p){
+          var old=(mat.records&&mat.records[p.date])?(+mat.records[p.date]||0):0;
+          return '<div class="bulk-prow"><span class="pd">'+mdwTxt(p.date)+'</span>'
+            +'<span class="pv">'+(old?old.toLocaleString('ja-JP')+' → ':'')+'<b>'+(old+p.add).toLocaleString('ja-JP')+'</b> 個</span></div>';
+        }).join('')+'</div>'
+      +'<div class="bulk-warn">※均等割りは実際の日ごとの数とは違うので、グラフの形は実態と変わります。</div></div>';
+  }else{
+    prev.innerHTML=leftOverHtml(ev,mat);
+  }
+  note.innerHTML='※差の <b>'+delta.toLocaleString('ja-JP')+'</b> 個を'
+    +(plan.length>1?'上の'+plan.length+'日に':' '+mdwTxt(plan[0].date)+' に')+'入れます。'+multiMat;
+}
+
+function submitTotal(){
+  var ev=curEv(),mat=curMat();
+  var err=document.getElementById('recErr');
+  if(err)err.textContent='';
+  if(!ev||!mat){if(err)err.textContent='素材が登録されていません。「⚙ 編集」から素材を追加してください。';return;}
+  var typed=readTypedTotal();
+  var tn=readTicketInput();   /* 買い足した手形。合計モードでも欄はそのまま出す */
+  if(typed===null){
+    /* 手形だけ入っているなら、それだけ記録する */
+    if(tn>0){applyTicketOnly(ev,mat,tn);return;}
+    if(err)err.textContent=ticketOn(ev)
+      ? '「いまの合計」か、買い足した'+ticketName(ev)+'のどちらかを入力してください。'
+      : '「いまの合計」を入力してください。';
+    return;
+  }
+  var delta=typed-matCum(mat);
+  /* 数が食い違っているときは手形も入れない。先に数のほうを直してもらう */
+  if(delta<0){if(err)err.textContent='記録済みの累計より少ない数は入れられません。減らすときは下の「日別記録」から直してください。';return;}
+  if(delta===0){
+    if(tn>0){applyTicketOnly(ev,mat,tn);return;}
+    if(err)err.textContent='記録済みの累計と同じです。入れるものはありません。';return;
+  }
+  var plan=bulkPlan(ev,mat,delta,_recBulkMode);
+  if(!mat.records)mat.records={};
+  var before=achievedIds(mat);
+  var beforeDone=(+mat.target>0)&&(matCum(mat)>=+mat.target);
+  plan.forEach(function(p){
+    setRec(mat,p.date,(+mat.records[p.date]||0)+p.add);
+  });
+  /* 手形は振り分けない。何日に何枚買ったかは合計からは分からないので、
+     記録する日（ふつうは今日）にまとめて足す。                        */
+  if(tn>0)addTicket(ev,recLandDate(ev),tn);
+  ev.updatedAt=Date.now();
+  save();
+  _recBulkMode='today';
+  renderDetail();renderList();
+  if(!celebrate(ev,mat,before,beforeDone)){
+    var msg=delta.toLocaleString('ja-JP')+' 個を'+(plan.length>1?plan.length+'日に振り分けて':'')+'記録しました';
+    if(tn>0)msg=delta.toLocaleString('ja-JP')+' 個／'+ticketName(ev)+' '+tn.toLocaleString('ja-JP')+ticketUnit(ev)+'を記録しました';
+    toast(msg);
+  }
+}
+/* 合計モードで、手形だけを記録する */
+function applyTicketOnly(ev,mat,tn){
+  addTicket(ev,recLandDate(ev),tn);
+  ev.updatedAt=Date.now();
+  save();
+  renderDetail();renderList();
+  toast(fmtDateFull(recLandDate(ev))+' に '+ticketName(ev)+' '+tn.toLocaleString('ja-JP')+ticketUnit(ev)+'を記録しました');
+}
+
+/* --- その日の数で入れる（従来の入力） --- */
+function recDailyHtml(){
+  var ev=curEv();
+  if(!ev)return '';
+  return '<div class="in-row">'
+      +'<div class="fld"><label class="lbl">日付</label>'
+        /* 選べるのは イベント開始日 〜（今日と終了日の早いほう）。範囲外はカレンダーで押せない */
+        +calField('recDate',defaultRecDate(ev),ev.start,maxRecDate(ev),'onRecDateChange')+'</div>'
+      +'<div class="fld"><label class="lbl" id="recNumLbl">その日集めた数</label>'
+        +'<input type="text" id="recNum" inputmode="numeric" placeholder="例: 1200" '
+          +'oninput="fmtN(this,event)" oncompositionend="fmtN(this)" '
+          +'onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)" onkeyup="fmtNKeyup(this,event)" '
+          +'onkeydown="if(event.key===\'Enter\'&&!event.isComposing&&event.keyCode!==229)submitRecord()"></div>'
+      +ticketInputHtml(ev)
+      +'<button class="btn pri" onclick="submitRecord()">記録する</button>'
+    +'</div>'
+    +'<div class="err" id="recErr"></div>'
+    +'<div class="in-note" id="recNote"></div>';
+}
+
+/* 手形の入力欄。隣の収集物の欄と挙動が違う（あちらは上書き、こちらは足し算）ので、
+   ラベルを「買い足した◯◯」にして、下の案内でも毎回そう言い続ける。          */
+function ticketInputHtml(ev){
+  if(!ticketOn(ev))return '';
+  return '<div class="fld"><label class="lbl">買い足した'+esc(ticketName(ev))+'</label>'
+    +'<input type="text" id="recTicket" inputmode="numeric" placeholder="例: 6" '
+      +'oninput="fmtN(this,event)" oncompositionend="fmtN(this)" '
+      +'onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)" onkeyup="fmtNKeyup(this,event)" '
+      +'onkeydown="if(event.key===\'Enter\'&&!event.isComposing&&event.keyCode!==229)'
+        +(recMode()==='daily'?'submitRecord()':'submitTotal()')+'"></div>';
+}
+/* 手形の欄から枚数を読む。欄が無い・空・0 はすべて 0（＝買っていない）扱い */
+function readTicketInput(){
+  var el=document.getElementById('recTicket');
+  if(!el)return 0;
+  var raw=readNum(el);
+  if(raw==='')return 0;
+  var n=parseInt(raw,10);
+  return (isNaN(n)||n<0)?0:n;
+}
+
+function onRecDateChange(){
+  updateRecNote();
+  // その日にすでに記録があれば、入力欄に現在値を出しておく（上書き前提が見えるように）
+  var mat=curMat(),d=(document.getElementById('recDate')||{}).value;
+  var el=document.getElementById('recNum');
+  if(!mat||!el)return;
+  var has=mat.records&&mat.records.hasOwnProperty(d);
+  if(has){el.value=(+mat.records[d]).toLocaleString('ja-JP');el.dataset.val=String(+mat.records[d]);}
+  else{el.value='';el.dataset.val='';}
+  /* 手形の欄には**触らない**。ここで今の枚数を出すと、そのまま記録したときに
+     足し算なので二重に足されてしまう。打った数もそのまま残す（日付を選び直した
+     だけで消えると、入れ直しになるため）。今その日に何枚あるかは下の案内で見せる。 */
+}
+function updateRecNote(){
+  var ev=curEv(),mat=curMat();
+  var d=(document.getElementById('recDate')||{}).value;
+  var note=document.getElementById('recNote');
+  var lbl=document.getElementById('recNumLbl');
+  if(!ev||!note)return;
+  var isToday=(d===todayStr());
+  if(lbl)lbl.textContent=isToday?'今日集めた数':'その日集めた数';
+  var msg='';
+  if(mat&&d&&mat.records&&mat.records.hasOwnProperty(d)){
+    msg='※'+fmtDateFull(d)+' はすでに <b>'+(+mat.records[d]).toLocaleString('ja-JP')+'</b> 個で記録済みです。記録すると上書きされます。';
+  }else{
+    msg='※日付を変えれば、記録し忘れた過去の日にも入力できます。入れるのは「その日に集めた数」（累計ではありません）。';
+  }
+  if(ticketOn(ev)){
+    var nm=esc(ticketName(ev));
+    var t=ticketOf(ev,d);
+    /* 隣の欄は上書き、この欄は足し算。同じ行で挙動が違うので、毎回そう書き続ける */
+    msg+='<br>※'+nm+'の欄は、入れた数が<b>足されます</b>（上書きではありません）。買っていない日は空のままで大丈夫です。';
+    if(t>0){
+      msg+='<br>※'+(isToday?'今日':fmtDateFull(d)+' に')+'買った'+nm+' <b>'+ticketTxt(ev,t)+'</b>。'
+        +'打ち間違いは下の「日別記録」から直せます。';
+    }
+  }
+  if((ev.materials||[]).length>1){
+    msg+='<br>※素材タブを切り替えて素材ごとに入力します。グラフ・ノルマ・マイルストーンも素材ごとです。';
+  }
+  note.innerHTML=msg;
+}
+
+function submitRecord(){
+  var ev=curEv(),mat=curMat();
+  var err=document.getElementById('recErr');
+  if(err)err.textContent='';
+  if(!ev||!mat){if(err)err.textContent='素材が登録されていません。「⚙ 編集」から素材を追加してください。';return;}
+  var d=(document.getElementById('recDate')||{}).value;
+  var el=document.getElementById('recNum');
+  var raw=readNum(el);
+
+  if(!d){if(err)err.textContent='日付を選んでください。';return;}
+  if(d<ev.start||d>ev.end){
+    if(err)err.textContent='イベント期間（'+fmtDateFull(ev.start)+'〜'+fmtDateFull(ev.end)+'）の中の日付を選んでください。';return;
+  }
+  if(d>todayStr()){
+    if(err)err.textContent='まだ来ていない日には記録できません。';return;
+  }
+  var tn=readTicketInput();   /* 買い足した手形。欄が無い・空・0 なら 0 */
+
+  if(raw===''){
+    /* 手形だけ入っているなら、それだけ記録する。
+       朝に手形を買って、集めた数は夜に入れる、という順番があるため。 */
+    if(tn>0){applyRecord(d,null,tn);return;}
+    if(err)err.textContent=ticketOn(ev)
+      ? '集めた数か、買い足した'+ticketName(ev)+'のどちらかを入力してください。'
+      : '集めた数を入力してください（0でも記録できます）。';
+    return;
+  }
+  var n=parseInt(raw,10);
+  if(isNaN(n)){if(err)err.textContent='数字で入力してください。';return;}
+
+  if(mat.records&&mat.records.hasOwnProperty(d)&&(+mat.records[d])!==n){
+    var old=(+mat.records[d]).toLocaleString('ja-JP');
+    /* 手形も一緒に入っているときは、そちらは足し算だと確認文にも書いておく */
+    var addTxt=(tn>0)
+      ? '<br><span style="font-size:12px;color:var(--t4)">買い足した'+esc(ticketName(ev))+' '
+        +tn.toLocaleString('ja-JP')+ticketUnit(ev)+' も一緒に記録されます（こちらは足し算です）。</span>'
+      : '';
+    askConfirm(fmtDateFull(d)+' はすでに <b>'+old+'</b> 個で記録されています。<br>'
+      +'<b>'+n.toLocaleString('ja-JP')+'</b> 個で上書きしますか？'+addTxt,
+      function(){applyRecord(d,n,tn);},'上書きする');
+    return;
+  }
+  applyRecord(d,n,tn);
+}
+/* n が null なら収集数は触らず、手形だけ記録する */
+function applyRecord(d,n,tn){
+  var ev=curEv(),mat=curMat();
+  if(!ev||!mat)return;
+  if(!mat.records)mat.records={};
+  var before=achievedIds(mat);
+  var beforeDone=(+mat.target>0)&&(matCum(mat)>=+mat.target);
+  if(n!==null&&n!==undefined)setRec(mat,d,n);
+  if(tn>0)addTicket(ev,d,tn);   /* 上書きではなく足し算。時刻は addTicket が打つ */
+  ev.updatedAt=Date.now();
+  save();
+  var el=document.getElementById('recNum');
+  if(el){el.value='';el.dataset.val='';}
+  /* 手形の欄は renderDetail が描き直すことで空に戻る（記録欄ごと作り直されるため） */
+  renderDetail();
+  if(!celebrate(ev,mat,before,beforeDone)){
+    var msg;
+    if(n===null||n===undefined){
+      msg=fmtDateFull(d)+' に '+ticketName(ev)+' '+tn.toLocaleString('ja-JP')+ticketUnit(ev)+'を記録しました';
+    }else{
+      msg=fmtDateFull(d)+' に '+n.toLocaleString('ja-JP')+' 個';
+      if(tn>0)msg+='／'+ticketName(ev)+' '+tn.toLocaleString('ja-JP')+ticketUnit(ev);
+      msg+='を記録しました';
+    }
+    toast(msg);
+  }
+}
+
+/* 記録の前後で達成状況を比べ、新たに到達したものだけ演出する */
+function celebrate(ev,mat,before,beforeDone){
+  if(!ev.normaOn||!ev.milestoneToast)return false;
+  var afterDone=(+mat.target>0)&&(matCum(mat)>=+mat.target);
+  if(afterDone&&!beforeDone){
+    toast('🎉 目標 '+(+mat.target).toLocaleString('ja-JP')+' 個を達成しました！',true);
+    return true;
+  }
+  var after=achievedIds(mat);
+  var fresh=after.filter(function(id){return before.indexOf(id)<0;});
+  if(!fresh.length)return false;
+  var list=msSorted(mat);
+  var hit=fresh.map(function(id){return list.find(function(m){return m.id===id;});})
+               .filter(Boolean)
+               .sort(function(a,b){return (+b.need||0)-(+a.need||0)})[0]; // 一度に複数なら大きい方を主役に
+  if(!hit)return false;
+  var msg='🎉 '+(+hit.need).toLocaleString('ja-JP')+'個 到達'+(hit.reward?' ― '+hit.reward:'')+'！';
+  if(fresh.length>1)msg+='（他'+(fresh.length-1)+'件も同時に到達）';
+  toast(msg,true);
+  return true;
+}
+
+/* 日別記録リスト */
+/* 日別記録に並べる日付。記録のある日に加えて、**手形しか入っていない日**も出す。
+   手形だけ記録できるようにした以上、ここに出さないと打ち間違いを直す入口が無くなる。 */
+function dayListDates(ev,mat){
+  var s={};
+  Object.keys((mat&&mat.records)||{}).forEach(function(d){s[d]=1;});
+  if(ticketOn(ev))Object.keys((ev&&ev.tickets)||{}).forEach(function(d){s[d]=1;});
+  return Object.keys(s).sort(function(a,b){return b.localeCompare(a);});
+}
+function renderDayList(){
+  var ev=curEv(),mat=curMat();
+  var host=document.getElementById('dayList');
+  if(!host)return;
+  var dates=dayListDates(ev,mat);
+  if(!dates.length){
+    host.innerHTML='<div class="empty" style="padding:20px 8px">まだ記録がありません。<br>上の欄から、ゲーム画面に出ている合計を入れてみてください。</div>';
+    return;
+  }
+  var tkOn=ticketOn(ev);
+  /* 列見出し。「日別」「累計」はグラフの凡例と同じ言葉。
+     見出しは記録の行ではないので .day-row を付けない（行数の数え方を変えないため）。
+     単位（個・枚）は出さない。収集物の行も元から単位なしで、枚数は小判カードに出る。 */
+  var head='<div class="day-hd">'
+    +'<span class="day-d"></span>'
+    +'<span class="day-got">日別</span>'
+    +'<span class="day-cum">累計</span>'
+    +(tkOn?'<span class="day-tk">'+esc(ticketName(ev))+'</span>':'')
+    +'</div>';
+  host.innerHTML=head+dates.map(function(d){
+    var has=mat&&mat.records&&mat.records.hasOwnProperty(d);
+    var g=+((mat&&mat.records)||{})[d]||0;
+    var c=cumUpTo(mat,d);
+    var wd=WD[parseYmd(d).getDay()];
+    var t=tkOn?ticketOf(ev,d):0;
+    return '<div class="day-row">'
+      +'<span class="day-d">'+fmtDateFull(d).slice(5)+'（'+wd+'）</span>'
+      /* 手形しか入っていない日は「＋0」だと 0 個記録したように見えるので「―」にする */
+      +(has?'<span class="day-got">＋<b>'+g.toLocaleString('ja-JP')+'</b></span>'
+           :'<span class="day-got none">―</span>')
+      +'<span class="day-cum">'+c.toLocaleString('ja-JP')+'</span>'
+      +(tkOn?'<span class="day-tk">'+(t>0?'<b>'+t.toLocaleString('ja-JP')+'</b>':'')+'</span>':'')
+      +'<button class="day-edit" onclick="openDayEdit(\''+d+'\')" title="修正">✎</button>'
+      +'</div>';
+  }).join('');
+}
+
+/* 日別記録の修正モーダル */
+function openDayEdit(d){
+  var ev=curEv(),mat=curMat();if(!ev||!mat)return;
+  var hasRec=mat.records&&mat.records.hasOwnProperty(d);
+  var hasTk=ticketOn(ev)&&ev.tickets&&ev.tickets.hasOwnProperty(d);
+  if(!hasRec&&!hasTk)return;   /* 手形だけの日からも開ける */
+  var cur=+((mat.records||{})[d])||0;
+  var tk=ticketOf(ev,d);
+  var host=document.getElementById('modalHost');
+  host.innerHTML=
+   '<div class="modal-ov" id="_dayOv"><div class="modal" style="max-width:400px">'
+    +'<div class="modal-h">'+fmtDateFull(d)+'（'+WD[parseYmd(d).getDay()]+'）の記録</div>'
+    +'<div class="fld"><label class="lbl">その日集めた数</label>'
+      +'<input type="text" id="dayNum" inputmode="numeric" value="'+(hasRec?cur.toLocaleString('ja-JP'):'')+'" '
+        +'oninput="fmtN(this,event)" oncompositionend="fmtN(this)" '
+        +'onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)" onkeyup="fmtNKeyup(this,event)" '
+        +'onkeydown="if(event.key===\'Enter\'&&!event.isComposing&&event.keyCode!==229)saveDayEdit(\''+d+'\')">'
+      +'<div class="err" id="dayErr"></div></div>'
+    /* ここは記録欄と違って**上書き**。買い足しではなく「その日の枚数そのもの」を直す。 */
+    +(ticketOn(ev)
+      ? '<div class="fld"><label class="lbl">この日買った'+esc(ticketName(ev))+'</label>'
+        +'<input type="text" id="dayTicket" inputmode="numeric" value="'+(tk?tk.toLocaleString('ja-JP'):'')+'" '
+          +'oninput="fmtN(this,event)" oncompositionend="fmtN(this)" '
+          +'onfocus="fmtNFocus(this)" onblur="fmtNBlur(this)" onkeyup="fmtNKeyup(this,event)" '
+          +'onkeydown="if(event.key===\'Enter\'&&!event.isComposing&&event.keyCode!==229)saveDayEdit(\''+d+'\')">'
+        +'<div class="hint">ここは<b>買い足し</b>ではなく、この日買った枚数そのものです。'
+        +'空か 0 にすると、この日の'+esc(ticketName(ev))+'は消えます。</div></div>'
+      : '')
+    +'<div class="modal-foot">'
+      +'<button class="btn danger sm" onclick="confirmDeleteDay(\''+d+'\')">この日の記録を削除</button>'
+      +'<div class="right"><button class="btn" onclick="closeModal()">キャンセル</button>'
+      +'<button class="btn pri" onclick="saveDayEdit(\''+d+'\')">保存</button></div>'
+    +'</div>'
+   +'</div></div>';
+  document.getElementById('_dayOv').addEventListener('click',function(e){if(e.target.id==='_dayOv')closeModal();});
+  var el=document.getElementById('dayNum');if(el){el.focus();fmtNFocus(el);}
+}
+function saveDayEdit(d){
+  var ev=curEv(),mat=curMat();if(!ev||!mat)return;
+  var el=document.getElementById('dayNum');
+  var raw=readNum(el);
+  var err=document.getElementById('dayErr');
+  if(err)err.textContent='';
+  var hadRec=!!(mat.records&&mat.records.hasOwnProperty(d));
+  var tEl=document.getElementById('dayTicket');
+  var hasTicketField=ticketOn(ev)&&!!tEl;
+  if(raw===''){
+    /* もともと記録があった日で空にされたら、消すつもりなのか分からないので断る。
+       消したいときは下の「削除」を通す。                                        */
+    if(hadRec){
+      if(err)err.textContent='数を入力してください（0でも記録できます）。この日の記録を消すときは「この日の記録を削除」を押してください。';
+      return;
+    }
+    /* もともと記録が無い日（手形だけの日）は、空のままでよい */
+    if(!hasTicketField){if(err)err.textContent='数を入力してください（0でも記録できます）。';return;}
+  }
+  var before=achievedIds(mat);
+  var beforeDone=(+mat.target>0)&&(matCum(mat)>=+mat.target);
+  if(raw!=='')setRec(mat,d,parseInt(raw,10));
+  if(hasTicketField){
+    /* ここは上書き。0 や空にしたらその日の手形を消す（setTicket が時刻も打つ） */
+    var traw=readNum(tEl);
+    var tn=(traw==='')?0:(parseInt(traw,10)||0);
+    var hadTk=!!(ev.tickets&&ev.tickets.hasOwnProperty(d));
+    /* 元から無く、入れた数も 0 なら何もしない。ここで setTicket を呼ぶと
+       「この日は消された」という時刻だけが残り、別の端末の記録を消しにいく。 */
+    if(tn>0||hadTk)setTicket(ev,d,tn);
+  }
+  ev.updatedAt=Date.now();save();closeModal();renderDetail();
+  if(!celebrate(ev,mat,before,beforeDone)){
+    toast(fmtDateFull(d)+' の記録を更新しました');
+  }
+}
+function confirmDeleteDay(d){
+  closeModal();
+  var ev0=curEv();
+  var tk=ticketOn(ev0)?ticketOf(ev0,d):0;
+  var msg=fmtDateFull(d)+' の記録を削除します。';
+  if(tk>0)msg+='<br>この日の'+esc(ticketName(ev0))+' <b>'+tk.toLocaleString('ja-JP')+ticketUnit(ev0)+'</b> も一緒に消えます。';
+  msg+='<br>よろしいですか？';
+  askConfirm(msg,function(){
+    var ev=curEv(),mat=curMat();if(!ev||!mat)return;
+    /* 無いものに時刻を打たないこと。打つと「そのとき消された」印になって、
+       別の端末にある同じ日の記録まで消しにいく。                          */
+    if(mat.records&&mat.records.hasOwnProperty(d))delRec(mat,d);
+    if(ev.tickets&&ev.tickets.hasOwnProperty(d))setTicket(ev,d,0);
+    ev.updatedAt=Date.now();save();renderDetail();
+    toast(fmtDateFull(d)+' の記録を削除しました');
+  },'削除する',true);
+}
+
+/* ノルマスイッチ */
+function toggleNorma(){
+  var ev=curEv();if(!ev)return;
+  ev.normaOn=!ev.normaOn;ev.updatedAt=Date.now();save();
+  renderDetail();renderList();
+}
+
+/* 軸を揃えるとき、目盛りが半端な数にならないよう上限をきりのいい値へ丸める */
+function niceMax(v){
+  if(!(v>0))return 10;
+  var e=Math.pow(10,Math.floor(Math.log10(v)));
+  var n=v/e;
+  var m=(n<=1)?1:(n<=1.2)?1.2:(n<=1.5)?1.5:(n<=2)?2:(n<=2.5)?2.5:(n<=3)?3:(n<=4)?4:(n<=5)?5:(n<=6)?6:(n<=8)?8:10;
+  return m*e;
+}
+
+/* ---- グラフのトグル設定 ------------------------------ */
+function gTog(k){
+  if(!DB.settings.gtog)DB.settings.gtog={};
+  var v=DB.settings.gtog[k];
+  if(k==='align')return v===true;   // 軸を合わせるは既定OFF
+  return v!==false;                 // 理想ペース線・マイルストーン線は既定ON
+}
+function toggleG(k){
+  if(!DB.settings.gtog)DB.settings.gtog={};
+  DB.settings.gtog[k]=!gTog(k);save();renderDetail();
+}
+
+/* マイルストーンの水平線を描くプラグイン（annotation非依存） */
+var msLinePlugin={
+  id:'msLines',
+  afterDatasetsDraw:function(chart,args,opts){
+    var lines=(opts&&opts.lines)||[];
+    if(!lines.length)return;
+    var sc=chart.scales.yCum;if(!sc)return;
+    var ctx=chart.ctx,area=chart.chartArea;
+    lines.forEach(function(L){
+      var py=sc.getPixelForValue(L.value);
+      if(py<area.top-1||py>area.bottom+1)return; // 表示範囲外は描かない
+      ctx.save();
+      ctx.beginPath();
+      ctx.setLineDash([5,3]);
+      ctx.lineWidth=1.5;
+      ctx.strokeStyle=L.color;
+      ctx.moveTo(area.left,py);ctx.lineTo(area.right,py);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      if(L.label){
+        ctx.font='10px -apple-system,BlinkMacSystemFont,sans-serif';
+        var tw=ctx.measureText(L.label).width;
+        var tx=area.right-tw-6,ty=py-4;
+        if(ty<area.top+9)ty=py+11;
+        ctx.fillStyle=L.bg;
+        ctx.fillRect(tx-4,ty-9,tw+8,13);
+        ctx.fillStyle=L.color;
+        ctx.fillText(L.label,tx,ty+1);
+      }
+      ctx.restore();
+    });
+  }
+};
+
+/* ---- グラフ描画（Chart.js） -------------------------- */
+function drawChart(){
+  var cv=document.getElementById('chartCv');
+  if(!cv||typeof Chart==='undefined')return;
+  var ev=curEv(),mat=curMat();
+  if(_chart){_chart.destroy();_chart=null;}
+  if(!ev||!mat)return;
+
+  var dark=(effMode()==='dark');
+  var gridCol=dark?'rgba(200,180,140,.12)':'rgba(100,80,50,.1)';
+  var textCol=dark?'#a09070':'#7a6a58';
+  var cs=getComputedStyle(document.documentElement);
+  var accCol=(cs.getPropertyValue('--acc')||'').trim()||'#d9a960';
+  var acc2Col=(cs.getPropertyValue('--acc2')||'').trim()||'#5b9fe8';
+  var okCol=(cs.getPropertyValue('--ok')||'').trim()||'#7ec98a';
+  var bg1Col=(cs.getPropertyValue('--bg1')||'').trim()||'#1e1610';
+
+  // ラベル＝開始〜終了の全日（ノルマの分母ではなくカレンダー日数。前日まで設定でも最終日を描く）
+  var n=Math.max(1,spanDays(ev));
+  var labels=[],dates=[],start=parseYmd(ev.start);
+  for(var i=0;i<n;i++){
+    var d=new Date(start.getFullYear(),start.getMonth(),start.getDate()+i);
+    dates.push(ymd(d));
+    labels.push((d.getMonth()+1)+'/'+d.getDate());
+  }
+  var t=todayStr();
+  var gains=dates.map(function(d){
+    return (mat.records&&mat.records.hasOwnProperty(d))?(+mat.records[d]||0):null;
+  });
+  // 累計は今日までを繋いで描く（未来はnullで伸ばさない）
+  var run=0;
+  var cums=dates.map(function(d){
+    if(mat.records&&mat.records.hasOwnProperty(d))run+=(+mat.records[d]||0);
+    return (d<=t)?run:null;
+  });
+
+  // ノルマONかつ目標ありのときだけ、理想ペース線とマイルストーン線を用意する
+  var nc=normaCalc(ev,mat);
+  var showNorma=(ev.normaOn&&nc.target>0);
+  var datasets=[
+    {label:'日別収集数',data:gains,yAxisID:'yGain',order:3,
+     backgroundColor:accCol,borderRadius:2,barPercentage:.72,categoryPercentage:.86},
+    {label:'累計',data:cums,type:'line',yAxisID:'yCum',order:1,
+     borderColor:acc2Col,backgroundColor:acc2Col,borderWidth:2.5,
+     pointRadius:3,pointHoverRadius:5,tension:.1,spanGaps:true}
+  ];
+  if(showNorma&&gTog('ideal')){
+    // 理想ペース = 固定ノルマ × 日数（目標で頭打ち）
+    var ideal=dates.map(function(_d,i){return Math.min(nc.target,nc.fixed*(i+1));});
+    datasets.push({label:'理想ペース',data:ideal,type:'line',yAxisID:'yCum',order:2,
+      borderColor:textCol,borderWidth:1.5,borderDash:[5,4],
+      pointRadius:0,pointHoverRadius:0,tension:0,fill:false});
+  }
+  var msLines=[];
+  if(showNorma&&gTog('ms')){
+    msLines=msSorted(mat).map(function(m){
+      var need=+m.need||0;
+      var done=nc.cum>=need;
+      return {value:need,color:okCol,bg:bg1Col,
+              label:(done?'✓ ':'')+need.toLocaleString('ja-JP')+(m.reward?' '+m.reward:'')};
+    });
+  }
+
+  // 「日別と累計を合わせる」がONなら、左右の軸を同じ目盛りにして高さを見比べられるようにする
+  var align=gTog('align');
+  // マイルストーン線を出しているときは、未達のものが軸の外に出て消えないよう上限を確保する
+  var msMax=0;
+  msLines.forEach(function(l){if(l.value>msMax)msMax=l.value;});
+  var axMax=null;
+  if(align){
+    var mg=0,mc=0;
+    gains.forEach(function(v){if(v!=null&&v>mg)mg=v;});
+    cums.forEach(function(v){if(v!=null&&v>mc)mc=v;});
+    if(showNorma&&gTog('ideal'))mc=Math.max(mc,nc.target);
+    axMax=niceMax(Math.max(mg,mc,msMax));
+  }
+
+  _chart=new Chart(cv,{
+    type:'bar',
+    plugins:[msLinePlugin],
+    data:{labels:labels,datasets:datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      scales:{
+        x:{grid:{color:gridCol},ticks:{color:textCol,font:{size:10},maxTicksLimit:14,autoSkip:true}},
+        yGain:{type:'linear',position:'left',beginAtZero:true,
+          max:align?axMax:undefined,
+          title:{display:true,text:'日別',color:textCol,font:{size:10}},
+          grid:{color:gridCol},
+          ticks:{color:textCol,font:{size:10},callback:function(v){return (+v).toLocaleString('ja-JP');}}},
+        yCum:{type:'linear',position:'right',beginAtZero:true,
+          max:align?axMax:undefined,
+          suggestedMax:(!align&&msMax>0)?msMax:undefined,
+          title:{display:true,text:'累計',color:textCol,font:{size:10}},
+          grid:{display:false},
+          ticks:{color:textCol,font:{size:10},callback:function(v){return (+v).toLocaleString('ja-JP');}}}
+      },
+      plugins:{
+        msLines:{lines:msLines},
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            label:function(ctx){
+              if(ctx.parsed.y==null)return null;
+              return ctx.dataset.label+': '+(+ctx.parsed.y).toLocaleString('ja-JP')+' 個';
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+/* ---- トースト ---------------------------------------- */
+var _toastTimer=null;
+function toast(msg,big){
+  var el=document.getElementById('toast');
+  if(!el){el=document.createElement('div');el.id='toast';document.body.appendChild(el);}
+  el.textContent=msg;
+  el.classList.toggle('big',!!big);
+  el.classList.add('show');
+  if(_toastTimer)clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(function(){el.classList.remove('show');},big?3400:2200);
+}
+
+/* ---- モーダル基盤 ------------------------------------ */
+function closeModal(){closeCal();document.getElementById('modalHost').innerHTML='';}
+function askConfirm(msg,onOk,okLabel,danger){
+  var host=document.getElementById('modalHost');
+  host.innerHTML=
+    '<div class="modal-ov" id="_confOv">'
+    +'<div class="modal confirm-box">'
+      +'<div class="cmsg">'+msg+'</div>'
+      +'<div class="cfoot">'
+        +'<button class="btn" id="_confNo">キャンセル</button>'
+        +'<button class="btn '+(danger?'danger':'pri')+'" id="_confYes">'+(okLabel||'OK')+'</button>'
+      +'</div>'
+    +'</div></div>';
+  document.getElementById('_confNo').onclick=closeModal;
+  document.getElementById('_confYes').onclick=function(){closeModal();onOk&&onOk();};
+  document.getElementById('_confOv').addEventListener('click',function(e){if(e.target.id==='_confOv')closeModal();});
+}
+function confirmDeleteEvent(id){
+  var ev=getEvent(id);if(!ev)return;
+  askConfirm('「'+esc(ev.name)+'」を削除します。<br>記録もすべて消え、元に戻せません。よろしいですか？',
+    function(){deleteEvent(id);go('list');renderList();},'削除する',true);
+}
+
+/* ---- 新規作成 / 編集フォーム ------------------------- */
+// 編集中の作業用フォーム状態
+var _form=null; // {editingId, name, start, end, includeEndDay, multi, mats:[{id?,name,target}]}
+
+function openCreate(){
+  var t=todayStr();
+  _form={editingId:null,name:'',start:t,end:t,includeEndDay:true,multi:false,
+         useTicket:false,ticketName:'手形',ticketCost:'',
+         mats:[{id:null,name:'',target:''}]};
+  renderForm('新しいイベントを作る');
+}
+function openEdit(id){
+  var ev=getEvent(id);if(!ev)return;
+  _form={editingId:id,name:ev.name,start:ev.start,end:ev.end,
+         includeEndDay:!!ev.includeEndDay,multi:!!ev.multi,
+         useTicket:!!ev.useTicket,ticketName:ticketName(ev),
+         ticketCost:(ticketCost(ev)?String(ticketCost(ev)):''),
+         mats:(ev.materials||[]).map(function(m){return {id:m.id,name:m.name||'',target:(m.target?String(m.target):'')};})};
+  if(!_form.mats.length)_form.mats=[{id:null,name:'',target:''}];
+  renderForm('イベントを編集');
+}
+
+function setMatTarget(i,el){
+  if(_form&&_form.mats&&_form.mats[i])_form.mats[i].target=readNum(el);
+}
+function matEditRowsHtml(){
+  return _form.mats.map(function(m,i){
+    // 削除ボタンは異去のときだけ。1行しかないときは列を揃えるための余白にする
+    var tail=_form.multi
+      ? (_form.mats.length>1
+          ? '<button class="mdel" onclick="removeMat('+i+')" title="この素材を削除">✕</button>'
+          : '<span class="mspacer"></span>')
+      : '';
+    return '<div class="mat-erow">'
+      +'<input class="mn" type="text" placeholder="'+(_form.multi?'断片名（例: 曜変天目の断片）':'素材名（例: 笹の葉）')+'" '
+        +'value="'+esc(m.name)+'" oninput="_form.mats['+i+'].name=this.value">'
+      +'<input class="mt" type="text" inputmode="numeric" placeholder="目標数" '
+        +'value="'+(m.target?parseInt(m.target).toLocaleString('ja-JP'):'')+'" '
+        +'oninput="fmtN(this,event);setMatTarget('+i+',this)" '
+        +'oncompositionend="fmtN(this);setMatTarget('+i+',this)" onfocus="fmtNFocus(this)" '
+        +'onblur="fmtNBlur(this);setMatTarget('+i+',this)" onkeyup="fmtNKeyup(this,event);setMatTarget('+i+',this)">'
+      +tail
+    +'</div>';
+  }).join('');
+}
+/* 手形の設定欄（スイッチを入れたときだけ出る）。
+   呼び名は画面に出る言葉が変わるだけ。異去は「提灯」で、数え方も「個」になる。 */
+function ticketFieldsHtml(){
+  var f=_form;
+  var nm=(f.ticketName==='提灯')?'提灯':'手形';
+  var un=(nm==='提灯')?'個':'枚';
+  return '<div class="fld"><label class="lbl">呼び名</label>'
+      +'<div class="seg" id="segTicketName">'
+        +'<button data-v="手形" onclick="setTicketName(\'手形\')">手形</button>'
+        +'<button data-v="提灯" onclick="setTicketName(\'提灯\')">提灯</button>'
+      +'</div>'
+      +'<div class="hint">画面に出る言葉が変わるだけです。異去は<b>提灯</b>を選んでください。</div></div>'
+    +'<div class="fld"><label class="lbl">'+nm+'1'+un+'の値段</label>'
+      +'<input type="text" id="fTicketCost" inputmode="numeric" placeholder="例: 200" '
+        +'value="'+(f.ticketCost?parseInt(f.ticketCost).toLocaleString('ja-JP'):'')+'" '
+        +'oninput="fmtN(this,event);setTicketCost(this)" oncompositionend="fmtN(this);setTicketCost(this)" '
+        +'onfocus="fmtNFocus(this)" onblur="fmtNBlur(this);setTicketCost(this)" '
+        +'onkeyup="fmtNKeyup(this,event);setTicketCost(this)">'
+      +'<div class="hint">小判の数を入れてください。あとから直すと、'
+      +'すでに記録した分もまとめて新しい値段で計算し直します。</div></div>';
+}
+function setUseTicket(v){
+  _form.useTicket=!!v;
+  var sw=document.getElementById('swTicket');
+  if(sw)sw.classList.toggle('on',_form.useTicket);
+  var box=document.getElementById('ticketFields');
+  if(box)box.style.display=_form.useTicket?'block':'none';
+  syncFormToggles();
+}
+function setTicketName(nm){
+  _form.ticketName=(nm==='提灯')?'提灯':'手形';
+  /* 呼び名で「1枚／1個」のラベルまで変わるので、欄ごと描き直す。
+     このとき入力中の値段を消さないよう、_form.ticketCost から作り直している。 */
+  var box=document.getElementById('ticketFields');
+  if(box)box.innerHTML=ticketFieldsHtml();
+  syncFormToggles();
+}
+function setTicketCost(el){_form.ticketCost=readNum(el);}
+
+function renderForm(title){
+  var f=_form;
+  var host=document.getElementById('modalHost');
+  host.innerHTML=
+   '<div class="modal-ov" id="_formOv"><div class="modal">'
+    +'<div class="modal-h">'+title+'</div>'
+
+    +'<div class="fld"><label class="lbl">イベント名</label>'
+      +'<input type="text" id="fName" placeholder="例: 連隊戦 〜夏の陣〜" value="'+esc(f.name)+'" oninput="_form.name=this.value">'
+      +'<div class="err" id="errName"></div></div>'
+
+    +'<div class="fld-row" style="margin-bottom:13px">'
+      +'<div class="fld"><label class="lbl">開始日</label>'
+        +calField('fStart',f.start,'','','onFormDateChange')+'</div>'
+      +'<div class="fld"><label class="lbl">終了日</label>'
+        /* 終了日は開始日より前を選べない。開始日のほうは自由（両方に制限を掛けると、
+           イベントを丸ごと後ろへずらしたいときに動けなくなるため）              */
+        +calField('fEnd',f.end,f.start,'','onFormDateChange')+'</div>'
+    +'</div>'
+    +'<div class="err" id="errDate" style="margin-top:-6px;margin-bottom:10px"></div>'
+
+    +'<div class="fld"><label class="lbl">終了日（メンテ日）の扱い</label>'
+      +'<div class="seg" id="segEnd">'
+        +'<button data-v="1" onclick="setIncludeEnd(true)">当日を含む</button>'
+        +'<button data-v="0" onclick="setIncludeEnd(false)">前日まで</button>'
+      +'</div>'
+      +'<div class="hint">影響するのは<b>ノルマ計算の分母だけ</b>です。どちらを選んでも、最終日の記録もグラフ表示もそのまま残ります。<br>'
+      +'メンテ当日も集められるなら「当日を含む」。</div></div>'
+
+    +'<div class="fld"><label class="lbl">種別</label>'
+      +'<div class="seg" id="segType">'
+        +'<button data-v="0" onclick="setMulti(false)">単一素材</button>'
+        +'<button data-v="1" onclick="setMulti(true)">異去（複数素材）</button>'
+      +'</div>'
+      +'<div class="hint" id="typeHint"></div></div>'
+
+    +'<div class="fld"><label class="lbl">素材 <span class="opt" id="matOptLbl">'+(f.multi?'（断片ごとに登録・目標は任意）':'（名前・目標とも任意）')+'</span></label>'
+      +'<div class="mat-edit"><div id="matRows">'+matEditRowsHtml()+'</div>'
+        +(f.multi?'<button class="btn sm mat-add" onclick="addMat()">＋ 断片を追加</button>':'')
+      +'</div></div>'
+
+    +'<div class="norma-sw">'
+      +'<div class="norma-sw-txt">周回に手形を使う'
+        +'<small>小判で手形を買って周回するイベントで入れてください。<br>'
+        +'このイベントで使った小判を数えられるようになります。</small></div>'
+      +'<div class="switch'+(f.useTicket?' on':'')+'" id="swTicket" onclick="setUseTicket(!_form.useTicket)"><i></i></div>'
+    +'</div>'
+    +'<div id="ticketFields"'+(f.useTicket?'':' style="display:none"')+'>'+ticketFieldsHtml()+'</div>'
+
+    +'<div class="modal-foot">'
+      +(f.editingId?'<button class="btn danger sm" onclick="confirmDeleteEvent(\''+f.editingId+'\')">削除</button>':'')
+      +'<div class="right"><button class="btn" onclick="closeModal()">キャンセル</button>'
+      +'<button class="btn pri" onclick="submitForm()">'+(f.editingId?'保存':'作成')+'</button></div>'
+    +'</div>'
+   +'</div></div>';
+  syncFormToggles();
+  document.getElementById('_formOv').addEventListener('click',function(e){if(e.target.id==='_formOv')closeModal();});
+}
+/* 開始日・終了日は装飾カレンダーなので oninput が来ない。選ばれたあとにここで拾う。
+   あわせて、終了日の下限（開始日より前は押せない）を今の開始日に合わせ直す。
+   フォームは開くときに一度しか描かないので、ここで更新しないと古いままになる。
+   なお、開始日を終了日より後ろへ動かした場合は終了日が古いまま残るが、
+   その組み合わせは今までどおり保存のときに弾いて理由を出す。                  */
+function onFormDateChange(){
+  _form.start=calVal('fStart');
+  _form.end=calVal('fEnd');
+  var fe=document.getElementById('fEnd');
+  if(fe)fe.setAttribute('data-min',_form.start||'');
+}
+function syncFormToggles(){
+  var f=_form;
+  document.querySelectorAll('#segEnd button').forEach(function(b){b.classList.toggle('on',b.dataset.v===(f.includeEndDay?'1':'0'));});
+  document.querySelectorAll('#segType button').forEach(function(b){b.classList.toggle('on',b.dataset.v===(f.multi?'1':'0'));});
+  var th=document.getElementById('typeHint');
+  if(th)th.textContent=f.multi?'異去の断片など、複数の素材を1イベントで並行して記録します。':'ひとつの素材を記録します（多くのイベントはこちら）。';
+  document.querySelectorAll('#segTicketName button').forEach(function(b){
+    b.classList.toggle('on',b.dataset.v===((f.ticketName==='提灯')?'提灯':'手形'));
+  });
+}
+function setIncludeEnd(v){_form.includeEndDay=v;syncFormToggles();}
+function setMulti(v){
+  _form.multi=v;
+  if(!v){
+    // 単一へ: 先頭の1素材だけ残す（他はフォーム上では捨てる／編集時の実データ側は保存時に判断）
+    _form.mats=[_form.mats[0]||{id:null,name:'',target:''}];
+  }else if(!_form.mats.length){
+    _form.mats=[{id:null,name:'',target:''}];
+  }
+  redrawMatSection();
+  syncFormToggles();
+}
+function addMat(){_form.mats.push({id:null,name:'',target:''});redrawMatSection();}
+function removeMat(i){_form.mats.splice(i,1);if(!_form.mats.length)_form.mats=[{id:null,name:'',target:''}];redrawMatSection();}
+function redrawMatSection(){
+  var box=document.getElementById('matRows');
+  if(box)box.innerHTML=matEditRowsHtml();
+  var lbl=document.getElementById('matOptLbl');
+  if(lbl)lbl.textContent=_form.multi?'（断片ごとに登録・目標は任意）':'（名前・目標とも任意）';
+  // 追加ボタンの有無を更新
+  var addBtn=document.querySelector('.mat-add');
+  if(_form.multi&&!addBtn&&box){
+    var b=document.createElement('button');b.className='btn sm mat-add';b.textContent='＋ 断片を追加';b.onclick=addMat;
+    box.parentNode.appendChild(b);
+  }else if(!_form.multi&&addBtn){addBtn.remove();}
+}
+
+function submitForm(){
+  var f=_form;
+  var eName=document.getElementById('errName');
+  var eDate=document.getElementById('errDate');
+  if(eName)eName.textContent='';if(eDate)eDate.textContent='';
+  var name=(f.name||'').trim();
+  if(!name){if(eName)eName.textContent='イベント名を入力してください。';return;}
+  if(!f.start||!f.end){if(eDate)eDate.textContent='開始日と終了日を入力してください。';return;}
+  if(f.end<f.start){if(eDate)eDate.textContent='終了日は開始日より後にしてください。';return;}
+
+  // 素材を組み立て（単一は先頭1件のみ）
+  var srcMats=f.multi?f.mats:[f.mats[0]||{id:null,name:'',target:''}];
+  var mats=srcMats.map(function(m,i){
+    var tgt=parseInt((m.target||'').replace(/[^\d]/g,''))||0;
+    return {id:m.id||uid('smat'),name:(m.name||'').trim(),target:tgt,order:i,records:{},recAt:{},milestones:[]};
+  });
+
+  var tCost=parseInt((f.ticketCost||'').replace(/[^\d]/g,''))||0;
+  var tName=(f.ticketName==='提灯')?'提灯':'手形';
+
+  if(f.editingId){
+    var ev=getEvent(f.editingId);
+    if(ev){
+      ev.name=name;ev.start=f.start;ev.end=f.end;ev.includeEndDay=f.includeEndDay;ev.multi=f.multi;
+      /* 手形の「設定」だけを入れ替える。買った枚数（tickets / ticketAt）には触らない。
+         スイッチを切っても記録は残す＝入れ直せばそのまま戻る。ここで消すと、
+         切り替えを試しただけで買った記録が消えてしまう。                        */
+      ev.useTicket=!!f.useTicket;ev.ticketName=tName;ev.ticketCost=tCost;
+      // 既存素材の records / milestones を id で引き継ぐ
+      var byId={};(ev.materials||[]).forEach(function(m){byId[m.id]=m;});
+      ev.materials=mats.map(function(m){
+        var old=byId[m.id];
+        if(old){m.records=old.records||{};m.recAt=old.recAt||{};m.milestones=old.milestones||[];}
+        return m;
+      });
+      ev.updatedAt=Date.now();
+      save();closeModal();
+      if(document.getElementById('scr-detail').className===''){renderDetail();}
+      renderList();
+    }
+  }else{
+    var nev={id:uid('sev'),name:name,start:f.start,end:f.end,includeEndDay:f.includeEndDay,
+             multi:f.multi,normaOn:false,milestoneToast:true,
+             useTicket:!!f.useTicket,ticketName:tName,ticketCost:tCost,tickets:{},ticketAt:{},
+             createdAt:Date.now(),updatedAt:Date.now(),materials:mats};
+    DB.events.push(nev);save();closeModal();
+    go('list');renderList();
+  }
+}
+
+/* =========================================================
+   装飾カレンダー
+   稽古録（keikoroku.html）の openCalPicker / renderGenCal 一式を移植し、
+   集積帳の書き方（var / function。アロー関数・テンプレート文字列は使わない）に
+   直したもの。日付の道具（ymd / todayStr / fmtDateFull / WD / esc）は
+   集積帳に元からあるものをそのまま使っている。
+
+   集積帳だけの上乗せが2つ:
+     ・data-min / data-max による「選べる日の制限」（範囲外の日は押せない）
+     ・選んだあとに data-cb の関数を呼ぶ（欄の値が変わったときの追従用）
+
+   値は見えない input に入れて持つので、読むときは今までどおり
+   document.getElementById(id).value（または calVal(id)）でよい。
+   ========================================================= */
+var _calTarget=null;      // いま開いている日付欄の id
+var _calDate=new Date();  // カレンダーが表示している月
+var _calBtn=null;         // いま開いているボタン（枠の色を戻すため）
+
+/* 日付欄をつくる。min / max / cb は無ければ '' でよい */
+function calField(id,val,min,max,cb){
+  var has=!!val;
+  return '<div class="cal-wrapper">'
+    +'<button type="button" class="cal-pick-btn" id="'+esc(id)+'-btn" onclick="openCalPicker(\''+esc(id)+'\',this)">'
+      +'<span class="cal-val'+(has?'':' none')+'" id="'+esc(id)+'-text">'+(has?fmtDateFull(val):'日付を選ぶ')+'</span>'
+      +'<span class="cal-ico">📅</span>'
+    +'</button>'
+    +'<input type="hidden" id="'+esc(id)+'" value="'+esc(val||'')+'"'
+      +(min?' data-min="'+esc(min)+'"':'')
+      +(max?' data-max="'+esc(max)+'"':'')
+      +(cb?' data-cb="'+esc(cb)+'"':'')
+    +'></div>';
+}
+/* 日付欄の値を読む */
+function calVal(id){var el=document.getElementById(id);return el?el.value:'';}
+
+function _calMin(){var el=document.getElementById(_calTarget);return (el&&el.getAttribute('data-min'))||'';}
+function _calMax(){var el=document.getElementById(_calTarget);return (el&&el.getAttribute('data-max'))||'';}
+/* その日が選べる範囲の外か */
+function _calOut(ds){
+  var lo=_calMin(),hi=_calMax();
+  if(lo&&ds<lo)return true;
+  if(hi&&ds>hi)return true;
+  return false;
+}
+/* その月がまるごと範囲の外か（◀▶ を止めるため） */
+function _monthOut(y,m){
+  var last=new Date(y,m+1,0).getDate();
+  var mm=String(m+1).padStart(2,'0');
+  var s=y+'-'+mm+'-01';
+  var e=y+'-'+mm+'-'+String(last).padStart(2,'0');
+  var lo=_calMin(),hi=_calMax();
+  if(lo&&e<lo)return true;
+  if(hi&&s>hi)return true;
+  return false;
+}
+
+function openCalPicker(targetId,anchorEl){
+  document.removeEventListener('click',_calOutside,true);
+  var picker=document.getElementById('calPicker');
+  if(!picker)return;
+  /* 同じボタンをもう一度押したら閉じる */
+  if(picker.style.display==='block'&&_calTarget===targetId){closeCal();return;}
+  if(_calBtn)_calBtn.classList.remove('open');
+  _calTarget=targetId;
+  _calBtn=anchorEl;
+  if(_calBtn)_calBtn.classList.add('open');
+
+  var el=document.getElementById(targetId);
+  var base=(el&&el.value)?el.value:todayStr();
+  /* 値が無い／範囲の外なら、選べる範囲の中へ寄せて開く */
+  if(_calOut(base))base=_calMin()||_calMax()||base;
+  _calDate=parseYmd(base);
+
+  renderCal();
+  picker.style.display='block';
+  positionCal(anchorEl);
+  /* 開いたこのクリックでそのまま閉じてしまわないよう、次の周回から外側を見張る */
+  setTimeout(function(){document.addEventListener('click',_calOutside,true);},0);
+}
+
+function positionCal(anchorEl){
+  var picker=document.getElementById('calPicker');
+  if(!picker||!anchorEl)return;
+  var rect=anchorEl.getBoundingClientRect();
+  var pw=picker.offsetWidth||288;
+  var ph=picker.offsetHeight||320;
+  var left=Math.min(rect.left,window.innerWidth-pw-8);
+  var top=rect.bottom+4;
+  if(top+ph>window.innerHeight)top=rect.top-ph-4; // 下に入りきらないときは上に出す
+  picker.style.left=Math.max(4,left)+'px';
+  picker.style.top=Math.max(4,top)+'px';
+}
+
+function _calOutside(e){
+  var picker=document.getElementById('calPicker');
+  if(picker&&!picker.contains(e.target)&&!e.target.closest('.cal-pick-btn'))closeCal();
+}
+function closeCal(){
+  var picker=document.getElementById('calPicker');
+  if(picker)picker.style.display='none';
+  if(_calBtn)_calBtn.classList.remove('open');
+  _calBtn=null;
+  _calTarget=null;
+  document.removeEventListener('click',_calOutside,true);
+}
+function shiftCalMonth(d){_calDate.setDate(1);_calDate.setMonth(_calDate.getMonth()+d);renderCal();}
+function setCalYear(v){_calDate.setDate(1);_calDate.setFullYear(+v);renderCal();}
+function setCalMonth(v){_calDate.setDate(1);_calDate.setMonth(+v);renderCal();}
+
+function selectCalDate(ds){
+  if(_calOut(ds))return;
+  var inp=document.getElementById(_calTarget);
+  if(inp)inp.value=ds;
+  var txt=document.getElementById(_calTarget+'-text');
+  if(txt){txt.textContent=fmtDateFull(ds);txt.classList.remove('none');}
+  var cb=inp?inp.getAttribute('data-cb'):'';
+  closeCal();
+  if(cb&&typeof window[cb]==='function')window[cb]();
+}
+
+function renderCal(){
+  var body=document.getElementById('calBody');
+  var selWrap=document.getElementById('calSelWrap');
+  var foot=document.getElementById('calFoot');
+  if(!body||!selWrap)return;
+
+  var y=_calDate.getFullYear(),m=_calDate.getMonth();
+  var mNames=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  var lo=_calMin(),hi=_calMax();
+
+  /* 年の候補。制限があればその範囲だけ、無ければ 2015（とうらぶ開始年）〜今年 */
+  var nowY=new Date().getFullYear();
+  var loY=lo?parseInt(lo.slice(0,4),10):Math.min(2015,y);
+  var hiY=hi?parseInt(hi.slice(0,4),10):Math.max(nowY,y);
+  if(loY>y)loY=y;
+  if(hiY<y)hiY=y;
+  var yOpts='';
+  for(var yy=hiY;yy>=loY;yy--){
+    yOpts+='<option value="'+yy+'"'+(yy===y?' selected':'')+'>'+yy+'年</option>';
+  }
+  var mOpts='';
+  for(var mm=0;mm<12;mm++){
+    mOpts+='<option value="'+mm+'"'+(mm===m?' selected':'')+(_monthOut(y,mm)?' disabled':'')+'>'+mNames[mm]+'</option>';
+  }
+  selWrap.innerHTML=
+     '<select class="cal-sel" onchange="setCalYear(this.value)" onclick="event.stopPropagation()">'+yOpts+'</select>'
+    +'<select class="cal-sel" onchange="setCalMonth(this.value)" onclick="event.stopPropagation()">'+mOpts+'</select>';
+
+  /* ◀▶ は、行った先の月がまるごと範囲の外なら止める */
+  var pv=new Date(y,m-1,1),nx=new Date(y,m+1,1);
+  var bp=document.getElementById('calPrev'),bn=document.getElementById('calNext');
+  if(bp)bp.disabled=_monthOut(pv.getFullYear(),pv.getMonth());
+  if(bn)bn.disabled=_monthOut(nx.getFullYear(),nx.getMonth());
+
+  var first=new Date(y,m,1);
+  var cur=new Date(first);
+  cur.setDate(cur.getDate()-first.getDay());
+  var inp=document.getElementById(_calTarget);
+  var sel=(inp&&inp.value)?inp.value:'';
+  var today=todayStr();
+
+  var html='<div class="cal-grid">';
+  for(var i=0;i<7;i++){
+    var c=(i===0)?'color:var(--cal-sun)':(i===6)?'color:var(--cal-sat)':'';
+    html+='<div class="cal-dow" style="'+c+'">'+WD[i]+'</div>';
+  }
+  for(var k=0;k<42;k++){   // 6週ぶん固定。月によって高さが変わらないように
+    var ds=ymd(cur);
+    var cls='cal-day'
+      +((cur.getMonth()!==m)?' other':'')
+      +((cur.getDay()===6)?' sat':(cur.getDay()===0)?' sun':'')
+      +((ds===today)?' today':'')
+      +((ds===sel)?' selected':'');
+    if(_calOut(ds)){
+      html+='<button type="button" class="'+cls+'" disabled>'+cur.getDate()+'</button>';
+    }else{
+      html+='<button type="button" class="'+cls+'" onclick="selectCalDate(\''+ds+'\');event.stopPropagation()">'+cur.getDate()+'</button>';
+    }
+    cur.setDate(cur.getDate()+1);
+  }
+  html+='</div>';
+  body.innerHTML=html;
+
+  /* 制限があるときだけ、選べる範囲を下に書く */
+  if(foot){
+    if(lo&&hi){
+      foot.style.display='block';
+      foot.textContent='選べるのは '+fmtDateFull(lo)+' 〜 '+fmtDateFull(hi)+' です';
+    }else if(lo){
+      foot.style.display='block';
+      foot.textContent=fmtDateFull(lo)+' 以降が選べます';
+    }else if(hi){
+      foot.style.display='block';
+      foot.textContent=fmtDateFull(hi)+' までが選べます';
+    }else{
+      foot.style.display='none';
+      foot.textContent='';
+    }
+  }
+}
+
+/* =========================================================
+   バックアップ（丙案 段階2）
+     ・ファイルへの書き出し／ファイルからの読み込み
+     ・保険① 読み込む前に「この端末にしかないもの」を数えて見せる
+     ・保険② 読み込む直前に1世代だけ控えを取り、「取り消す」を出す
+   段階3の Drive の読み込みも、ここと同じ道（保険①→控え→合流）を通す。
+   ========================================================= */
+
+/* 時刻の見せ方（07/29 15:20） */
+function fmtStamp(t){
+  if(!t)return '（記録なし）';
+  var d=new Date(t);
+  return String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0')
+    +' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+/* イベントの記録が何日ぶんあるか。素材をまたいで同じ日は1日と数える */
+function evDayCount(ev){
+  var s={};
+  ((ev&&ev.materials)||[]).forEach(function(m){
+    Object.keys((m&&m.records)||{}).forEach(function(d){s[d]=1;});
+  });
+  /* 手形しか入っていない日も「記録のある日」に数える。
+     数えないと、手形だけ入れたイベントが失われるときに「記録0日ぶん」と出て、
+     中身が軽いものに見えてしまう。                                       */
+  Object.keys((ev&&ev.tickets)||{}).forEach(function(d){s[d]=1;});
+  return Object.keys(s).length;
+}
+/* 読み込むと失われる「この端末にしかないもの」を数える。
+   実際に合流させた結果と手元を見比べるので、合流のルールと食い違わない。 */
+function countLosses(local,incoming){
+  var out=[];
+  var merged=mergeDB(local,incoming);
+  if(!merged||!Array.isArray(merged.events))return out;
+  var mEv={};
+  merged.events.forEach(function(e){if(e&&e.id)mEv[e.id]=e;});
+  var inNames={};
+  ((incoming&&incoming.events)||[]).forEach(function(e){if(e&&e.name)inNames[e.name]=1;});
+
+  ((local&&local.events)||[]).forEach(function(ev){
+    if(!ev||!ev.id)return;
+    var me=mEv[ev.id];
+    if(!me){
+      out.push({kind:'event',name:ev.name||'（名前なし）',days:evDayCount(ev),
+                sameName:!!inNames[ev.name]});
+      return;
+    }
+    var mMat={};
+    ((me.materials)||[]).forEach(function(m){if(m&&m.id)mMat[m.id]=m;});
+    ((ev.materials)||[]).forEach(function(m){
+      if(!m||!m.id||mMat[m.id])return;
+      out.push({kind:'mat',ev:ev.name||'（名前なし）',name:m.name||'（名前なし）',
+                days:Object.keys(m.records||{}).length});
+    });
+  });
+  return out;
+}
+
+/* ---- 書き出し ---------------------------------------- */
+function exportJson(){
+  closeCloud();
+  var d=new Date();
+  var name='shusekichou_backup_'+d.getFullYear()
+    +String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'.json';
+  try{
+    var payload=_deepCopy(DB)||{};
+    payload.tool=TOOL_ID;          // 別ツールのファイルを取り違えないための目印
+    payload.exportedAt=Date.now();
+    var url=URL.createObjectURL(new Blob([JSON.stringify(payload)],{type:'application/json'}));
+    var a=document.createElement('a');
+    a.href=url;a.download=name;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(url);},1000);
+    toast('書き出しました：'+name,true);
+  }catch(e){
+    toast('書き出しに失敗しました');
+  }
+}
+
+/* ---- 読み込み ---------------------------------------- */
+function pickImport(){
+  closeCloud();
+  var el=document.getElementById('importFile');
+  if(el){el.value='';el.click();}
+}
+/* 読み込もうとしている中身が集積帳のものか確かめる。
+   問題があれば理由の文を、問題なければ '' を返す。
+
+   ここは厳しくしてある。ほかの道具のバックアップにも events という配列が
+   あることがあり（稽古録の同期データがそう）、キーの名前だけでは見分けられない。
+   なので集積帳が書き出した目印 tool:'shuseki' が無いものは受け取らない。
+   段階3で Drive から読むファイルにも同じ目印を入れて、ここを通す。      */
+function checkIncoming(d){
+  if(!d||typeof d!=='object'||Array.isArray(d))
+    return 'このファイルは集積帳のバックアップではありません';
+  if(d.tool!==TOOL_ID){
+    if(typeof d.tool==='string'&&d.tool)
+      return 'これは「'+d.tool+'」のデータです。集積帳のバックアップではありません';
+    return 'このファイルは集積帳のバックアップではありません（集積帳の目印が入っていません）';
+  }
+  if(!Array.isArray(d.events))return '中身が集積帳の形をしていません';
+  for(var i=0;i<d.events.length;i++){
+    var e=d.events[i];
+    if(!e||typeof e!=='object'||!e.id||!Array.isArray(e.materials))
+      return '中身が集積帳の形をしていません（'+(i+1)+'件目のイベント）';
+  }
+  return '';
+}
+function onImportPicked(el){
+  var f=el&&el.files&&el.files[0];
+  if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){
+    var d;
+    try{d=JSON.parse(r.result);}catch(e){toast('このファイルは読み取れませんでした',true);return;}
+    var ng=checkIncoming(d);
+    if(ng){toast(ng,true);return;}
+    askLoad(d,'ファイル');
+  };
+  r.onerror=function(){toast('ファイルを読めませんでした',true);};
+  r.readAsText(f);
+}
+
+/* 目印を落とした塊を返す（合流の結果に tool や exportedAt を混ぜないため） */
+function stripMeta(o){
+  var c=_deepCopy(o)||{};
+  delete c.tool;delete c.exportedAt;delete c.syncedAt;
+  return c;
+}
+
+/* ---- 保険①：読み込む前に見せる -------------------------- */
+var _pendingIn=null;      // 読み込みを待っている塊
+var _pendingFrom='';      // どこから来たか（'ファイル' / 'クラウド'）
+var _pendingStartup=false; // 起動時の知らせから開いたダイアログか（段階3-c）
+function _clearPending(){_pendingIn=null;_pendingFrom='';_pendingStartup=false;}
+/* 起動時の知らせで「次からは出さない」に印が入っていたら、
+   いきなり無音にはせず「印だけ」に下げる（モックで決めたとおり）。
+   画面を消す前に読むこと。                                          */
+function _takeStartupOff(){
+  if(!_pendingStartup)return;
+  var c=document.getElementById('startupOff');
+  if(c&&c.checked){PREF.gdNotify='dot';savePref();}
+}
+function askLoad(incoming,fromLabel,isStartup){
+  _pendingIn=incoming;
+  _pendingFrom=fromLabel||'';
+  _pendingStartup=!!isStartup;
+  var lAt=+DB.updatedAt||0, cAt=+incoming.updatedAt||0;
+  var inNewer=(cAt>=lAt);
+  var body='<div class="time-cmp">'
+    +(inNewer?esc(fromLabel)+'のデータの方が新しいです':'この端末のデータの方が新しいです')
+    +'<br>'+esc(fromLabel)+' <b>'+fmtStamp(cAt)+'</b> ／ この端末 <b>'+fmtStamp(lAt)+'</b></div>';
+
+  if(inNewer){
+    var losses=countLosses(DB,incoming);
+    if(losses.length){
+      body+='<div class="lose-box">'
+        +'<div class="lose-h">読み込むと、この端末にしかない次のものが失われます。</div>'
+        +'<ul class="lose-list">';
+      losses.forEach(function(x){
+        if(x.kind==='event'){
+          body+='<li><b>'+esc(x.name)+'</b>（記録'+x.days+'日ぶん）'
+            +(x.sameName?'<span class="lose-sub">※'+esc(fromLabel)
+              +'にも同じ名前のイベントがあります。別々に作られたものかもしれません</span>':'')
+            +'</li>';
+        }else{
+          body+='<li>「'+esc(x.ev)+'」の素材 <b>'+esc(x.name)+'</b>（記録'+x.days+'日ぶん）</li>';
+        }
+      });
+      body+='</ul></div>';
+    }
+    body+='<div class="safe-note">記録そのものは日付ごとに合流するので、'
+      +'ここに出ていないものは消えません。<br>'
+      +'読み込む直前に、この端末の状態を1つだけ控えておきます。あとから取り消せます。</div>';
+  }else{
+    body+='<div class="safe-note">読み込むと、この端末の新しい記録が古いものに戻ります。'
+      +'ふつうは「この端末のデータを保つ」を選んでください。</div>';
+  }
+
+  if(_pendingStartup){
+    body+='<label class="cp-chk" style="margin-top:14px;margin-bottom:0">'
+      +'<input type="checkbox" id="startupOff">'
+      +'次からはこの確認を出さない（☁ の印だけにします）</label>';
+  }
+  document.getElementById('modalHost').innerHTML=
+   '<div class="modal-ov" id="_loadOv"><div class="modal" style="max-width:440px">'
+    +'<div class="modal-h">'+esc(fromLabel)+'から読み込む</div>'
+    +body
+    +'<div class="modal-foot"><div class="right">'
+      +'<button class="btn" onclick="cancelLoad()">この端末のデータを保つ</button>'
+      +'<button class="btn pri" onclick="doLoadPending()">読み込む</button>'
+    +'</div></div>'
+   +'</div></div>';
+  document.getElementById('_loadOv').addEventListener('click',function(e){
+    if(e.target.id==='_loadOv')cancelLoad();
+  });
+}
+function cancelLoad(){_takeStartupOff();_clearPending();closeModal();}
+
+/* ---- 保険②：1世代だけの控え ---------------------------- */
+function saveUndo(){
+  try{
+    localStorage.setItem(UNDO_KEY,JSON.stringify({savedAt:Date.now(),label:'読み込み前',data:DB}));
+    return true;
+  }catch(e){return false;}
+}
+function loadUndo(){
+  try{var s=localStorage.getItem(UNDO_KEY);return s?JSON.parse(s):null;}catch(e){return null;}
+}
+/* 控えを捨てる。save() から毎回呼ばれるので、余計な描き直しをしないよう有無を見てから */
+function dropUndo(){
+  try{
+    if(localStorage.getItem(UNDO_KEY)===null)return;
+    localStorage.removeItem(UNDO_KEY);
+  }catch(e){return;}
+  drawUndoBar();
+}
+function drawUndoBar(){
+  var host=document.getElementById('undoHost');
+  if(!host)return;
+  var u=loadUndo();
+  if(!u||!u.data){host.innerHTML='';return;}
+  host.innerHTML='<div class="undo-bar">'
+    +'<div class="undo-txt">読み込みました'
+      +'<small>読み込む前の状態に戻せます（次に何か記録すると消えます）</small></div>'
+    +'<button class="btn sm pri" onclick="doUndo()">↩ 取り消す</button>'
+   +'</div>';
+}
+function doUndo(){
+  var u=loadUndo();
+  if(!u||!u.data){toast('戻せる控えがありません');drawUndoBar();return;}
+  DB=u.data;
+  saveKeepTime();                 // 控えの時刻をそのまま保つ
+  try{localStorage.removeItem(UNDO_KEY);}catch(e){}
+  drawUndoBar();
+  go('list');renderList();
+  toast('読み込む前の状態に戻しました',true);
+}
+
+/* ---- 読み込みの実行 ------------------------------------ */
+function doLoadPending(){
+  var incoming=_pendingIn;
+  var from=_pendingFrom;
+  _takeStartupOff();              // 画面を消す前に「次からは出さない」を拾う
+  if(!incoming){_clearPending();closeModal();return;}
+  /* 控えが取れなければ読み込まない。控え無しで上書きはしない */
+  if(!saveUndo()){
+    closeModal();_clearPending();
+    toast('控えを取れなかったので読み込みを中止しました。端末の空き容量を確かめてください',true);
+    return;
+  }
+  var merged=mergeDB(DB,stripMeta(incoming));
+  if(!merged){
+    closeModal();_clearPending();
+    toast('読み込めませんでした');
+    return;
+  }
+  DB=merged;
+  saveKeepTime();                 // 合流の結果の時刻をそのまま保つ
+  _clearPending();
+  closeModal();
+  drawUndoBar();
+  go('list');renderList();        // 開いていたイベントが無くなっている場合があるので一覧へ
+  /* 合流した結果は、クラウドにもファイルにも無い形になっている。
+     自動では上げ直さないと決めたので、上げれば反映できることだけ伝える（段階3-b）。 */
+  _gdNeedUp=true;
+  _gdDiff=false;
+  autoHoldClear();   /* 合流したので、見送りの知らせは用済み（段階3-d） */
+  gdRefreshUI();
+  toast((from==='クラウド'&&_gdToken)
+    ?'読み込みました。⬆保存でクラウドにも反映できます'
+    :'読み込みました',true);
+}
+
+/* =========================================================
+   段階3-a: Googleドライブ同期の土台（トークンまわり）
+     稽古録から移植。const/let/アロー関数/テンプレート文字列は
+     集積帳の書き方（var/function/文字列連結）に直してある。
+     async/await はそのまま使う。
+
+     この段階3-aで入れたのは「つながる／切れる／つなぎ直す」だけ。
+     ⬆保存・⬇読み込みは段階3-b、起動時のチェックは段階3-c、
+     自動保存は段階3-d。差し込む場所にはその印を付けてある。
+   ========================================================= */
+var GD_CLIENT_ID='1020015092975-eheh7mf0vjv55a7lufvbc1mi50ele8bv.apps.googleusercontent.com';
+var GD_SCOPE='https://www.googleapis.com/auth/drive.appdata';
+/* appDataFolder は Client ID ごとに1つなので、道具箱の全ツールが同じフォルダを
+   共有している。分けているのはファイル名だけ。他と衝突しないことは確認済み。 */
+var GD_FILENAME='shuseki_data.json';
+var GD_STALE_MS=50*60*1000; /* これだけ経ったトークンは、押された時点で先回りして取り直す */
+
+var _gdToken=null;
+var _gdFileId=null;
+var _gdReconnect=false;  /* 接続が切れた（⚠再接続待ち）。ログアウトとは別の状態 */
+var _gdTokenAt=0;        /* トークンを受け取った時刻 */
+var _gdLastSync=null;    /* 最後に同期できた時刻（段階3-bで入る） */
+var _gdDiff=false;       /* クラウドに新しいものがある（段階3-cで立てる） */
+
+/* 鍵の置き場所。localStorage に置くので、タブを閉じて開き直しても残る。
+   できることはこの道具専用のフォルダの読み書きだけ（appDataFolder）で、
+   1時間ほどで切れる。切れていたら開いたときに裏で取り直す。          */
+var GD_TK='shuseki_gd_v1';
+function gdKeepToken(){
+  try{localStorage.setItem(GD_TK,JSON.stringify({t:_gdToken,at:_gdTokenAt}));}catch(e){}
+}
+function gdForgetToken(){
+  try{localStorage.removeItem(GD_TK);}catch(e){}
+}
+(function(){
+  try{
+    var s=localStorage.getItem(GD_TK);
+    if(!s)return;
+    var o=JSON.parse(s);
+    if(o&&o.t){_gdToken=o.t;_gdTokenAt=+o.at||0;}
+  }catch(e){}
+})();
+
+/* 回線があるか。Googleとつながっているかとは別もの。
+   ログイン済みのまま回線だけ切れることがあるので、塗りは残して薄くする。 */
+function gdOnline(){
+  try{return navigator.onLine!==false;}catch(e){return true;}
+}
+/* ☁ボタンの見た目を描き直す */
+function drawCloudBtn(){
+  var b=document.getElementById('cloudBtn');
+  if(!b)return;
+  var wasOpen=b.classList.contains('open');
+  b.className='cloud-btn'
+    +(_gdToken?' in':(_gdReconnect?' ng':''))
+    +(gdOnline()?'':' noline')
+    +(wasOpen?' open':'');
+  /* 点を出す条件は2つ。
+     ・クラウドに新しいものがある（起動時の知らせ方が「知らせない」なら出さない）
+     ・自動保存を見送っている（段階3-d。こちらは起動時の話ではなく、
+       自分が記録したものが上がっていないという知らせなので、設定で消さない） */
+  b.innerHTML=(_gdReconnect?'⚠':'☁')
+    +((_gdAutoHeld||(_gdDiff&&PREF.gdNotify!=='none'))?'<span class="dot"></span>':'');
+}
+/* ボタンと、開いていればパネルの中身も描き直す */
+function gdRefreshUI(){
+  drawCloudBtn();
+  var p=document.getElementById('cloudPanel');
+  if(p&&p.style.display==='block')p.innerHTML=cloudPanelHtml();
+}
+
+/* トークン受け取りの一本化。
+   通常のログイン・裏での取り直し・遅れて届いた分の復帰、すべてここを通す。 */
+function _gdAcceptToken(tok){
+  _gdToken=tok;
+  _gdTokenAt=Date.now();
+  _gdReconnect=false;
+  gdKeepToken();
+  if(!PREF.gdWasIn){PREF.gdWasIn=true;savePref();}
+  gdRefreshUI();
+}
+/* 接続が切れた状態へ。ログアウトにはしない（記録はこの端末に無事）。
+   ここでログアウト扱いにすると、再ログインが一度失敗する症状が出る。 */
+function _gdEnterReconnect(){
+  if(_gdReconnect)return;  /* トーストとUI更新の連発を防ぐ */
+  _gdToken=null;_gdTokenAt=0;_gdReconnect=true;
+  gdForgetToken();   /* 鍵は捨てるが gdWasIn は下ろさない。次に開いたとき取り直す */
+  gdRefreshUI();
+  toast('接続が切れました。「⚠ 再接続」で戻れます',true);
+}
+/* あきらめた後に遅れて届いたトークンで復帰する
+   （アカウント選択の画面が出て、人が選ぶのに時間がかかったとき） */
+function _gdLateRecover(){
+  gdRefreshUI();
+  toast('Googleに再接続しました');
+  gdStartupCheck();   /* 中断していたチェックの続きへ */
+}
+/* トークンが古いか。押された時点で先回りして取り直すための判定 */
+function gdTokenStale(){
+  if(!_gdToken)return false;
+  if(!_gdTokenAt)return true;   /* 受け取った時刻が分からない＝古い扱い（安全側） */
+  return (Date.now()-_gdTokenAt)>GD_STALE_MS;
+}
+function gdReady(){
+  return !!(window.google&&window.google.accounts&&window.google.accounts.oauth2);
+}
+/* Googleの読み込み待ち。asyncのまま使う */
+async function gdWaitReady(maxWaitMs){
+  var limit=maxWaitMs||5000;
+  var start=Date.now();
+  while(!gdReady()){
+    if(Date.now()-start>limit)throw new Error('Google Sign-In library timeout');
+    await new Promise(function(r){setTimeout(r,100);});
+  }
+}
+
+function gdSignIn(){
+  if(!gdReady()){
+    /* まだ読めていないだけかもしれないので、少し待ってから出直す */
+    gdWaitReady().then(function(){gdSignIn();}).catch(function(){
+      toast('Googleの読み込みに失敗しました。ページを開き直してください',true);
+    });
+    return;
+  }
+  try{
+    var client=google.accounts.oauth2.initTokenClient({
+      client_id:GD_CLIENT_ID,
+      scope:GD_SCOPE,
+      callback:function(resp){
+        if(resp.error){
+          toast('Googleログインに失敗しました：'+resp.error,true);
+          return;
+        }
+        _gdAcceptToken(resp.access_token);
+        toast('Googleにログインしました');
+        gdStartupCheck();   /* つないだ直後にクラウドとの新旧を確かめる */
+      }
+    });
+    client.requestAccessToken();
+  }catch(e){
+    toast('Googleログインを始められませんでした',true);
+  }
+}
+
+function gdSignOut(){
+  if(_gdToken&&gdReady()){
+    try{google.accounts.oauth2.revoke(_gdToken,function(){});}catch(e){}
+  }
+  _gdToken=null;_gdFileId=null;_gdTokenAt=0;_gdReconnect=false;
+  _gdLastSync=null;_gdDiff=false;_gdCloudAt=null;_gdNeedUp=false;
+  _gdLastAuto=false;
+  clearTimeout(_autoTimer);_autoTimer=null;   /* 待っている自動保存は取り消す（段階3-d） */
+  autoHoldClear();
+  gdForgetToken();
+  PREF.gdWasIn=false;savePref();   /* 開き直しても取り直さない */
+  gdRefreshUI();
+  toast('Googleからログアウトしました');
+}
+
+/* 裏でのトークン取り直し。
+   prompt:'' なのでふつうは画面なしで終わるが、ブラウザによってはアカウント選択が
+   出ることがあり、人が選ぶ時間がかかる。
+   10秒の見切りは「呼んだ側が待つのをやめる」ためだけのもので、受け取り口は閉めない。
+   遅れて届いた分は _gdLateRecover() で拾ってログインを復帰させる。          */
+var _gdRefreshP=null;   /* 走っている取り直し。多重起動＝窓の連発を防ぐ */
+/* 走っている印を外す。いま走っているものと同じなら、という念を入れてある */
+function _gdClearRefresh(p){if(_gdRefreshP===p)_gdRefreshP=null;}
+function gdSilentRefresh(){
+  if(_gdRefreshP)return _gdRefreshP;   /* すでに走っていれば相乗り */
+  var p=new Promise(function(resolve,reject){
+    if(!gdReady()){reject(new Error('Library not loaded'));return;}
+    var settled=false;   /* 呼んだ側へ返事をしたか。トークンの受け取りとは別 */
+    var timer=setTimeout(function(){
+      if(!settled){settled=true;reject(new Error('timeout'));}
+    },10000);
+    try{
+      var client=google.accounts.oauth2.initTokenClient({
+        client_id:GD_CLIENT_ID,
+        scope:GD_SCOPE,
+        callback:function(resp){
+          clearTimeout(timer);
+          if(resp.error){
+            if(!settled){settled=true;reject(new Error(resp.error));}
+            return;
+          }
+          _gdAcceptToken(resp.access_token);
+          if(settled)_gdLateRecover();                      /* 見切った後に届いた */
+          else{settled=true;resolve(_gdToken);}
+        },
+        error_callback:function(err){
+          clearTimeout(timer);
+          if(!settled){
+            settled=true;
+            reject(new Error((err&&err.type)||'silent_failed'));
+          }
+        }
+      });
+      client.requestAccessToken({prompt:''});
+    }catch(e){
+      clearTimeout(timer);
+      if(!settled){settled=true;reject(e);}
+    }
+  });
+  _gdRefreshP=p;
+  /* 決着したら印を外す。ここが肝。
+     Promise の中身はその場で走るので、中で _gdRefreshP=null をすると
+     コールバックが同期で返ってきたときだけ、この上の代入で印が復活してしまう。
+     そうなると以後ずっと古い Promise に相乗りし続けて、401のやり直しも
+     再接続も効かなくなる（移植元の稽古録も同じ形。実機では本物のGoogleが
+     必ず非同期で返すので表に出ないが、脆いので外側で外すことにした）。     */
+  p.then(function(){_gdClearRefresh(p);},function(){_gdClearRefresh(p);});
+  return p;
+}
+
+/* Driveへの通信。401が来たら裏で取り直して一度だけやり直す。
+   取り直せなければログアウトにはせず「⚠ 再接続」に留める。 */
+async function gdFetch(url,opts,isRetry){
+  opts=opts||{};
+  var headers={};
+  var k;
+  for(k in (opts.headers||{})){
+    if(Object.prototype.hasOwnProperty.call(opts.headers,k))headers[k]=opts.headers[k];
+  }
+  headers['Authorization']='Bearer '+_gdToken;
+  var o={};
+  for(k in opts){if(Object.prototype.hasOwnProperty.call(opts,k))o[k]=opts[k];}
+  o.headers=headers;
+  var res;
+  try{
+    res=await fetch(url,o);
+  }catch(e){
+    /* 回線が無い・遮断された・CORSで止められた など。
+       生のメッセージ（Failed to fetch など）は読めないので言い換える。 */
+    throw new Error(gdOnline()
+      ?'通信できませんでした（回線か、ブラウザの設定を確かめてください）'
+      :'回線につながっていません');
+  }
+  if(res.status===401&&!isRetry){
+    if(_gdReconnect)throw new Error('401 Unauthorized');  /* 再接続待ちの間は試さない */
+    try{
+      await gdSilentRefresh();
+    }catch(refreshErr){
+      _gdEnterReconnect();
+      throw new Error('401 Unauthorized');
+    }
+    return gdFetch(url,opts,true);
+  }
+  return res;
+}
+
+/* 「⚠ 再接続」を押したとき。窓が通りやすいクリック起点なので、ここで取り直す */
+function gdReconnectNow(){
+  if(!gdReady()){toast('Googleの読み込みが終わっていません',true);return;}
+  gdSilentRefresh().then(function(){
+    _gdReconnect=false;
+    gdRefreshUI();
+    toast('Googleに再接続しました');
+  }).catch(function(){
+    /* 裏で取り直せなかった＝ふつうのログインの窓を出す */
+    gdSignIn();
+  });
+}
+
+/* =========================================================
+   段階3-b: Driveとのやりとり
+     ⬇読み込みは、段階2で出来ている道（保険①→控え→合流）を
+     そのまま通す。新しく書いたのは通信の部分だけ。
+
+     新旧の比べ方は DB.updatedAt 一本。Driveのファイル更新時刻は使わない。
+     丙案が最初から「新旧は DB.updatedAt で比べる」で通しているので、
+     ここだけ別のものさしにすると説明できなくなるため。
+   ========================================================= */
+var _gdBusy=false;      /* やりとり中。二度押しを防ぐ */
+var _gdCloudAt=null;    /* 最後に見たクラウドの updatedAt。null＝まだ知らない */
+var _gdNeedUp=false;    /* クラウドへ上げ直すと反映できるものがある */
+
+/* クラウドへ上げる塊。目印を添える。
+   appDataFolder は道具箱の全ツールが共有しているので、取り違えても
+   中身で気づけるように tool:'shuseki' を必ず入れる。読むときは checkIncoming() を通す。 */
+function gdPayload(){
+  var p=_deepCopy(DB)||{};
+  p.tool=TOOL_ID;
+  p.syncedAt=Date.now();
+  return p;
+}
+/* クラウドへ上げ直すと反映できるものがあるか。
+   ・読み込んだ直後は、合流した結果がクラウドより多いので必ず true
+     （このとき updatedAt はクラウドと同じ値になることがあるので、印を別に持つ）
+   ・そのあと記録を足したときは updatedAt の比較で拾う                    */
+function gdNeedUp(){
+  if(!_gdToken)return false;
+  if(_gdNeedUp)return true;
+  if(_gdCloudAt===null)return false;   /* クラウドの状態を知らない */
+  return (+DB.updatedAt||0)>_gdCloudAt;
+}
+
+/* 集積帳のファイルを探す。無ければ null。
+   探せなかったときは throw する（ここを黙って null で返すと「無い」と
+   区別が付かず、同じ名前のファイルを二重に作ってしまう）。            */
+async function gdFindFile(){
+  var res=await gdFetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder'
+    +'&q='+encodeURIComponent("name='"+GD_FILENAME+"'")
+    +'&fields=files(id,name)',{headers:{}});
+  if(!res.ok)throw new Error('クラウドを探せませんでした（'+res.status+'）');
+  var d=await res.json();
+  return (d&&d.files&&d.files.length)?d.files[0].id:null;
+}
+async function gdDownload(fid){
+  var res=await gdFetch('https://www.googleapis.com/drive/v3/files/'
+    +encodeURIComponent(fid)+'?alt=media',{headers:{}});
+  if(!res.ok)throw new Error('クラウドから受け取れませんでした（'+res.status+'）');
+  var d;
+  try{d=await res.json();}catch(e){throw new Error('クラウドのデータを読み取れませんでした');}
+  return d;
+}
+/* fid があれば上書き、無ければ新しく作る。返すのはファイルの札 */
+async function gdUpload(fid){
+  var body=JSON.stringify(gdPayload());
+  if(fid){
+    var up=await gdFetch('https://www.googleapis.com/upload/drive/v3/files/'
+      +encodeURIComponent(fid)+'?uploadType=media',
+      {method:'PATCH',headers:{'Content-Type':'application/json'},body:body});
+    if(!up.ok)throw new Error('クラウドへ保存できませんでした（'+up.status+'）');
+    return fid;
+  }
+  var meta={name:GD_FILENAME,parents:['appDataFolder']};
+  var form=new FormData();
+  form.append('metadata',new Blob([JSON.stringify(meta)],{type:'application/json'}));
+  form.append('file',new Blob([body],{type:'application/json'}));
+  var res=await gdFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
+    {method:'POST',headers:{},body:form});
+  if(!res.ok)throw new Error('クラウドに置けませんでした（'+res.status+'）');
+  var d=await res.json();
+  if(!d||!d.id)throw new Error('クラウドに置けませんでした（札が返りませんでした）');
+  return d.id;
+}
+
+/* やりとりを始める前の共通の関門。始めてよければ '' を返す。
+   ここで回線は見ない。navigator.onLine は嘘をつくことがあり、
+   つながっているのに「回線なし」と言われたら同期する手立てが無くなってしまう。
+   本当に回線が無ければ、通信そのものが失敗して理由が出る。          */
+function gdGate(){
+  if(_gdBusy)return 'busy';
+  if(_gdReconnect)return '接続が切れています。「⚠ 再接続」でつなぎ直してください';
+  if(!_gdToken)return '先にGoogleへログインしてください';
+  return '';
+}
+
+/* ---- ⬇ 読み込む ---------------------------------------- */
+async function gdSyncDown(){
+  var ng=gdGate();
+  if(ng){if(ng!=='busy')toast(ng,true);return false;}
+  /* 押された時点でトークンが古ければ先に取り直す（クリック起点なので窓が通りやすい） */
+  if(gdTokenStale()){
+    try{await gdSilentRefresh();}catch(e){_gdEnterReconnect();return false;}
+  }
+  _gdBusy=true;closeCloud();gdRefreshUI();
+  try{
+    toast('クラウドから受け取っています…');
+    var fid=await gdFindFile();
+    if(!fid){
+      /* クラウドにまだ何も無い＝初回。手元のものを置いておく */
+      _gdFileId=await gdUpload(null);
+      _gdLastSync=Date.now();
+      _gdCloudAt=+DB.updatedAt||0;
+      _gdNeedUp=false;
+      toast('クラウドにまだ何もなかったので、この端末のものを保存しました',true);
+      return true;
+    }
+    _gdFileId=fid;
+    var d=await gdDownload(fid);
+    var bad=checkIncoming(d);
+    if(bad){toast('クラウドのデータを読めませんでした：'+bad,true);return false;}
+    _gdLastSync=Date.now();
+    _gdCloudAt=+d.updatedAt||0;
+    /* 読み込まずに閉じられたときは、クラウドが新しいままなので印は残す */
+    _gdDiff=(_gdCloudAt>(+DB.updatedAt||0));
+    /* ここから先は段階2と同じ道。保険①→控え→合流 */
+    askLoad(d,'クラウド');
+    return true;
+  }catch(e){
+    toast('読み込めませんでした：'+e.message,true);
+    return false;
+  }finally{
+    _gdBusy=false;gdRefreshUI();
+  }
+}
+
+/* ---- ⬆ 保存 -------------------------------------------- */
+/* force=true は「上書きする」を押されたとき。新旧の確かめを飛ばす
+   auto=true  は自動保存から呼ばれたとき（段階3-d）。違いは3つだけ:
+     ・声を出さない（「保存しています…」も「保存しました」も出さない）
+     ・失敗しても文句を言わない。次に何か記録すればまた走るので
+     ・クラウドの方が新しかったら3択を出さず、見送って知らせる       */
+/* ── 手元が空のまま上書きするのを止める ──────────────
+   機種変更・ブラウザの乗り換え・サイトデータの削除・アプリ内ブラウザなどで
+   この端末の記録が空になっていることがある。その状態で保存すると
+   クラウドの記録まで空で塗りつぶされ、元に戻せない。
+   既存の updatedAt の比較より手前に置く（空のあと1件でも足すと
+   updatedAt が今になり、比較を素通りしてしまうため）。 */
+function gdLocalEmpty(){
+  return !(DB.events||[]).length;
+}
+function gdForceSaveAnyway(){
+  closeModal();
+  gdSyncUp(true);
+}
+async function gdAskIfEmpty(){
+  if(!gdLocalEmpty())return false;
+  var fid=null;
+  try{ fid=_gdFileId||await gdFindFile(); }catch(e){ return false; }
+  if(!fid)return false;   /* クラウドに何も無いなら、空を保存しても失うものが無い */
+  askConfirm(
+    '<b>手元に記録がありません</b><br><br>'
+    +'このまま保存すると、クラウドに残っている記録が空の状態で上書きされます。元に戻せません。<br><br>'
+    +'以前この道具に記録していた場合は、先に「⬇ 読み込む」を押してください。'
+    +'<div style="text-align:center;margin-top:14px">'
+    +'<a href="#" onclick="gdForceSaveAnyway();return false;" '
+    +'style="font-size:11px;color:var(--t4);text-decoration:underline">それでも保存する</a></div>',
+    gdSyncDown, '⬇ 読み込む', false);
+  return true;
+}
+
+async function gdSyncUp(force,auto){
+  var ng=gdGate();
+  if(ng){if(!auto&&ng!=='busy')toast(ng,true);return false;}
+  if(gdTokenStale()){
+    try{await gdSilentRefresh();}catch(e){if(!auto)_gdEnterReconnect();return false;}
+  }
+  if(!auto&&!force&&await gdAskIfEmpty())return false;
+  _gdBusy=true;if(!auto)closeCloud();gdRefreshUI();
+  try{
+    if(!auto)toast('クラウドへ保存しています…');
+    var fid=await gdFindFile();
+    if(fid&&!force){
+      _gdFileId=fid;
+      var d=await gdDownload(fid);
+      var bad=checkIncoming(d);
+      if(bad){
+        /* 読めないものが置かれている。黙って上書きはしない */
+        if(auto)return false;   /* 自動のときは静かに見送る。人が押したときに理由を出す */
+        askConfirm('クラウドのデータを読み取れませんでした。<br>'
+          +'この端末のもので上書きしますか？',
+          function(){gdSyncUp(true);},'クラウドを上書きする',true);
+        return false;
+      }
+      var cAt=+d.updatedAt||0;
+      _gdCloudAt=cAt;
+      if(cAt>(+DB.updatedAt||0)){
+        if(auto)autoHold(d,cAt);      /* 自動は上書きしない。見送って知らせる */
+        else askOverwrite(d,cAt);     /* 手動は警告して止める。押し切れば上書き */
+        return false;
+      }
+    }
+    _gdFileId=await gdUpload(fid);
+    _gdLastSync=Date.now();
+    _gdLastAuto=!!auto;
+    _gdCloudAt=+DB.updatedAt||0;
+    _gdNeedUp=false;
+    _gdDiff=false;
+    autoHoldClear();   /* 見送っていた状態は解けた */
+    if(!auto)toast('クラウドへ保存しました',true);
+    return true;
+  }catch(e){
+    if(!auto)toast('保存できませんでした：'+e.message,true);
+    return false;
+  }finally{
+    _gdBusy=false;gdRefreshUI();
+  }
+}
+
+/* クラウドの方が新しいときの3択。
+   「先に読み込む」があると、押し間違いで上書きせずに合流へ回せる。 */
+var _gdUpPending=null;
+function askOverwrite(cloudData,cAt){
+  _gdUpPending=cloudData;
+  var lAt=+DB.updatedAt||0;
+  document.getElementById('modalHost').innerHTML=
+   '<div class="modal-ov" id="_upOv"><div class="modal" style="max-width:440px">'
+    +'<div class="modal-h">クラウドの方が新しいようです</div>'
+    +'<div class="time-cmp">クラウドのデータの方が新しいです<br>'
+      +'クラウド <b>'+fmtStamp(cAt)+'</b> ／ この端末 <b>'+fmtStamp(lAt)+'</b></div>'
+    +'<div class="safe-note">このまま上書きすると、クラウドにしかない記録が失われます。<br>'
+      +'「先に読み込む」を選ぶと、クラウドの記録とこの端末の記録を合流させてから'
+      +'保存できます。失われるものがあれば、そのときに数えて見せます。</div>'
+    +'<div class="modal-foot"><div class="right">'
+      +'<button class="btn" onclick="cancelOverwrite()">クラウドをそのままにする</button>'
+      +'<button class="btn pri" onclick="loadBeforeUp()">先に読み込む</button>'
+      +'<button class="btn danger" onclick="forceUp()">上書きする</button>'
+    +'</div></div>'
+   +'</div></div>';
+  document.getElementById('_upOv').addEventListener('click',function(e){
+    if(e.target.id==='_upOv')cancelOverwrite();
+  });
+}
+function cancelOverwrite(){_gdUpPending=null;closeModal();}
+function loadBeforeUp(){
+  var d=_gdUpPending;_gdUpPending=null;closeModal();
+  if(d)askLoad(d,'クラウド');
+}
+function forceUp(){_gdUpPending=null;closeModal();gdSyncUp(true);}
+
+/* =========================================================
+   段階3-d: 自動保存
+     ・上げるだけ。読み込みは絶対に自動でしない。
+       黙って手元のデータが書き換わるのは怖いので、読み込みは必ず人が押す。
+     ・save()（＝記録が変わったとき）から約4秒後に走る。
+       saveKeepTime() / saveSetting() では走らせない
+       （合流の適用と、見た目・設定の保存なので記録は変わっていない）。
+     ・打ち直すたびに4秒を数え直す（デバウンス）。合計から振り分けるような
+       まとまった操作でも、手が止まってから1回だけ上がる。
+     ・クラウドの方が新しければ上書きせず見送る。同じ見送りのあいだ
+       ダイアログは1回だけで、あとは☁の点とパネルの一行に任せる。
+     ・失敗は静かに見送る。次に何か記録すればまた走るので文句は言わない。
+   ========================================================= */
+var AUTO_DELAY=4000;     /* 記録が変わってから上げるまでの待ち時間 */
+var _autoTimer=null;     /* 待っている最中のタイマー */
+var _gdLastAuto=false;   /* 最後の同期が自動だったか（パネルの「（自動）」） */
+var _gdAutoHeld=false;   /* いま見送っている。パネルの一行と☁の点を出す */
+var _gdAutoWarned=false; /* この見送りについては、もうダイアログを出した */
+
+/* 「変わったら自動でクラウドに保存する」の切り替え */
+function setAuto(on){
+  PREF.gdAuto=!!on;
+  savePref();
+  if(!PREF.gdAuto){
+    clearTimeout(_autoTimer);_autoTimer=null;
+    autoHoldClear();   /* 自動をやめたなら、見送りの知らせも用済み */
+  }
+  gdRefreshUI();
+}
+/* 「見送ったときに知らせない」の切り替え。
+   この☑はダイアログで印を入れたあとだけパネルに現れる。               */
+function setWarnOff(on){
+  PREF.gdWarnOff=!!on;
+  savePref();
+  gdRefreshUI();
+}
+
+/* 記録が変わった。少し待ってから上げる。
+   打ち直すたびにここへ来るので、そのたびに数え直す（デバウンス）。   */
+function scheduleAutoSync(){
+  if(!PREF.gdAuto)return;
+  if(!_gdToken||_gdReconnect)return;
+  clearTimeout(_autoTimer);
+  _autoTimer=setTimeout(function(){
+    _autoTimer=null;
+    gdAutoSync();
+  },AUTO_DELAY);
+}
+/* 実際に上げるところ。中身は ⬆保存 と同じものを使う */
+function gdAutoSync(){
+  if(!PREF.gdAuto||!_gdToken||_gdReconnect)return;
+  /* 人が押した⬆⬇の最中なら、それが終わってから改めて */
+  if(_gdBusy){scheduleAutoSync();return;}
+  gdSyncUp(false,true);
+}
+
+/* 見送りの状態が解けたとき（保存できた・読み込んで合流した・自動をやめた） */
+function autoHoldClear(){
+  _gdAutoHeld=false;
+  _gdAutoWarned=false;
+}
+/* モーダルが開いているか。開いているところへ割り込むと、
+   書きかけの編集フォームを消してしまうので、そのときはダイアログを出さない。 */
+function _modalOpen(){
+  var h=document.getElementById('modalHost');
+  return !!(h&&h.innerHTML);
+}
+/* クラウドの方が新しかったので、自動保存を見送った */
+function autoHold(cloudData,cAt){
+  _gdAutoHeld=true;
+  /* ☁の点。「起動したときの知らせ方」は起動時の話なので、ここでは見ない。
+     自分で記録したものが上がっていない、という知らせは別のもの。       */
+  _gdDiff=true;
+  gdRefreshUI();
+  if(PREF.gdWarnOff)return;   /* 点とパネルの一行だけにする、と決めてある */
+  if(_gdAutoWarned)return;    /* 同じ見送りのあいだは1回だけ */
+  if(_modalOpen())return;     /* 開いている画面を消さない。次の見送りで出す */
+  _gdAutoWarned=true;
+  askAutoHold(cloudData,cAt);
+}
+/* 見送ったことを知らせるダイアログ。ボタンの並びは ⬆保存 の3択と同じ */
+function askAutoHold(cloudData,cAt){
+  closeCal();   /* カレンダーはモーダルより上に出るので、開いていたら先に閉じる */
+  _gdUpPending=cloudData;
+  var lAt=+DB.updatedAt||0;
+  document.getElementById('modalHost').innerHTML=
+   '<div class="modal-ov" id="_holdOv"><div class="modal" style="max-width:440px">'
+    +'<div class="modal-h">クラウドの方が新しいので、自動保存を見送りました</div>'
+    +'<div class="time-cmp">クラウドのデータの方が新しいです<br>'
+      +'クラウド <b>'+fmtStamp(cAt)+'</b> ／ この端末 <b>'+fmtStamp(lAt)+'</b></div>'
+    +'<div class="safe-note">一度「⬇ 読み込む」でデータを合流させてください。<br>'
+      +'このまま上書きすると、クラウドにしかない記録が失われます。</div>'
+    +'<label class="cp-chk" style="margin-top:14px;margin-bottom:0">'
+      +'<input type="checkbox" id="autoWarnOff">'
+      +'次からはこの知らせを出さない（☁ の印だけにします）</label>'
+    +'<div class="modal-foot"><div class="right">'
+      +'<button class="btn" onclick="autoHoldKeep()">クラウドをそのままにする</button>'
+      +'<button class="btn pri" onclick="autoHoldLoad()">先に読み込む</button>'
+      +'<button class="btn danger" onclick="autoHoldForce()">上書きする</button>'
+    +'</div></div>'
+   +'</div></div>';
+  document.getElementById('_holdOv').addEventListener('click',function(e){
+    if(e.target.id==='_holdOv')autoHoldKeep();
+  });
+}
+/* 画面を消す前に「次からは出さない」を拾う */
+function _takeWarnOff(){
+  var c=document.getElementById('autoWarnOff');
+  if(c&&c.checked){PREF.gdWarnOff=true;savePref();}
+}
+function autoHoldKeep(){_takeWarnOff();cancelOverwrite();gdRefreshUI();}
+function autoHoldLoad(){_takeWarnOff();loadBeforeUp();}
+function autoHoldForce(){_takeWarnOff();forceUp();}
+
+/* =========================================================
+   段階3-c: 起動したときのクラウド差分チェックと知らせ方
+     知らせ方は3択（ダイアログ／印だけ／知らせない）。端末ごとの設定。
+     ダイアログはこれ専用のものを作らず、段階2の読み込みダイアログを
+     そのまま使う。専用のものを挟むと、押したあとに保険①がもう一度出て
+     二段になり、毎日開く道具では煩わしくなるため。
+   ========================================================= */
+/* 知らせ方を変える。「知らせない」でも点の出し方は drawCloudBtn 側で抑える */
+function setNotify(v){
+  PREF.gdNotify=(v==='dot'||v==='none')?v:'dialog';
+  savePref();
+  gdRefreshUI();
+}
+function notifyNote(){
+  if(PREF.gdNotify==='dot')return '☁ に小さな印を付けるだけにします。';
+  if(PREF.gdNotify==='none')
+    return '何も出しません。自分で「⬇ 読み込む」を押したときだけ見に行きます。';
+  return '開いたときに知らせて、☁ にも印を付けます。';
+}
+function notifySegHtml(){
+  var opts=[['dialog','ダイアログ'],['dot','印だけ'],['none','知らせない']];
+  var h='<div class="cp-lbl">起動したとき、クラウドの方が新しかったら</div><div class="cp-seg">';
+  for(var i=0;i<opts.length;i++){
+    h+='<button'+(PREF.gdNotify===opts[i][0]?' class="on"':'')
+      +' onclick="setNotify(\''+opts[i][0]+'\')">'+opts[i][1]+'</button>';
+  }
+  return h+'</div><div class="cp-note">'+notifyNote()+'</div>';
+}
+
+/* 起動したとき・ログインしたときに、クラウドとの新旧を確かめる。
+   静かに失敗する。回線が無いだけのことも多く、起動のたびに文句を出さない。 */
+async function gdStartupCheck(){
+  if(!_gdToken)return;
+  if(PREF.gdNotify==='none')return;   /* 知らせないなら見に行かない */
+  if(_gdBusy)return;
+  try{
+    var fid=await gdFindFile();
+    if(!fid){
+      /* クラウドにまだ何も無い。黙って上げると驚きになるので、
+         「この端末の方が新しい」＝⬆保存で反映できる、という促しに任せる */
+      _gdCloudAt=0;
+      _gdDiff=false;
+      gdRefreshUI();
+      return;
+    }
+    _gdFileId=fid;
+    var d=await gdDownload(fid);
+    if(checkIncoming(d))return;   /* 読めないものは起動時は黙って見送る */
+    var cAt=+d.updatedAt||0;
+    _gdCloudAt=cAt;
+    _gdDiff=(cAt>(+DB.updatedAt||0));
+    gdRefreshUI();
+    if(_gdDiff&&PREF.gdNotify==='dialog'){
+      /* 段階2の読み込みダイアログをそのまま使う。
+         第3引数で「次からは出さない」の印を足す */
+      askLoad(d,'クラウド',true);
+    }
+  }catch(e){
+    /* 静かに見送る */
+  }
+}
+
+/* 開き直したときの復帰。
+   ・鍵がまだ新しい（1時間以内）→ そのまま使う。Googleには問い合わせない
+   ・鍵が古い／消えているが、前につないでいた → 裏で取り直す
+   ・取り直せなければ、静かに未ログインへ戻す（⚠ にはしない。
+     切れているのはこちらの都合で、あかりが何かを失ったわけではないので）  */
+async function gdBootRestore(){
+  if(_gdToken&&!gdTokenStale()){
+    gdRefreshUI();
+    return true;
+  }
+  if(!_gdToken&&!PREF.gdWasIn)return false;   /* 一度もつないでいない */
+  try{
+    await gdWaitReady(8000);   /* Googleの読み込みは async なので待つ */
+    await gdSilentRefresh();
+    return true;
+  }catch(e){
+    /* iOSのSafariなど、裏での取り直しが弾かれる環境がある。
+       そのときは今までどおり、押してログインしてもらう。 */
+    _gdToken=null;_gdTokenAt=0;_gdReconnect=false;
+    gdForgetToken();
+    gdRefreshUI();
+    return false;
+  }
+}
+
+/* ---- ☁ パネル ------------------------------------------ */
+function cloudPanelHtml(){
+  return cloudSyncSectionHtml()
+    +'<div class="cp-sep"></div>'
+    +'<div class="cp-h">ファイルで持ち出す</div>'
+    +'<div class="cp-row">'
+      +'<button class="btn" onclick="exportJson()">⬇ 書き出す</button>'
+      +'<button class="btn" onclick="pickImport()">⬆ 読み込む</button>'
+    +'</div>'
+    +'<div class="cp-note">記録をファイルとして残せます。読み込むときは、'
+    +'失われるものを先に数えて見せて、直前の控えも取ります。</div>'
+    +firstTimeNoteHtml();
+}
+/* クラウド同期の欄。
+   回線とGoogleのつながりは別ものとして扱う。状態の行はGoogleの話だけを言い、
+   回線の話はボタンの下に一行だけ添える。回線が無く見えてもボタンは消さない
+   （navigator.onLine は嘘をつくことがあり、消すと行き止まりになるため）。   */
+function cloudSyncSectionHtml(){
+  var h='<div class="cp-h">クラウド同期</div>';
+  if(_gdReconnect){
+    h+='<div class="cp-state"><span class="cp-dot warn"></span>接続が切れています</div>'
+      +'<div class="cp-row"><button class="btn pri" onclick="gdReconnectNow()">⚠ 再接続</button></div>'
+      +'<div class="cp-note">記録はこの端末に残っています。押すとつなぎ直します。</div>'
+      +gdOfflineNote()
+      +'<div class="cp-sep"></div>'+notifySegHtml()
+      +'<div class="cp-sep"></div>'
+      +'<div class="cp-row" style="margin-bottom:0">'
+      +'<button class="btn sm" onclick="gdSignOut()">ログアウト</button></div>';
+    return h;
+  }
+  if(!_gdToken){
+    h+='<div class="cp-state"><span class="cp-dot"></span>未ログイン</div>'
+      +'<div class="cp-row"><button class="btn" onclick="gdSignIn()">Googleでログイン</button></div>'
+      +gdOfflineNote();
+    return h;
+  }
+  h+='<div class="cp-state"><span class="cp-dot on"></span>つながっています'
+    +(_gdLastSync?'<br><span class="cp-sub">最後の同期 '+fmtStamp(_gdLastSync)
+      +(_gdLastAuto?'（自動）':'')+'</span>':'')
+    +'</div>';
+  h+='<div class="cp-row">'
+    +'<button class="btn"'+(_gdBusy?' disabled':'')+' onclick="gdSyncUp()">⬆ 保存</button>'
+    +'<button class="btn"'+(_gdBusy?' disabled':'')+' onclick="gdSyncDown()">⬇ 読み込む</button>'
+   +'</div>';
+  if(_gdBusy){
+    h+='<div class="cp-note">クラウドとやりとりしています…</div>';
+  }else if(_gdAutoHeld){
+    /* 段階3-d: 自動保存を見送っている。人が押した⬇読み込みで合流してもらう */
+    h+='<div class="cp-note" style="color:var(--warn)">'
+      +'クラウドの方が新しいので、自動保存を見送りました。<br>'
+      +'「⬇ 読み込む」で合流させてから保存してください。</div>';
+  }else if(_gdDiff&&PREF.gdNotify!=='none'){
+    h+='<div class="cp-note" style="color:var(--acc2)">'
+      +'クラウドに、この端末より新しいものがあります</div>';
+  }else if(gdNeedUp()){
+    /* 読み込んだ結果はクラウドより中身が多い。自動では上げず、ここで促す */
+    h+='<div class="cp-note" style="color:var(--acc)">'
+      +'この端末の方が新しいです。⬆保存でクラウドにも反映できます</div>';
+  }
+  h+=gdOfflineNote();
+  /* 段階3-d: 変わったら自動で保存する。
+     説明は入れたときだけ出す。切っている人に、していないことの説明は要らない。 */
+  h+='<div class="cp-sep"></div>'
+    +'<label class="cp-chk"><input type="checkbox"'+(PREF.gdAuto?' checked':'')
+    +' onchange="setAuto(this.checked)">変わったら自動でクラウドに保存する</label>';
+  if(PREF.gdAuto){
+    h+='<div class="cp-note">記録を変えてから数秒後に、そっと保存します。'
+      +'クラウドの方が新しいときは保存を見送ります（上書きしません）。</div>';
+    /* この☑は、見送りのダイアログで印を入れたあとだけ現れる。
+       まだ起きていないことの設定を最初から並べない（3-cの「次からは出さない」と同じ）。 */
+    if(PREF.gdWarnOff){
+      h+='<label class="cp-chk" style="margin-top:9px">'
+        +'<input type="checkbox" checked onchange="setWarnOff(this.checked)">'
+        +'見送ったときに知らせない</label>';
+    }
+  }
+  /* 起動時の知らせ方。未ログインのときは出さない（この下の分岐に入らない） */
+  h+='<div class="cp-sep"></div>'+notifySegHtml();
+  /* ログアウトは区切り線を挟んで下に。そう何度も押すものではないので */
+  h+='<div class="cp-sep"></div>'
+    +'<div class="cp-row" style="margin-bottom:0">'
+    +'<button class="btn sm"'+(_gdBusy?' disabled':'')
+    +' onclick="gdSignOut()">ログアウト</button></div>';
+  return h;
+}
+/* 回線が無いと見えるときの一行。「ようです」と言い切らないのは、
+   navigator.onLine が当てにならないことがあるため */
+function gdOfflineNote(){
+  if(gdOnline())return '';
+  return '<div class="cp-note" style="color:var(--warn)">'
+    +'回線につながっていないようです。記録はこの端末に残っています。<br>'
+    +'押してみることはできますが、失敗するかもしれません。</div>';
+}
+/* はじめて別の端末とやりとりする人へ。クラウドでもファイルでも同じ落とし穴なので、
+   パネルの一番下に1つだけ置く。
+   イベントは名前や期間ではなく札（id）で見分けるので、両方の端末で別々に作ると
+   同じ名前でも別物になる。それを先に知らせておく。                        */
+function firstTimeNoteHtml(){
+  return '<div class="cp-first">'
+    +'<span class="cp-first-h">はじめの1回だけ注意</span>'
+    +'片方の端末から先に保存して、もう片方は<b>それを読み込んでから</b>使ってください。'
+    +'両方の端末で同じイベントを作ると、名前が同じでも別のものとして扱われます。'
+    +'</div>';
+}
+function toggleCloud(btn){
+  var p=document.getElementById('cloudPanel');
+  if(!p)return;
+  if(p.style.display==='block'){closeCloud();return;}
+  p.innerHTML=cloudPanelHtml();
+  p.style.display='block';
+  var r=btn.getBoundingClientRect();
+  var pw=p.offsetWidth||270;
+  p.style.left=Math.max(4,Math.min(r.right-pw,window.innerWidth-pw-8))+'px';
+  p.style.top=(r.bottom+6)+'px';
+  btn.classList.add('open');
+  setTimeout(function(){document.addEventListener('click',_cloudOutside,true);},0);
+}
+function _cloudOutside(e){
+  var p=document.getElementById('cloudPanel');
+  /* ☁ボタンの中の青い点を押したときも「ボタンを押した」と見なす
+     （e.target が span になるので id では拾えない）                */
+  var onBtn=e.target&&e.target.closest&&e.target.closest('.cloud-btn');
+  if(p&&!p.contains(e.target)&&!onBtn)closeCloud();
+}
+function closeCloud(){
+  var p=document.getElementById('cloudPanel');
+  if(p)p.style.display='none';
+  var b=document.getElementById('cloudBtn');
+  if(b)b.classList.remove('open');
+  document.removeEventListener('click',_cloudOutside,true);
+}
+
+/* ---- 起動 -------------------------------------------- */
+function boot(){
+  load();
+  loadPref();     // この端末だけの設定（同期の好み）
+  applyTheme();
+  renderList();
+  go('list');
+  drawUndoBar(); // 読み込み後に画面を閉じても、次に何か記録するまでは戻せる
+  drawCloudBtn(); // 残っている鍵があれば「つながっている」で出る
+  /* 鍵を戻してから、クラウドとの新旧を確かめる（段階3-c）。
+     戻せなかったときは確かめに行かない                        */
+  gdBootRestore().then(function(okIn){if(okIn)gdStartupCheck();});
+  /* 回線が切れた・戻ったで☁の濃さを変える。Googleのつながりとは別もの */
+  try{
+    window.addEventListener('online',gdRefreshUI);
+    window.addEventListener('offline',gdRefreshUI);
+  }catch(e){}
+}
+boot();
+</script>
+
+<!-- 装飾カレンダー。モーダル（z-index:50）より上に出るよう本文の外に置いてある -->
+<div id="calPicker">
+  <div class="cal-head">
+    <button type="button" class="cal-nav" id="calPrev" onclick="shiftCalMonth(-1);event.stopPropagation()">◀</button>
+    <span class="cal-selwrap" id="calSelWrap"></span>
+    <button type="button" class="cal-nav" id="calNext" onclick="shiftCalMonth(1);event.stopPropagation()">▶</button>
+  </div>
+  <div id="calBody"></div>
+  <div class="cal-foot" id="calFoot"></div>
+</div>
+</body>
+</html>

@@ -3,6 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- アクセス解析の停止設定を読む（プライバシーポリシーのボタンで切り替えます） -->
+<script>
+try {
+  if (localStorage.getItem('saniwa_ga_optout') === '1') {
+    window['ga-disable-G-QM317D9ESN'] = true;
+  }
+} catch (e) {}
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QM317D9ESN');
+</script>
 <title>鍛刀録</title>
 <script>/* ダーク設定時に一瞬白く光るのを防ぐ（本文より先にテーマを当てる） */
 try{document.documentElement.setAttribute("data-theme",localStorage.getItem("tantouroku_theme")||"light");}catch(e){}</script>
@@ -228,6 +243,74 @@ html[data-theme="dark"] .sub .fill{background:#34577a}
 </style>
 </head>
 <body>
+<!-- ═══ SNSアプリの中で開いている人への案内 ═══════════════════
+     Xなどのアプリ内でリンクを開くと、ブラウザ本体とは別の場所に
+     データが保存される。同じ道具を開いても記録が見えず、
+     Googleログインも通らないことがある。
+     ここは案内を出すだけで、動きは何も変えない。 -->
+<div id="iab-bar" style="display:none"></div>
+<script>
+(function(){
+  var KEY='saniwa_iab_hide';
+  /* ホーム画面に追加して開いている状態。SNSアプリの中ではないので案内を出さない。
+     iOSは navigator.standalone、AndroidなどはCSSの display-mode で分かる。 */
+  function isHomeScreen(){
+    try{ if(navigator.standalone===true)return true; }catch(e){}
+    try{ if(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)return true; }catch(e){}
+    return false;
+  }
+  function isInApp(){
+    if(isHomeScreen())return false;
+    var ua=navigator.userAgent||'';
+    /* ①名乗っているアプリ ②AndroidのWebView ③iOSのWKWebView（Safari/の名乗りが無い） */
+    if(/FBAN|FBAV|FB_IAB|Instagram|\bLine\/|MicroMessenger|KAKAOTALK/.test(ua))return true;
+    if(/;\s*wv\)/.test(ua))return true;
+    if(/iPhone|iPad|iPod/.test(ua)&&ua.indexOf('AppleWebKit')>=0&&!/Safari\//.test(ua))return true;
+    return false;
+  }
+  function hidden(){ try{ return localStorage.getItem(KEY)==='1'; }catch(e){ return false; } }
+  function hasData(){ return typeof gdLocalEmpty==="function" ? !gdLocalEmpty() : false; }
+  function close(never){
+    if(never){ try{ localStorage.setItem(KEY,'1'); }catch(e){} }
+    var el=document.getElementById('iab-bar');
+    if(el)el.style.display='none';
+  }
+  window.iabClose=function(){
+    var c=document.getElementById('iab-never');
+    close(c&&c.checked);
+  };
+  /* Googleログインの判定など、この帯の外からも同じ判定を使えるようにする */
+  window.isHomeScreen=isHomeScreen;
+  function show(){
+    var el=document.getElementById('iab-bar');
+    if(!el)return;
+    var body = hasData()
+      ? '<p style="margin:0 0 10px">ここでの記録は、<b>いま開いているアプリ（Xなど）の中</b>だけに保存されています。'
+        +'この道具ではなくそのアプリが管理している場所なので、アプリ側の都合でまとめて消えることがあります。</p>'
+        +'<p style="margin:0 0 10px"><b>いま画面に記録が見えているなら、先に書き出し（エクスポート）を取ってください。</b>'
+        +'そのファイルを、SafariやChromeで開いた同じ道具に読み込めば、そのまま続けられます。</p>'
+      : '<p style="margin:0 0 10px">このままでは記録が保存されない、以前の記録が見えない、Googleとつながらない、といったことが起きます。</p>'
+        +'<p style="margin:0"><b>メニューの「ブラウザで開く」から、SafariやChromeで開き直してください。</b>以前の記録がそのまま見えることがあります。</p>';
+    el.innerHTML=
+      '<div style="max-width:640px;margin:0 auto;padding:14px 16px;font-size:13px;line-height:1.85">'
+      +'<div style="font-weight:700;margin-bottom:8px">⚠ SNSアプリの中で開いています</div>'
+      +body
+      +'<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap">'
+      +'<label style="font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer">'
+      +'<input type="checkbox" id="iab-never"> このブラウザでは表示しない</label>'
+      +'<button onclick="iabClose()" style="padding:7px 18px;font-size:12px;border-radius:7px;'
+      +'border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer;font-family:inherit">閉じる</button>'
+      +'</div></div>';
+    el.setAttribute('style',
+      'display:block;background:#fff4d6;color:#5a4212;border-bottom:1px solid #e0c98a;'
+      +'position:relative;z-index:400');
+  }
+  function init(){ if(isInApp()&&!hidden())show(); }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
+<!-- ═══ ここまで ═══════════════════════════════════════════ -->
 <div class="wrap">
   <header>
     <span class="logo">🔥</span>
@@ -241,6 +324,10 @@ html[data-theme="dark"] .sub .fill{background:#34577a}
     <button class="tab" data-tab="settei">⚙ 設定</button>
   </nav>
   <main id="view"></main>
+  <footer style="margin-top:36px;padding:20px 16px 28px;text-align:center;font-size:11px;line-height:2">
+    <div style="height:1px;background:currentColor;opacity:.14;margin:0 auto 16px;max-width:280px"></div>
+    <a href="saniwa_top.html" style="color:inherit;opacity:.85">審神者の道具箱</a><span style="opacity:.5">　・　</span><a href="privacy.html" style="color:inherit;opacity:.85">プライバシーポリシー</a><br><span style="opacity:.5">このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari shizukuishi</span><br><span style="opacity:.5">無断転載・再配布・広告目的での公開を禁じます。</span>
+  </footer>
 </div>
 
 <div class="overlay" id="pickerOverlay">
@@ -1116,6 +1203,8 @@ function gdSignIn(){
    Googleログインは内蔵ブラウザからは拒否されるため、同期を使おうとしたときだけ案内する。
    記録するだけなら問題なく使えるので、普段は何も出さない。 */
 function isInAppBrowser(){
+  /* ホーム画面に追加して開いた場合はGoogleログインが使えるので、止めない */
+  if(typeof isHomeScreen==="function" && isHomeScreen())return false;
   const ua=navigator.userAgent||"";
   if(/FBAN|FBAV|FB_IAB|Instagram|Line\/|Twitter|TwitterAndroid|MicroMessenger|KAKAOTALK|Pinterest|Snapchat|TikTok/i.test(ua))return true;
   // iOSでSafari以外のWebView（アプリ内ブラウザ）：Safari表記が無いWebKit
@@ -1342,9 +1431,44 @@ async function gdGetCloudModified(){
     return d.modifiedTime?new Date(d.modifiedTime):null;
   }catch(e){return null;}
 }
+/* ── 手元が空のまま上書きするのを止める ──────────────
+   機種変更・ブラウザの乗り換え・サイトデータの削除・アプリ内ブラウザなどで
+   この端末の記録が空になっていることがある。その状態で保存すると
+   クラウドの記録まで空で塗りつぶされ、元に戻せない。
+   最終同期の時刻が残っていない人ほど危ないので、
+   syncWarnDisabled の判定より手前に置く。 */
+function gdLocalEmpty(){
+  return !(DB.batches||[]).length
+      && !(DB.wishlist||[]).length
+      && !(DB.recipes||[]).length;
+}
+function gdForceSaveAnyway(){
+  closeModal();
+  gdSyncUp();
+}
+function gdEmptyWarnLoad(){ closeModal(); gdSyncDown(); }
+async function gdAskIfEmpty(){
+  if(!gdLocalEmpty())return false;
+  let fid=null;
+  try{ fid=_gdFileId||await gdFindFile(); }catch(e){ return false; }
+  if(!fid)return false;   /* クラウドに何も無いなら、空を保存しても失うものが無い */
+  showModal(`<div class="modal-title">手元に記録がありません</div>
+    <div class="modal-desc">このまま保存すると、クラウドに残っている記録が空の状態で上書きされます。元に戻せません。<br><br>以前この道具に記録していた場合は、先に「⬇ 読み込む」を押してください。</div>
+    <div class="modal-act">
+      <button class="btn ghost" onclick="closeModal()">やめる</button>
+      <button class="btn" onclick="gdEmptyWarnLoad()">⬇ 読み込む</button>
+    </div>
+    <div style="text-align:center;margin-top:12px">
+      <a href="#" onclick="gdForceSaveAnyway();return false;"
+         style="font-size:11px;opacity:.6;text-decoration:underline">それでも保存する</a>
+    </div>`);
+  return true;
+}
+
 async function gdSyncUpWithCheck(){
   if(!_gdToken){toast("先にGoogleログインしてください");return;}
   if(gdTokenStale()){try{await gdSilentRefresh();}catch(e){_gdEnterReconnect();return;}}
+  if(await gdAskIfEmpty())return;
   if(DB.settings.syncWarnDisabled){await gdSyncUp();return;}
   if(!_gdFileId)_gdFileId=await gdFindFile();
   const cloudMod=await gdGetCloudModified();

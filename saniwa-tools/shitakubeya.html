@@ -6,6 +6,14 @@
 <title>出陣支度部屋</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- アクセス解析の停止設定を読む（プライバシーポリシーのボタンで切り替えます） -->
+<script>
+try {
+  if (localStorage.getItem('saniwa_ga_optout') === '1') {
+    window['ga-disable-G-QM317D9ESN'] = true;
+  }
+} catch (e) {}
+</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
 <script>
@@ -114,7 +122,7 @@ html.mbar-hide .col-party{top:var(--header-h);height:calc(100vh - var(--header-h
 
 /* ===== PC LAYOUT ===== */
 .pc-wrap{
-  display:grid;grid-template-columns:185px minmax(320px,560px) 400px;
+  display:grid;grid-template-columns:185px minmax(320px,560px) 480px;
   max-width:1280px;margin:0 auto;
   align-items:start;
 }
@@ -290,6 +298,32 @@ html.mbar-hide .col-party{top:var(--header-h);height:calc(100vh - var(--header-h
 .ptab-add:hover{border-color:var(--accent2);color:var(--accent2);}
 .ptab-input{background:var(--bg);border:1px solid var(--accent2);border-radius:4px;padding:2px 5px;font-size:10px;color:var(--text);font-family:inherit;width:70px;}
 
+/* 部隊タブの操作欄（帯＝常に見える／中身＝畳める。既定は畳む・PC表示のみ）
+   マークは mock_chevron_final.html の候補1（16px・text3・▼▲・帯の右端）に合わせている。
+   部隊名（14px明朝）とホバー（枠＋背景が濃くなる）はあかりさんの希望で前回実装の見た目に戻した */
+.pop-bar{display:flex;align-items:center;gap:6px;margin-top:4px;padding:4px 9px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;cursor:pointer;user-select:none;transition:all .12s;}
+.pop-bar:hover{border-color:var(--accent2);background:var(--bg3);}
+body:not(.pop-folded) .pop-bar{border-radius:8px 8px 0 0;border-bottom-color:transparent;}
+.pop-label{font-size:11px;color:var(--text2);flex-shrink:0;}
+.pop-name{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;color:var(--accent);flex:1;min-width:40px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pop-bar-del{font-size:11px;color:var(--red);background:none;border:1px solid transparent;border-radius:5px;padding:2px 7px;cursor:pointer;font-family:inherit;flex-shrink:0;}
+.pop-bar-del:hover{border-color:var(--red);}
+.pop-chev{flex-shrink:0;line-height:1;font-size:16px;color:var(--text3);display:inline-flex;align-items:center;justify-content:center;}
+.party-op-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg2);border:1px solid var(--border2);border-top:none;border-radius:0 0 8px 8px;flex-wrap:wrap;}
+body.pop-folded .party-op-row{display:none;}
+body.pop-folded .pop-foldable{display:none;}
+body:not(.pop-folded) .pop-bar-del{display:none;}
+.pop-tail-row{display:flex;align-items:center;gap:6px;margin-top:4px;}
+.pop-tail-row .kei-sync-btn{margin-left:auto;}
+.pop-mv{background:var(--panel);border:1px solid var(--border2);border-radius:7px;width:36px;height:32px;font-size:15px;color:var(--text2);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pop-mv:hover:not(:disabled){border-color:var(--accent2);color:var(--accent);}
+.pop-mv:disabled{opacity:.3;cursor:default;}
+.pop-btn{background:var(--panel);border:1px solid var(--border2);border-radius:7px;padding:7px 13px;font-size:12px;color:var(--text2);cursor:pointer;font-family:inherit;white-space:nowrap;min-height:32px;}
+.pop-btn:hover{border-color:var(--accent2);color:var(--accent);}
+.pop-btn.danger{color:var(--red);}
+.pop-btn.danger:hover{border-color:var(--red);background:color-mix(in srgb,var(--red) 8%,var(--panel));}
+.pop-hint{font-size:11px;color:var(--text3);width:100%;}
+
 .party-slots{display:flex;flex-direction:column;gap:5px;}
 .pslot{background:var(--bg3);border:1.5px dashed var(--border2);border-radius:7px;padding:7px 9px;min-height:52px;display:flex;align-items:flex-start;gap:7px;cursor:pointer;transition:all .15s;}
 .pslot.target{background:var(--bg3);border:1.5px solid var(--accent2);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent2) 25%,transparent);}
@@ -352,6 +386,10 @@ html.mbar-hide .col-party{top:var(--header-h);height:calc(100vh - var(--header-h
 .psg-val{font-size:11px;font-weight:500;color:var(--text2);margin-top:1px;}
 .btn-clear{background:transparent;border:1px solid var(--border2);color:var(--text2);border-radius:5px;padding:5px;cursor:pointer;font-size:11px;font-family:inherit;width:100%;transition:all .12s;}
 .btn-clear:hover{color:var(--red);border-color:var(--red);}
+.note-area{margin-top:10px;}
+.note-textarea{width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.6;color:var(--text);font-family:inherit;resize:vertical;min-height:90px;}
+.note-textarea:focus{outline:none;border-color:var(--accent2);}
+.note-textarea::placeholder{color:var(--text3);}
 
 /* ===== MOBILE LAYOUT ===== */
 .mobile-wrap{display:none;flex-direction:column;height:calc(100vh - var(--header-h) - var(--mode-h));}
@@ -445,6 +483,8 @@ body.ds-local #m-sort-chips .m-chip[data-stat="exp"],
 body.ds-local .card-top .lv-badge,
 body.ds-local .m-badges{display:none !important;}
 body:not(.ds-local) .local-only{display:none !important;}
+.party-mv-only{display:none;}
+body.party-mv-on .party-mv-only{display:block;}
 .pm-kiwame-bulk{display:flex;gap:6px;}
 .ds-bulk{margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border2);}
 .pm-kiwame-bulk .pm-item{flex:1;text-align:center;}
@@ -612,17 +652,28 @@ body.bs-center .bs-panel{border-radius:12px !important;max-height:65vh;}
 /* ===== SETTINGS ===== */
 .settings-overlay{position:fixed;inset:0;background:rgba(40,28,16,.35);z-index:400;display:none;align-items:flex-start;justify-content:flex-end;padding:56px 8px 0;}
 .settings-overlay.open{display:flex;}
-.settings-panel{background:var(--panel);border:1px solid var(--border2);border-radius:10px;padding:13px;width:280px;box-shadow:0 8px 32px var(--shadow);display:flex;flex-direction:column;gap:10px;max-height:82vh;overflow-y:auto;}
+.settings-panel{background:var(--panel);border:1px solid var(--border2);border-radius:10px;padding:13px;width:min(440px,calc(100vw - 24px));box-shadow:0 8px 32px var(--shadow);display:flex;flex-direction:column;gap:10px;max-height:82vh;overflow-y:auto;}
 body.show-mobile .settings-overlay{justify-content:center;padding:56px 0 0;}
 body.show-mobile .settings-panel{width:calc(min(430px,100vw) - 24px);}
 .settings-title{font-family:'Noto Serif JP',serif;font-size:13px;font-weight:700;color:var(--accent);}
 .settings-sec{display:flex;flex-direction:column;gap:5px;}
-.settings-label{font-size:10px;color:var(--text3);font-weight:500;}
+.settings-label{font-size:11px;color:var(--text3);font-weight:500;}
+.set-note{font-size:11px;color:var(--text3);line-height:1.75;}
+/* 設定のグループ折りたたみ（左カラムのfoldとは別系統） */
+.set-sec+.set-sec{border-top:1px solid var(--border);}
+.set-hdr{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;padding:6px 3px;border-radius:5px;}
+.set-hdr:hover{background:var(--bg2);}
+.set-title{font-size:12px;color:var(--text2);font-weight:600;flex-shrink:0;}
+.set-sum{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;color:var(--accent);text-align:right;}
+.set-chev{flex-shrink:0;font-size:10px;color:var(--text3);width:12px;text-align:center;}
+.set-body{padding:3px 0 9px;display:flex;flex-direction:column;gap:12px;}
+.set-sec.folded .set-body{display:none;}
 .settings-chips{display:flex;flex-wrap:wrap;gap:3px;}
 .s-chip{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:2px 8px;font-size:10px;color:var(--text2);cursor:pointer;font-family:inherit;}
 .s-chip.on{background:var(--accent);color:#fff;border-color:var(--accent);}
 .radio-group{display:flex;flex-direction:column;gap:4px;}
-.radio-row{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--text2);}
+.radio-row{display:flex;align-items:flex-start;gap:6px;cursor:pointer;font-size:12px;color:var(--text2);line-height:1.6;}
+.radio-row input{margin-top:3px;flex-shrink:0;}
 .settings-close{background:var(--bg2);border:1px solid var(--border2);border-radius:5px;padding:5px;font-size:11px;color:var(--text2);cursor:pointer;font-family:inherit;}
 
 /* Threshold editor */
@@ -667,6 +718,123 @@ body.show-mobile .pc-wrap{display:none;}
 /* No data */
 .no-data{padding:32px;text-align:center;color:var(--text3);font-size:13px;line-height:1.8;}
 .no-data-title{font-size:15px;font-weight:500;color:var(--text2);margin-bottom:8px;}
+
+/* ===================== 見やすさ改善（uiV2） ===================== */
+/* ① 静かなカード：ラベルは小さく・並替中の項目だけ主役・全体を薄い枠でまとめる */
+body.ui-v2 .card-stats{background:var(--empty-bg);border:1px solid var(--border);border-radius:8px;padding:7px 9px;gap:9px 7px;}
+body.ui-v2 .sn{font-size:8px;color:var(--text3);}
+body.ui-v2 .sv{font-size:12px;color:var(--text2);font-weight:500;}
+body.ui-v2 .sv.null-val{font-size:12px;color:var(--text3);}
+body.ui-v2 .sv.primary{font-size:20px;color:var(--accent);font-weight:800;}
+body.ui-v2 .si.range-si,body.ui-v2 .si.slot-si{background:transparent;padding:0;}
+body.ui-v2 .si.range-si .sn,body.ui-v2 .si.slot-si .sn{color:var(--text3);}
+body.ui-v2 .si.range-si .sv,body.ui-v2 .si.slot-si .sv{color:var(--text3);font-weight:600;}
+body.ui-v2 .si:has(.sv.primary){background:color-mix(in srgb,var(--accent) 9%,transparent);border-radius:7px;padding:1px 5px;}
+/* スマホカード：ラベルは元々小さいので、枠と主役の強調のみ */
+body.ui-v2 .m-stats{background:var(--empty-bg);border:1px solid var(--border);border-radius:7px;padding:4px 6px;}
+body.ui-v2 .m-sv{color:var(--text2);}
+body.ui-v2 .m-sv.primary{font-size:17px;color:var(--accent);font-weight:800;}
+/* ② カラムの区別：部隊列を淡く染め、左端に縦バー、両列に見出し */
+body.ui-v2 .col-party{background:color-mix(in srgb,var(--accent) 6%,var(--panel));border-left:3px solid var(--accent2);}
+.list-label{font-family:'Noto Serif JP',serif;font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.05em;margin-right:6px;display:none;}
+body.ui-v2 .list-label{display:inline;}
+.party-flow{font-size:10px;font-weight:400;color:var(--accent2);letter-spacing:0;display:none;}
+body.ui-v2 .party-flow{display:inline;}
+/* ③ 編成名：14px・太字にしない・非選択タブの文字を濃く */
+body.ui-v2 .ptab{padding:4px 9px;}
+body.ui-v2 .tab-name{font-size:14px;font-weight:400;}
+body.ui-v2 .ptab:not(.on),body.ui-v2 .ptab:not(.on) .tab-name{color:var(--text);}
+body.ui-v2 .m-ptab{font-size:12px;}
+body.ui-v2 .m-ptab-name{font-size:13px;}
+body.ui-v2 .m-ptab:not(.on){color:var(--text);}
+/* 編集・削除ボタン：塗り＋枠でボタンらしく／×は破壊的なので赤系 */
+body.ui-v2 .ptab-edit{font-size:12px;padding:2px 8px;border-radius:4px;line-height:1.4;}
+body.ui-v2 .ptab-del{font-size:11px;opacity:1;border-radius:4px;width:18px;height:16px;display:inline-flex;align-items:center;justify-content:center;padding:0;}
+body.ui-v2 .ptab.on .ptab-edit{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.55);color:#fff;}
+body.ui-v2 .ptab.on .ptab-del{background:rgba(198,47,69,.9);border:1px solid rgba(255,180,168,.85);color:#fff;}
+body.ui-v2 .ptab:not(.on) .ptab-edit{background:color-mix(in srgb,var(--accent) 14%,transparent);border:1px solid var(--accent2);color:var(--accent);}
+body.ui-v2 .ptab:not(.on) .ptab-del{background:color-mix(in srgb,var(--red) 16%,transparent);border:1px solid color-mix(in srgb,var(--red) 55%,transparent);color:var(--red);}
+body.ui-v2 .m-ptab.on .ptab-del,body.ui-v2 .m-ptab-del{opacity:1;}
+body.ui-v2 .m-ptab.on .m-ptab-del{background:rgba(198,47,69,.9);color:#fff;border-radius:4px;padding:0 4px;}
+/* 改名の入力欄：タブ名と同じ大きさに */
+body.ui-v2 .ptab-input{font-size:14px;width:110px;padding:2px 6px;}
+body.ui-v2 .m-ptab-input{font-size:13px;padding:2px 6px;}
+/* ⋯メニュー（部隊タブの操作） */
+.ptab,.m-ptab{position:relative;}
+.ptab-menu,.m-ptab-menu{background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text2);cursor:pointer;font-size:13px;line-height:1;padding:1px 7px;font-family:inherit;flex-shrink:0;transition:all .12s;}
+.ptab.on .ptab-menu,.m-ptab.on .m-ptab-menu{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.5);color:#fff;}
+.ptab-menu:hover,.m-ptab-menu:hover{border-color:var(--accent2);}
+.tab-menu{position:absolute;top:100%;left:0;margin-top:4px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;box-shadow:0 4px 16px var(--shadow);padding:4px;z-index:60;min-width:132px;display:none;flex-direction:column;gap:1px;}
+.tab-menu.open{display:flex;}
+.tab-menu button{background:none;border:none;text-align:left;padding:8px 11px;border-radius:5px;font-size:12px;color:var(--text);cursor:pointer;font-family:inherit;white-space:nowrap;}
+.tab-menu button:hover{background:var(--bg2);}
+.tab-menu button.danger{color:var(--red);}
+.tab-menu button.danger:hover{background:color-mix(in srgb,var(--red) 12%,transparent);}
+/* --- スマホ：画面を広く使う（mCompact / mHideHeader） --- */
+.m-bar2{display:none;background:var(--bg2);border-bottom:1px solid var(--border2);padding:5px 9px;gap:6px;flex-shrink:0;}
+.m-bar2 button{flex:1;min-width:0;background:var(--panel);border:1px solid var(--border2);border-radius:8px;padding:5px 6px;color:var(--text2);font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;transition:all .12s;}
+.m-bar2 button:active{border-color:var(--accent2);}
+.m-bar2 button.active{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface));}
+.m-bar2 .lb{font-size:9px;color:var(--text3);}
+.m-bar2 .vl{font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+body.show-mobile.m-compact .m-bar2{display:flex;}
+body.show-mobile.m-compact .m-sort-bar{display:none;}
+body.show-mobile.m-compact{--mode-h:0px;}
+/* シートへ移した並替チップ・表示ステータス */
+#bs-sort-sec,#bs-mode-sec{display:none;}
+body.show-mobile.m-compact #bs-sort-sec,body.show-mobile.m-compact #bs-mode-sec{display:block;}
+.bs-panel #m-sort-chips .m-chip{font-size:11px;padding:5px 11px;}
+.bs-panel .mode-bar{position:static;height:auto;background:transparent;border:none;padding:0;margin:0;max-width:none;overflow:visible;}
+.bs-panel .mode-bar .mode-toggle button{padding:5px 14px;font-size:12px;}
+/* ヘッダー自動非表示（スマホのみ） */
+body.show-mobile header{transition:height .2s ease,box-shadow .2s ease;overflow:hidden;}
+body.show-mobile .mobile-wrap{transition:height .2s ease;}
+body.show-mobile.m-hdr-off{--header-h:0px;}
+body.show-mobile.m-hdr-off header{box-shadow:none;}
+/* --- 確認ダイアログ（ブラウザの confirm を使わず自前で出す） --- */
+.ask-overlay{position:fixed;inset:0;background:rgba(40,28,16,.5);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;}
+.ask-overlay.open{display:flex;}
+.ask-box{background:var(--panel);border:1px solid var(--border2);border-radius:12px;width:100%;max-width:360px;
+  box-shadow:0 8px 32px var(--shadow);overflow:hidden;}
+.ask-msg{padding:18px 18px 15px;font-size:13px;line-height:1.85;color:var(--text);white-space:pre-wrap;word-break:break-word;}
+.ask-ft{display:flex;gap:8px;justify-content:flex-end;padding:0 14px 14px;}
+.ask-btn{border:1px solid var(--border2);background:var(--bg2);color:var(--text2);border-radius:7px;
+  padding:8px 15px;font-size:13px;cursor:pointer;font-family:inherit;}
+.ask-btn:hover{background:var(--bg3);}
+.ask-btn.ok{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500;}
+.ask-btn.ok:hover{opacity:.88;background:var(--accent);}
+.ask-btn.ok.danger{background:var(--red);border-color:var(--red);}
+/* クラウド同期の確認画面（askConfirmとは別に持つ。時刻を並べて出すため） */
+.gd-dlg{position:fixed;inset:0;background:rgba(40,28,16,.5);z-index:520;display:none;align-items:center;justify-content:center;padding:20px;}
+.gd-dlg.open{display:flex;}
+.gd-dlg-box{background:var(--panel);border:1px solid var(--border2);border-radius:12px;width:100%;max-width:380px;
+  box-shadow:0 8px 32px var(--shadow);overflow:hidden;}
+.gd-dlg-ttl{padding:16px 18px 0;font-size:14px;font-weight:700;color:var(--accent);font-family:'Noto Serif JP',serif;}
+.gd-dlg-msg{padding:9px 18px 0;font-size:12.5px;line-height:1.85;color:var(--text2);}
+.gd-dlg-times{margin:12px 18px 0;padding:9px 12px;background:var(--bg2);border-radius:8px;
+  font-size:11.5px;line-height:1.9;color:var(--text2);white-space:pre-wrap;}
+.gd-dlg-ft{display:flex;gap:8px;justify-content:flex-end;padding:14px;}
+
+/* --- 部隊タブのドラッグ並べ替え（⠿からつまむ） --- */
+.tab-grip{font-size:14px;line-height:1;color:var(--text3);letter-spacing:-1px;cursor:grab;flex-shrink:0;
+  padding:5px 3px;margin:-5px -1px;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;}
+.tab-grip:active{cursor:grabbing;}
+.ptab.on .tab-grip,.m-ptab.on .tab-grip{color:rgba(255,255,255,.72);}
+.ptab:hover .tab-grip{color:var(--accent2);}
+.ptab.dnd-picked,.m-ptab.dnd-picked{opacity:.28;}
+.drag-ghost{position:fixed;z-index:900;margin:0;opacity:.96;pointer-events:none;transition:none;box-shadow:0 4px 12px rgba(0,0,0,.25);}
+.drag-ghost .tab-menu{display:none;}
+/* 並べ替え直後の「元に戻す」（既存トーストとは別物・ボタンが押せる） */
+.undo-toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%) translateY(8px);background:var(--surface);color:var(--text);
+  border:1px solid var(--border2);font-size:12px;padding:8px 10px 8px 14px;border-radius:20px;box-shadow:0 3px 14px var(--shadow);
+  z-index:420;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:88%;display:flex;align-items:center;gap:10px;font-family:inherit;}
+.undo-toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;}
+.undo-toast span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.undo-toast button{background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid var(--accent2);color:var(--accent);
+  border-radius:14px;padding:4px 12px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;}
+.undo-toast button:hover{background:color-mix(in srgb,var(--accent) 22%,transparent);}
+body.show-mobile .undo-toast{bottom:78px;}
+/* ===================== 見やすさ改善 ここまで ===================== */
 </style>
 <script>
 // 描画前に保存済みテーマを適用（テーマのちらつき防止）
@@ -694,7 +862,73 @@ body.show-mobile .pc-wrap{display:none;}
 })();
 </script>
 </head>
-<body class="show-pc">
+<body class="show-pc pop-folded">
+<!-- ═══ SNSアプリの中で開いている人への案内 ═══════════════════
+     Xなどのアプリ内でリンクを開くと、ブラウザ本体とは別の場所に
+     データが保存される。同じ道具を開いても記録が見えず、
+     Googleログインも通らないことがある。
+     ここは案内を出すだけで、動きは何も変えない。 -->
+<div id="iab-bar" style="display:none"></div>
+<script>
+(function(){
+  var KEY='saniwa_iab_hide';
+  /* ホーム画面に追加して開いている状態。SNSアプリの中ではないので案内を出さない。
+     iOSは navigator.standalone、AndroidなどはCSSの display-mode で分かる。 */
+  function isHomeScreen(){
+    try{ if(navigator.standalone===true)return true; }catch(e){}
+    try{ if(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)return true; }catch(e){}
+    return false;
+  }
+  function isInApp(){
+    if(isHomeScreen())return false;
+    var ua=navigator.userAgent||'';
+    /* ①名乗っているアプリ ②AndroidのWebView ③iOSのWKWebView（Safari/の名乗りが無い） */
+    if(/FBAN|FBAV|FB_IAB|Instagram|\bLine\/|MicroMessenger|KAKAOTALK/.test(ua))return true;
+    if(/;\s*wv\)/.test(ua))return true;
+    if(/iPhone|iPad|iPod/.test(ua)&&ua.indexOf('AppleWebKit')>=0&&!/Safari\//.test(ua))return true;
+    return false;
+  }
+  function hidden(){ try{ return localStorage.getItem(KEY)==='1'; }catch(e){ return false; } }
+  function hasData(){ return typeof gdLocalEmpty==="function" ? !gdLocalEmpty() : false; }
+  function close(never){
+    if(never){ try{ localStorage.setItem(KEY,'1'); }catch(e){} }
+    var el=document.getElementById('iab-bar');
+    if(el)el.style.display='none';
+  }
+  window.iabClose=function(){
+    var c=document.getElementById('iab-never');
+    close(c&&c.checked);
+  };
+  function show(){
+    var el=document.getElementById('iab-bar');
+    if(!el)return;
+    var body = hasData()
+      ? '<p style="margin:0 0 10px">ここでの記録は、<b>いま開いているアプリ（Xなど）の中</b>だけに保存されています。'
+        +'この道具ではなくそのアプリが管理している場所なので、アプリ側の都合でまとめて消えることがあります。</p>'
+        +'<p style="margin:0 0 10px"><b>いま画面に記録が見えているなら、先に書き出し（エクスポート）を取ってください。</b>'
+        +'そのファイルを、SafariやChromeで開いた同じ道具に読み込めば、そのまま続けられます。</p>'
+      : '<p style="margin:0 0 10px">このままでは記録が保存されない、以前の記録が見えない、Googleとつながらない、といったことが起きます。</p>'
+        +'<p style="margin:0"><b>メニューの「ブラウザで開く」から、SafariやChromeで開き直してください。</b>以前の記録がそのまま見えることがあります。</p>';
+    el.innerHTML=
+      '<div style="max-width:640px;margin:0 auto;padding:14px 16px;font-size:13px;line-height:1.85">'
+      +'<div style="font-weight:700;margin-bottom:8px">⚠ SNSアプリの中で開いています</div>'
+      +body
+      +'<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap">'
+      +'<label style="font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer">'
+      +'<input type="checkbox" id="iab-never"> このブラウザでは表示しない</label>'
+      +'<button onclick="iabClose()" style="padding:7px 18px;font-size:12px;border-radius:7px;'
+      +'border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer;font-family:inherit">閉じる</button>'
+      +'</div></div>';
+    el.setAttribute('style',
+      'display:block;background:#fff4d6;color:#5a4212;border-bottom:1px solid #e0c98a;'
+      +'position:relative;z-index:400');
+  }
+  function init(){ if(isInApp()&&!hidden())show(); }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
+<!-- ═══ ここまで ═══════════════════════════════════════════ -->
 
 <!-- HEADER -->
 <header>
@@ -843,19 +1077,28 @@ body.show-mobile .pc-wrap{display:none;}
   <!-- 中：男士リスト -->
   <div class="col-list">
     <div class="list-hd">
-      <span class="list-count" id="list-count">読込中…</span>
+      <span><span class="list-label">📋 候補一覧</span><span class="list-count" id="list-count">読込中…</span></span>
     </div>
     <div id="sword-list"></div>
   </div>
 
   <!-- 右：部隊 -->
   <div class="col-party">
-    <div class="col-title pslot-title-row">⚔ 編成中の部隊<button class="pslot-stats-toggle" id="pslot-stats-toggle" onclick="togglePslotStats()" title="各スロットに全ステータスを表示">📊 全ステータス</button></div>
+    <div class="col-title pslot-title-row"><span>⚔ 編成中の部隊<span class="party-flow"> ◂ ここへ編成</span></span><button class="pslot-stats-toggle" id="pslot-stats-toggle" onclick="togglePslotStats()" title="各スロットに全ステータスを表示">📊 全ステータス</button></div>
 
     <div>
       <div class="party-tabs-wrap" id="party-tabs"></div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;gap:6px">
-        <span class="ptab-hint">タブ名はダブルクリックで編集</span>
+      <div class="party-op" id="party-op">
+        <div class="pop-bar" id="pop-bar" onclick="togglePartyOp()" title="クリックで開閉">
+          <span class="pop-label">選択中：</span>
+          <span class="pop-name" id="pop-bar-name"></span>
+          <button class="pop-bar-del" onclick="event.stopPropagation();deletePartyFromMenu(event)" title="この部隊を削除">削除</button>
+          <span class="pop-chev" id="pop-chev">▼</span>
+        </div>
+        <div class="party-op-row" id="party-op-row"></div>
+      </div>
+      <div class="pop-tail-row">
+        <span class="ptab-hint pop-foldable">タブ名はダブルクリックで編集</span>
         <button class="kei-sync-btn kei-only" onclick="openSyncModal()">⇄ 稽古録と同期</button>
       </div>
       <div style="display:flex;gap:6px;margin-top:4px">
@@ -869,15 +1112,32 @@ body.show-mobile .pc-wrap{display:none;}
 
     <div class="party-slots" id="party-slots"></div>
 
-    <div class="thr-area">
-      <div class="col-title" style="font-size:11px">📏 閾値チェック（任意）</div>
-      <div id="thr-rows"></div>
-      <button class="thr-add-btn" onclick="addThrRow()">＋ 閾値を追加</button>
+    <div class="thr-area fold-sec" data-fold="thr">
+      <div class="fold-hdr" onclick="toggleSec('thr')" title="クリックで開閉">
+        <span class="fold-title">📏 閾値チェック（任意）</span>
+        <span class="fold-sum"></span>
+        <span class="fold-chev">▾</span>
+      </div>
+      <div class="fold-body">
+        <div id="thr-rows"></div>
+        <button class="thr-add-btn" onclick="addThrRow()">＋ 閾値を追加</button>
+      </div>
     </div>
 
     <div class="party-sum">
       <div class="party-sum-title">▸ 部隊合計</div>
       <div class="party-stat-grid" id="party-stat-grid"></div>
+    </div>
+
+    <div class="note-area fold-sec" data-fold="note">
+      <div class="fold-hdr" onclick="toggleSec('note')" title="クリックで開閉">
+        <span class="fold-title">📝 攻略メモ</span>
+        <span class="fold-sum"></span>
+        <span class="fold-chev">▾</span>
+      </div>
+      <div class="fold-body">
+        <textarea class="note-textarea" id="party-note" placeholder="この部隊の攻略メモ（周回のコツ、装備の意図など）" oninput="onPartyNoteInput(this)"></textarea>
+      </div>
     </div>
 
     <button class="btn-clear" onclick="clearParty()">部隊をリセット</button>
@@ -942,8 +1202,17 @@ body.show-mobile .pc-wrap{display:none;}
       <span class="m-filter-value" id="m-filter-value">全て</span>
     </button>
   </div>
+  <div class="m-bar2" id="m-bar2">
+    <button onclick="openBS()" title="並び替え"><span class="lb">並替</span><span class="vl" id="m-bar2-sort">-</span></button>
+    <button onclick="openBS()" title="絞り込み" id="m-bar2-filter-btn"><span class="lb">絞込</span><span class="vl" id="m-bar2-filter">全て</span></button>
+    <button onclick="openBS()" title="表示ステータス"><span class="lb">表示</span><span class="vl" id="m-bar2-mode">素</span></button>
+  </div>
   <div class="m-list" id="m-list" onclick="if(_targetSlot!==null){_targetSlot=null;renderMobilePartySlots();}"></div>
 </div>
+<footer style="margin-top:36px;padding:20px 16px 28px;text-align:center;font-size:11px;line-height:2">
+  <div style="height:1px;background:currentColor;opacity:.14;margin:0 auto 16px;max-width:280px"></div>
+  <a href="saniwa_top.html" style="color:inherit;opacity:.85">審神者の道具箱</a><span style="opacity:.5">　・　</span><a href="privacy.html" style="color:inherit;opacity:.85">プライバシーポリシー</a><br><span style="opacity:.5">このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari shizukuishi</span><br><span style="opacity:.5">無断転載・再配布・広告目的での公開を禁じます。</span>
+</footer>
 
 <!-- BOTTOM SHEET -->
 <!-- 部隊メニュー（スマホ・右スライド） -->
@@ -953,6 +1222,10 @@ body.show-mobile .pc-wrap{display:none;}
       <div class="pm-title">⚔ 部隊メニュー</div>
       <button class="bs-x-btn" onclick="closePartyMenu()">× 閉じる</button>
     </div>
+    <button class="pm-item" onclick="startPartyEditFromMenu()">✏ 部隊名を変更</button>
+    <button class="pm-item party-mv-only" onclick="movePartyFromMenu(-1)">◀ 左へ移動</button>
+    <button class="pm-item party-mv-only" onclick="movePartyFromMenu(1)">▶ 右へ移動</button>
+    <button class="pm-item danger" onclick="deletePartyFromMenu(event)">× この部隊を削除</button>
     <div class="pm-kiwame-bulk local-only">
       <button class="pm-item" onclick="setAllKiwame(false)">全部「初」にする</button>
       <button class="pm-item" onclick="setAllKiwame(true)">全部「極」にする</button>
@@ -978,8 +1251,16 @@ body.show-mobile .pc-wrap{display:none;}
   <div class="bs-panel">
     <div class="bs-handle"></div>
     <div class="bs-title-row">
-      <div class="bs-title">絞り込み</div>
+      <div class="bs-title">絞込・並替</div>
       <button class="bs-x-btn" onclick="closeBS()">× 閉じる</button>
+    </div>
+    <div class="bs-sec" id="bs-sort-sec">
+      <div class="bs-label">並び替え</div>
+      <div id="bs-sort-anchor"></div>
+    </div>
+    <div class="bs-sec" id="bs-mode-sec">
+      <div class="bs-label">表示ステータス</div>
+      <div id="bs-mode-anchor"></div>
     </div>
     <div class="bs-sec">
       <div class="bs-label">刀種</div>
@@ -1208,112 +1489,184 @@ body.show-mobile .pc-wrap{display:none;}
 <div class="settings-overlay" id="settings-overlay" onclick="closeSettingsOutside(event)">
   <div class="settings-panel">
     <div class="settings-title">⚙ 設定</div>
-    <div class="settings-sec">
-      <div class="settings-label">男士データの取得元</div>
-      <div class="radio-group">
-        <label class="radio-row"><input type="radio" name="data-source" value="keikoroku" onchange="switchDataSource(this.value)"> 🔗 稽古録と連携（ステータスあり）</label>
-        <label class="radio-row"><input type="radio" name="data-source" value="local" onchange="switchDataSource(this.value)"> 📦 このアプリで管理（装備・編成のみ）</label>
+    <!-- ① データ -->
+    <div class="set-sec folded" data-sfold="data">
+      <div class="set-hdr" onclick="toggleSetFold('data')"><span class="set-title">データ</span><span class="set-sum"></span><span class="set-chev">▸</span></div>
+      <div class="set-body">
+        <div class="settings-sec">
+          <div class="settings-label">男士データの取得元</div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="data-source" value="keikoroku" onchange="switchDataSource(this.value)"> 🔗 稽古録と連携（既定）── 稽古録に記録したレベルとステータスを読み込んで、実数値で編成を組めます</label>
+            <label class="radio-row"><input type="radio" name="data-source" value="local" onchange="switchDataSource(this.value)"> 📦 このアプリで管理 ── 稽古録を使わずに、初/極の状態もステータスの実数値も、このツールに直接入力します</label>
+          </div>
+          <div class="set-note">保存先はこの端末のブラウザです。画面右上の ☁ から Google ドライブに同期できます。</div>
+        </div>
       </div>
     </div>
-    <div class="settings-sec">
-      <div class="settings-label">カラーテーマ</div>
-      <div class="radio-group">
-        <label class="radio-row"><input type="radio" name="theme-palette" value="washi"  onchange="UD.settings.palette=this.value;applyTheme();saveUD()"> 🎋 和風</label>
-        <label class="radio-row"><input type="radio" name="theme-palette" value="sakura" onchange="UD.settings.palette=this.value;applyTheme();saveUD()"> 🌸 桜</label>
-        <label class="radio-row"><input type="radio" name="theme-palette" value="midori" onchange="UD.settings.palette=this.value;applyTheme();saveUD()"> 🍃 翠</label>
-        <label class="radio-row"><input type="radio" name="theme-palette" value="tetsu"  onchange="UD.settings.palette=this.value;applyTheme();saveUD()"> ⚔️ 鉄</label>
-      </div>
-      <div class="settings-label" style="margin-top:4px">表示モード</div>
-      <div class="radio-group">
-        <label class="radio-row"><input type="radio" name="theme-mode" value="theme"  onchange="UD.settings.themeMode=this.value;applyTheme();saveUD()"> テーマに従う</label>
-        <label class="radio-row"><input type="radio" name="theme-mode" value="light"  onchange="UD.settings.themeMode=this.value;applyTheme();saveUD()"> ライト固定</label>
-        <label class="radio-row"><input type="radio" name="theme-mode" value="dark"   onchange="UD.settings.themeMode=this.value;applyTheme();saveUD()"> ダーク固定</label>
-        <label class="radio-row"><input type="radio" name="theme-mode" value="system" onchange="UD.settings.themeMode=this.value;applyTheme();saveUD()"> システム連動</label>
-      </div>
-    </div>
-    <div class="settings-sec">
-      <div class="settings-label">表示列（モードバー）の位置 <span style="font-weight:400;color:var(--text3);font-size:10px">※PC表示のみ</span></div>
-      <div class="radio-group">
-        <label class="radio-row"><input type="radio" name="mode-bar-pos" value="below" checked onchange="saveSetting('modeBarPos',this.value);applyModeBarPos()"> ヘッダー下のバー（従来）</label>
-        <label class="radio-row"><input type="radio" name="mode-bar-pos" value="header-left" onchange="saveSetting('modeBarPos',this.value);applyModeBarPos()"> ヘッダー内・タイトル横</label>
-        <label class="radio-row"><input type="radio" name="mode-bar-pos" value="header-right" onchange="saveSetting('modeBarPos',this.value);applyModeBarPos()"> ヘッダー右側に配置</label>
-        <div style="margin-top:6px;font-size:11px;color:var(--text3)">ヘッダー内のときの注記</div>
-        <label class="radio-row"><input type="radio" name="mode-bar-note" value="none" checked onchange="saveSetting('modeBarNote',this.value);applyModeBarPos()"> 表示しない</label>
-        <label class="radio-row"><input type="radio" name="mode-bar-note" value="left" onchange="saveSetting('modeBarNote',this.value);applyModeBarPos()"> トグルの左に表示</label>
-        <label class="radio-row"><input type="radio" name="mode-bar-note" value="right" onchange="saveSetting('modeBarNote',this.value);applyModeBarPos()"> トグルの右に表示</label>
-      </div>
-    </div>
-    <div class="settings-sec">
-      <div class="settings-label">カード表示モード</div>
-      <div class="radio-group">
-        <label class="radio-row"><input type="radio" name="card-mode" value="primary" checked onchange="saveSetting('cardMode',this.value);renderList();renderMobileList()"> ソート中のステータスを大きく表示</label>
-        <label class="radio-row"><input type="radio" name="card-mode" value="uniform" onchange="saveSetting('cardMode',this.value);renderList();renderMobileList()"> 全て同じ大きさで表示</label>
-      </div>
-    </div>
-    <div class="settings-sec">
-      <div class="settings-label">表示するステータス</div>
-      <div class="settings-chips" id="vis-stat-chips">
-        <span class="s-chip on" data-idx="0">生存</span>
-        <span class="s-chip on" data-idx="1">打撃</span>
-        <span class="s-chip on" data-idx="2">統率</span>
-        <span class="s-chip on" data-idx="3">機動</span>
-        <span class="s-chip on" data-idx="4">衝力</span>
-        <span class="s-chip on" data-idx="5">偵察</span>
-        <span class="s-chip" data-idx="6">隠蔽</span>
-        <span class="s-chip" data-idx="7">必殺</span>
-      </div>
-    </div>
-    <div class="settings-sec">
-      <div class="settings-label">装備編集の表示方法</div>
-      <div class="radio-group">
-        <label class="radio-row"><input type="radio" name="equip-mode" value="modal" checked onchange="saveSetting('equipMode',this.value);renderList()"> モーダル（スマホ向き・デフォルト）</label>
-        <label class="radio-row"><input type="radio" name="equip-mode" value="accordion" onchange="saveSetting('equipMode',this.value);renderList()"> アコーディオン（PC専用・スマホモードではモーダルが開きます）</label>
-      </div>
-    </div>
-    <div class="settings-sec">
-      <div class="settings-label">現在ステータスの編集（数値詳細）</div>
-      <div class="radio-group">
-        <div style="font-size:11px;color:var(--text3)">ステータス数値のクリックで詳細を開く <span style="font-weight:400;color:var(--text3);font-size:10px">※PC表示のみ</span></div>
-        <label class="radio-row"><input type="radio" name="cs-stat-click" value="off" checked onchange="saveSetting('csStatClick',false);renderList()"> しない（従来通り・デフォルト）</label>
-        <label class="radio-row"><input type="radio" name="cs-stat-click" value="on" onchange="saveSetting('csStatClick',true);renderList()"> する（数値部分のクリックで詳細が開きます）</label>
-        <div style="margin-top:6px;font-size:11px;color:var(--text3)">編集中は外側タップで閉じない</div>
-        <label class="radio-row"><input type="radio" name="cs-guard-outside" value="on" checked onchange="saveSetting('csGuardOutside',true)"> 閉じない（誤タップ防止・デフォルト）</label>
-        <label class="radio-row"><input type="radio" name="cs-guard-outside" value="off" onchange="saveSetting('csGuardOutside',false)"> 従来通り閉じる（編集内容は破棄されます）</label>
+
+    <!-- ② 見た目 -->
+    <div class="set-sec folded" data-sfold="look">
+      <div class="set-hdr" onclick="toggleSetFold('look')"><span class="set-title">見た目</span><span class="set-sum"></span><span class="set-chev">▸</span></div>
+      <div class="set-body">
+        <div class="settings-sec">
+          <div class="settings-label">カラーテーマ</div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="theme-palette" value="washi"  onchange="UD.settings.palette=this.value;applyTheme();saveUD()"> 🎋 和風</label>
+            <label class="radio-row"><input type="radio" name="theme-palette" value="sakura" onchange="UD.settings.palette=this.value;applyTheme();saveUD()"> 🌸 桜</label>
+            <label class="radio-row"><input type="radio" name="theme-palette" value="midori" onchange="UD.settings.palette=this.value;applyTheme();saveUD()"> 🍃 翠</label>
+            <label class="radio-row"><input type="radio" name="theme-palette" value="tetsu"  onchange="UD.settings.palette=this.value;applyTheme();saveUD()"> ⚔️ 鉄（既定）</label>
+          </div>
+        </div>
+        <div class="settings-sec">
+          <div class="settings-label">画面の明るさ</div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="theme-mode" value="theme"  onchange="UD.settings.themeMode=this.value;applyTheme();saveUD()"> テーマに従う（既定）── テーマごとに決められた明るさで表示します</label>
+            <label class="radio-row"><input type="radio" name="theme-mode" value="light"  onchange="UD.settings.themeMode=this.value;applyTheme();saveUD()"> 明るいまま ── いつも明るい配色で表示します</label>
+            <label class="radio-row"><input type="radio" name="theme-mode" value="dark"   onchange="UD.settings.themeMode=this.value;applyTheme();saveUD()"> 暗いまま ── いつも暗い配色で表示します</label>
+            <label class="radio-row"><input type="radio" name="theme-mode" value="system" onchange="UD.settings.themeMode=this.value;applyTheme();saveUD()"> 端末に合わせる ── お使いの端末の設定（明るい／暗い）に合わせます</label>
+          </div>
+        </div>
+        <div class="settings-sec">
+          <div class="settings-label">カードと部隊の列の見せ方</div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="ui-v2" value="on" onchange="setUiV2(true)"> 見やすくする（既定）── ステータスをひとまとまりの枠に入れ、部隊の列を色で区別し、部隊タブの文字を読みやすくします</label>
+            <label class="radio-row"><input type="radio" name="ui-v2" value="off" onchange="setUiV2(false)"> 飾りを減らす ── 枠や色分けをやめた、素っ気ない表示になります</label>
+          </div>
+        </div>
+        <div class="settings-sec">
+          <div class="settings-label">ステータスの大きさ</div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="card-mode" value="primary" onchange="saveSetting('cardMode',this.value);renderList();renderMobileList()"> 並べ替え中の項目だけ大きく（既定）── いま何順に並んでいるかが一目で分かります</label>
+            <label class="radio-row"><input type="radio" name="card-mode" value="uniform" onchange="saveSetting('cardMode',this.value);renderList();renderMobileList()"> すべて同じ大きさ ── どの数値も等しく並びます。見比べたいときに</label>
+          </div>
+        </div>
+        <div class="settings-sec">
+          <div class="settings-label">カードに表示するステータス</div>
+          <div class="settings-chips" id="vis-stat-chips">
+            <span class="s-chip on" data-idx="0">生存</span>
+            <span class="s-chip on" data-idx="1">打撃</span>
+            <span class="s-chip on" data-idx="2">統率</span>
+            <span class="s-chip on" data-idx="3">機動</span>
+            <span class="s-chip on" data-idx="4">衝力</span>
+            <span class="s-chip on" data-idx="5">偵察</span>
+            <span class="s-chip" data-idx="6">隠蔽</span>
+            <span class="s-chip" data-idx="7">必殺</span>
+          </div>
+          <div class="set-note">押すと表示・非表示が切り替わります。選んだ項目だけがカードに並びます。</div>
+        </div>
+        <div class="settings-sec">
+          <div class="settings-label">刀装の表示形式</div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="toso-display" value="text" onchange="saveSetting('tosoDisplay',this.value);renderList();renderMobileList()"> 刀装名（既定）── 「重歩兵」のように名前で表示します</label>
+            <label class="radio-row"><input type="radio" name="toso-display" value="icon" onchange="saveSetting('tosoDisplay',this.value);renderList();renderMobileList()"> 略称 ── 短い文字で表示します。狭い画面でも収まります</label>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="settings-sec">
-      <div class="settings-label">スマホ並替チップの表示</div>
-      <div class="radio-group">
-        <label class="radio-row"><input type="radio" name="sort-chip-wrap" value="wrap" checked onchange="applySortChipMode(this.value)"> 折り返す（デフォルト）</label>
-        <label class="radio-row"><input type="radio" name="sort-chip-wrap" value="scroll" onchange="applySortChipMode(this.value)"> 横スクロール</label>
+
+    <!-- ③ 操作 -->
+    <div class="set-sec folded" data-sfold="ope">
+      <div class="set-hdr" onclick="toggleSetFold('ope')"><span class="set-title">操作</span><span class="set-sum"></span><span class="set-chev">▸</span></div>
+      <div class="set-body">
+        <div class="settings-sec">
+          <div class="settings-label">タブの並べ替え方法</div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="party-mv" value="off" onchange="saveSetting('partyMvBtns',false);renderPartyTabs();applyPartyMvUI()"> ⠿ をつまんで並べ替え（既定）── タブが名前だけになり、すっきりします</label>
+            <label class="radio-row"><input type="radio" name="party-mv" value="on" onchange="saveSetting('partyMvBtns',true);renderPartyTabs();applyPartyMvUI()"> ◀▶ ボタンも出す ── 選択中の部隊の操作欄に左右ボタンが出て、押して並べ替えできます</label>
+          </div>
+          <div class="set-note">どちらでも、タブの ⠿ をつまめば並べ替えできます。</div>
+        </div>
+        <div class="settings-sec">
+          <div class="settings-label">装備の編集画面</div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="equip-mode" value="modal" onchange="saveSetting('equipMode',this.value);renderList()"> 画面の中央に開く（既定）── スマホでも押しやすい大きさで開きます</label>
+            <label class="radio-row"><input type="radio" name="equip-mode" value="accordion" onchange="saveSetting('equipMode',this.value);renderList()"> カードの下に開く ── 一覧を見ながら編集できます。PC表示のみ（スマホ表示では中央に開きます）</label>
+          </div>
+        </div>
+        <div class="settings-sec">
+          <div class="settings-label">ステータスの詳細画面</div>
+          <div class="set-note">カードの［詳細］ボタンを押すと、その男士のステータスをまとめて確認できます。実数値（現在ステータス）を手で直すこともでき、稽古録連携中なら稽古録のデータへ書き戻すこともできます。</div>
+          <div class="settings-label" style="margin-top:5px">カードのステータス部分を押しても詳細を開く <span style="font-weight:400;color:var(--text3);font-size:10px">※PC表示のみ</span></div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="cs-stat-click" value="off" onchange="saveSetting('csStatClick',false);renderList()"> しない（既定）── ステータス部分を押すと、これまでどおり編成への出し入れになります</label>
+            <label class="radio-row"><input type="radio" name="cs-stat-click" value="on" onchange="saveSetting('csStatClick',true);renderList()"> する ── ステータス部分は詳細を開く専用になります（編成への出し入れはカードの名前のあたりを押してください）</label>
+          </div>
+          <div class="settings-label" style="margin-top:5px">詳細画面で編集中に、画面の外側を押したときの動き</div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="cs-guard-outside" value="on" onchange="saveSetting('csGuardOutside',true)"> 閉じない（既定）── 編集の途中で誤って閉じてしまうのを防ぎます</label>
+            <label class="radio-row"><input type="radio" name="cs-guard-outside" value="off" onchange="saveSetting('csGuardOutside',false)"> 閉じる ── すぐ閉じます。編集中だった内容は保存されません</label>
+          </div>
+        </div>
+        <div class="settings-sec">
+          <div class="settings-label">刀装を選ぶときの一覧</div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="toso-filter" value="on" onchange="saveSetting('tosoFilter',this.value==='on')"> 装備できるものだけ出す（既定）── その男士の刀種に合う刀装だけが並びます</label>
+            <label class="radio-row"><input type="radio" name="toso-filter" value="off" onchange="saveSetting('tosoFilter',this.value==='on')"> すべて出す ── 装備できない刀装も一覧に並びます</label>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="settings-sec">
-      <div class="settings-label">絞込シートの表示位置</div>
-      <div class="radio-group">
-        <label class="radio-row"><input type="radio" name="bs-position" value="bottom" checked onchange="applyBsPosition('bottom')"> 下から出る（スマホ向き）</label>
-        <label class="radio-row"><input type="radio" name="bs-position" value="center" onchange="applyBsPosition('center')"> 真ん中に出る（PCデバッグ向き）</label>
+
+    <!-- ④ スマホ表示 -->
+    <div class="set-sec folded" data-sfold="sp">
+      <div class="set-hdr" onclick="toggleSetFold('sp')"><span class="set-title">スマホ表示</span><span class="set-sum"></span><span class="set-chev">▸</span></div>
+      <div class="set-body">
+        <div class="settings-sec">
+          <div class="settings-label">一覧の上のバー</div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="m-compact" value="on" onchange="setMCompact(true)"> 1行にまとめる（既定）── 「並替／絞込／表示」の3つのボタンだけになり、一覧が広く使えます。並替チップと表示ステータスは「絞込・並替」シートの中に入ります</label>
+            <label class="radio-row"><input type="radio" name="m-compact" value="off" onchange="setMCompact(false)"> チップを出しておく ── 並替チップが画面の上にそのまま並びます。一覧はそのぶん狭くなります</label>
+          </div>
+        </div>
+        <div class="settings-sec">
+          <div class="settings-label">スクロールしたときのヘッダー</div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="m-hide-header" value="on" onchange="setMHideHeader(true)"> 隠す（既定）── 下にスクロールすると隠れ、上に戻すとまた出てきます</label>
+            <label class="radio-row"><input type="radio" name="m-hide-header" value="off" onchange="setMHideHeader(false)"> ずっと出しておく ── ヘッダーはいつも見えたままになります</label>
+          </div>
+        </div>
+        <div class="settings-sec">
+          <div class="settings-label">並替チップの並べ方</div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="sort-chip-wrap" value="wrap" onchange="applySortChipMode(this.value)"> 折り返す（既定）── すべてのチップが数行に分かれて見えます</label>
+            <label class="radio-row"><input type="radio" name="sort-chip-wrap" value="scroll" onchange="applySortChipMode(this.value)"> 横に流す ── 1行に収めます。右にスクロールして選びます</label>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="settings-sec">
-      <div class="settings-label">刀装の表示形式</div>
-      <div class="radio-group">
-        <label class="radio-row"><input type="radio" name="toso-display" value="icon" checked onchange="saveSetting('tosoDisplay',this.value);renderList();renderMobileList()"> アイコン（文字略称）</label>
-        <label class="radio-row"><input type="radio" name="toso-display" value="text" onchange="saveSetting('tosoDisplay',this.value);renderList();renderMobileList()"> テキスト（刀装名）</label>
-      </div>
-    </div>
-    <div class="settings-sec">
-      <div class="settings-label">刀種フィルタ（装備モーダル）</div>
-      <div class="radio-group">
-        <label class="radio-row"><input type="radio" name="toso-filter" value="on" checked onchange="saveSetting('tosoFilter',this.value==='on')"> オン（刀種に合う刀装のみ表示）</label>
-        <label class="radio-row"><input type="radio" name="toso-filter" value="off" onchange="saveSetting('tosoFilter',this.value==='on')"> オフ（全刀装を表示）</label>
-      </div>
-    </div>
-    <div class="settings-sec">
-      <div class="settings-label">午年号の表示位置（馬リスト）</div>
-      <div class="radio-group">
-        <label class="radio-row"><input type="radio" name="umago-pos" value="default" onchange="saveSetting('umagoPosition',this.value)"> 12番目に表示</label>
-        <label class="radio-row"><input type="radio" name="umago-pos" value="last" checked onchange="saveSetting('umagoPosition',this.value)"> 最後に表示（通常の位置）</label>
+
+    <!-- ⑤ 詳しい設定 -->
+    <div class="set-sec folded" data-sfold="adv">
+      <div class="set-hdr" onclick="toggleSetFold('adv')"><span class="set-title">詳しい設定</span><span class="set-sum"></span><span class="set-chev">▸</span></div>
+      <div class="set-body">
+        <div class="settings-sec">
+          <div class="settings-label">表示列（並替・絞込のバー）の位置 <span style="font-weight:400;color:var(--text3);font-size:10px">※PC表示のみ</span></div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="mode-bar-pos" value="below" onchange="saveSetting('modeBarPos',this.value);applyModeBarPos()"> ヘッダーの下（既定）── タイトルの下に横一列で出ます</label>
+            <label class="radio-row"><input type="radio" name="mode-bar-pos" value="header-left" onchange="saveSetting('modeBarPos',this.value);applyModeBarPos()"> ヘッダー内・タイトルの横 ── バーがなくなるぶん、一覧を縦に広く使えます</label>
+            <label class="radio-row"><input type="radio" name="mode-bar-pos" value="header-right" onchange="saveSetting('modeBarPos',this.value);applyModeBarPos()"> ヘッダー内・右寄せ ── 同じく一覧が広くなります。右手で届きやすい位置です</label>
+          </div>
+          <div class="settings-label" style="margin-top:5px">ヘッダー内に置いたときの注記</div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="mode-bar-note" value="none" onchange="saveSetting('modeBarNote',this.value);applyModeBarPos()"> 出さない（既定）── 切替のトグルだけを置きます</label>
+            <label class="radio-row"><input type="radio" name="mode-bar-note" value="left" onchange="saveSetting('modeBarNote',this.value);applyModeBarPos()"> トグルの左に出す</label>
+            <label class="radio-row"><input type="radio" name="mode-bar-note" value="right" onchange="saveSetting('modeBarNote',this.value);applyModeBarPos()"> トグルの右に出す</label>
+          </div>
+        </div>
+        <div class="settings-sec">
+          <div class="settings-label">絞込・並替シートの出る位置</div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="bs-position" value="bottom" onchange="applyBsPosition('bottom')"> 下から出る（既定）── スマホでの操作に合わせた位置に出ます</label>
+            <label class="radio-row"><input type="radio" name="bs-position" value="center" onchange="applyBsPosition('center')"> 画面の中央に出る ── PCでスマホ表示を使うとき、目線の近くに出せます</label>
+          </div>
+        </div>
+        <div class="settings-sec">
+          <div class="settings-label">午年号の並び順（馬の一覧）</div>
+          <div class="radio-group">
+            <label class="radio-row"><input type="radio" name="umago-pos" value="last" onchange="saveSetting('umagoPosition',this.value)"> いちばん最後（既定）── ゲームの馬一覧と同じ並びになります</label>
+            <label class="radio-row"><input type="radio" name="umago-pos" value="default" onchange="saveSetting('umagoPosition',this.value)"> 祝○号より前 ── 望月などステータスの近い馬と同じまとまりに並びます。一覧の下まで探しに行かずに済みます</label>
+          </div>
+        </div>
       </div>
     </div>
     <button class="settings-close" onclick="toggleSettings()">閉じる</button>
@@ -1414,11 +1767,11 @@ const MR=[
 [176,"源清麿","みなもときよまろ","打刀","なし",177,[]],
 [178,"松井江","まついごう","打刀","江",179,[]],
 [180,"山鳥毛","さんちょうもう","太刀","福岡一文字",181,[]],
-[182,"古今伝授の太刀","こきんでんじゅのたち","太刀","豊後国行平",0,[]],
-[184,"地蔵行平","じぞうゆきひら","打刀","豊後国行平",0,[]],
+[182,"古今伝授の太刀","こきんでんじゅのたち","太刀","豊後国行平",183,[]],
+[184,"地蔵行平","じぞうゆきひら","打刀","豊後国行平",185,[]],
 [186,"治金丸","ちがねまる","脇差","なし",187,[]],
 [188,"日光一文字","にっこういちもんじ","太刀","福岡一文字",0,[]],
-[190,"太閤左文字","たいこうさもんじ","短刀","左文字",0,[]],
+[190,"太閤左文字","たいこうさもんじ","短刀","左文字",191,[]],
 [192,"五月雨江","さみだれごう","打刀","江",0,[]],
 [194,"大千鳥十文字槍","おおちどりじゅうもんじやり","槍","なし",0,[]],
 [196,"泛塵","はんじん","脇差","なし",0,[]],
@@ -1453,6 +1806,7 @@ const MR=[
 [254,"雲重","うんじゅう","打刀","鵜飼",0,[]],
 [256,"柏太刀","かしわだち","大太刀","なし",0,[]],
 [258,"波平行安","なみのひらゆきやす","太刀","波平",0,[]],
+[260,"狐ヶ崎為次","きつねがさきためつぐ","太刀","青江",0,[]],
 ];
 
 
@@ -1553,11 +1907,14 @@ const STAT={
   180:[62,73,80,36,51,39,27,37,0,3], // 山鳥毛
   181:[null,132,145,59,81,null,58,78,0,3], // 山鳥毛 極（生存・偵察未計測）
   182:[69,71,71,38,52,34,29,35,0,3], // 古今伝授の太刀
+  183:[null,null,null,null,null,null,null,null,0,3], // 古今伝授の太刀 極（ステータス未確定）
   184:[56,61,50,47,55,42,38,36,0,2], // 地蔵行平
+  185:[null,null,null,null,null,null,null,null,0,2], // 地蔵行平 極（ステータス未確定）
   186:[44,47,41,56,55,49,45,48,0,2], // 治金丸
-  187:[null,121,112,103,71,null,144,68,0,2], // 治金丸 極（生存・偵察未確定）
+  187:[null,101,86,78,55,null,142,66,0,2], // 治金丸 極（生存・偵察未確定）
   188:[59,74,71,49,48,39,25,36,0,3], // 日光一文字
   190:[35,29,40,60,34,46,40,43,0,1], // 太閤左文字
+  191:[null,83,77,144,39,null,116,58,0,2], // 太閤左文字 極（生存・偵察未確定）
   192:[52,60,49,52,50,46,43,31,0,2], // 五月雨江
   194:[64,74,52,43,65,22,30,37,3,2], // 大千鳥十文字槍
   196:[43,45,45,53,44,54,42,44,0,2], // 泛塵
@@ -1591,7 +1948,8 @@ const STAT={
   252:[54,63,54,51,57,42,34,31,0,2], // 二筋樋貞宗
   254:[53,61,48,47,52,44,36,36,0,2], // 雲重
   256:[75,81,62,30,57,16,21,36,1,2], // 柏太刀
-  258:[null,67,56,43,45,null,22,36,0,2], // 波平行安（生存・偵察未確定）
+  258:[null,73,62,49,51,null,28,36,0,2], // 波平行安（生存・偵察未確定）
+  260:[null,63,76,39,47,null,35,28,0,3], // 狐ヶ崎為次（生存・偵察未確定）
   // ── 極 ──
   4:[101,129,130,67,89,66,69,69,0,3],   // 三日月宗近 極
   6:[102,125,120,69,86,70,56,72,0,3],   // 小狐丸 極
@@ -1776,7 +2134,7 @@ function resolveThemeAttr(){
 }
 function applyTheme(){
   document.documentElement.setAttribute('data-theme',resolveThemeAttr());
-  document.querySelectorAll('[name=theme-palette]').forEach(r=>r.checked=r.value===(UD.settings.palette||'washi'));
+  document.querySelectorAll('[name=theme-palette]').forEach(r=>r.checked=r.value===(UD.settings.palette||'tetsu'));
   document.querySelectorAll('[name=theme-mode]').forEach(r=>r.checked=r.value===(UD.settings.themeMode||'theme'));
 }
 
@@ -1873,8 +2231,12 @@ function hasCurStat(inst,i){return !!(inst&&Array.isArray(inst.curStats)&&inst.c
 // アプリ状態
 // ======================================================
 const SK_SB='shitakubeya_ud';
+// 起動処理が終わったか。起動中の保存で updatedAt を打つと
+// 「常にローカルが最新」になってクラウドとの比較が壊れるため、その間は打たない
+let _appReady=false;
 let UD={
-  parties:[{id:'p1',name:'部隊1',members:[null,null,null,null,null,null],conditions:[]}],
+  updatedAt:0,     // データの最終更新時刻（ms）。クラウドとどちらが新しいかの判定に使う
+  parties:[{id:'p1',name:'部隊1',members:[null,null,null,null,null,null],conditions:[],note:''}],
   activePartyId:'p1',
   equipments:{},   // instId -> {omamori,horse,treasure,treasureLv}
   conditions:[],   // 閾値条件
@@ -1894,6 +2256,7 @@ let UD={
     filterEmojis:[],
     filterEquip:{toso:0,horse:0,omamori:0,treasure:0}, // 0=問わない 1=あり 2=なし
     foldSec:{}, // 左カラム各セクションの開閉（未設定=開）
+    setFold:{}, // 設定画面グループの開閉（未設定=閉じる。foldSecとは別系統）
     modeBarPos:'below', // 表示列の位置（PCのみ）below/header-left/header-right
     modeBarNote:'none',  // ヘッダー内の注記 none/left/right
     sortChipWrap:'wrap',
@@ -1909,6 +2272,12 @@ let UD={
     filterKiwame:'',
     csStatClick:false,   // ステータス数値クリックで詳細を開く（PCのみ・既定OFF）
     csGuardOutside:true, // 現在ステータス編集中は外側タップで閉じない（既定ON）
+    uiV2:true,           // 見やすさ改善（静かなカード・カラムの区別・編成名/操作ボタン）既定ON
+    tabOps:'menu',       // 旧設定（未使用・読まれない。後方互換のため値は残す）
+    partyMvBtns:false,   // 部隊タブの並べ替え◀▶ボタンを出す（既定OFF＝⠿でつまんで並べ替え）
+    partyOpFold:true,    // 部隊の操作欄を畳む（PC表示のみ・既定＝畳む。部隊ごとではなく全体で1つ）
+    mCompact:true,       // スマホ：並替/絞込/表示を1行にまとめ、チップと表示列はシートへ（既定ON）
+    mHideHeader:true,    // スマホ：一覧を下にスクロールしたらヘッダーを隠す（既定ON）
   }
 };
 
@@ -1938,12 +2307,14 @@ function loadUD(){
       if(parsed.localKiwame&&typeof parsed.localKiwame==='object')UD.localKiwame=parsed.localKiwame;
       if(parsed.localCurStats&&typeof parsed.localCurStats==='object')UD.localCurStats=parsed.localCurStats;
       if(parsed.stash)UD.stash=parsed.stash;
+      if(typeof parsed.updatedAt==='number')UD.updatedAt=parsed.updatedAt;
     }
   }catch(e){}
   // 既定値の補完
   if(UD.dataSource!=='local')UD.dataSource='keikoroku';
   if(!UD.localKiwame||typeof UD.localKiwame!=='object')UD.localKiwame={};
   if(!UD.localCurStats||typeof UD.localCurStats!=='object')UD.localCurStats={};
+  if(!UD.settings.setFold||typeof UD.settings.setFold!=='object')UD.settings.setFold={};
   if(!UD.stash||typeof UD.stash!=='object')UD.stash={};
   if(!UD.stash.local)UD.stash.local=defaultWorkingSet();
   if(!UD.stash.keikoroku)UD.stash.keikoroku=defaultWorkingSet();
@@ -1956,6 +2327,7 @@ function defaultWorkingSet(){
 }
 
 function saveUD(){
+  if(_appReady)UD.updatedAt=Date.now();
   try{localStorage.setItem(SK_SB,JSON.stringify(UD));}catch(e){}
   gdAutoSave();
 }
@@ -1963,6 +2335,18 @@ function saveUD(){
 function saveSetting(key,val){
   UD.settings[key]=val;
   saveUD();
+}
+
+// 見やすさ改善のON/OFF
+function setUiV2(on){
+  saveSetting('uiV2',on);
+  document.body.classList.toggle('ui-v2',on!==false);
+  renderPartyTabs();
+}
+// 部隊タブの操作方法（⋯メニュー / 個別ボタン）
+function setTabOps(v){
+  saveSetting('tabOps',v);
+  renderPartyTabs();
 }
 
 // ======================================================
@@ -2451,7 +2835,10 @@ function activeConditions(){
 // 旧：全体共有conditions → アクティブ部隊へ移行（他部隊は空。部隊別管理に）
 function migrateConditions(){
   if(!Array.isArray(UD.parties))return;
-  UD.parties.forEach(p=>{ if(!Array.isArray(p.conditions))p.conditions=[]; });
+  UD.parties.forEach(p=>{
+    if(!Array.isArray(p.conditions))p.conditions=[];
+    if(typeof p.note!=='string')p.note='';
+  });
   if(Array.isArray(UD.conditions)&&UD.conditions.length){
     const ap=UD.parties.find(p=>p.id===UD.activePartyId)||UD.parties[0];
     if(ap&&!ap.conditions.length)ap.conditions=UD.conditions.map(c=>({...c}));
@@ -2460,39 +2847,347 @@ function migrateConditions(){
 }
 
 function renderPartyTabs(){
+  closeTabMenus();
   const el=document.getElementById('party-tabs');
-  const n=UD.parties.length;
-  el.innerHTML=UD.parties.map((p,i)=>{
+  el.innerHTML=UD.parties.map(p=>{
     const isOn=p.id===UD.activePartyId;
-    const mvBtns=isOn?`
-      <button class="ptab-mv" onclick="event.stopPropagation();moveParty('${p.id}',-1)" ${i===0?'disabled':''}>◀</button>
-      <button class="ptab-mv" onclick="event.stopPropagation();moveParty('${p.id}',1)" ${i===n-1?'disabled':''}>▶</button>`:'';
-    const editBtn=isOn?`<button class="ptab-edit" onclick="event.stopPropagation();startTabEdit(this.closest('.ptab'),'${p.id}')" title="名前を編集">✏</button>`:'';
-    return`<div class="ptab${isOn?' on':''}" onclick="if(event.detail>=2){startTabEdit(this,'${p.id}')}else{selectParty('${p.id}')}">
-      ${mvBtns}
+    return`<div class="ptab${isOn?' on':''}" data-pid="${p.id}" onclick="if(event.detail>=2){startTabEdit(this,'${p.id}')}else{selectParty('${p.id}')}">
+      <span class="tab-grip" title="つまんで並べ替え">⠿</span>
       <span class="tab-name">${esc(p.name)}</span>
-      ${editBtn}
-      <span class="ptab-del" onclick="deleteParty(event,'${p.id}')">×</span>
     </div>`;
   }).join('')+
     '<button class="ptab-add" onclick="addParty()">＋</button>';
-  // モバイルタブ（アクティブのみ×を表示）
+  renderPartyOpRow();
+  renderPartyNote();
+  // モバイルタブ（⠿ 名前の均一表示。改名・削除・並べ替えは部隊メニューへ）
   const mel=document.getElementById('m-party-tabs');
-  mel.innerHTML=UD.parties.map((p,i)=>{
+  mel.innerHTML=UD.parties.map(p=>{
     const isOn=p.id===UD.activePartyId;
-    if(!isOn){
-      return`<div class="m-ptab" onclick="selectParty('${p.id}')"><span>${esc(p.name)}</span></div>`;
-    }
-    return`<div class="m-ptab on" onclick="selectParty('${p.id}')">
-      <button class="m-ptab-mv" onclick="event.stopPropagation();moveParty('${p.id}',-1)" ${i===0?'disabled':''}>◀</button>
-      <span class="m-ptab-name" onclick="event.stopPropagation();startMobilePartyEdit('${p.id}')" title="タップして名前を編集">${esc(p.name)}</span>
-      <button class="m-ptab-edit" onclick="event.stopPropagation();startMobilePartyEdit('${p.id}')" title="名前を編集">✏</button>
-      <button class="m-ptab-mv" onclick="event.stopPropagation();moveParty('${p.id}',1)" ${i===n-1?'disabled':''}>▶</button>
-      <span class="m-ptab-del" onclick="event.stopPropagation();deleteParty(event,'${p.id}')">×</span>
+    const nameSpan=isOn
+      ?`<span class="m-ptab-name" onclick="event.stopPropagation();startMobilePartyEdit('${p.id}')" title="タップして名前を編集">${esc(p.name)}</span>`
+      :`<span class="m-ptab-name">${esc(p.name)}</span>`;
+    return`<div class="m-ptab${isOn?' on':''}" data-pid="${p.id}" onclick="selectParty('${p.id}')">
+      <span class="tab-grip" title="つまんで並べ替え">⠿</span>
+      ${nameSpan}
     </div>`;
   }).join('')+
     '<button class="m-ptab-add" onclick="addParty()">＋</button>';
+  bindTabDrag();
   updateMPartyCollapseUI();
+}
+
+// 部隊タブの下の操作欄
+//   帯（.pop-bar）は常に見える。畳んでいるときだけ帯に小さい「削除」が出る。
+//   中身（#party-op-row）は改名・削除・設定ONなら並べ替え◀▶。畳むと隠れる。
+function renderPartyOpRow(){
+  const p=activeParty();
+  const nameEl=document.getElementById('pop-bar-name');
+  if(nameEl&&p)nameEl.textContent=p.name;
+  const el=document.getElementById('party-op-row');
+  if(!el||!p)return;
+  const i=UD.parties.findIndex(x=>x.id===p.id);
+  const n=UD.parties.length;
+  const showMv=!!UD.settings.partyMvBtns;
+  const mv=showMv?
+      `<button class="pop-mv" ${i<=0?'disabled':''} onclick="moveParty('${p.id}',-1)" title="左へ">◀</button>`
+    +`<button class="pop-mv" ${i>=n-1?'disabled':''} onclick="moveParty('${p.id}',1)" title="右へ">▶</button>`:'';
+  const hint=showMv?'':`<div class="pop-hint">⠿ をつまむと並べ替えできます</div>`;
+  el.innerHTML=mv
+    +`<button class="pop-btn" onclick="startTabEditActive()">改名</button>`
+    +`<button class="pop-btn danger" onclick="deleteParty(event,'${p.id}')">削除</button>`
+    +hint;
+  applyPartyOpFold();
+}
+// 操作欄の開閉。部隊ごとではなく全体で1つの状態（タブを切り替えても開閉しない）
+function togglePartyOp(){
+  const folded=UD.settings.partyOpFold!==false;
+  UD.settings.partyOpFold=!folded;
+  saveUD();
+  applyPartyOpFold();
+}
+function applyPartyOpFold(){
+  const folded=UD.settings.partyOpFold!==false;   // 未設定＝畳む
+  document.body.classList.toggle('pop-folded',folded);
+  const chev=document.getElementById('pop-chev');
+  if(chev)chev.textContent=folded?'▼':'▲';
+}
+// 部隊ごとの攻略メモ（PCのみ・部隊オブジェクトに note として保持。装備や編成と同じ扱いでクラウド同期される）
+function renderPartyNote(){
+  const p=activeParty();
+  const el=document.getElementById('party-note');
+  if(!el||!p)return;
+  el.value=p.note||'';
+  updateFoldUI();
+}
+// メモは打鍵のたびに保存すると UD 全体の書き出しが毎回走るので、手が止まってからまとめて保存する。
+// 中身（p.note）だけは即座に入れておくので、途中で部隊を切り替えても打った内容は失われない。
+let _noteSaveTimer=null;
+function onPartyNoteInput(el){
+  const p=activeParty();
+  if(!p)return;
+  p.note=el.value;
+  clearTimeout(_noteSaveTimer);
+  _noteSaveTimer=setTimeout(()=>{ _noteSaveTimer=null; saveUD(); },600);
+  updateFoldUI();  // 畳んだときの文字数要約を最新に保つ
+}
+// 待っている途中の保存を今すぐ行う（部隊の切り替えなど、取りこぼしが起きる場面の手前で呼ぶ）
+function flushNoteSave(){
+  if(!_noteSaveTimer)return;
+  clearTimeout(_noteSaveTimer);
+  _noteSaveTimer=null;
+  saveUD();
+}
+function noteFoldSummary(){
+  const p=activeParty();
+  const len=(p&&p.note)?p.note.length:0;
+  if(!len)return'<span style="color:var(--text3)">未記入</span>';
+  return len+'文字';
+}
+function startTabEditActive(){
+  const p=activeParty();
+  if(!p)return;
+  const tab=document.querySelector(`.ptab[data-pid="${p.id}"]`);
+  if(tab)startTabEdit(tab,p.id);
+}
+
+// ---- 部隊タブの⋯メニュー ----
+function closeTabMenus(){
+  document.querySelectorAll('.tab-menu.open').forEach(x=>x.classList.remove('open'));
+}
+function toggleTabMenu(e,key){
+  e.stopPropagation();
+  const m=document.getElementById('tab-menu-'+key);
+  if(!m)return;
+  const willOpen=!m.classList.contains('open');
+  closeTabMenus();
+  if(willOpen)m.classList.add('open');
+}
+function tabMenuRename(e,id){
+  e.stopPropagation();
+  const tab=e.target.closest('.ptab');
+  closeTabMenus();
+  if(tab)startTabEdit(tab,id);
+}
+function tabMenuRenameMobile(e,id){
+  e.stopPropagation();
+  closeTabMenus();
+  startMobilePartyEdit(id);
+}
+function tabMenuDelete(e,id){
+  e.stopPropagation();
+  closeTabMenus();
+  deleteParty(e,id);
+}
+document.addEventListener('click',()=>closeTabMenus());
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeTabMenus();});
+
+// ---- 確認ダイアログ ----
+// ブラウザの confirm() は環境によって表示されないことがある（押しても無反応に見える）。
+// そのため確認はすべてこの自前ダイアログで行う。
+let _askCb=null;
+function askConfirm(msg,onOk,opts){
+  opts=opts||{};
+  const ov=document.getElementById('ask-overlay');
+  if(!ov){                       // 万一要素がないときの保険
+    if(confirm(msg)&&onOk)onOk();
+    return;
+  }
+  const m=document.getElementById('ask-msg');
+  const ok=document.getElementById('ask-ok');
+  const ng=document.getElementById('ask-cancel');
+  if(m)m.textContent=msg;
+  if(ok){ok.textContent=opts.ok||'OK';ok.classList.toggle('danger',!!opts.danger);}
+  if(ng)ng.textContent=opts.cancel||'やめる';
+  _askCb=onOk||null;
+  ov.classList.add('open');
+  setTimeout(()=>{try{if(ok)ok.focus();}catch(_){}},0);
+}
+function askClose(yes){
+  const ov=document.getElementById('ask-overlay');
+  if(ov)ov.classList.remove('open');
+  const cb=_askCb;
+  _askCb=null;
+  if(yes&&cb)cb();
+}
+function askOverlayClick(e){
+  if(e.target&&e.target.id==='ask-overlay')askClose(false);   // 背景を押したらやめる
+}
+function askIsOpen(){
+  const ov=document.getElementById('ask-overlay');
+  return !!(ov&&ov.classList.contains('open'));
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&askIsOpen())askClose(false);
+});
+
+// ---- 部隊タブのドラッグ並べ替え（Pointer Events） ----
+// 指では⠿をつまんだ時だけ、マウスはタブのどこからでも開始できる
+let _tabDrag=null;             // ドラッグ中の状態
+let _tabDragBlockClick=false;  // ドラッグ直後のclickを1回だけ無効にする
+let _partyOrderUndo=null;      // 「元に戻す」用の並び順スナップショット
+
+function bindTabDrag(){
+  document.querySelectorAll('#party-tabs .ptab').forEach(el=>{
+    el.addEventListener('pointerdown',e=>tabDragDown(e,el,false));
+  });
+  document.querySelectorAll('#m-party-tabs .m-ptab').forEach(el=>{
+    el.addEventListener('pointerdown',e=>tabDragDown(e,el,true));
+  });
+}
+
+function tabDragDown(e,el,isMobile){
+  if(_tabDrag)return;
+  if(e.button!==undefined&&e.button>0)return;
+  // 操作ボタン・入力欄の上からは始めない
+  if(e.target.closest('.tab-menu,.ptab-mv,.m-ptab-mv,.ptab-menu,.m-ptab-menu,.ptab-edit,.m-ptab-edit,.ptab-del,.m-ptab-del,.m-ptab-name,input'))return;
+  // 指は⠿からだけ（タブ本体は従来どおりタップ専用）
+  const onGrip=!!e.target.closest('.tab-grip');
+  if(e.pointerType!=='mouse'&&!onGrip)return;
+  const pid=el.dataset.pid;
+  if(!pid||UD.parties.length<2)return;
+  _tabDrag={el:el,pid:pid,isMobile:isMobile,wrap:el.parentElement,sel:isMobile?'.m-ptab':'.ptab',
+            sx:e.clientX,sy:e.clientY,active:false,ghost:null,ox:0,oy:0,
+            pointerId:e.pointerId,from:UD.parties.findIndex(p=>p.id===pid)};
+  window.addEventListener('pointermove',tabDragMove);
+  window.addEventListener('pointerup',tabDragUp);
+  window.addEventListener('pointercancel',tabDragUp);
+}
+
+function tabDragStart(x,y){
+  const d=_tabDrag;
+  if(!d||d.active)return;
+  d.active=true;
+  // ここで初めてポインタを捕まえる（押しただけの時に捕まえると、
+  // メニュー内のボタンなどへの click がタブ本体へ付け替えられてしまうため）
+  try{d.el.setPointerCapture(d.pointerId);}catch(_){}
+  closeTabMenus();
+  const r=d.el.getBoundingClientRect();
+  const g=d.el.cloneNode(true);
+  g.classList.add('drag-ghost');
+  g.removeAttribute('onclick');
+  g.querySelectorAll('[id]').forEach(x2=>x2.removeAttribute('id'));
+  g.style.left=r.left+'px';g.style.top=r.top+'px';
+  g.style.width=r.width+'px';g.style.height=r.height+'px';
+  document.body.appendChild(g);
+  d.ghost=g;d.ox=x-r.left;d.oy=y-r.top;
+  d.el.classList.add('dnd-picked');
+  try{if(navigator.vibrate)navigator.vibrate(12);}catch(_){}
+}
+
+function tabDragMove(e){
+  const d=_tabDrag;
+  if(!d)return;
+  if(!d.active){
+    if(Math.hypot(e.clientX-d.sx,e.clientY-d.sy)<=5)return;
+    tabDragStart(e.clientX,e.clientY);
+  }
+  if(e.cancelable)e.preventDefault();
+  d.ghost.style.left=(e.clientX-d.ox)+'px';
+  d.ghost.style.top=(e.clientY-d.oy)+'px';
+  // タブは折り返すのでまず同じ行に絞り、ゴーストと水平50%以上重なった相手にだけ寄せる
+  // （毎フレーム最近傍だと境界で震えるため、ヒステリシスを持たせている）
+  const tabs=Array.prototype.slice.call(d.wrap.querySelectorAll(d.sel)).filter(t=>t!==d.el);
+  const gr=d.ghost.getBoundingClientRect();
+  const gc=gr.left+gr.width/2;
+  let target=null,best=0.5;
+  tabs.forEach(t=>{
+    const r=t.getBoundingClientRect();
+    const vov=Math.min(gr.bottom,r.bottom)-Math.max(gr.top,r.top);
+    if(vov<=r.height*0.4)return; // 別の行は無視
+    const hov=Math.min(gr.right,r.right)-Math.max(gr.left,r.left);
+    const ratio=hov/r.width;
+    if(ratio>best){best=ratio;target=t;}
+  });
+  if(target){
+    const r=target.getBoundingClientRect();
+    if(gc<r.left+r.width/2)target.before(d.el);
+    else target.after(d.el);
+  }
+}
+
+function tabDragUp(){
+  const d=_tabDrag;
+  if(!d)return;
+  const wasActive=d.active;
+  if(d.ghost)d.ghost.remove();
+  d.el.classList.remove('dnd-picked');
+  tabDragCleanup();
+  if(!wasActive)return;   // 5pxも動いていない＝普通のクリック。従来のonclickに任せる
+  const ids=Array.prototype.slice.call(d.wrap.querySelectorAll(d.sel)).map(t=>t.dataset.pid);
+  const to=ids.indexOf(d.pid);
+  blockNextTabClick();
+  if(to<0||to===d.from||ids.length!==UD.parties.length){
+    // 位置が変わらなかった＝タップと見なして従来どおり部隊を選ぶ
+    if(UD.activePartyId!==d.pid)selectParty(d.pid);
+    else renderPartyTabs();
+    return;
+  }
+  applyPartyOrder(ids,to);
+}
+
+function tabDragCleanup(){
+  window.removeEventListener('pointermove',tabDragMove);
+  window.removeEventListener('pointerup',tabDragUp);
+  window.removeEventListener('pointercancel',tabDragUp);
+  if(_tabDrag&&_tabDrag.ghost)_tabDrag.ghost.remove();
+  _tabDrag=null;
+}
+
+function blockNextTabClick(){
+  _tabDragBlockClick=true;
+  setTimeout(()=>{_tabDragBlockClick=false;},300);
+}
+document.addEventListener('click',e=>{
+  if(!_tabDragBlockClick)return;
+  _tabDragBlockClick=false;
+  e.stopPropagation();
+  e.preventDefault();
+},true);
+
+function applyPartyOrder(ids,to){
+  const map={};
+  UD.parties.forEach(p=>{map[p.id]=p;});
+  const arr=ids.map(id=>map[id]).filter(Boolean);
+  if(arr.length!==UD.parties.length){renderPartyTabs();return;}
+  const before=UD.parties.slice();
+  const moved=map[ids[to]];
+  UD.parties=arr;
+  saveUD();
+  renderPartyTabs();
+  _partyOrderUndo=before;
+  showUndoToast('「'+((moved&&moved.name)||'部隊')+'」を'+(to+1)+'番目に移動しました');
+}
+
+function undoPartyOrder(){
+  hideUndoToast();
+  const snap=_partyOrderUndo;
+  _partyOrderUndo=null;
+  if(!snap)return;
+  const now=UD.parties.map(p=>p.id).slice().sort().join(',');
+  const old=snap.map(p=>p.id).slice().sort().join(',');
+  if(now!==old){toast('部隊が変わったため、元に戻せませんでした');return;}
+  UD.parties=snap;
+  saveUD();
+  renderPartyTabs();
+  toast('並び順を元に戻しました');
+}
+
+function showUndoToast(msg){
+  const t=document.getElementById('undo-toast');
+  if(!t)return;
+  const m=document.getElementById('undo-toast-msg');
+  if(m)m.textContent=msg;
+  const nt=document.getElementById('toast');
+  if(nt)nt.classList.remove('show');
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>{t.classList.remove('show');_partyOrderUndo=null;},5000);
+}
+function hideUndoToast(){
+  const t=document.getElementById('undo-toast');
+  if(!t)return;
+  t.classList.remove('show');
+  clearTimeout(t._timer);
 }
 
 // トップへ戻る（PCはwindow、スマホはm-listを対象）
@@ -2548,7 +3243,7 @@ function moveParty(id,delta){
   renderPartyTabs();
 }
 
-// この部隊で絞り込んだ状態で稽古録を開く（連携モードのみ・kei-onlyで出し分け）
+// この部隊で絞り込んだ状態で稽古録を開く（稽古録連携モードのみ）
 function openPartyInKeikoroku(){
   const p=activeParty();
   if(!p)return;
@@ -2570,9 +3265,10 @@ function selectParty(id){
 }
 
 function addParty(){
+  hideUndoToast();_partyOrderUndo=null;
   const id='p'+Date.now();
   const n=UD.parties.length+1;
-  UD.parties.push({id,name:`第${n}部隊`,members:[null,null,null,null,null,null],equipments:{},conditions:[]});
+  UD.parties.push({id,name:`第${n}部隊`,members:[null,null,null,null,null,null],equipments:{},conditions:[],note:''});
   UD.activePartyId=id;
   _targetSlot=null;
   saveUD();
@@ -2588,8 +3284,10 @@ function addParty(){
 
 function deleteParty(e,id){
   e.stopPropagation();
-  if(UD.parties.length<=1){alert('最後の部隊は削除できません');return;}
-  if(!confirm('この部隊を削除しますか？'))return;
+  if(UD.parties.length<=1){toast('最後の部隊は削除できません');return;}
+  const tgt=UD.parties.find(p=>p.id===id);
+  askConfirm('「'+((tgt&&tgt.name)||'この部隊')+'」を削除しますか？',()=>{
+  hideUndoToast();_partyOrderUndo=null;
   UD.parties=UD.parties.filter(p=>p.id!==id);
   if(UD.activePartyId===id)UD.activePartyId=UD.parties[0].id;
   saveUD();
@@ -2600,6 +3298,7 @@ function deleteParty(e,id){
   renderMobileList();
   renderPartySum();
   renderThresholds();
+  },{ok:'削除する',danger:true});
 }
 
 function startTabEdit(el,id){
@@ -2838,7 +3537,7 @@ function toggleSelect(id){
   }else{
     // 通常：空き枠の先頭に追加
     const empty=party.members.indexOf(null);
-    if(empty<0){alert('部隊は6振りまでです');return;}
+    if(empty<0){toast('部隊は6振りまでです');return;}
     party.members[empty]=id;
   }
   saveUD();
@@ -2864,7 +3563,7 @@ function removeFromSlot(i){
 }
 
 function clearParty(){
-  if(!confirm('部隊をリセットしますか？'))return;
+  askConfirm('部隊をリセットしますか？\n（編成中の男士が全員外れます）',()=>{
   const party=activeParty();
   party.members=[null,null,null,null,null,null];
   _targetSlot=null;
@@ -2875,6 +3574,7 @@ function clearParty(){
   renderThresholds();
   renderList();
   renderMobileList();
+  },{ok:'リセットする',danger:true});
 }
 
 
@@ -2949,6 +3649,21 @@ function importFromKeikoroku(idx){
     const preset=presets[idx];
     if(!preset)return;
     const selIds=preset.selIds||[];
+    const doImport=()=>{
+      try{
+        const members=[null,null,null,null,null,null];
+        selIds.slice(0,6).forEach((id,i)=>{
+          if(instances.some(x=>x.id===id))members[i]=id;
+        });
+        const newId='p'+Date.now();
+        UD.parties.push({id:newId,name:preset.name||'読み込んだ部隊',members});
+        UD.activePartyId=newId;
+        _targetSlot=null;
+        saveUD();
+        closeModal('sync-modal');
+        renderAll();
+      }catch(e){toast('読み込みに失敗しました: '+e.message);}
+    };
     // 6人超えの場合は警告
     if(selIds.length>6){
       const overNames=selIds.slice(6).map(id=>{
@@ -2956,34 +3671,31 @@ function importFromKeikoroku(idx){
         const info=inst?BM[inst.masterBaseNo]:null;
         return inst&&info?(inst.nickname||info.name):'不明';
       }).join('、');
-      const ok=confirm(
+      askConfirm(
         `⚠ このプリセットには${selIds.length}人の男士が含まれています。\n`+
         `出陣支度部屋は6人までのため、最初の6人のみ読み込まれます。\n\n`+
         `省かれる男士：${overNames}\n\n`+
-        `続けて読み込みますか？`
+        `続けて読み込みますか？`,
+        doImport,{ok:'続けて読み込む'}
       );
-      if(!ok)return;
+      return;
     }
-    const members=[null,null,null,null,null,null];
-    selIds.slice(0,6).forEach((id,i)=>{
-      if(instances.some(x=>x.id===id))members[i]=id;
-    });
-    const newId='p'+Date.now();
-    UD.parties.push({id:newId,name:preset.name||'読み込んだ部隊',members});
-    UD.activePartyId=newId;
-    _targetSlot=null;
-    saveUD();
-    closeModal('sync-modal');
-    renderAll();
-  }catch(e){alert('読み込みに失敗しました: '+e.message);}
+    doImport();
+  }catch(e){toast('読み込みに失敗しました: '+e.message);}
 }
 
 function importFromSB(id){
   const src=UD.parties.find(p=>p.id===id);
   if(!src)return;
-  // 新しいタブを作ってコピー
+  // 新しいタブを作り、部隊専用の出陣装備と閾値も含めてコピー
   const newId='p'+Date.now();
-  UD.parties.push({id:newId,name:src.name+' (コピー)',members:[...src.members],conditions:(src.conditions||[]).map(c=>({...c}))});
+  UD.parties.push({
+    id:newId,
+    name:src.name+' (コピー)',
+    members:[...src.members],
+    equipments:JSON.parse(JSON.stringify(src.equipments||{})),
+    conditions:JSON.parse(JSON.stringify(src.conditions||[]))
+  });
   UD.activePartyId=newId;
   _targetSlot=null;
   saveUD();
@@ -3024,6 +3736,31 @@ function renderThresholds(){
     </div>`).join('');
   const el=document.getElementById('thr-rows');if(el)el.innerHTML=html;
   const elM=document.getElementById('thr-rows-m');if(elM)elM.innerHTML=html;
+  updateThrFoldSum();
+}
+
+// 閾値チェックを畳んでいる時、見出しに合否だけ残す（✓OK ✕未達 △一部 -判定不可）
+function thrFoldSummary(){
+  const conds=activeConditions();
+  if(!conds.length)return'<span style="color:var(--text3)">未設定</span>';
+  let ok=0,ng=0,mid=0,na=0;
+  conds.forEach(c=>{
+    const k=getThrClass(c);
+    if(k==='thr-ok')ok++;else if(k==='thr-ng')ng++;else if(k==='thr-mid')mid++;else na++;
+  });
+  const a=[];
+  if(ok)a.push('<span style="color:var(--green)">✓'+ok+'</span>');
+  if(mid)a.push('<span style="color:var(--gold)">△'+mid+'</span>');
+  if(ng)a.push('<span style="color:var(--red)">✕'+ng+'</span>');
+  if(na)a.push('<span style="color:var(--text3)">-'+na+'</span>');
+  return a.join(' ');
+}
+function updateThrFoldSum(){
+  const sec=document.querySelector('.fold-sec[data-fold="thr"]');
+  if(!sec)return;
+  const sum=sec.querySelector('.fold-sum');
+  if(!sum)return;
+  sum.innerHTML=sec.classList.contains('folded')?thrFoldSummary():'';
 }
 
 function statLabel(stat){
@@ -3280,6 +4017,7 @@ function applySortUI(){
     c.textContent=on?base+arrow:base+'↓';
   });
   if(typeof updateFoldUI==='function')updateFoldUI();
+  if(typeof updateMBar2==='function')updateMBar2();
 }
 
 function applyFilterUI(){
@@ -3326,7 +4064,12 @@ function updateFoldUI(){
     const chev=sec.querySelector('.fold-chev');
     if(chev)chev.textContent=open?'▾':'▸';
     const sum=sec.querySelector('.fold-sum');
-    if(sum)sum.textContent=open?'':foldSummary(key); // 畳んだ時だけ現在の選択を表示
+    if(sum){
+      // 畳んだ時だけ現在の選択（閾値は色付きの合否要約、メモは文字数要約なのでinnerHTML）
+      if(key==='thr')sum.innerHTML=open?'':thrFoldSummary();
+      else if(key==='note')sum.innerHTML=open?'':noteFoldSummary();
+      else sum.textContent=open?'':foldSummary(key);
+    }
   });
 }
 function foldSummary(key){
@@ -3424,7 +4167,7 @@ function setView(mode){
   document.getElementById('v-mobile').classList.toggle('on',mode==='mobile');
   applyFilterUI();
   renderFilterBtn();
-  applyModeBarPos();
+  applyMobileLayout(); // 内部で applyModeBarPos も呼ぶ
 }
 // 表示列（モードバー）の位置をPC設定に応じて切替（スマホ時は常に従来バー）
 function applyModeBarPos(){
@@ -3438,7 +4181,9 @@ function applyModeBarPos(){
   const title=document.querySelector('.h-title');
   const hright=document.querySelector('.h-right');
   const anchor=document.getElementById('mode-bar-anchor');
-  if(pos==='header-right'){ if(hright)hright.insertBefore(bar,hright.firstChild); }
+  const compactMobile=mobile&&(UD.settings.mCompact!==false);
+  if(compactMobile){ const sa=document.getElementById('bs-mode-anchor'); if(sa&&bar.parentNode!==sa)sa.appendChild(bar); }
+  else if(pos==='header-right'){ if(hright)hright.insertBefore(bar,hright.firstChild); }
   else if(pos==='header-left'){ if(title)title.appendChild(bar); } // タイトル内に入れて左寄せ
   else { if(anchor)anchor.after(bar); }
   document.body.classList.toggle('mode-in-header',inHeader);
@@ -3459,6 +4204,61 @@ function applyBsPosition(pos){
   saveUD();
 }
 
+
+// スマホ：1行バー（並替/絞込/表示）とチップのシート移動
+function applyMobileLayout(){
+  const compact=UD.settings.mCompact!==false;
+  const mobile=document.body.classList.contains('show-mobile');
+  document.body.classList.toggle('m-compact',compact);
+  if(!compact||!mobile)document.body.classList.remove('m-hdr-off');
+  const chips=document.getElementById('m-sort-chips');
+  const sortBar=document.querySelector('.m-sort-bar');
+  if(compact&&mobile){
+    const sa=document.getElementById('bs-sort-anchor');
+    if(sa&&chips&&chips.parentNode!==sa)sa.appendChild(chips);
+  }else if(chips&&sortBar&&chips.parentNode!==sortBar){
+    const sep=sortBar.querySelector('.m-filter-sep');
+    if(sep)sortBar.insertBefore(chips,sep);else sortBar.appendChild(chips);
+  }
+  applyModeBarPos(); // 表示ステータス列の置き場所を決め直す
+  updateMBar2();
+}
+// 1行バーの表示値を更新
+function updateMBar2(){
+  const s=UD.settings;
+  const st=s.sortStat,dir=s.sortDir;
+  const base=st==='level'?'Lv':st==='no'?'No':st==='exp'?'Exp':st==='genday'?'入手':st==='ranbu'?'乱舞':(STAT_NAMES[parseInt(st)]||'');
+  const e1=document.getElementById('m-bar2-sort');
+  if(e1)e1.textContent=base?base+(dir==='desc'?'↓':'↑'):'-';
+  const fv=document.getElementById('m-filter-value');
+  const e2=document.getElementById('m-bar2-filter');
+  if(e2&&fv)e2.textContent=fv.textContent;
+  const fb=document.getElementById('m-filter-btn'),b2=document.getElementById('m-bar2-filter-btn');
+  if(fb&&b2)b2.classList.toggle('active',fb.classList.contains('active'));
+  const e3=document.getElementById('m-bar2-mode');
+  if(e3)e3.textContent=s.statMode==='real'?'実力':s.statMode==='ranbu'?'乱舞込':'素';
+}
+// スマホ：一覧を下にスクロールしたらヘッダーを隠す
+let _mPrevScroll=0;
+function initMHeaderHide(){
+  const ml=document.getElementById('m-list');
+  if(!ml)return;
+  ml.addEventListener('scroll',()=>{
+    if(UD.settings.mHideHeader===false||!document.body.classList.contains('show-mobile')){
+      document.body.classList.remove('m-hdr-off');_mPrevScroll=ml.scrollTop;return;
+    }
+    const y=ml.scrollTop;
+    if(y<50)document.body.classList.remove('m-hdr-off');
+    else if(y>_mPrevScroll+6)document.body.classList.add('m-hdr-off');
+    else if(y<_mPrevScroll-6)document.body.classList.remove('m-hdr-off');
+    _mPrevScroll=y;
+  },{passive:true});
+}
+function setMCompact(on){saveSetting('mCompact',on);applyMobileLayout();}
+function setMHideHeader(on){
+  saveSetting('mHideHeader',on);
+  if(!on)document.body.classList.remove('m-hdr-off');
+}
 
 function applySortChipMode(mode){
   UD.settings.sortChipWrap=mode;
@@ -3633,7 +4433,7 @@ function renderEquipBodyAcc(container,tab){
       </div>`;
   }else if(tab==='horse'){
     const orderedHorses=buildHorseList();
-    container.innerHTML=`
+    container.innerHTML=umagoNoteHtml(true)+`
       <div class="equip-list">
         <div class="equip-item none-item${!eq.horse?' on':''}" onclick="event.stopPropagation();accSelectHorse(this,null)">装備なし</div>
         ${orderedHorses.map(h=>`
@@ -3877,7 +4677,8 @@ function renderEquipBody(tab){
       const si=_equipSortStat;
       hList=[...hList].sort((a,b)=>(b.s[si]||0)-(a.s[si]||0));
     }
-    document.getElementById('equip-body-horse').innerHTML=`
+    document.getElementById('equip-body-horse').innerHTML=
+      (_equipSortStat===null?umagoNoteHtml(false):'')+`
       <div class="equip-list">
         <div class="equip-item none-item${!eq.horse?' on':''}" onclick="selectHorse(null)">装備なし</div>
         ${hList.map(h=>`
@@ -3928,6 +4729,12 @@ function renderEquipBody(tab){
   }
 }
 
+// 午年号の並び順は設定で変えられる、という案内（刀装タブの注記と同じ形）
+function umagoNoteHtml(compact){
+  const where=(UD.settings.umagoPosition||'last')==='last'?'いちばん最後':'祝○号より前';
+  const style=compact?' style="padding:4px 10px;margin:0"':'';
+  return `<div class="equip-hp-note"${style}>🐴 午年号は${where}に表示中（設定で変更可）</div>`;
+}
 function buildHorseList(){
   const list=[...HORSES];
   if(UD.settings.umagoPosition==='last'){
@@ -4090,22 +4897,24 @@ function snapshotCurrentToParty(){
 // 部隊の記録装備を削除して現在装備に戻す
 function revertPartyToCurrent(){
   if(!_editingInstId||!_editingPartyContext)return;
-  if(!confirm('この部隊の出陣装備の記録を削除して、通常装備に戻しますか？'))return;
-  const party=UD.parties.find(p=>p.id===_editingPartyContext);
+  const instId=_editingInstId,ctx=_editingPartyContext;
+  askConfirm('この部隊の出陣装備の記録を削除して、通常装備に戻しますか？',()=>{
+  const party=UD.parties.find(p=>p.id===ctx);
   if(party?.equipments){
-    delete party.equipments[_editingInstId];
+    delete party.equipments[instId];
   }
   saveUD();
-  if(_accId===_editingInstId){closeAcc(_editingInstId);}
+  if(_accId===instId){closeAcc(instId);}
   else{closeModal('equip-modal');}
   _editingPartyContext=null;
   renderList();renderMobileList();renderPartySlots();renderMobilePartySlots();renderPartySum();renderThresholds();
+  },{ok:'記録を削除する',danger:true});
 }
 
 // 全装備を外す（現在のコンテキストの装備を空に）
 function clearAllEquip(){
   if(!_editingInstId)return;
-  if(!confirm('全ての装備（馬・宝物・お守り・刀装）を外しますか？'))return;
+  askConfirm('全ての装備（馬・宝物・お守り・刀装）を外しますか？',()=>{
   _pendingEquip={tosoSlots:[],_selSlot:0};
   // アコーディオン側か モーダル側か判定
   if(_accId===_editingInstId){
@@ -4132,14 +4941,15 @@ function clearAllEquip(){
       if(tabArea)tabArea.innerHTML=renderTosoSlotTabBar(_pendingEquip,slotCount,0,false);
     }
   }
+  },{ok:'全部外す',danger:true});
 }
 
 // 部隊全員分の通常装備を一括取り込み
 function snapshotPartyAll(){
   const party=activeParty();
   const filled=party.members.filter(Boolean);
-  if(!filled.length){alert('編成された男士がいません');return;}
-  if(!confirm(`「${party.name}」に編成中の${filled.length}名全員の通常装備を取り込みますか？\n（既存の記録は上書きされます）`))return;
+  if(!filled.length){toast('編成された男士がいません');return;}
+  askConfirm(`「${party.name}」に編成中の${filled.length}名全員の通常装備を取り込みますか？\n（既存の記録は上書きされます）`,()=>{
   if(!party.equipments)party.equipments={};
   filled.forEach(id=>{
     const cur=UD.equipments[id]||{};
@@ -4148,6 +4958,7 @@ function snapshotPartyAll(){
   saveUD();
   renderPartySlots();renderMobilePartySlots();renderPartySum();renderThresholds();
   toast(`${filled.length}名の通常装備を取り込みました`);
+  },{ok:'取り込む'});
 }
 
 // 中央カードの通常装備をアクティブ部隊の出陣装備としてコピー
@@ -4167,13 +4978,14 @@ function copyEquipToActiveParty(instId){
 function clearPartyEquipAll(){
   const party=activeParty();
   const filled=party.members.filter(Boolean);
-  if(!filled.length){alert('編成された男士がいません');return;}
-  if(!confirm(`「${party.name}」の出陣装備を全員分外しますか？\n（通常装備には影響しません）`))return;
+  if(!filled.length){toast('編成された男士がいません');return;}
+  askConfirm(`「${party.name}」の出陣装備を全員分外しますか？\n（通常装備には影響しません）`,()=>{
   if(!party.equipments)party.equipments={};
   filled.forEach(id=>{delete party.equipments[id];});
   saveUD();
   renderPartySlots();renderMobilePartySlots();renderPartySum();renderThresholds();
   toast('全員の出陣装備を外しました');
+  },{ok:'外す',danger:true});
 }
 
 // ======================================================
@@ -4462,6 +5274,61 @@ function closeModalOutside(e,id){
 // ======================================================
 function toggleSettings(){document.getElementById('settings-overlay').classList.toggle('open');}
 
+// ── 設定グループの折りたたみ（未設定＝閉じる。左カラムの foldSec とは別系統）──
+function toggleSetFold(key){
+  const s=UD.settings;
+  if(!s.setFold||typeof s.setFold!=='object')s.setFold={};
+  s.setFold[key]=!s.setFold[key];
+  saveUD();
+  updateSetFoldUI();
+}
+// たたんだ見出しの右に出す「現在値」の要約
+function setFoldSummary(key){
+  const s=UD.settings;
+  if(key==='data')return UD.dataSource==='local'?'このアプリで管理':'稽古録と連携';
+  if(key==='look'){
+    const pal={washi:'和風',sakura:'桜',midori:'翠',tetsu:'鉄'}[s.palette||'tetsu']||'';
+    const ui=s.uiV2!==false?'見やすく':'飾り控えめ';
+    return [pal,ui].filter(Boolean).join('・');
+  }
+  if(key==='ope'){
+    const t=s.partyMvBtns?'◀▶あり':'つまむだけ';
+    const e=(s.equipMode||'modal')==='modal'?'中央に開く':'カードの下に開く';
+    return t+'・'+e;
+  }
+  if(key==='sp'){
+    const c=s.mCompact!==false?'1行にまとめる':'チップを出す';
+    const h=s.mHideHeader!==false?'ヘッダーを隠す':'ヘッダー常時表示';
+    return c+'・'+h;
+  }
+  if(key==='adv'){
+    let n=0;
+    if((s.modeBarPos||'below')!=='below')n++;
+    if((s.modeBarNote||'none')!=='none')n++;
+    if((s.bsPosition||'bottom')!=='bottom')n++;
+    if((s.umagoPosition||'last')!=='last')n++;
+    return n?n+'件を変更':'既定のまま';
+  }
+  return '';
+}
+function updateSetFoldUI(){
+  const sf=(UD.settings.setFold&&typeof UD.settings.setFold==='object')?UD.settings.setFold:{};
+  document.querySelectorAll('.set-sec').forEach(sec=>{
+    const key=sec.dataset.sfold;
+    const open=!!sf[key];
+    sec.classList.toggle('folded',!open);
+    const chev=sec.querySelector('.set-chev');
+    if(chev)chev.textContent=open?'▾':'▸';
+    const sum=sec.querySelector('.set-sum');
+    if(sum)sum.textContent=open?'':setFoldSummary(key);
+  });
+}
+// 設定を変えたら要約を描き直す（各onchangeには手を入れず、まとめて拾う）
+(function(){
+  const ov=document.getElementById('settings-overlay');
+  if(ov)ov.addEventListener('change',updateSetFoldUI);
+})();
+
 // ポップアップ外クリックで閉じる
 document.addEventListener('click',e=>{
   const pop=document.getElementById('cloud-popup');
@@ -4497,6 +5364,7 @@ function renderFilterBtn(){
   const label=isActive?parts.join('・'):'全て';
   if(valEl)valEl.textContent=label;
   btn.classList.toggle('active',isActive);
+  if(typeof updateMBar2==='function')updateMBar2();
 }
 
 function openBS(){document.getElementById('bs-overlay').classList.add('open');}
@@ -4551,6 +5419,32 @@ function closePartyMenu(){
   setTimeout(()=>{if(ov&&!ov.classList.contains('open'))ov.style.display='none';},230);
 }
 function closePartyMenuOutside(e){if(e.target===document.getElementById('pm-overlay'))closePartyMenu();}
+// 部隊メニューからの改名：タブが折りたたまれていたら展開してから編集に入る
+function startPartyEditFromMenu(){
+  const p=activeParty();
+  if(!p)return;
+  closePartyMenu();
+  if(UD.settings.mPartyCollapsed){
+    UD.settings.mPartyCollapsed=false;
+    saveUD();
+    updateMPartyCollapseUI();
+  }
+  startMobilePartyEdit(p.id);
+}
+function movePartyFromMenu(delta){
+  const p=activeParty();
+  if(!p)return;
+  moveParty(p.id,delta);
+}
+function deletePartyFromMenu(e){
+  const p=activeParty();
+  if(!p)return;
+  deleteParty(e,p.id);
+}
+// ◀▶ボタン設定（partyMvBtns）のON/OFFをbodyクラスへ反映
+function applyPartyMvUI(){
+  document.body.classList.toggle('party-mv-on',!!UD.settings.partyMvBtns);
+}
 function closeBS(){document.getElementById('bs-overlay').classList.remove('open');}
 function closeBSOutside(e){if(e.target===document.getElementById('bs-overlay'))closeBS();}
 document.getElementById('bs-type').addEventListener('click',e=>{
@@ -4576,30 +5470,96 @@ document.getElementById('bs-kiwame').addEventListener('click',e=>{
 const GD_CLIENT_ID='1020015092975-eheh7mf0vjv55a7lufvbc1mi50ele8bv.apps.googleusercontent.com';
 const GD_SCOPE='https://www.googleapis.com/auth/drive.appdata';
 const GD_FILENAME='shitakubeya_data.json';
-let _gdToken=null,_gdClient=null,_gdFileId=null,_autoSaveTimer=null;
+let _gdToken=null,_gdFileId=null,_autoSaveTimer=null;
+let _lastSyncTime=null;   // 最終同期時刻（Date）。上書き警告の判定に使う
+let _gdTokenAt=0;         // トークンを受け取った時刻（ms）
+let _gdReconnect=false;   // 接続が切れて「⚠ 再接続」待ちの状態
+const GD_STALE_MS=50*60*1000;  // これを過ぎたトークンは、操作の起点で先回りして取り直す
 /* ── 起動時にsessionStorageからトークンを復元 ── */
 (function(){
-  var t=sessionStorage.getItem('gd_token');
-  if(t)_gdToken=t;
+  try{
+    var t=sessionStorage.getItem('gd_token');
+    if(t)_gdToken=t;
+    var a=parseInt(sessionStorage.getItem('gd_token_at'),10);
+    if(a)_gdTokenAt=a;
+  }catch(e){}
 })();
 
-function gdInit(){
-  _gdClient=google.accounts.oauth2.initTokenClient({
-    client_id:GD_CLIENT_ID,scope:GD_SCOPE,
-    callback:resp=>{
-      if(resp.error)return;
-      _gdToken=resp.access_token;
-      sessionStorage.setItem('gd_token',_gdToken);
-      updateGdUI();gdLoad();
-    }
-  });
+/* ── 端末ごとの同期メモ。クラウドには載せない ──
+   最終同期時刻を覚えておかないと、リロードのたびに
+   「クラウドのほうが新しいか」を判断できなくなるため。 */
+const SK_SYNC='sb_sync_v1';
+let _syncLocal={last:0};
+(function(){
+  try{
+    var raw=localStorage.getItem(SK_SYNC);
+    if(raw){var o=JSON.parse(raw);if(o&&typeof o==='object')_syncLocal=Object.assign(_syncLocal,o);}
+    if(_syncLocal.last)_lastSyncTime=new Date(_syncLocal.last);
+  }catch(e){}
+})();
+function saveSyncLocal(){
+  try{localStorage.setItem(SK_SYNC,JSON.stringify(_syncLocal));}catch(e){}
+}
+
+// ── Googleのライブラリ読み込みを待つ ──
+// 以前は起動時に一度だけログイン用の部品を作っていたため、
+// ライブラリが届く前に押すと何も起きずに終わっていた（1回目が効かない原因）。
+async function gdWaitForGoogle(maxWaitMs){
+  maxWaitMs=maxWaitMs||8000;
+  const start=Date.now();
+  while(!(window.google&&window.google.accounts&&window.google.accounts.oauth2)){
+    if(Date.now()-start>maxWaitMs)throw new Error('Google Sign-In library timeout');
+    await new Promise(r=>setTimeout(r,100));
+  }
+}
+
+// ── トークンの受け取り口はここ1か所にまとめる ──
+// 通常のログインも、画面を出さない取り直しも、遅れて届いた分も、すべてここを通る
+function gdAcceptToken(tok){
+  _gdToken=tok;
+  _gdTokenAt=Date.now();
+  _gdReconnect=false;
+  try{
+    sessionStorage.setItem('gd_token',_gdToken);
+    sessionStorage.setItem('gd_token_at',String(_gdTokenAt));
+  }catch(e){}
+  updateGdUI();
+}
+
+// ── 接続が切れた状態にする ──
+// ログアウトにはしない。手元のデータは無事だと分かるようにするため。
+function gdEnterReconnect(){
+  if(_gdReconnect)return;              // 通知が連発しないように
+  _gdToken=null;_gdTokenAt=0;_gdReconnect=true;
+  try{
+    sessionStorage.removeItem('gd_token');
+    sessionStorage.removeItem('gd_token_at');
+  }catch(e){}
+  updateGdUI();
+  toast('Googleとの接続が切れました。「⚠ 再接続」で戻せます');
+}
+
+// トークンが古いか。取得時刻が分からないときは古い扱いにする（安全側）
+function gdTokenStale(){
+  if(!_gdToken)return false;
+  if(!_gdTokenAt)return true;
+  return (Date.now()-_gdTokenAt)>GD_STALE_MS;
+}
+
+// 操作の起点で、古ければ先に取り直しておく。
+// ボタンを押した直後はブラウザが窓を通しやすいため、ここで済ませておくと失敗しにくい。
+async function gdEnsureFreshToken(){
+  if(!_gdToken)return false;
+  if(!gdTokenStale())return true;
+  try{await gdSilentRefresh();return true;}
+  catch(e){gdEnterReconnect();return false;}
 }
 
 
 
 function updateGdUI(){
   const btn=document.getElementById('gd-btn');
-  if(btn)btn.textContent=_gdToken?'☁ ●':'☁';
+  if(btn)btn.textContent=_gdReconnect?'☁ ⚠':(_gdToken?'☁ ●':'☁');
   renderCloudPopup();
 }
 
@@ -4617,6 +5577,17 @@ function renderCloudPopup(){
   if(!inn)return;
   const logged=!!_gdToken;
   const lastSync=_lastSyncTime?`<div style="font-size:10px;color:var(--text3);margin-top:4px">最終同期: ${fmtSyncTime(_lastSyncTime)}</div>`:'';
+  if(_gdReconnect){
+    // 接続が切れただけの状態。ログアウトではないので、データが消えていないことを伝える
+    inn.innerHTML=`
+    <div class="cp-sec">☁ Googleドライブ同期</div>
+    <div class="cp-status-dot" style="color:var(--red)">⚠ 接続が切れています</div>
+    <div style="font-size:10px;color:var(--text3);line-height:1.7;margin-bottom:6px">この端末のデータはそのまま残っています。</div>
+    ${lastSync}
+    <button class="cp-btn primary" onclick="closeCloudPopup();gdSignIn()" style="width:100%;margin-top:6px">⚠ 再接続する</button>
+    <button class="cp-btn danger" onclick="gdSignOut();closeCloudPopup()" style="width:100%;margin-top:2px">ログアウト</button>`;
+    return;
+  }
   inn.innerHTML=`
     <div class="cp-sec">☁ Googleドライブ同期</div>
     <div class="cp-status-dot" style="color:${logged?'var(--green)':'var(--text3)'}">
@@ -4625,8 +5596,8 @@ function renderCloudPopup(){
     ${logged?`
     ${lastSync}
     <div class="cp-row" style="margin-top:6px">
-      <button class="cp-btn" onclick="gdSave();closeCloudPopup()">⬆ 保存する</button>
-      <button class="cp-btn" onclick="gdLoad();closeCloudPopup()">⬇ 読み込む</button>
+      <button class="cp-btn" onclick="closeCloudPopup();gdSaveWithCheck()">⬆ 保存する</button>
+      <button class="cp-btn" onclick="closeCloudPopup();gdLoadManual()">⬇ 読み込む</button>
     </div>
     <button class="cp-btn danger" onclick="gdSignOut();closeCloudPopup()" style="width:100%;margin-top:2px">ログアウト</button>
     `:`
@@ -4639,13 +5610,84 @@ function closeCloudPopup(){
 }
 
 function gdSignIn(){
-  if(_gdClient)_gdClient.requestAccessToken();
+  gdWaitForGoogle().then(()=>{
+    // 部品は押すたびに作り直す。使い回すと、時間が経ったときに通らないことがあるため。
+    const client=google.accounts.oauth2.initTokenClient({
+      client_id:GD_CLIENT_ID,scope:GD_SCOPE,
+      callback:resp=>{
+        if(resp.error){
+          console.warn('[Google Auth]',resp.error);
+          toast('Googleログインに失敗しました');
+          return;
+        }
+        gdAcceptToken(resp.access_token);
+        toast('Googleにログインしました');
+        // ここで以前は無条件に読み込んでいた。そのため保存のつもりでログインすると
+        // 手元の変更がクラウドの内容で消えてしまっていた。まず差分を確かめる。
+        gdStartupCheck();
+      }
+    });
+    client.requestAccessToken();
+  }).catch(e=>{
+    console.warn('GD signin error',e);
+    toast('Googleの読み込みに失敗しました（ページを開き直してください）');
+  });
+}
+
+// ── 画面を出さずにトークンを取り直す ──
+// ふつうは何も出ずに終わるが、ブラウザによってはアカウント選択が出ることがあり、
+// 選ぶのに人の時間がかかる。時間切れは「呼び出し元が待つのをやめる」ためだけのもので、
+// 受け取り口は閉じない。遅れて届いた分もきちんと拾って復帰させる。
+let _gdRefreshP=null;
+function gdSilentRefresh(){
+  if(_gdRefreshP)return _gdRefreshP;   // 実行中なら相乗り。窓が連発するのを防ぐ
+  _gdRefreshP=new Promise((resolve,reject)=>{
+    if(!(window.google&&window.google.accounts&&window.google.accounts.oauth2)){
+      _gdRefreshP=null;reject(new Error('library not loaded'));return;
+    }
+    let settled=false;                 // 呼び出し元へ返事をしたか（受け取りとは別）
+    const timer=setTimeout(()=>{
+      if(!settled){settled=true;_gdRefreshP=null;reject(new Error('timeout'));}
+    },10000);
+    try{
+      const client=google.accounts.oauth2.initTokenClient({
+        client_id:GD_CLIENT_ID,scope:GD_SCOPE,
+        callback:resp=>{
+          clearTimeout(timer);
+          if(resp.error){
+            if(!settled){settled=true;_gdRefreshP=null;reject(new Error(resp.error));}
+            return;
+          }
+          gdAcceptToken(resp.access_token);
+          if(settled){                 // 時間切れのあとに届いた＝遅れて復帰
+            toast('Googleに再接続しました');
+            gdStartupCheck();
+          }else{
+            settled=true;_gdRefreshP=null;resolve(_gdToken);
+          }
+        },
+        error_callback:err=>{
+          clearTimeout(timer);
+          if(!settled){settled=true;_gdRefreshP=null;reject(new Error((err&&err.type)||'silent_failed'));}
+        }
+      });
+      client.requestAccessToken({prompt:''});
+    }catch(e){
+      clearTimeout(timer);
+      if(!settled){settled=true;_gdRefreshP=null;reject(e);}
+    }
+  });
+  return _gdRefreshP;
 }
 
 function gdSignOut(){
-  if(_gdToken)google.accounts.oauth2.revoke(_gdToken,()=>{});
-  _gdToken=null;_gdFileId=null;_lastSyncTime=null;
-  sessionStorage.removeItem('gd_token');
+  try{if(_gdToken&&window.google&&google.accounts)google.accounts.oauth2.revoke(_gdToken,()=>{});}catch(e){}
+  _gdToken=null;_gdFileId=null;_lastSyncTime=null;_gdTokenAt=0;_gdReconnect=false;
+  try{
+    sessionStorage.removeItem('gd_token');
+    sessionStorage.removeItem('gd_token_at');
+  }catch(e){}
+  _syncLocal.last=0;saveSyncLocal();
   updateGdUI();
 }
 
@@ -4655,15 +5697,21 @@ async function gdFetch(url,opts,isRetry){
   });
   var res=await fetch(url,o);
   if(res.status===401&&!isRetry){
-    _gdToken=null;_gdFileId=null;
-    sessionStorage.removeItem('gd_token');
-    updateGdUI();
-    throw new Error('401 Unauthorized');
+    // 以前はここで即ログアウト扱いにしていた。実際にはトークンの期限切れがほとんどなので、
+    // まず画面を出さずに取り直し、1回だけやり直す。
+    if(_gdReconnect)throw new Error('401 Unauthorized');   // 再接続待ちの間は撃たない
+    try{
+      await gdSilentRefresh();
+      return gdFetch(url,opts,true);
+    }catch(e){
+      console.warn('GD silent refresh failed',e&&e.message);
+      gdEnterReconnect();   // ログアウトにはしない。手元のデータは無事
+      throw new Error('401 Unauthorized');
+    }
   }
   return res;
 }
 
-let _lastSyncTime=null;
 function fmtSyncTime(d){
   const now=new Date(),diff=Math.floor((now-d)/1000);
   if(diff<60)return 'たった今';
@@ -4671,41 +5719,283 @@ function fmtSyncTime(d){
   return d.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
 }
 
-async function gdLoad(){
-  if(!_gdToken)return;
+// ── クラウド上のファイルを探す ──
+// 保存のたびにここを通すことで、同じ名前のファイルを二重に作ってしまうのを防ぐ
+async function gdFindFile(){
   try{
     const r=await gdFetch(`https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name='${GD_FILENAME}'&fields=files(id,name)`,
       {headers:{}});
+    if(!r.ok)return null;
     const d=await r.json();
-    if(d.files&&d.files.length){
-      _gdFileId=d.files[0].id;
-      const fr=await gdFetch(`https://www.googleapis.com/drive/v3/files/${_gdFileId}?alt=media`,
-        {headers:{}});
-      const cloudData=await fr.json();
-      // マージ（クラウドを優先）
-      if(cloudData.parties)UD.parties=cloudData.parties;
-      if(cloudData.activePartyId)UD.activePartyId=cloudData.activePartyId;
-      if(cloudData.equipments)UD.equipments=cloudData.equipments;
-      if(cloudData.conditions)UD.conditions=cloudData.conditions;
-      if(cloudData.localCurStats&&typeof cloudData.localCurStats==='object')UD.localCurStats=cloudData.localCurStats;
-      if(cloudData.settings)Object.assign(UD.settings,cloudData.settings);
-      migrateConditions();
-      saveUD();renderAll();
-    }
-  }catch(e){console.warn('GD load error',e);}
+    return (d.files&&d.files.length)?d.files[0].id:null;
+  }catch(e){console.warn('GD find error',e);return null;}
 }
 
-async function gdSave(silent){
+async function gdFetchCloud(fid){
+  const r=await gdFetch(`https://www.googleapis.com/drive/v3/files/${fid}?alt=media`,{headers:{}});
+  if(!r.ok)throw new Error('クラウドデータの取得に失敗しました（HTTP '+r.status+'）');
+  return await r.json();
+}
+
+// 支度部屋のデータとして読める形か
+function gdDataLooksValid(d){
+  if(!d||typeof d!=='object')return false;
+  if(Array.isArray(d.parties))return true;
+  if(d.stash&&typeof d.stash==='object')return true;
+  return false;
+}
+
+// 現在のモードと、退避してあるモードの両方から編成の一覧を集める
+function gdCollectParties(o){
+  const sets=[];
+  if(o&&Array.isArray(o.parties))sets.push(o.parties);
+  const st=(o&&o.stash&&typeof o.stash==='object')?o.stash:{};
+  ['local','keikoroku'].forEach(k=>{
+    if(st[k]&&Array.isArray(st[k].parties))sets.push(st[k].parties);
+  });
+  return sets;
+}
+
+// 中身があるか（1振りでも編成されている、または部隊が増やされている）
+// 判定できないときは「中身がある」側に倒す。消える方向に間違えないため。
+function gdHasContent(o){
+  try{
+    const sets=gdCollectParties(o);
+    for(const ps of sets){
+      if(ps.length>1)return true;
+      for(const p of ps){
+        if(p&&Array.isArray(p.members)&&p.members.some(m=>m))return true;
+      }
+    }
+    return false;
+  }catch(e){return true;}
+}
+
+// ── クラウドのデータを手元に適用する ──
+// saveUD() を通すと updatedAt が「今」になってしまい、次の比較が狂う。
+// そのため localStorage へ直接書き、クラウド側の時刻をそのまま引き継ぐ。
+function gdApplyCloud(d){
+  if(d.parties)UD.parties=d.parties;
+  if(d.activePartyId)UD.activePartyId=d.activePartyId;
+  if(d.equipments)UD.equipments=d.equipments;
+  if(d.conditions)UD.conditions=d.conditions;
+  if(d.dataSource==='local'||d.dataSource==='keikoroku')UD.dataSource=d.dataSource;
+  if(d.stash&&typeof d.stash==='object')UD.stash=d.stash;
+  if(d.localKiwame&&typeof d.localKiwame==='object')UD.localKiwame=d.localKiwame;
+  if(d.localCurStats&&typeof d.localCurStats==='object')UD.localCurStats=d.localCurStats;
+  if(d.settings)Object.assign(UD.settings,d.settings);
+  if(!UD.stash||typeof UD.stash!=='object')UD.stash={};
+  if(!UD.stash.local)UD.stash.local=defaultWorkingSet();
+  if(!UD.stash.keikoroku)UD.stash.keikoroku=defaultWorkingSet();
+  UD.updatedAt=(typeof d.updatedAt==='number')?d.updatedAt:0;
+  migrateConditions();
+  try{localStorage.setItem(SK_SB,JSON.stringify(UD));}catch(e){}
+  applyDataSourceUI();
+  applySortUI();
+  applyFilterUI();
+  applySettingsUI();
+  applySortChipMode(UD.settings.sortChipWrap||'wrap');
+  renderFilterBtn();
+  refreshInstances();
+}
+
+// 同期できたことを記録する（時刻はリロードしても残す）
+function gdMarkSynced(){
+  _lastSyncTime=new Date();
+  _syncLocal.last=_lastSyncTime.getTime();
+  saveSyncLocal();
+  updateGdUI();
+}
+
+function gdFmtStamp(t){
+  if(!t)return '（記録なし）';
+  try{return new Date(t).toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});}
+  catch(e){return '（記録なし）';}
+}
+
+// ── 起動時・ログイン時の差分チェック ──
+async function gdStartupCheck(){
   if(!_gdToken)return;
   try{
+    const fid=await gdFindFile();
+    if(!fid){
+      // クラウドにまだファイルが無い＝初回。手元のデータを置いておく
+      const ok=await gdSave(true);
+      if(ok)toast('クラウドに初回バックアップしました');
+      return;
+    }
+    _gdFileId=fid;
+    let d;
+    try{d=await gdFetchCloud(fid);}
+    catch(e){console.warn('GD startup fetch error',e);return;}  // 読めないときは黙って手元のデータを使う
+    if(!gdDataLooksValid(d)){
+      toast('クラウドのデータを読み取れませんでした（この端末のデータを使います）');
+      return;
+    }
+    const localT=UD.updatedAt||0;
+    const cloudT=(typeof d.updatedAt==='number')?d.updatedAt:0;
+    if(cloudT>localT){
+      // クラウドのほうが新しい。ただし中身が空なら、時刻だけを信じて読み込ませると
+      // この端末に残っている編成まで消えてしまう。
+      // 別の端末が空のデータで上書きした直後がこれにあたる。
+      if(gdHasContent(UD)&&!gdHasContent(d)){
+        gdShowSyncDialog(d,cloudT,localT,'cloud-empty');
+        return;
+      }
+      gdShowSyncDialog(d,cloudT,localT,'cloud-newer');
+      return;
+    }
+    if(cloudT<localT){
+      // 手元のほうが新しい＝ふつうはクラウドが遅れているだけ。
+      // ただし時刻が示すのは「どの端末が最後に触ったか」であって、
+      // 「どちらに中身があるか」ではない。手元が空でクラウドに編成が入っているときに
+      // 時刻だけを信じて上書きすると、別の端末で組んだ編成が消えてしまう。
+      if(!gdHasContent(UD)&&gdHasContent(d)){
+        gdShowSyncDialog(d,cloudT,localT,'local-empty');
+        return;
+      }
+      const ok=await gdSave(true);
+      if(ok)toast('この端末のデータをクラウドに保存しました');
+      return;
+    }
+    // 時刻が同じ。ふつうは同期済みだが、時刻を持たない古いデータ同士だと 0 と 0 で並ぶ。
+    // 中身が食い違っているときだけ、どちらに合わせるかを尋ねる
+    if(!gdHasContent(UD)&&gdHasContent(d)){gdShowSyncDialog(d,cloudT,localT,'local-empty');return;}
+    if(gdHasContent(UD)&&!gdHasContent(d))gdShowSyncDialog(d,cloudT,localT,'cloud-empty');
+  }catch(e){
+    console.warn('GD startup check error',e);
+  }
+}
+
+// ── 「クラウドに新しいデータがあります」の確認 ──
+// ── 同期の確認画面 ──
+// kind は3種類。'cloud-newer'（クラウドが新しい）／'local-empty'（手元が空）／
+// 'cloud-empty'（クラウドが空・手元に中身）。最後のひとつだけ、押すと「保存」になる。
+let _gdDlgData=null;
+let _gdDlgKind='cloud-newer';
+function gdShowSyncDialog(d,cloudT,localT,kind){
+  const ov=document.getElementById('gd-dlg');
+  if(!ov)return;                       // 万一要素がないときは何もしない（勝手に上書きしない）
+  _gdDlgData=d;
+  _gdDlgKind=kind||'cloud-newer';
+  const ttl=document.getElementById('gd-dlg-ttl');
+  const msg=document.getElementById('gd-dlg-msg');
+  const no=document.getElementById('gd-dlg-no');
+  const ok=document.getElementById('gd-dlg-ok');
+  if(_gdDlgKind==='cloud-empty'){
+    // 別の端末が空のデータで上書きしてしまった直後がこれにあたる。
+    // ここで読み込ませると、この端末に残っている編成まで消えてしまう。
+    if(ttl)ttl.textContent='☁ クラウドの編成が空のようです';
+    if(msg)msg.textContent='別の端末が空のデータで上書きした可能性があります。この端末には編成が残っているので、クラウドへ保存し直せます。';
+    if(no)no.textContent='そのままにする';
+    if(ok)ok.textContent='クラウドへ保存する';
+  }else if(_gdDlgKind==='local-empty'){
+    if(ttl)ttl.textContent='☁ この端末の編成が空のようです';
+    if(msg)msg.textContent='クラウドには編成が入っています。この端末には入っていないため、上書きせずに確かめています。読み込みますか。';
+    if(no)no.textContent='この端末のまま';
+    if(ok)ok.textContent='読み込む';
+  }else{
+    if(ttl)ttl.textContent='☁ クラウドに新しいデータがあります';
+    if(msg)msg.textContent='別の端末で更新されたようです。読み込むと、この端末の編成・装備はクラウドの内容に置き換わります。';
+    if(no)no.textContent='この端末のまま';
+    if(ok)ok.textContent='読み込む';
+  }
+  const t=document.getElementById('gd-dlg-times');
+  if(t)t.textContent='この端末の更新：'+gdFmtStamp(localT)+'\nクラウドの更新：'+gdFmtStamp(cloudT);
+  ov.classList.add('open');
+  setTimeout(()=>{try{document.getElementById('gd-dlg-ok').focus();}catch(_){}},0);
+}
+function gdDlgClose(){
+  const ov=document.getElementById('gd-dlg');
+  if(ov)ov.classList.remove('open');
+  _gdDlgData=null;
+}
+function gdDlgKeep(){gdDlgClose();}    // 何もしない
+function gdDlgOk(){
+  const d=_gdDlgData;
+  const kind=_gdDlgKind;
+  gdDlgClose();
+  if(kind==='cloud-empty'){
+    // この端末の中身でクラウドを直す。押した時刻を打って、以後この端末が最新になる
+    gdSave(false,true);
+    return;
+  }
+  if(!d)return;
+  gdApplyCloud(d);
+  gdMarkSynced();
+  toast('クラウドから読み込みました');
+}
+function gdDlgOverlayClick(e){if(e.target&&e.target.id==='gd-dlg')gdDlgClose();}
+function gdDlgIsOpen(){
+  const ov=document.getElementById('gd-dlg');
+  return !!(ov&&ov.classList.contains('open'));
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&gdDlgIsOpen())gdDlgClose();
+});
+
+// ── 手動の「⬇ 読み込む」──
+// 以前は押した瞬間に上書きしていた。押し間違いで消えないよう確認を挟む。
+function gdLoadManual(){
+  if(!_gdToken){toast('先にGoogleにログインしてください');return;}
+  askConfirm(
+    'クラウドのデータを読み込みます。\nこの端末の編成・装備は、クラウドの内容に置き換わります。',
+    ()=>gdLoadNow(),
+    {ok:'読み込む',cancel:'やめる',danger:true}
+  );
+}
+async function gdLoadNow(){
+  if(!_gdToken)return;
+  if(!await gdEnsureFreshToken())return;   // 古ければ先に取り直す
+  try{
+    const fid=await gdFindFile();
+    if(!fid){toast('クラウドにデータがありません');return;}
+    _gdFileId=fid;
+    const d=await gdFetchCloud(fid);
+    if(!gdDataLooksValid(d)){toast('クラウドのデータを読み取れませんでした');return;}
+    gdApplyCloud(d);
+    gdMarkSynced();
+    toast('クラウドから読み込みました');
+  }catch(e){
+    console.warn('GD load error',e);
+    toast('クラウドの読み込みに失敗しました');
+  }
+}
+
+// stampNow: 「⬆ 保存する」を押したときに立てる。
+//   押した人は「いまのこの状態を最新として登録したい」と思っているので、そのとおりにする。
+// また、時刻を持たないデータ（この仕組みが入る前に作られたもの）をそのまま上げると、
+// 以後どの比較にも負け続け、他の端末の薄いデータに上書きされてしまう。その場合もここで時刻を入れる。
+async function gdSave(silent,stampNow){
+  if(!_gdToken)return false;
+  if(stampNow||!UD.updatedAt){
+    UD.updatedAt=Date.now();
+    try{localStorage.setItem(SK_SB,JSON.stringify(UD));}catch(e){}
+  }
+  try{
+    // 非選択モードだけでなく、現在編集中のモードも最新状態でstashへ含める
+    const cloudStash={
+      ...(UD.stash||{}),
+      [UD.dataSource]:{
+        parties:UD.parties,
+        activePartyId:UD.activePartyId,
+        equipments:UD.equipments,
+        conditions:UD.conditions
+      }
+    };
     const body=JSON.stringify({
+      version:2,updatedAt:UD.updatedAt||0,dataSource:UD.dataSource,stash:cloudStash,
       parties:UD.parties,activePartyId:UD.activePartyId,
       equipments:UD.equipments,conditions:UD.conditions,settings:UD.settings,
+      localKiwame:UD.localKiwame,
       localCurStats:UD.localCurStats
     });
+    // 既存ファイルを必ず探してから書く。探さずに新規作成すると同名ファイルが増えてしまう
+    if(!_gdFileId){const found=await gdFindFile();if(found)_gdFileId=found;}
     if(_gdFileId){
-      await gdFetch(`https://www.googleapis.com/upload/drive/v3/files/${_gdFileId}?uploadType=media`,
+      const res=await gdFetch(`https://www.googleapis.com/upload/drive/v3/files/${_gdFileId}?uploadType=media`,
         {method:'PATCH',headers:{'Content-Type':'application/json'},body});
+      if(!res.ok)throw new Error('クラウド保存に失敗しました（HTTP '+res.status+'）');
     }else{
       const meta={name:GD_FILENAME,parents:['appDataFolder']};
       const form=new FormData();
@@ -4713,10 +6003,99 @@ async function gdSave(silent){
       form.append('file',new Blob([body],{type:'application/json'}));
       const res=await gdFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
         {method:'POST',headers:{},body:form});
+      if(!res.ok)throw new Error('クラウド保存に失敗しました（HTTP '+res.status+'）');
       const d=await res.json();_gdFileId=d.id;
     }
-    _lastSyncTime=new Date();updateGdUI();
-  }catch(e){console.warn('GD save error',e);}
+    gdMarkSynced();
+    if(!silent)toast('クラウドへ保存しました');
+    return true;
+  }catch(e){
+    console.warn('GD save error',e);
+    if(!silent)toast('クラウドへの保存に失敗しました');
+    return false;
+  }
+}
+
+// クラウド側のファイルが最後に書き換えられた時刻
+async function gdGetCloudModified(){
+  if(!_gdToken||!_gdFileId)return null;
+  try{
+    const r=await gdFetch(`https://www.googleapis.com/drive/v3/files/${_gdFileId}?fields=modifiedTime`,{headers:{}});
+    if(!r.ok)return null;
+    const d=await r.json();
+    return d.modifiedTime?new Date(d.modifiedTime):null;
+  }catch(e){return null;}
+}
+
+// ── 手動の「⬆ 保存する」──
+// クラウドのほうが新しければ、上書きする前に知らせる
+/* ── 手元が空のまま上書きするのを止める ──────────────
+   機種変更・ブラウザの乗り換え・サイトデータの削除・アプリ内ブラウザなどで
+   この端末の記録が空になっていることがある。その状態で保存すると
+   クラウドの記録まで空で塗りつぶされ、元に戻せない。
+   最終同期の時刻が残っていない人ほど危ないので、
+   syncWarnDisabled の判定より手前に置く。 */
+function gdLocalEmpty(){
+  /* 部隊1は初期状態でも必ず存在するので、中身が入っているかで見る */
+  var ps=UD.parties||[];
+  var hasMember=ps.some(function(p){return (p.members||[]).some(function(m){return m;});});
+  return !hasMember
+      && !Object.keys(UD.equipments||{}).length
+      && !(UD.conditions||[]).length
+      && !Object.keys(UD.localKiwame||{}).length
+      && !Object.keys(UD.localCurStats||{}).length;
+}
+function gdCloseEmptyWarn(){
+  var el=document.getElementById('ov-gd-empty');
+  if(el)el.remove();
+}
+function gdEmptyWarnLoad(){ gdCloseEmptyWarn(); gdLoadNow(); }
+function gdEmptyWarnSave(){ gdCloseEmptyWarn(); gdSave(); }
+async function gdAskIfEmpty(){
+  if(!gdLocalEmpty())return false;
+  var fid=null;
+  try{ fid=_gdFileId||await gdFindFile(); }catch(e){ return false; }
+  if(!fid)return false;   /* クラウドに何も無いなら、空を保存しても失うものが無い */
+  gdCloseEmptyWarn();
+  var d=document.createElement('div');
+  d.id='ov-gd-empty';
+  d.className='ask-overlay';
+  d.style.display='flex';
+  d.innerHTML=
+    '<div class="ask-box">'
+    +'<div class="ask-msg" style="line-height:1.9"><b>手元に記録がありません</b><br><br>このまま保存すると、クラウドに残っている記録が空の状態で上書きされます。元に戻せません。<br><br>以前この道具に記録していた場合は、先に「⬇ 読み込む」を押してください。</div>'
+    +'<div class="ask-ft">'
+    +'<button class="ask-btn" onclick="gdCloseEmptyWarn()">やめる</button>'
+    +'<button class="ask-btn ok" onclick="gdEmptyWarnLoad()">⬇ 読み込む</button>'
+    +'</div>'
+    +'<div style="text-align:center;padding:0 0 12px">'
+    +'<a href="#" onclick="gdEmptyWarnSave();return false;" '
+    +'style="font-size:11px;color:var(--text3);text-decoration:underline">それでも保存する</a></div>'
+    +'</div>';
+  document.body.appendChild(d);
+  return true;
+}
+
+async function gdSaveWithCheck(){
+  if(!_gdToken){toast('先にGoogleにログインしてください');return;}
+  if(!await gdEnsureFreshToken())return;   // 古ければ先に取り直す
+  if(await gdAskIfEmpty())return;
+  if(!_gdFileId){const fid=await gdFindFile();if(fid)_gdFileId=fid;}
+  const cloudMod=await gdGetCloudModified();
+  // 自分の保存でも modifiedTime は動く。端末とサーバーの時計の差で
+  // 誤って警告が出ないよう、少しだけ余裕を持たせている
+  if(cloudMod&&_lastSyncTime&&cloudMod.getTime()>_lastSyncTime.getTime()+15000){
+    askConfirm(
+      'クラウドのデータのほうが新しいようです。\n\n'+
+      'この端末の最終同期：'+gdFmtStamp(_lastSyncTime.getTime())+'\n'+
+      'クラウドの更新：'+gdFmtStamp(cloudMod.getTime())+'\n\n'+
+      'このまま保存すると、クラウド側の変更が失われます。',
+      ()=>{gdSave(false,true);},
+      {ok:'上書きして保存',cancel:'やめる',danger:true}
+    );
+    return;
+  }
+  await gdSave(false,true);
 }
 
 function gdAutoSave(){
@@ -4748,11 +6127,19 @@ window.addEventListener('load',()=>{
   renderFilterBtn();
   if(window.innerWidth<768)setView('mobile');
   applyModeBarPos();
+  applyMobileLayout();
+  initMHeaderHide();
   if(!UD.settings.guideShown)setTimeout(()=>openModal('guide-modal'),300);
-  // GD初期化（スクリプトロード後）
-  const tryGdInit=()=>{if(typeof google!=='undefined'&&google.accounts)gdInit();else setTimeout(tryGdInit,500);};
-  tryGdInit();
-  if(_gdToken)updateGdUI();
+  // ここから先の保存は「本人の操作による変更」とみなして更新時刻を打つ
+  _appReady=true;
+  // Googleのライブラリは非同期で届く。以前はここで部品を作っていたため、
+  // 届く前に押されると1回目が空振りしていた。いまは gdSignIn 側で待つ。
+  if(_gdToken){
+    updateGdUI();
+    // 操作していないのにトークンを要求すると、環境によっては失敗する。
+    // 期限が近い／取得時刻が不明なときは走らせず、次にボタンを押したときに取り直す。
+    if(!gdTokenStale())gdStartupCheck();
+  }
   if(window.matchMedia){
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{
       if((UD.settings.themeMode||'theme')==='system')applyTheme();
@@ -4761,6 +6148,10 @@ window.addEventListener('load',()=>{
   window.addEventListener('scroll',updateScrollTopBtn);
   const _ml=document.getElementById('m-list');
   if(_ml)_ml.addEventListener('scroll',updateScrollTopBtn);
+  // 打ち終わってすぐ閉じられても、待っている途中のメモの保存を取りこぼさない。
+  // pagehide はスマホでタブを離れるときにも呼ばれる（beforeunload は呼ばれないことがある）。
+  window.addEventListener('pagehide',flushNoteSave);
+  document.addEventListener('visibilitychange',()=>{ if(document.hidden)flushNoteSave(); });
 });
 
 function applySettingsUI(){
@@ -4770,19 +6161,48 @@ function applySettingsUI(){
   document.body.classList.toggle('bs-center',(bsPosition||'bottom')==='center');
   document.querySelectorAll('[name=card-mode]').forEach(r=>r.checked=r.value===cardMode);
   document.querySelectorAll('[name=equip-mode]').forEach(r=>r.checked=r.value===equipMode);
-  document.querySelectorAll('[name=toso-display]').forEach(r=>r.checked=r.value===(tosoDisplay||'icon'));
+  document.querySelectorAll('[name=toso-display]').forEach(r=>r.checked=r.value===(tosoDisplay||'text'));
   document.querySelectorAll('[name=toso-filter]').forEach(r=>r.checked=r.value===(tosoFilter!==false?'on':'off'));
-  document.querySelectorAll('[name=umago-pos]').forEach(r=>r.checked=r.value===(umagoPosition||'default'));
+  document.querySelectorAll('[name=umago-pos]').forEach(r=>r.checked=r.value===(umagoPosition||'last'));
   document.querySelectorAll('[name=cs-stat-click]').forEach(r=>r.checked=r.value===(UD.settings.csStatClick?'on':'off'));
   document.querySelectorAll('[name=cs-guard-outside]').forEach(r=>r.checked=r.value===(UD.settings.csGuardOutside!==false?'on':'off'));
+  document.body.classList.toggle('ui-v2',UD.settings.uiV2!==false);
+  document.querySelectorAll('[name=ui-v2]').forEach(r=>r.checked=r.value===(UD.settings.uiV2!==false?'on':'off'));
+  document.querySelectorAll('[name=party-mv]').forEach(r=>r.checked=(r.value==='on')===!!UD.settings.partyMvBtns);
+  applyPartyMvUI();
+  applyPartyOpFold();   // データが無いと renderAll を通らないのでここでも当てる
+  document.querySelectorAll('[name=m-compact]').forEach(r=>r.checked=r.value===(UD.settings.mCompact!==false?'on':'off'));
+  document.querySelectorAll('[name=m-hide-header]').forEach(r=>r.checked=r.value===(UD.settings.mHideHeader!==false?'on':'off'));
   document.querySelectorAll('#vis-stat-chips .s-chip').forEach(c=>{
     c.classList.toggle('on',visibleStats.includes(parseInt(c.dataset.idx)));
   });
   applyTheme();
   setStatMode(statMode);
+  updateSetFoldUI();
 }
 </script><button id="scroll-top-btn" class="scroll-top-btn" onclick="scrollTopBtnClick()" title="トップへ戻る">↑</button>
 <div id="toast" class="toast"></div>
+<div id="ask-overlay" class="ask-overlay" onclick="askOverlayClick(event)">
+  <div class="ask-box" role="alertdialog" aria-modal="true" aria-labelledby="ask-msg">
+    <div class="ask-msg" id="ask-msg"></div>
+    <div class="ask-ft">
+      <button class="ask-btn" id="ask-cancel" onclick="askClose(false)">やめる</button>
+      <button class="ask-btn ok" id="ask-ok" onclick="askClose(true)">OK</button>
+    </div>
+  </div>
+</div>
+<div id="undo-toast" class="undo-toast"><span id="undo-toast-msg"></span><button onclick="undoPartyOrder()">元に戻す</button></div>
+<div id="gd-dlg" class="gd-dlg" onclick="gdDlgOverlayClick(event)">
+  <div class="gd-dlg-box" role="alertdialog" aria-modal="true" aria-labelledby="gd-dlg-ttl">
+    <div class="gd-dlg-ttl" id="gd-dlg-ttl">☁ クラウドに新しいデータがあります</div>
+    <div class="gd-dlg-msg" id="gd-dlg-msg">別の端末で更新されたようです。読み込むと、この端末の編成・装備はクラウドの内容に置き換わります。</div>
+    <div class="gd-dlg-times" id="gd-dlg-times"></div>
+    <div class="gd-dlg-ft">
+      <button class="ask-btn" id="gd-dlg-no" onclick="gdDlgKeep()">この端末のまま</button>
+      <button class="ask-btn ok" id="gd-dlg-ok" onclick="gdDlgOk()">読み込む</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

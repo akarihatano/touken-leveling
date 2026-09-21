@@ -6,6 +6,14 @@
 <title>お問い合わせ — 審神者の道具箱</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- アクセス解析の停止設定を読む（プライバシーポリシーのボタンで切り替えます） -->
+<script>
+try {
+  if (localStorage.getItem('saniwa_ga_optout') === '1') {
+    window['ga-disable-G-QM317D9ESN'] = true;
+  }
+} catch (e) {}
+</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
 <script>
@@ -59,6 +67,11 @@ body { font-family: 'Noto Serif JP', serif; min-height: 100vh; background: #8b1a
   font-family: 'Noto Sans JP', sans-serif; font-weight: 300; margin-bottom: 10px;
 }
 .privacy-text em { font-style: normal; color: #f8eecc; font-weight: 500; }
+.privacy-link {
+  color: #f0cfa0; text-decoration: none;
+  border-bottom: 1px solid rgba(255,200,120,.35); padding-bottom: 1px;
+}
+.privacy-link:hover { color: #fff0d8; border-bottom-color: rgba(255,200,120,.7); }
 .privacy-note {
   font-size: 11px; line-height: 1.9; color: #d4b898; margin-top: 12px;
   padding-left: 12px; border-left: 2px solid rgba(255,200,120,.25);
@@ -189,6 +202,8 @@ footer {
   background: rgba(0,0,0,.4); font-size: 11px; color: rgba(240,220,190,.55);
   letter-spacing: .15em; font-family: 'Noto Sans JP', sans-serif;
 }
+footer a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+footer a:hover { opacity: .75; }
 @media (max-width: 600px) {
   .layout { padding: 28px 16px 36px; }
   .panel { padding: 24px 20px 22px; }
@@ -219,6 +234,9 @@ footer {
     <p class="privacy-text">
       管理人はいただいたお手紙すべてにお返事できるわけではありません。<br>
       返信が必要な内容の場合は、返信用メールアドレスをご記入ください。
+    </p>
+    <p class="privacy-text">
+      アクセス解析を含む、サイト全体での情報の扱いについては<a class="privacy-link" href="privacy.html">プライバシーポリシー</a>をご覧ください。
     </p>
 
   </div>
@@ -350,7 +368,7 @@ footer {
 
 </div>
 </div>
-<footer>審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari hatano</footer>
+<footer>審神者の道具箱 ― このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari shizukuishi<br><a href="privacy.html">プライバシーポリシー</a></footer>
 </div>
 <script>
 const TEMPLATES = {

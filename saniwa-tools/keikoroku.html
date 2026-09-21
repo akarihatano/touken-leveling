@@ -2,6 +2,14 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<!-- アクセス解析の停止設定を読む（プライバシーポリシーのボタンで切り替えます） -->
+<script>
+try {
+  if (localStorage.getItem('saniwa_ga_optout') === '1') {
+    window['ga-disable-G-QM317D9ESN'] = true;
+  }
+} catch (e) {}
+</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QM317D9ESN"></script>
 <script>
@@ -17,6 +25,26 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async></script>
+<script>
+/* 初回描画のちらつき防止：CSSより先に data-theme を確定させる。
+   :root の既定値が washi-light と同値のため、これが無いと
+   和風ライト以外の利用者は毎回「一瞬だけ和風ライト」を見てしまう。
+   判定内容は本体の resolveThemeAttr() と同じ。
+   ※テーマ（PALETTES）を増やしたら、下の THEME_DEF にも必ず追記すること。 */
+(function(){try{
+  var THEME_DEF={washi:'light',sakura:'light',midori:'light',tetsu:'dark'};
+  var st={};
+  try{st=JSON.parse(localStorage.getItem('tl_set_v3')||'{}')||{};}catch(e){st={};}
+  var p=st.palette;
+  if(!THEME_DEF[p])p='washi';
+  var m=st.mode||'theme',dark;
+  if(m==='light')dark=false;
+  else if(m==='dark')dark=true;
+  else if(m==='system')dark=!!(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+  else dark=(THEME_DEF[p]==='dark');
+  document.documentElement.setAttribute('data-theme',p+'-'+(dark?'dark':'light'));
+}catch(e){}})();
+</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600&display=swap');
 :root{--bg:#f5f3ee;--bg2:#ede9e1;--bg3:#e3ddd3;--surface:#faf8f4;--border:rgba(100,85,60,.15);--border2:rgba(100,85,60,.28);--text:#2c2520;--text2:#7a6a58;--text3:#b0a090;--accent:#6b4c2a;--accent2:#8b6340;--gold:#c8a84b;--kiwame:#1a7a5a;--kiwame2:#2aaa7a;--toku:#5a7a3a;--empty-bg:rgba(100,85,60,.04);--shadow:0 1px 4px rgba(0,0,0,.08);--shadow2:0 2px 12px rgba(0,0,0,.12);--r:6px;--r2:10px;--font:'Noto Sans JP',sans-serif;--font-s:'Noto Serif JP',serif;--sidebar-w:220px;--header-h:52px;--warn:#c67b2e}
@@ -36,6 +64,19 @@
 /* ── 鉄テーマ ── */
 [data-theme="tetsu-light"]{--bg:#f0f4f8;--bg2:#e2e9f0;--bg3:#d4dfe8;--surface:#f8fafc;--border:rgba(50,90,140,.14);--border2:rgba(50,90,140,.26);--text:#1a2535;--text2:#506080;--text3:#90a8c0;--accent:#2855a0;--accent2:#3a6cc0;--gold:#c8a84b;--kiwame:#1a7a5a;--kiwame2:#2aaa7a;--toku:#2a6a9a;--empty-bg:rgba(50,90,140,.04);--shadow:0 1px 4px rgba(0,0,0,.08);--shadow2:0 2px 12px rgba(0,0,0,.12)}
 [data-theme="tetsu-dark"]{--bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--surface:#0d1117;--border:rgba(100,160,240,.12);--border2:rgba(100,160,240,.22);--text:#e6edf3;--text2:#8b949e;--text3:#484f58;--accent:#58a6ff;--accent2:#79c0ff;--gold:#e3b341;--kiwame:#3fb950;--kiwame2:#56d364;--toku:#58a6ff;--empty-bg:rgba(100,160,240,.03);--shadow:0 1px 4px rgba(0,0,0,.4);--shadow2:0 2px 12px rgba(0,0,0,.6)}
+/* 期間メモを強調したときの一覧行の背景。
+   7テーマは --bg3 と同じ値なので見た目は変わらない。
+   和風ダークだけは --bg3 が --surface と近すぎて（コントラスト比1.076／他テーマ平均1.241）
+   強調が見えなかったため明るくしている。--bg3 自体は触っていない（ボタンのホバー等に波及するため）。 */
+:root{--hl-row:#e3ddd3}
+[data-theme="washi-light"]{--hl-row:#e3ddd3}
+[data-theme="washi-dark"]{--hl-row:#383227}
+[data-theme="sakura-light"]{--hl-row:#f0d8e0}
+[data-theme="sakura-dark"]{--hl-row:#2c1d2a}
+[data-theme="midori-light"]{--hl-row:#d4e8da}
+[data-theme="midori-dark"]{--hl-row:#1e2a20}
+[data-theme="tetsu-light"]{--hl-row:#d4dfe8}
+[data-theme="tetsu-dark"]{--hl-row:#21262d}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
 .app{display:flex;flex-direction:column;height:100vh}
@@ -57,6 +98,8 @@ body.mobile .header-left{cursor:pointer;padding:0 4px;margin:-4px;border-radius:
 .filterbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;align-items:center}
 .btn{display:inline-flex;align-items:center;gap:4px;padding:5px 11px;font-size:12px;font-family:var(--font);border:1px solid var(--border2);border-radius:var(--r);background:var(--surface);color:var(--text2);cursor:pointer;transition:all .12s;white-space:nowrap}
 .btn:hover{background:var(--bg3);color:var(--text)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:disabled:hover{background:var(--surface);color:var(--text2)}
 .btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 .btn.sm{padding:3px 8px;font-size:11px}
 .btn.icon{padding:5px 7px}
@@ -133,6 +176,7 @@ select.sb-sel{width:100%;padding:5px 8px;font-size:12px;font-family:var(--font);
 .lc-ha{font-size:10px;color:var(--text3);width:60px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lc-marks{display:flex;gap:2px;flex-shrink:0}
 .lc-cnt{font-size:10px;padding:1px 7px;border:1px solid var(--border2);border-radius:99px;background:var(--bg2);color:var(--text2);flex-shrink:0}
+.lc-lv{font-size:11px;font-weight:500;color:var(--text);white-space:nowrap;flex-shrink:0}
 .lsub{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);display:flex;align-items:center;padding:6px 10px 6px 20px;gap:8px;cursor:pointer;transition:all .1s}
 .lsub:hover{border-color:var(--border2)}
 .lsub .idot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
@@ -189,7 +233,9 @@ body.mobile .graph-chart-wrap{height:calc(100vh - 180px);min-height:360px}
 .gsect{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.08em;margin-bottom:6px;text-transform:uppercase}
 .inst-chip{padding:4px 10px;font-size:12px;border:1px solid var(--border2);border-radius:99px;cursor:pointer;transition:all .1s;background:var(--surface);color:var(--text2);display:inline-flex;align-items:center;gap:4px;margin:0 3px 3px 0}
 .inst-chip.sel{color:#fff;border-color:transparent}
-.evt-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text)}
+[data-dnd-id],[data-dnd-pi]{-webkit-touch-callout:none}
+.dnd-dragging{opacity:.5}
+.evt-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text);border-left:3px solid transparent;padding-left:5px}
 .evt-cdot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
 .hist-row{display:flex;align-items:center;gap:6px;padding:5px 8px;background:var(--bg2);border-radius:var(--r);font-size:12px;margin-bottom:3px;flex-wrap:wrap}
 .hist-auto{font-size:9px;padding:1px 5px;border-radius:3px;background:var(--bg3);color:var(--text3);flex-shrink:0}
@@ -333,9 +379,101 @@ hr.mhr{border:none;border-top:1px solid var(--border);margin:12px 0}
 .col-swatch{width:26px;height:26px;border-radius:6px;border:2px solid var(--border2);cursor:pointer;padding:0;transition:transform .1s}
 .col-swatch:hover{transform:scale(1.12)}
 .col-swatch.sel{border-color:var(--text);box-shadow:0 0 0 2px var(--accent)}
+/* ── 記録一覧・記録の編集（この刀のあゆみの中） ───────────── */
+/* あゆみ(.ig-overlay)が z-index:400 なので、その上に出す器を別に用意する。
+   既存の .overlay(350) を使うとあゆみの後ろに隠れて見えないため。 */
+.rec-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:450;display:flex;align-items:center;justify-content:center;padding:16px}
+.rec-overlay.hidden{display:none}
+.rec-modal{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r2);box-shadow:var(--shadow2);padding:16px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto}
+body.mobile .rec-overlay{padding:10px}
+.rec-legend{font-size:10px;color:var(--text3);margin:2px 0 4px;line-height:1.5}
+.rec-row{display:flex;align-items:center;gap:6px;padding:5px 2px 5px 5px;font-size:11px;border-bottom:1px solid var(--border);cursor:pointer;border-left:3px solid transparent;border-radius:3px}
+.rec-row:hover{background:var(--hl-row)}
+.rec-date{flex-shrink:0;color:var(--text3);min-width:64px}
+.rec-cum{flex:1;font-weight:600;color:var(--text);text-align:right}
+.rec-lv{flex-shrink:0;color:var(--text2);min-width:42px;text-align:right}
+.rec-gain{flex-shrink:0;min-width:62px;text-align:right;color:var(--text2)}
+.rec-gain .rg-d{color:var(--text3);font-size:10px}
+.rec-gain.minus{color:var(--warn)}
+.rec-hand{flex-shrink:0;width:13px;text-align:center;color:var(--text3)}
+.rec-sub{font-size:10px;color:var(--text2);padding:0 2px 5px 5px;border-bottom:1px solid var(--border);line-height:1.5}
+.rec-add{margin-top:6px}
+.rec-hint{font-size:10px;color:var(--text2);margin-top:3px;min-height:14px}
+/* 見出しをそのままの見た目で折りたためるようにする */
+details.fold2>summary{list-style:none;cursor:pointer;user-select:none;display:flex;align-items:center;gap:5px;padding:2px 0}
+details.fold2>summary::-webkit-details-marker{display:none}
+details.fold2>summary::before{content:'\25B6';font-size:9px;color:var(--text3);transition:transform .15s;flex-shrink:0}
+details.fold2[open]>summary::before{transform:rotate(90deg)}
+details.fold2>summary .gsect{margin-bottom:0}
 </style>
 </head>
 <body>
+<!-- ═══ SNSアプリの中で開いている人への案内 ═══════════════════
+     Xなどのアプリ内でリンクを開くと、ブラウザ本体とは別の場所に
+     データが保存される。同じ道具を開いても記録が見えず、
+     Googleログインも通らないことがある。
+     ここは案内を出すだけで、動きは何も変えない。 -->
+<div id="iab-bar" style="display:none"></div>
+<script>
+(function(){
+  var KEY='saniwa_iab_hide';
+  /* ホーム画面に追加して開いている状態。SNSアプリの中ではないので案内を出さない。
+     iOSは navigator.standalone、AndroidなどはCSSの display-mode で分かる。 */
+  function isHomeScreen(){
+    try{ if(navigator.standalone===true)return true; }catch(e){}
+    try{ if(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)return true; }catch(e){}
+    return false;
+  }
+  function isInApp(){
+    if(isHomeScreen())return false;
+    var ua=navigator.userAgent||'';
+    /* ①名乗っているアプリ ②AndroidのWebView ③iOSのWKWebView（Safari/の名乗りが無い） */
+    if(/FBAN|FBAV|FB_IAB|Instagram|\bLine\/|MicroMessenger|KAKAOTALK/.test(ua))return true;
+    if(/;\s*wv\)/.test(ua))return true;
+    if(/iPhone|iPad|iPod/.test(ua)&&ua.indexOf('AppleWebKit')>=0&&!/Safari\//.test(ua))return true;
+    return false;
+  }
+  function hidden(){ try{ return localStorage.getItem(KEY)==='1'; }catch(e){ return false; } }
+  function hasData(){ return typeof gdLocalEmpty==="function" ? !gdLocalEmpty() : false; }
+  function close(never){
+    if(never){ try{ localStorage.setItem(KEY,'1'); }catch(e){} }
+    var el=document.getElementById('iab-bar');
+    if(el)el.style.display='none';
+  }
+  window.iabClose=function(){
+    var c=document.getElementById('iab-never');
+    close(c&&c.checked);
+  };
+  function show(){
+    var el=document.getElementById('iab-bar');
+    if(!el)return;
+    var body = hasData()
+      ? '<p style="margin:0 0 10px">ここでの記録は、<b>いま開いているアプリ（Xなど）の中</b>だけに保存されています。'
+        +'この道具ではなくそのアプリが管理している場所なので、アプリ側の都合でまとめて消えることがあります。</p>'
+        +'<p style="margin:0 0 10px"><b>いま画面に記録が見えているなら、先に書き出し（エクスポート）を取ってください。</b>'
+        +'そのファイルを、SafariやChromeで開いた同じ道具に読み込めば、そのまま続けられます。</p>'
+      : '<p style="margin:0 0 10px">このままでは記録が保存されない、以前の記録が見えない、Googleとつながらない、といったことが起きます。</p>'
+        +'<p style="margin:0"><b>メニューの「ブラウザで開く」から、SafariやChromeで開き直してください。</b>以前の記録がそのまま見えることがあります。</p>';
+    el.innerHTML=
+      '<div style="max-width:640px;margin:0 auto;padding:14px 16px;font-size:13px;line-height:1.85">'
+      +'<div style="font-weight:700;margin-bottom:8px">⚠ SNSアプリの中で開いています</div>'
+      +body
+      +'<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap">'
+      +'<label style="font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer">'
+      +'<input type="checkbox" id="iab-never"> このブラウザでは表示しない</label>'
+      +'<button onclick="iabClose()" style="padding:7px 18px;font-size:12px;border-radius:7px;'
+      +'border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer;font-family:inherit">閉じる</button>'
+      +'</div></div>';
+    el.setAttribute('style',
+      'display:block;background:#fff4d6;color:#5a4212;border-bottom:1px solid #e0c98a;'
+      +'position:relative;z-index:400');
+  }
+  function init(){ if(isInApp()&&!hidden())show(); }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
+<!-- ═══ ここまで ═══════════════════════════════════════════ -->
 <div class="toast" id="toast"></div>
 <div class="toast-center" id="toastC"></div>
 <button class="scroll-top" id="scrollTop" onclick="scrollToTop()" title="トップへ">↑</button>
@@ -393,14 +531,23 @@ hr.mhr{border:none;border-top:1px solid var(--border);margin:12px 0}
       <div id="ig-axis-btns" style="display:flex;gap:3px"></div>
     </div>
     <div style="display:flex;align-items:center;gap:4px;padding:4px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap">
-      <span style="font-size:10px;color:var(--text3)">期間メモ表示：</span>
+      <span style="font-size:10px;color:var(--text3)">表示スタイル：</span>
+      <div id="ig-period-style-btns" style="display:flex;gap:3px"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:4px;padding:4px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap">
+      <span id="ig-label-cap" style="font-size:10px;color:var(--text3)">ラベル：</span>
       <div id="ig-evt-label-btns" style="display:flex;gap:3px"></div>
+      <span id="ig-label-hint" style="font-size:10px;color:var(--text2);display:none">（帯のときだけ使えます）</span>
     </div>
     <div class="ig-body">
       <div class="graph-chart-wrap" style="height:260px;margin-bottom:10px"><canvas id="igCanvas"></canvas></div>
+      <div id="igPeriodBar"></div>
       <div id="ig-evnote"></div>
     </div>
   </div>
+</div>
+<div class="rec-overlay hidden" id="recOverlay" onclick="closeRecEdit()">
+  <div class="rec-modal" id="recModal" onclick="event.stopPropagation()"></div>
 </div>
 <div class="app">
   <header class="header">
@@ -446,6 +593,10 @@ hr.mhr{border:none;border-top:1px solid var(--border);margin:12px 0}
       <div class="filterbar" id="filterbar"></div>
       <div class="statbar" id="statbar"></div>
       <div id="content"></div>
+      <footer style="margin-top:36px;padding:20px 16px 28px;text-align:center;font-size:11px;line-height:2">
+        <div style="height:1px;background:currentColor;opacity:.14;margin:0 auto 16px;max-width:280px"></div>
+        <a href="saniwa_top.html" style="color:inherit;opacity:.85">審神者の道具箱</a><span style="opacity:.5">　・　</span><a href="privacy.html" style="color:inherit;opacity:.85">プライバシーポリシー</a><br><span style="opacity:.5">このサイトは刀剣乱舞のファンによる非公式コンテンツです。 - akari shizukuishi</span><br><span style="opacity:.5">無断転載・再配布・広告目的での公開を禁じます。</span>
+      </footer>
     </main>
   </div>
 </div>
@@ -461,7 +612,7 @@ const KI_MIN={"短刀":60,"脇差":65,"打刀":70,"太刀":75,"大太刀":80,"�
 // 剣の修行条件レベルは現時点では不明のため、Lv1から修行可能に設定しています
 const KI_NOTE={"剣":"⚠ 剣の修行条件レベルは現在不明です。ゲーム内で確認してから修行に出すことをおすすめします。"};
 // 髭切・膝丸の特段階
-const TOKU_ST={107:[{f:'特1',lv:25},{f:'特2',lv:35},{f:'特3',lv:45}],112:[{f:'特1',lv:25},{f:'特2',lv:35}]};
+const TOKU_ST={107:[{f:'特1',lv:25},{f:'特2',lv:50},{f:'特3',lv:75}],112:[{f:'特1',lv:25},{f:'特2',lv:50}]};
 
 // ══════════════════════════════════════════════════════
 // EXP TABLE v3 — 全刀種実測データ完全版
@@ -719,11 +870,11 @@ const MR=[
 [176,"源清麿","みなもときよまろ","打刀","なし",177,[]],
 [178,"松井江","まついごう","打刀","江",179,[]],
 [180,"山鳥毛","さんちょうもう","太刀","福岡一文字",181,[]],
-[182,"古今伝授の太刀","こきんでんじゅのたち","太刀","豊後国行平",0,[]],
-[184,"地蔵行平","じぞうゆきひら","打刀","豊後国行平",0,[]],
+[182,"古今伝授の太刀","こきんでんじゅのたち","太刀","豊後国行平",183,[]],
+[184,"地蔵行平","じぞうゆきひら","打刀","豊後国行平",185,[]],
 [186,"治金丸","ちがねまる","脇差","なし",187,[]],
 [188,"日光一文字","にっこういちもんじ","太刀","福岡一文字",0,[]],
-[190,"太閤左文字","たいこうさもんじ","短刀","左文字",0,[]],
+[190,"太閤左文字","たいこうさもんじ","短刀","左文字",191,[]],
 [192,"五月雨江","さみだれごう","打刀","江",0,[]],
 [194,"大千鳥十文字槍","おおちどりじゅうもんじやり","槍","なし",0,[]],
 [196,"泛塵","はんじん","脇差","なし",0,[]],
@@ -758,6 +909,7 @@ const MR=[
 [254,"雲重","うんじゅう","打刀","鵜飼",0,[]],
 [256,"柏太刀","かしわだち","大太刀","なし",0,[]],
 [258,"波平行安","なみのひらゆきやす","太刀","波平",0,[]],
+[260,"狐ヶ崎為次","きつねがさきためつぐ","太刀","青江",0,[]],
 ];
 const TL=["特1","特2","特3"];
 // ── ステータスマスターデータ ─────────────────────────────
@@ -856,13 +1008,16 @@ const STAT={
   176:[50,62,47,50,53,43,40,36,0,2], // 源清麿
   178:[49,60,53,51,49,44,41,36,0,2], // 松井江
   180:[62,73,80,36,51,39,27,37,0,3], // 山鳥毛
-  181:[0,132,145,59,81,0,58,78,0,3], // 山鳥毛（極）生存・偵察未確認
+  181:[null,132,145,59,81,null,58,78,0,3], // 山鳥毛 極（生存・偵察未計測）
   182:[69,71,71,38,52,34,29,35,0,3], // 古今伝授の太刀
+  183:[null,null,null,null,null,null,null,null,0,3], // 古今伝授の太刀 極（ステータス未確定）
   184:[56,61,50,47,55,42,38,36,0,2], // 地蔵行平
+  185:[null,null,null,null,null,null,null,null,0,2], // 地蔵行平 極（ステータス未確定）
   186:[44,47,41,56,55,49,45,48,0,2], // 治金丸
-  187:[null,121,112,103,71,null,144,68,0,2], // 治金丸 極（生存・偵察未確定）
+  187:[null,101,86,78,55,null,142,66,0,2], // 治金丸 極（生存・偵察未確定）
   188:[59,74,71,49,48,39,25,36,0,3], // 日光一文字
   190:[35,29,40,60,34,46,40,43,0,1], // 太閤左文字
+  191:[null,83,77,144,39,null,116,58,0,2], // 太閤左文字 極（生存・偵察未確定）
   192:[52,60,49,52,50,46,43,31,0,2], // 五月雨江
   194:[64,74,52,43,65,22,30,37,3,2], // 大千鳥十文字槍
   196:[43,45,45,53,44,54,42,44,0,2], // 泛塵
@@ -896,7 +1051,8 @@ const STAT={
   252:[54,63,54,51,57,42,34,31,0,2], // 二筋樋貞宗
   254:[53,61,48,47,52,44,36,36,0,2], // 雲重
   256:[75,81,62,30,57,16,21,36,1,2], // 柏太刀
-  258:[null,67,56,43,45,null,22,36,0,2], // 波平行安（生存・偵察未確定）
+  258:[null,73,62,49,51,null,28,36,0,2], // 波平行安（生存・偵察未確定）
+  260:[null,63,76,39,47,null,35,28,0,3], // 狐ヶ崎為次（生存・偵察未確定）
   // ── 極 ──
   4:[101,129,130,67,89,66,69,69,0,3],   // 三日月宗近 極
   6:[102,125,120,69,86,70,56,72,0,3],   // 小狐丸 極
@@ -990,7 +1146,7 @@ function getStat(no){return STAT[no]||null;}
 const RANGE_LABEL=['単','複','全','貫'];
 const STAT_KEYS=['生存','打撃','統率','機動','衝力','偵察','隠蔽','必殺'];
 // 空きスロット
-const EN=new Set([1,2,127,165,175,177,181,183,185,187,189,191,193,195,197,199,201,203,205,207,209,211,213,215,217,219,221,223,225,227,229,231,233,235,237,239,241,243,245,247,249,251,253,255,257]);
+const EN=new Set([1,2,127,189,193,195,197,199,201,203,205,207,209,211,213,215,217,219,221,223,225,227,229,231,233,235,237,239,241,243,245,247,249,251,253,255,257,259,261]);
 
 const ML=[]; const BM={};
 MR.forEach(b=>{
@@ -1002,12 +1158,15 @@ MR.forEach(b=>{
 });
 ML.sort((a,b)=>a.no-b.no);
 const MN={};ML.forEach(m=>MN[m.no]=m);
+// No順グリッドで回す上限。刀（極・特段階を含む）と空きスロットの、いちばん大きい番号。
+// 新しい刀や空きスロットを足したら自動で伸びるので、ここを手で直す必要はない。
+const GRID_MAX=Math.max(...ML.map(m=>m.no),...EN);
 const AH=[...new Set(MR.map(b=>b[4]).filter(h=>h!=='なし'&&h!=='虎徹…？').concat(['虎徹…？']))].sort((a,b)=>a.localeCompare(b,'ja'));
 
 // ── USER DATA ──────────────────────────────────────────
 const SK='tl_data_v3',SS='tl_set_v3';
 let UD={instances:[],customSwords:[],events:[],notes:[],graphSelIds:[],graphPresets:[],saniwaLog:[]};
-let ST={view:'grid',sort:'no',filterTypes:[],filterHa:'',showUnowned:true,showEmpty:false,showKiwame:true,filterOwned:'all',palette:'washi',mode:'theme',mobile:false,showRanbu:false,footerPin:true,syncMode:'manual',showLegend:false,hoverHighlight:false,subtleLv:false,smoothLine:true,alwaysShowPoints:true,tooltipNearest:false,tooltipHighlightNearest:true,showMultiInst:false,uniformCardHeight:false,startupCheckDisabled:false,guideShown:false,hideHelpBtn:false,filterEmojis:[],recMark:'dot',sortDir:{lv:'desc',exp:'desc',ranbu:'desc',genday:'asc'},dateInputMode:'cal',sbOpen:{view:true,sort:true,typeFilter:true,haFilter:true,emojiFilter:true,ownedFilter:true,dispOpts:true,graphVis:true}};
+let ST={view:'grid',sort:'no',filterTypes:[],filterHa:'',showUnowned:true,showEmpty:false,showKiwame:true,filterOwned:'all',palette:'washi',mode:'theme',mobile:false,showRanbu:false,showLevel:false,footerPin:true,syncMode:'manual',showLegend:false,hoverHighlight:false,subtleLv:false,smoothLine:true,alwaysShowPoints:true,tooltipNearest:false,tooltipHighlightNearest:true,showMultiInst:false,uniformCardHeight:false,startupCheckDisabled:false,guideShown:false,hideHelpBtn:false,filterEmojis:[],recMark:'dot',dndSort:false,evTapGuide:true,sortDir:{lv:'desc',exp:'desc',ranbu:'desc',genday:'asc'},dateInputMode:'cal',sbOpen:{view:true,sort:true,typeFilter:true,haFilter:true,emojiFilter:true,ownedFilter:true,dispOpts:true,graphVis:true}};
 function activeEVS(){return (UD.events||[]).filter(function(e){return !e.deleted;});}
 function activeNTS(){return (UD.notes||[]).filter(function(n){return !n.deleted;});}
 // ── カンマ区切り数値入力 ────────────────────────────────
@@ -1061,6 +1220,24 @@ function getNumVal(id){
   if(!el)return null;
   return parseInt(el.value.replace(/[^\d]/g,''))||null;
 }
+// ── グラフのプリセット（部隊タブ）の共通部品 ──────────────
+// プリセットは配列の番号ではなく id で見分ける。番号は並べ替えや削除でずれるので、
+// 「この隊で絞り込み中」のような覚えごとを番号で持つと、別の隊に化けてしまう。
+// 新しいプリセットは必ず mkPreset() で作ること（作る場所が7か所あるため）。
+function newPresetId(){return 'gp'+Date.now()+Math.random().toString(36).slice(2);}
+function mkPreset(name,selIds){return{id:newPresetId(),name:name,selIds:[...(selIds||[])]};}
+// idが無い・重複しているプリセットに振り直す。振ったら true を返す。
+// 古い版のデータや、idを知らない端末から降りてきたクラウドデータのため。
+function ensurePresetIds(){
+  if(!Array.isArray(UD.graphPresets))return false;
+  const seen=new Set();let changed=false;
+  UD.graphPresets.forEach(p=>{
+    if(!p||typeof p!=='object')return;
+    if(!p.id||seen.has(p.id)){p.id=newPresetId();changed=true;}
+    seen.add(p.id);
+  });
+  return changed;
+}
 // ─────────────────────────────────────────────────────
 function load(){
   try{const d=localStorage.getItem(SK);if(d)UD=JSON.parse(d);}catch(e){}
@@ -1069,6 +1246,11 @@ function load(){
   // ソート状態をSTから復元（ST読み込み後に上書き）
   if(ST.evSort&&ST.evSort.field)_evSort=ST.evSort;
   if(ST.noteSort&&typeof ST.noteSort.dir==='number')_noteSort=ST.noteSort;
+  // グラフの表示状態をSTから復元（変数の宣言はload()より先に走るので、ここで入れ直す）
+  // 選択肢に無い値（古いデータ・壊れた値）は捨てて既定のままにする
+  if(['band','gantt','bracket'].indexOf(ST.periodStyle)>=0)_gPeriodStyle=ST.periodStyle;
+  if(['normal','vertical','none'].indexOf(ST.evtLabelMode)>=0)_gEvtLabelMode=ST.evtLabelMode;
+  if(['both','exp','lv','gain'].indexOf(ST.axisMode)>=0)_gAxisMode=ST.axisMode;
   if(!UD.customSwords)UD.customSwords=[];
   if(!UD.events)UD.events=[];
   if(!UD.notes)UD.notes=[];
@@ -1080,10 +1262,14 @@ function load(){
   if(ST.graphSelIds&&!UD.graphSelIds.length){UD.graphSelIds=ST.graphSelIds;delete ST.graphSelIds;save();saveST();}
   // graphSelIds → graphPresets[0] に移行（初回のみ）
   if(!UD.graphPresets.length){
-    UD.graphPresets=[{name:'第一部隊',selIds:[...(UD.graphSelIds||[])]}];
+    UD.graphPresets=[mkPreset('第一部隊',UD.graphSelIds)];
     UD.graphSelIds=[];
     save();
   }
+  // 古い版のデータには id が無いので静かに振る。
+  // ここでの save() は _appReady がまだ false なので更新時刻を動かさない
+  // （＝開いただけでクラウドとの新旧が入れ替わる、という事故は起きない）
+  if(ensurePresetIds())save();
   // filterHaが存在しない刀派になっていたらリセット
   if(ST.filterHa&&ST.filterHa!=='なし'&&!AH.includes(ST.filterHa))ST.filterHa='';
   UD.instances.forEach(i=>{
@@ -1190,8 +1376,20 @@ function refreshPartyFilter(){
   _pfSet=new Set((p.members||[]).filter(Boolean));
 }
 function instMatchesParty(i){return !_pfSet||_pfSet.has(i.id);}
+// ── グラフで編成した隊のフィルタ ───────────────────────────
+// 隊は配列の番号ではなく id で覚える（番号は並べ替え・削除でずれるため）。
+// 空の隊を選んだときは「空のセット」になる。null（＝絞り込みなし）と区別が要る。
+let _prSet=null; // 編成フィルタ中の個体IDセット（フィルタ無効ならnull）
+function refreshPresetFilter(){
+  _prSet=null;
+  if(!ST.filterPresetId)return;
+  const p=(UD.graphPresets||[]).find(x=>x.id===ST.filterPresetId);
+  if(!p){ST.filterPresetId='';saveST();return;} // 隊が消えていたらフィルタ解除
+  _prSet=new Set((p.selIds||[]).filter(Boolean));
+}
+function instMatchesPreset(i){return !_prSet||_prSet.has(i.id);}
 // 個体フィルタ（絵文字＋部隊）をまとめて判定
-function instMatchesFilters(i){return instMatchesEmoji(i)&&instMatchesParty(i);}
+function instMatchesFilters(i){return instMatchesEmoji(i)&&instMatchesParty(i)&&instMatchesPreset(i);}
 function isOwnedAny(bno){return UD.instances.some(i=>i.masterBaseNo===bno);}
 // showKiwame=true: 初/極別に判定
 function isOwnedForm(m){
@@ -1343,24 +1541,39 @@ function sbH(){
     `<select class="sb-sel" onchange="sh(this.value)"><option value="">すべての刀派</option><option value="なし" ${ST.filterHa==='なし'?'selected':''}>刀派なし</option>${AH.map(h=>`<option value="${h}" ${ST.filterHa===h?'selected':''}>${h}</option>`).join('')}</select>`)
   +mkSBSec('emojiFilter','絵文字で絞り込み',
     `<div class="chip-row"><span class="chip ${(ST.filterEmojis||[]).includes('__none__')?'on':''}" onclick="te('__none__')">なし</span>${PE.map(em=>`<span class="chip emoji-chip ${(ST.filterEmojis||[]).includes(em)?'on':''}" onclick="te('${em}')">${em}</span>`).join('')}</div><div style="font-size:10px;color:var(--text3);margin-top:5px;line-height:1.5">選んだ絵文字のいずれかが付いた一振りを持つ刀を表示します（複数選択可）。</div>`)
-  +mkSBSec('partyFilter','⚔ 支度部屋の部隊で絞り込み',sbPartyFilterHtml())
+  +mkSBSec('partyFilter','⚔ 部隊で絞り込み',sbPartyFilterHtml())
   +mkSBSec('ownedFilter','所持フィルター',
     `<div class="sb-tog"><button class="btn ${ST.filterOwned==='all'?'on':''}" onclick="so('all')">全て</button><button class="btn ${ST.filterOwned==='owned'?'on':''}" onclick="so('owned')">所持</button><button class="btn ${ST.filterOwned==='unowned'?'on':''}" onclick="so('unowned')">未所持</button></div>`)
   +mkSBSec('dispOpts','表示オプション',
-    `<label class="cbr"><input type="checkbox" ${ST.showUnowned?'checked':''} onchange="op('showUnowned',this.checked)">未所持の型を表示</label><label class="cbr"><input type="checkbox" ${ST.showEmpty?'checked':''} onchange="op('showEmpty',this.checked)">空きスロット表示</label><label class="cbr"><input type="checkbox" ${ST.showKiwame?'checked':''} onchange="op('showKiwame',this.checked)">極・特を個別カードで表示</label><label class="cbr"><input type="checkbox" ${ST.showRanbu?'checked':''} onchange="op('showRanbu',this.checked)">乱舞レベルを表示</label><label class="cbr"><input type="checkbox" ${ST.showMultiInst?'checked':''} onchange="op('showMultiInst',this.checked)">複数所持の刀を個別カードで表示</label><div class="opt-desc">同じ名前の男士を2振り以上持つとき、まとめず1振りずつ別カードで表示します</div><label class="cbr"><input type="checkbox" ${ST.uniformCardHeight?'checked':''} onchange="op('uniformCardHeight',this.checked)">グリッドカードの高さを揃える</label><label class="cbr"><input type="checkbox" ${ST.showLegend?'checked':''} onchange="op('showLegend',this.checked);if(typeof renderGraphBody==='function')renderGraphBody()">グラフ下の凡例を表示</label><label class="cbr"><input type="checkbox" ${ST.closeOnSave!==false?'checked':''} onchange="ST.closeOnSave=this.checked;saveST()">刀の設定画面：保存したら閉じる</label>`)
+    `<label class="cbr"><input type="checkbox" ${ST.showUnowned?'checked':''} onchange="op('showUnowned',this.checked)">未所持の型を表示</label><label class="cbr"><input type="checkbox" ${ST.showEmpty?'checked':''} onchange="op('showEmpty',this.checked)">空きスロット表示</label><label class="cbr"><input type="checkbox" ${ST.showKiwame?'checked':''} onchange="op('showKiwame',this.checked)">極・特を個別カードで表示</label><label class="cbr"><input type="checkbox" ${ST.showLevel?'checked':''} onchange="op('showLevel',this.checked)">レベルを表示</label><div class="opt-desc">まとめて表示されているカード・一覧行にレベルを出します。1振りずつ表示されているもの（Lv順・Exp順などで並べたとき）には、この設定に関わらず出ています</div><label class="cbr"><input type="checkbox" ${ST.showRanbu?'checked':''} onchange="op('showRanbu',this.checked)">乱舞レベルを表示</label><label class="cbr"><input type="checkbox" ${ST.showMultiInst?'checked':''} onchange="op('showMultiInst',this.checked)">複数所持の刀を個別カードで表示</label><div class="opt-desc">同じ名前の男士を2振り以上持つとき、まとめず1振りずつ別カードで表示します</div><label class="cbr"><input type="checkbox" ${ST.uniformCardHeight?'checked':''} onchange="op('uniformCardHeight',this.checked)">グリッドカードの高さを揃える</label><label class="cbr"><input type="checkbox" ${ST.showLegend?'checked':''} onchange="op('showLegend',this.checked);if(typeof renderGraphBody==='function')renderGraphBody()">グラフ下の凡例を表示</label><label class="cbr"><input type="checkbox" ${ST.ntDateLeft?'checked':''} onchange="op('ntDateLeft',this.checked);if(typeof renderGraphBody==='function')renderGraphBody()">日メモの日付を左に置く</label><div class="opt-desc">グラフの下と「期間メモ・日メモ」タブにある日メモ・この刀のメモを「日付 → 本文」の並びにし、強調した行の日付を色付きの太字にします。オフのとき（既定）は「本文 → 日付」の並びで、本文の左はしが期間メモの名前とそろいます</div><label class="cbr"><input type="checkbox" ${ST.closeOnSave!==false?'checked':''} onchange="ST.closeOnSave=this.checked;saveST()">刀の設定画面：保存したら閉じる</label>`)
   +mkSBSec('graphVis','グラフ視認性',
     `<label class="cbr"><input type="checkbox" ${ST.hoverHighlight?'checked':''} onchange="op('hoverHighlight',this.checked);if(typeof renderGraphBody==='function')renderGraphBody()">ホバー時に線を強調する</label><label class="cbr"><input type="checkbox" ${ST.subtleLv?'checked':''} onchange="op('subtleLv',this.checked);if(typeof renderGraphBody==='function')renderGraphBody()">Lv線を控えめに表示する</label><label class="cbr"><input type="checkbox" ${ST.smoothLine?'checked':''} onchange="op('smoothLine',this.checked);if(typeof renderGraphBody==='function')renderGraphBody()">線をなめらかにする</label><label class="cbr"><input type="checkbox" ${ST.alwaysShowPoints?'checked':''} onchange="op('alwaysShowPoints',this.checked);if(typeof renderGraphBody==='function')renderGraphBody()">データポイントを常に表示する</label><label class="cbr"><input type="checkbox" ${ST.tooltipNearest?'checked':''} onchange="op('tooltipNearest',this.checked);if(typeof renderGraphBody==='function')renderGraphBody()">ツールチップを最も近い一振りのみ表示</label><label class="cbr"><input type="checkbox" ${ST.tooltipHighlightNearest?'checked':''} onchange="op('tooltipHighlightNearest',this.checked)">ツールチップで最も近い一振りを太字にする</label>`,
+    true)
+  +mkSBSec('ops','操作',
+    `<label class="cbr"><input type="checkbox" ${ST.dndSort?'checked':''} onchange="op('dndSort',this.checked);if(typeof renderGraphBody==='function'&&document.getElementById('graphOverlay')&&!document.getElementById('graphOverlay').classList.contains('hidden'))renderGraphBody()">グラフのチップ・タブを長押しで並べ替える</label><div class="opt-desc">グラフ画面で、選択中の男士チップと部隊タブを長押ししてからドラッグすると、好きな順番に並べ替えられます。絞り込み中は並べ替えできません</div><label class="cbr"><input type="checkbox" ${ST.evTapGuide!==false?'checked':''} onchange="op('evTapGuide',this.checked)">期間メモをタップしたら一覧の該当行まで案内する</label><div class="opt-desc">ガントやブラケットのバー、期間メモの行をタップすると、「終了した期間メモ」が畳まれていれば開き、その行が画面の外にあれば画面内まで送ります。オフにすると印は付きますが、畳まれた中にある行や画面の外にある行は、自分で開いて探すことになります</div>`,
     true);
 }
 function rSB(){document.getElementById('sbcontent').innerHTML=sbH();document.getElementById('drawer').innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span style="font-size:13px;font-weight:500;color:var(--accent)">フィルター</span><button class="btn sm" onclick="closeDr()">✕</button></div>`+sbH();}
-function rFB(){const af=[];if(ST.filterTypes.length)af.push(`種類: ${ST.filterTypes.join('・')}`);if(ST.filterHa)af.push(`刀派: ${ST.filterHa}`);if(ST.filterOwned!=='all')af.push(ST.filterOwned==='owned'?'所持のみ':'未所持のみ');if(ST.filterEmojis&&ST.filterEmojis.length)af.push('絵文字: '+ST.filterEmojis.map(e=>e==='__none__'?'なし':e).join(''));if(ST.filterPartyId){const _pfp=getSBParties().find(x=>x.id===ST.filterPartyId);if(_pfp)af.push('部隊: '+esc(_pfp.name||''));}document.getElementById('filterbar').innerHTML=af.map(f=>`<span class="chip on" style="cursor:default">${f}</span>`).join('')+(af.length?`<button class="btn sm" onclick="cf()">✕ クリア</button>`:'');}
-// 支度部屋の部隊で絞り込みセクション
+function rFB(){const af=[];if(ST.filterTypes.length)af.push(`種類: ${ST.filterTypes.join('・')}`);if(ST.filterHa)af.push(`刀派: ${ST.filterHa}`);if(ST.filterOwned!=='all')af.push(ST.filterOwned==='owned'?'所持のみ':'未所持のみ');if(ST.filterEmojis&&ST.filterEmojis.length)af.push('絵文字: '+ST.filterEmojis.map(e=>e==='__none__'?'なし':e).join(''));if(ST.filterPartyId){const _pfp=getSBParties().find(x=>x.id===ST.filterPartyId);if(_pfp)af.push('部隊: '+esc(_pfp.name||''));}if(ST.filterPresetId){const _prp=(UD.graphPresets||[]).find(x=>x.id===ST.filterPresetId);if(_prp)af.push('編成: '+esc(_prp.name||''));}document.getElementById('filterbar').innerHTML=af.map(f=>`<span class="chip on" style="cursor:default">${f}</span>`).join('')+(af.length?`<button class="btn sm" onclick="cf()">✕ クリア</button>`:'');}
+// 部隊で絞り込みセクション：支度部屋の部隊 と グラフで編成した隊 の2つを並べる
 function sbPartyFilterHtml(){
+  return`<div style="font-size:11px;color:var(--text2);margin-bottom:4px">支度部屋の部隊</div>`+sbSBPartySel()
+    +`<div style="font-size:11px;color:var(--text2);margin:12px 0 4px">グラフで編成した隊</div>`+sbPresetSel();
+}
+// 出陣支度部屋（連携モード）で編成した部隊から選ぶ
+function sbSBPartySel(){
   const parties=getSBParties();
   if(!parties.length)return`<div style="font-size:10px;color:var(--text3);line-height:1.5">出陣支度部屋（連携モード）で部隊を編成すると、ここで選べるようになります。</div>`;
-  return`<select class="sb-sel" onchange="spf(this.value)"><option value="">絞り込みなし</option>${parties.map(p=>`<option value="${p.id}" ${ST.filterPartyId===p.id?'selected':''}>${esc(p.name||'部隊')}</option>`).join('')}</select><div style="font-size:10px;color:var(--text3);margin-top:5px;line-height:1.5">選んだ部隊に編成中の男士だけを表示します。支度部屋で編成を変えると自動で反映されます。</div>`;
+  return`<select class="sb-sel" onchange="spf(this.value)"><option value="">絞り込みなし</option>${parties.map(p=>`<option value="${esc(p.id)}" ${ST.filterPartyId===p.id?'selected':''}>${esc(p.name||'部隊')}</option>`).join('')}</select><div style="font-size:10px;color:var(--text3);margin-top:5px;line-height:1.5">選んだ部隊に編成中の男士だけを表示します。支度部屋で編成を変えると自動で反映されます。</div>`;
+}
+// グラフ画面の部隊タブ（隊）から選ぶ。中身が空の隊もあえて選べるようにしてある
+function sbPresetSel(){
+  const ps=UD.graphPresets||[];
+  if(!ps.length)return`<div style="font-size:10px;color:var(--text3);line-height:1.5">グラフ画面で部隊タブに男士を選ぶと、ここで選べるようになります。</div>`;
+  return`<select class="sb-sel" onchange="sgp(this.value)"><option value="">絞り込みなし</option>${ps.map(p=>`<option value="${esc(p.id)}" ${ST.filterPresetId===p.id?'selected':''}>${esc(p.name||'部隊')}</option>`).join('')}</select><div style="font-size:10px;color:var(--text3);margin-top:5px;line-height:1.5">選んだ隊に入っている男士だけを表示します。グラフ画面で隊の中身を変えると自動で反映されます。</div>`;
 }
 function spf(v){ST.filterPartyId=v;saveST();ra();} // setPartyFilter
+function sgp(v){ST.filterPresetId=v;saveST();ra();} // setGraphPresetFilter
 function sv(v){ST.view=v;saveST();ra();}
 function ss(s){ST.sort=s;saveST();ra();}
 function tog(metric){
@@ -1389,11 +1602,12 @@ function so(v){ST.filterOwned=v;saveST();ra();}
 function tt(t){const i=ST.filterTypes.indexOf(t);if(i>=0)ST.filterTypes.splice(i,1);else ST.filterTypes.push(t);saveST();ra();}
 function te(em){if(!Array.isArray(ST.filterEmojis))ST.filterEmojis=[];const i=ST.filterEmojis.indexOf(em);if(i>=0)ST.filterEmojis.splice(i,1);else ST.filterEmojis.push(em);saveST();ra();}
 function op(k,v){ST[k]=v;saveST();ra();}
-function cf(){ST.filterTypes=[];ST.filterHa='';ST.filterOwned='all';ST.filterEmojis=[];ST.filterPartyId='';saveST();ra();}
+function cf(){ST.filterTypes=[];ST.filterHa='';ST.filterOwned='all';ST.filterEmojis=[];ST.filterPartyId='';ST.filterPresetId='';saveST();ra();}
 
 // ── FILTER / VISIBILITY ────────────────────────────────
 function getVis(){
   refreshPartyFilter();
+  refreshPresetFilter();
   // showKiwame=false: 通常カードのみ
   let l=ML.filter(m=>{
     if(!ST.showKiwame&&(m.form==='極'||m.form.startsWith('特')))return false;
@@ -1408,6 +1622,7 @@ function getVis(){
       if(!cis.some(instMatchesEmoji))return false;
     }
     if(_pfSet&&!getCI(m).some(instMatchesParty))return false;
+    if(_prSet&&!getCI(m).some(instMatchesPreset))return false;
     return true;
   });
   if(ST.sort==='no')l.sort((a,b)=>a.no-b.no);
@@ -1422,6 +1637,18 @@ function getVis(){
   return l;
 }
 
+// 一覧に1件も出ないときの案内。理由が分かるときは、その理由を言う
+function emptyListHtml(){
+  if(_prSet&&_prSet.size===0)
+    return`<div class="no-data">この隊にはまだ男士がいません。<br>グラフ画面でこの隊に男士を選ぶと、ここに出るようになります。</div>`;
+  if(_pfSet&&_pfSet.size===0)
+    return`<div class="no-data">この部隊にはまだ男士がいません。<br>出陣支度部屋でこの部隊に男士を編成すると、ここに出るようになります。</div>`;
+  // 「✕ クリア」が出ている条件と同じときだけ、その案内を添える
+  const on=!!(ST.filterTypes.length||ST.filterHa||ST.filterOwned!=='all'
+    ||(ST.filterEmojis&&ST.filterEmojis.length)||ST.filterPartyId||ST.filterPresetId);
+  return`<div class="no-data">条件に合う刀がありません。${on?'<br>上の「✕ クリア」で絞り込みを全部外せます。':''}</div>`;
+}
+
 // ── RENDER ─────────────────────────────────────────────
 // ra=renderAll（サイドバー・フィルター・カード全再描画）/ rc=renderCards
 function tc(type){const dark=resolveThemeAttr().endsWith('-dark');return(dark?TCD:TC)[type]||['#eee','#444'];}
@@ -1433,6 +1660,7 @@ function rc(){
   const _con=hasCarry(todayStr());
   document.getElementById('statbar').innerHTML=`<span>表示中 <b>${v.filter(m=>m.form==='通常'||m.form==='無印').length}</b> 型（所持 <b>${ob.size}</b>）</span><span style="color:var(--text3)">実体 ${UD.instances.length} 振り</span><span class="carry-wrap"><button class="btn sm carry-tog${_con?' on':''}" onclick="toggleCarryToday()" title="個別記録のない振りを『今日は変化なし』としてグラフに反映">${_con?'☑':'☐'} Exp変化なし</button><button class="btn sm carry-more" onclick="toggleCarryPop(event)" title="過去7日の☑を編集">▾</button></span>`;
   const el=document.getElementById('content');
+  if(!v.length){el.innerHTML=emptyListHtml();return;}
   ST.view==='grid'?rGrid(el,v):rList(el,v);
 }
 
@@ -1448,7 +1676,7 @@ function rGrid(el,l){
   if(ST.sort==='no'){
     const bn={};l.forEach(m=>bn[m.no]=m);
     h='<div class="grid'+GD+'">';
-    for(let i=0;i<=258;i++){
+    for(let i=0;i<=GRID_MAX;i++){
       if(bn[i])h+=renderCard(bn[i]);
       else if(ST.showEmpty&&EN.has(i))h+=`<div class="gcard empty-card"><div class="gc-no">No.${i}</div><div style="font-size:10px;color:var(--text3);text-align:center;margin-top:8px">空き</div></div>`;
     }
@@ -1552,6 +1780,11 @@ function gC(m){
   const markDiv=(marks||_dot)?'<div class="gc-marks-abs" style="align-items:center">'+_dot+marks+'</div>':'';
   const ranbuStr=ow?ins.map(i=>i.ranbuLv||1).join('·'):'';
   const ranbuBadge=(ow&&ST.showRanbu)?'<span style="font-size:10px;font-weight:500;background:rgba(55,138,221,.12);color:#185FA5;border-radius:4px;padding:1px 5px;margin-left:4px">乱'+ranbuStr+'</span>':'';
+  // レベル表示（設定ON かつ 1振り以上にレベルが入っているときだけ）。
+  // 狭いカードで丸枠からはみ出すため、出すときは gCI と同じく通常フローに切り替える。
+  const _lvOn=!!(ST.showLevel&&ow&&ins.some(i=>i.level));
+  const _lvTxt=_lvOn?'Lv.'+ins.map(i=>i.level||'―').join('·')+' ':'';
+  const _cntStyle=(_lvOn?'position:static;background:none;padding:0;margin-top:auto;':'')+(ow?'':'opacity:.4');
   return'<div class="'+cls+'" onclick="openD('+m.no+')">'
     +'<div class="gc-no">No.'+m.no+'</div>'
     +formBadge
@@ -1562,7 +1795,7 @@ function gC(m){
     +'<span class="gc-ha">'+(m.ha==='なし'?'―':m.ha)+'</span></div>'
     +(ST.uniformCardHeight?'<div class="gc-tags"></div>':'')
     +markDiv
-    +'<div class="gc-cnt" style="'+(ow?'':'opacity:.4')+'">'+(ow?'×'+ins.length:'―')+ranbuBadge+((_rt&&ST.recMark!=='dot')?' <span class="rec-mark" title="今日記録済み">✅</span>':'')+'</div>'
+    +'<div class="gc-cnt" style="'+_cntStyle+'">'+_lvTxt+(ow?'×'+ins.length:'―')+ranbuBadge+((_rt&&ST.recMark!=='dot')?' <span class="rec-mark" title="今日記録済み">✅</span>':'')+'</div>'
     +'</div>';
 }
 
@@ -1609,7 +1842,7 @@ function rList(el,l){
         return;
       }
       if(ST.showMultiInst&&ins.length===0)return; // showMultiInst ONで未所持はスキップ（showUnowned=trueなら通常表示へ続く）
-      h+=`<div class="lcard-grp"><div class="lcard ${ow?(isKi?'gki':'owned'):''}" onclick="openD(${m.no})"><div class="lc-bar" style="background:${ow?(ins[0].color||'var(--gold)'):'transparent'}"></div><div class="lc-body"><div class="lc-no">No.${m.no}</div>${isKi?'<div class="lc-ft ki">極</div>':isTk?`<div class="lc-ft tk">${m.form}</div>`:''}<div class="lc-names"><div class="lc-name">${m.name}</div><div class="lc-yomi">${m.yomi}</div></div><span class="lc-type" style="background:${bg};color:${fg}">${m.type}</span><div class="lc-ha">${m.ha==='なし'?'―':m.ha}</div><div class="lc-marks">${ins.slice(0,3).map(i=>`<span style="font-size:13px">${i.emoji||''}</span>`).join('')}</div>${ow?`<span class="lc-cnt">${ins.length}振り</span>`:`<span class="lc-cnt" style="opacity:.4">未所持</span>`}</div></div>`;
+      h+=`<div class="lcard-grp"><div class="lcard ${ow?(isKi?'gki':'owned'):''}" onclick="openD(${m.no})"><div class="lc-bar" style="background:${ow?(ins[0].color||'var(--gold)'):'transparent'}"></div><div class="lc-body"><div class="lc-no">No.${m.no}</div>${isKi?'<div class="lc-ft ki">極</div>':isTk?`<div class="lc-ft tk">${m.form}</div>`:''}<div class="lc-names"><div class="lc-name">${m.name}</div><div class="lc-yomi">${m.yomi}</div></div><span class="lc-type" style="background:${bg};color:${fg}">${m.type}</span><div class="lc-ha">${m.ha==='なし'?'―':m.ha}</div><div class="lc-marks">${ins.slice(0,3).map(i=>`<span style="font-size:13px">${i.emoji||''}</span>`).join('')}</div>${(ST.showLevel&&ow&&ins.some(i=>i.level))?`<span class="lc-lv">Lv.${ins.map(i=>i.level||'―').join('·')}</span>`:''}${ow?`<span class="lc-cnt">${ins.length}振り</span>`:`<span class="lc-cnt" style="opacity:.4">未所持</span>`}</div></div>`;
       ins.forEach(inst=>{
         const f=instF(inst);const ikw=inst.isKiwame;
         const tgs=inst.tags.map(t=>`<span class="itag">${esc(t)}</span>`).join('');
@@ -1692,10 +1925,10 @@ function openD(no){
     const lvLabel=`Lv.${inst.level}${inst.cumExp?` (${inst.cumExp.toLocaleString()}exp)`:''}`;
     return`<div class="irow" onclick="openIE('${inst.id}')"><div style="width:10px;height:10px;border-radius:50%;background:${inst.color||'var(--text3)'}"></div><span style="font-size:15px">${inst.emoji||'　'}</span><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500">${esc(inst.nickname||m.name)}${fl?' 【'+fl+'】':''}</div><div style="font-size:11px;color:var(--text2)">${lvLabel} ${inst.tags.map(t=>esc(t)).join(' ')}</div></div><span style="font-size:10px;font-weight:500;background:rgba(55,138,221,.12);color:#185FA5;border-radius:4px;padding:1px 6px;flex-shrink:0;margin-right:6px">乱${inst.ranbuLv||1}</span><button class="btn sm danger" onclick="delI('${inst.id}',event)">削除</button></div>`;
   }).join('');
-  const addInfo=isKiCard&&ST.showKiwame?`<span style="font-size:11px;color:var(--text3)">初の刀の編集→「修行に出す」で極に変換</span>`:`<button class="btn" onclick="addI(${m.baseNo})" style="flex:1">＋ この刀を追加</button>`;
+  const addInfo=isKiCard&&ST.showKiwame?`<button class="btn" onclick="addI(${m.baseNo},true)" style="flex:1">＋ この刀を追加（極）</button>`:`<button class="btn" onclick="addI(${m.baseNo})" style="flex:1">＋ この刀を追加</button>`;
   showM(`<div class="modal-title">${m.name} <span style="font-size:12px;font-weight:400;color:var(--text2)">No.${m.no}${m.form!=='通常'?' ('+m.form+')':''}</span></div><div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap"><span style="background:${bg};color:${fg};padding:2px 10px;border-radius:4px;font-size:12px;font-weight:500">${m.type}</span><span style="font-size:12px;color:var(--text2);padding:2px 6px">${m.ha==='なし'?'刀派なし':m.ha}</span></div><div style="font-size:12px;color:var(--text2);margin-bottom:6px">所持振り（${ins.length}振り）</div><div class="ilist">${rows||`<div style="font-size:12px;color:var(--text3);padding:8px 0">まだ登録なし</div>`}</div><div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">${addInfo}<button class="btn" onclick="cM()">閉じる</button></div>`);
 }
-function addI(bno){const i=newI(bno);i._isNew=true;UD.instances.push(i);save();cM();openIE(i.id);}
+function addI(bno,ki){const i=newI(bno);if(ki)i.isKiwame=true;i._isNew=true;UD.instances.push(i);save();cM();openIE(i.id);}
 
 // ── INSTANCE EDIT ──────────────────────────────────────
 let _ec='',_ee='',_pendingKi=null;
@@ -1836,7 +2069,11 @@ function openIE(id,ev){
   // 極トグルセクション
   let kiSec=renderKiSec(id,name,curIsKi,hasK,kiMinLv,inst.level,isNew,type);
 
-  showM(`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px"><div class="modal-title" style="margin-bottom:0">${name} の設定</div><button class="btn icon" onclick="cM()" style="flex-shrink:0;font-size:16px;line-height:1">✕</button></div>`+
+  // 個別カードから来たときに、まとめモーダルへ戻れるようにする
+  const backNo=(ST.showKiwame&&inst.isKiwame&&base&&base[5])?base[5]:inst.masterBaseNo;
+  const backRow=MN[backNo]?`<div style="margin-bottom:8px"><button class="btn" onclick="openD(${backNo})" style="font-size:11px;padding:3px 9px">◀ ${name}（まとめ）</button></div>`:'';
+
+  showM(backRow+`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px"><div class="modal-title" style="margin-bottom:0">${name} の設定</div><button class="btn icon" onclick="cM()" style="flex-shrink:0;font-size:16px;line-height:1">✕</button></div>`+
     (curIsKi?`<div class="kibox on">⚡ 極（修行済み）</div>`:`<div class="kibox off">初（通常〜特）</div>`)+
     tprog+
     `<div class="frow"><div class="flabel">ニックネーム</div><input class="finput" id="ie-nick" lang="ja" value="${esc(inst.nickname)}" placeholder="${name}"></div>`+
@@ -2100,6 +2337,28 @@ function todayStr(){
   const d=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Tokyo'}));
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
+// ── メモ一覧の共通部品（6つの一覧を同じ見た目にするため）────────────
+// 行のかたち：印 → 主役（伸びる） → 日付（右）
+// 強調のしかた：背景 = var(--hl-row)（テーマ追従）＋左端3pxの棒 = その一覧の色
+// 日メモ・この刀のメモの色は、グラフに描く縦線・三角・印と同じものをそのまま使う。
+function ntMk(hl){return hl?'#aaaaff':'rgba(140,135,160,.5)';}
+function inMk(hl){return hl?'#dc9632':'rgba(200,130,40,.5)';}
+function memoRowSty(hl,bar){return 'display:flex;align-items:center;gap:6px;padding:4px 2px;font-size:11px;border-bottom:1px solid var(--border);cursor:pointer;background:'+(hl?'var(--hl-row)':'transparent')+';border-left:3px solid '+(hl?bar:'transparent')+';padding-left:5px;border-radius:3px';}
+function memoDot(col,square){return '<div class="'+(square?'ev-dot':'nt-dot')+'" style="width:10px;height:10px;border-radius:'+(square?'2px':'50%')+';background:'+col+';flex-shrink:0"></div>';}
+// 期間メモの中身。名前が左、開始〜終了はいつも右。
+function evCells(nameHtml,dateStr,hl){
+  return '<div class="ev-lbl" style="flex:1;font-weight:'+(hl?700:500)+';color:var(--text)">'+nameHtml+'</div>'
+    +'<div style="color:var(--text3);flex-shrink:0">'+dateStr+'</div>';
+}
+// 日メモ・この刀のメモの中身。
+// 設定「日メモの日付を左に置く」がONのときだけ、日付を先に並べ、
+// 強調した行の日付を色付きの太字にする（この設定を入れる前の見た目）。
+function ntCells(dateStr,textHtml,hl){
+  var dl=!!ST.ntDateLeft;
+  var d='<div class="nt-date" style="'+(dl?'min-width:54px;':'')+'flex-shrink:0;color:'+((dl&&hl)?'var(--accent)':'var(--text3)')+';font-weight:'+((dl&&hl)?700:400)+'">'+dateStr+'</div>';
+  var t='<div class="nt-text" style="flex:1;font-weight:'+(hl?700:500)+';color:var(--text)">'+textHtml+'</div>';
+  return dl?(d+t):(t+d);
+}
 function fmtDate(str){
   if(!str)return'';
   const[y,m,d]=str.split('-');
@@ -2280,10 +2539,16 @@ function renderInstGraph(){
 
   // 縦軸ボタン
   const igAxisBtns=document.getElementById('ig-axis-btns');
-  if(igAxisBtns)igAxisBtns.innerHTML=[{k:'both',l:'両方'},{k:'exp',l:'累積経験値'},{k:'lv',l:'レベル'},{k:'gain',l:'増加経験値'}].map(a=>`<button class="btn sm ${_igAxisMode===a.k?'on':''}" onclick="setIgAxisMode('${a.k}')">${a.l}</button>`).join('');
-  // 期間メモ表示切替ボタン
+  if(igAxisBtns)igAxisBtns.innerHTML=[{k:'both',l:'両方'},{k:'exp',l:'累積経験値'},{k:'lv',l:'レベル'},{k:'gain',l:'増加経験値'}].map(a=>`<button class="btn sm ${_gAxisMode===a.k?'on':''}" onclick="setGAxisMode('${a.k}')">${a.l}</button>`).join('');
+  // 期間メモの表示スタイル切替ボタン（帯／ガント／ブラケット）
+  const igPsBtns=document.getElementById('ig-period-style-btns');
+  if(igPsBtns)igPsBtns.innerHTML=[{k:'band',l:'帯'},{k:'gantt',l:'ガント'},{k:'bracket',l:'ブラケット'}].map(m=>`<button class="btn sm ${_gPeriodStyle===m.k?'on':''}" onclick="setPeriodStyle('${m.k}')">${m.l}</button>`).join('');
+  // 期間メモのラベル切替ボタン。ラベルは帯のときだけ意味を持つので、それ以外では押せなくする
+  const igLblOff=_gPeriodStyle!=='band';
   const igEvtLabelBtns=document.getElementById('ig-evt-label-btns');
-  if(igEvtLabelBtns)igEvtLabelBtns.innerHTML=[{k:'normal',l:'通常'},{k:'none',  l:'非表示'},{k:'vertical',l:'縦書き'}].map(m=>`<button class="btn sm ${_gEvtLabelMode===m.k?'on':''}" onclick="setEvtLabelMode('${m.k}')">${m.l}</button>`).join('');
+  if(igEvtLabelBtns)igEvtLabelBtns.innerHTML=[{k:'normal',l:'通常'},{k:'vertical',l:'縦書き'},{k:'none',l:'なし'}].map(m=>`<button class="btn sm ${(!igLblOff&&_gEvtLabelMode===m.k)?'on':''}"${igLblOff?' disabled':''} onclick="setEvtLabelMode('${m.k}')">${m.l}</button>`).join('');
+  const igLblHint=document.getElementById('ig-label-hint');
+  if(igLblHint)igLblHint.style.display=igLblOff?'inline':'none';
 
   if(!inst.history||!inst.history.length){
     const canvas=document.getElementById('igCanvas');
@@ -2321,7 +2586,10 @@ function renderInstGraph(){
   const igEvtPlugin={id:'igEvt',beforeDraw(chart){
     const{ctx,chartArea,scales}=chart;if(!scales.x||!chartArea)return;
     ctx.save();
-    const events=activeEVS();
+    // ガント／ブラケットのときは、期間メモの帯は選択中のものだけをグラフに出す。
+    // （日メモ・この刀のメモの縦線は表示スタイルに関係なく、いつも描く）
+    const bandMode=_gPeriodStyle==='band';
+    const events=bandMode?activeEVS():activeEVS().filter(ev=>hlEvent.includes(ev.id));
     const LABEL_ZONE_TOP=60,LABEL_ROW_H=13;
     // 1パス目：measureTextでテキスト幅を実測してgreedy行割り当て
     ctx.font='10px sans-serif';
@@ -2341,12 +2609,16 @@ function renderInstGraph(){
     }).filter(Boolean);
     // 2パス目：帯とラベルを描画
     evMeta.forEach(({ev,cx1,cx2,lx,row,x1,x2})=>{
-      ctx.fillStyle=ev.color+'22';ctx.fillRect(cx1,chartArea.top,cx2-cx1,chartArea.bottom-chartArea.top);
-      ctx.strokeStyle=ev.color+'88';ctx.lineWidth=1;ctx.setLineDash([]);
+      const hl=hlEvent.includes(ev.id);
+      // 帯モードの薄さ22はそのまま。ガント／ブラケットのときは資源帳と同じ28
+      ctx.fillStyle=bandMode?(hl?ev.color+'50':ev.color+'22'):ev.color+'28';ctx.fillRect(cx1,chartArea.top,cx2-cx1,chartArea.bottom-chartArea.top);
+      ctx.strokeStyle=bandMode?(hl?ev.color+'cc':ev.color+'88'):ev.color+'99';ctx.lineWidth=bandMode?(hl?2:1):1.5;ctx.setLineDash([]);
       if(x1!=null&&x1>=chartArea.left&&x1<=chartArea.right){ctx.beginPath();ctx.moveTo(cx1,chartArea.top);ctx.lineTo(cx1,chartArea.bottom);ctx.stroke();}
       if(x2!=null&&x2>=chartArea.left&&x2<=chartArea.right){ctx.beginPath();ctx.moveTo(cx2,chartArea.top);ctx.lineTo(cx2,chartArea.bottom);ctx.stroke();}
+      // ラベルは帯モードのときだけ。ガント／ブラケットでは名前を下のバーと一覧で見る
+      if(!bandMode)return;
       const ly=chartArea.top-LABEL_ZONE_TOP+12+(row*LABEL_ROW_H);
-      ctx.fillStyle=ev.color+'cc';ctx.font='10px sans-serif';ctx.textAlign='left';
+      ctx.fillStyle=hl?ev.color:ev.color+'cc';ctx.font=(hl?'bold ':'')+'10px sans-serif';ctx.textAlign='left';
       if(_gEvtLabelMode==='normal'){
         ctx.fillText(ev.name,lx,ly);
       }else if(_gEvtLabelMode==='vertical'){
@@ -2377,9 +2649,9 @@ function renderInstGraph(){
     });
     ctx.restore();
   }};
-  const igShowExp=_igAxisMode==='both'||_igAxisMode==='exp';
-  const igShowLv=_igAxisMode==='both'||_igAxisMode==='lv';
-  const igShowGain=_igAxisMode==='gain';
+  const igShowExp=_gAxisMode==='both'||_gAxisMode==='exp';
+  const igShowLv=_gAxisMode==='both'||_gAxisMode==='lv';
+  const igShowGain=_gAxisMode==='gain';
   const igDatasets=[];
   if(igShowGain){
     const g=buildGainData(sorted,allDates);
@@ -2388,18 +2660,18 @@ function renderInstGraph(){
       backgroundColor:col+'aa',borderColor:col,borderWidth:1,yAxisID:'yGain'});
   }
   if(igShowExp)igDatasets.push({label:'累積Exp（万）',data:allDates.map(d=>{const h=sorted.find(x=>x.date===d);return h?Math.round(h.cumExp/10000):null;}),
-     borderColor:col,backgroundColor:col+'22',borderWidth:2.5,pointBackgroundColor:col,pointBorderColor:col,pointHoverBackgroundColor:col,pointHoverBorderColor:col,tension:ST.smoothLine?0.3:0,pointRadius:ptRadiusArr(sorted,allDates,ST.alwaysShowPoints?4:0),pointHoverRadius:6,yAxisID:'yExp',fill:false,spanGaps:true});
+     borderColor:col,backgroundColor:col+'22',borderWidth:2.5,pointBackgroundColor:col,pointBorderColor:col,pointHoverBackgroundColor:col,pointHoverBorderColor:col,tension:ST.smoothLine?0.3:0,pointRadius:ptRadiusArr(sorted,allDates,ST.alwaysShowPoints?4:0),pointHoverRadius:6,yAxisID:'yExp',fill:false,spanGaps:true,clip:8});
   if(igShowLv){const lvCol=ST.subtleLv?col+'88':col;igDatasets.push({label:'Lv',data:allDates.map(d=>{const h=sorted.find(x=>x.date===d);return h?h.level:null;}),
-     borderColor:lvCol,pointBackgroundColor:lvCol,pointBorderColor:lvCol,pointHoverBackgroundColor:lvCol,pointHoverBorderColor:lvCol,borderDash:[5,4],borderWidth:ST.subtleLv?1:2,tension:ST.smoothLine?0.3:0,pointRadius:ptRadiusArr(sorted,allDates,ST.alwaysShowPoints?(ST.subtleLv?2:3):0),pointHoverRadius:5,yAxisID:'yLv',fill:false,spanGaps:true});}
+     borderColor:lvCol,pointBackgroundColor:lvCol,pointBorderColor:lvCol,pointHoverBackgroundColor:lvCol,pointHoverBorderColor:lvCol,borderDash:[5,4],borderWidth:ST.subtleLv?1:2,tension:ST.smoothLine?0.3:0,pointRadius:ptRadiusArr(sorted,allDates,ST.alwaysShowPoints?(ST.subtleLv?2:3):0),pointHoverRadius:5,yAxisID:'yLv',fill:false,spanGaps:true,clip:8});}
 
   const canvas=document.getElementById('igCanvas');if(!canvas)return;
   canvas.style.display='block';
   _igChart=new Chart(canvas,{
     type:'line',
     data:{labels,datasets:igDatasets},
-    plugins:[igEvtPlugin],
+    plugins:[igEvtPlugin,makePeriodBarPlugin('igPeriodBar',igX)],
     options:{responsive:true,maintainAspectRatio:false,
-      layout:{padding:{top:60}},
+      layout:{padding:{top:(_gPeriodStyle==='band'&&_gEvtLabelMode==='normal')?60:8}},
       interaction:{mode:'index',intersect:false},
       onClick(event,elements,chart){
         const rect=canvas.getBoundingClientRect();
@@ -2463,14 +2735,25 @@ function renderInstGraph(){
   // イベント・メモ一覧
   const evnote=document.getElementById('ig-evnote');
   if(!evnote)return;
-  const evL=activeEVS().length?[...activeEVS()].sort((a,c)=>a.startDate.localeCompare(c.startDate)).map(ev=>
-    `<div style="display:flex;align-items:center;gap:6px;padding:3px 2px;font-size:11px;border-bottom:1px solid var(--border)"><div style="width:9px;height:9px;border-radius:2px;background:${ev.color}"></div><div style="flex:1;font-weight:500">${esc(ev.name)}</div><div style="color:var(--text3)">${fmtDate(ev.startDate)}〜${fmtDate(ev.endDate)}</div></div>`
-  ).join(''):`<span style="font-size:11px;color:var(--text3)">なし</span>`;
+  const igEvRow=ev=>{
+    const hl=hlEvent.includes(ev.id);
+    return`<div data-evid="${ev.id}" onclick="setHlEventChart('${ev.id}')" style="${memoRowSty(hl,ev.color)}">${memoDot(ev.color,1)}${evCells(esc(ev.name),fmtDate(ev.startDate)+'〜'+fmtDate(ev.endDate),hl)}</div>`;
+  };
+  const evL=(()=>{
+    if(!activeEVS().length)return`<span style="font-size:11px;color:var(--text3)">なし</span>`;
+    const evs=[...activeEVS()].sort((a,c)=>a.startDate.localeCompare(c.startDate));
+    const actv=evs.filter(e=>evPhase(e)!=='ended');
+    const ended=evs.filter(e=>evPhase(e)==='ended');
+    let html=actv.length?actv.map(igEvRow).join(''):`<div style="font-size:11px;color:var(--text3)">開催中・予定なし</div>`;
+    // 「終了した期間メモ」の開き閉じはメイングラフと同じ記憶を使う（キーを共有）
+    if(ended.length){const opn=!isFolded('sideEndedEv',true);html+=`<details class="fold" ${opn?'open':''} ontoggle="saveFold('sideEndedEv',this.open)"><summary>終了した期間メモ（${ended.length}）</summary>${ended.map(igEvRow).join('')}</details>`;}
+    return html;
+  })();
   const ntL=activeNTS().length?(()=>{
     const sorted2=[...activeNTS()].sort((a,c)=>a.date.localeCompare(c.date));
     return sorted2.map(n=>{
       const hl=hlNote===n.date;
-      return`<div onclick="igHlNote('${n.date}')" style="display:flex;align-items:center;gap:6px;padding:3px 2px;font-size:11px;border-bottom:1px solid var(--border);cursor:pointer;background:${hl?'rgba(180,180,255,.1)':'transparent'}"><div style="width:8px;height:8px;border-radius:50%;background:${hl?'#aaaaff':'rgba(140,135,160,.5)'}"></div><div style="min-width:54px;color:${hl?'var(--accent)':'var(--text3)'}">${fmtDate(n.date)}</div><div style="color:${hl?'var(--text)':'var(--text2)'}">${esc(n.text)}</div></div>`;
+      return`<div onclick="igHlNote('${n.date}')" style="${memoRowSty(hl,'#aaaaff')}">${memoDot(ntMk(hl),0)}${ntCells(fmtDate(n.date),esc(n.text),hl)}</div>`;
     }).join('');
   })():`<span style="font-size:11px;color:var(--text3)">なし</span>`;
   // この刀のメモ一覧
@@ -2479,14 +2762,142 @@ function renderInstGraph(){
     const rest=(inst.instNotes||[]).filter(n=>igHlInst!==n.id);
     return[...pinned,...rest].sort((a,b)=>a.date.localeCompare(b.date)).map(n=>{
       const hl=igHlInst===n.id;
-      return`<div onclick="igHlInstNote('${n.id}')" style="display:flex;align-items:center;gap:6px;padding:3px 2px;font-size:11px;border-bottom:1px solid var(--border);cursor:pointer;background:${hl?'rgba(220,150,50,.1)':'transparent'}"><div style="width:8px;height:8px;border-radius:50%;background:${hl?'#dc9632':'rgba(200,130,40,.5)'}"></div><div style="min-width:54px;color:${hl?'var(--accent)':'var(--text3)'}">${fmtDate(n.date)}</div><div style="color:${hl?'var(--text)':'var(--text2)'}">${esc(n.text)}</div></div>`;
+      return`<div onclick="igHlInstNote('${n.id}')" style="${memoRowSty(hl,'#dc9632')}">${memoDot(inMk(hl),0)}${ntCells(fmtDate(n.date),esc(n.text),hl)}</div>`;
     }).join('');
   })():`<span style="font-size:11px;color:var(--text3)">なし</span>`;
-  evnote.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px"><div><div class="gsect" style="margin-bottom:3px">📝 この刀のメモ（タップで強調）</div>${inL}</div><div><div class="gsect" style="margin-bottom:3px">全体メモ（タップで強調）</div>${ntL}</div><div><div class="gsect" style="margin-bottom:3px">期間メモ</div>${evL}</div></div>`;
+  evnote.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:10px;color:var(--text3);line-height:1.5">※ タップすると印が付きます。終了した分は自動で開き、画面内へ送ります（サイドバーの「操作」でオフにできます）</div>`
+    +foldSect('foldEvSec','期間メモ',evL)
+    +foldSect('foldInSec','📝 この刀のメモ',inL)
+    +foldSect('foldNtSec','日メモ',ntL)
+    +foldSect('foldRecSec','記録一覧',recListHTML(inst))
+    +`</div>`;
+}
+
+// ══ 記録一覧と、記録の手直し ═══════════════════════════════
+// 「この刀のあゆみ」のいちばん下に、その刀の記録を一覧で出す。
+// 行を押すと編集の器（.rec-overlay / z-index:450）があゆみの上に重なって開く。
+// 既存の showM/showCF は器が z-index:350 で、あゆみ(400)の後ろに隠れてしまうため使えない。
+
+// 見出しを見た目そのままで折りたためるようにする。
+// 開き閉じの記憶は刀ごとに持たない（全部の刀・メイングラフと共通のキーを使う）。
+function foldSect(key,title,body,defClosed){
+  const opn=!isFolded(key,!!defClosed);
+  return `<details class="fold2" ${opn?'open':''} ontoggle="saveFold('${key}',this.open)">`
+    +`<summary><span class="gsect">${title}</span></summary><div>${body}</div></details>`;
+}
+
+// 増えた分の表示（累積の数字だけでは打ち間違いに気づけないため）
+function recGainCell(gain,days){
+  if(gain==null)return '<div class="rec-gain"><span class="rg-d">初回</span></div>';
+  const s=gain<0?'\u2212':'+',a=Math.abs(gain);
+  let t;
+  if(a>=100000000)t=s+(a/100000000).toFixed(2)+'億';
+  else if(a>=10000)t=s+Math.round(a/10000)+'万';
+  else t=s+a.toLocaleString('ja-JP');
+  return `<div class="rec-gain${gain<0?' minus':''}">${t}${days>1?` <span class="rg-d">${days}日</span>`:''}</div>`;
+}
+
+// 一覧の中身。新しいものが上（審神者グラフの記録一覧と同じ向き）。
+// 仮想の据え置き記録（☑一括引き継ぎ）は実記録ではないので出さない。
+function recListHTML(inst){
+  const hs=[...(inst.history||[])].sort((a,b)=>a.date.localeCompare(b.date));
+  if(!hs.length)return '<div style="font-size:11px;color:var(--text3)">まだ記録がありません</div>';
+  const rows=[];
+  for(let i=hs.length-1;i>=0;i--){
+    const r=hs[i],prev=i>0?hs[i-1]:null;
+    const gain=prev?r.cumExp-prev.cumExp:null;
+    const days=prev?Math.max(1,dayDiffYmd(prev.date,r.date)):0;
+    rows.push(`<div class="rec-row" onclick="openRecEdit('${inst.id}','${r.date}')">`
+      +`<div class="rec-date">${fmtDate(r.date)}</div>`
+      +`<div class="rec-cum">${fmtExp(r.cumExp)}</div>`
+      +`<div class="rec-lv">Lv.${r.level||1}</div>`
+      +recGainCell(gain,days)
+      +`<div class="rec-hand">${r.auto===false?'\u270D':''}</div>`
+      +`</div>`
+      +(r.note?`<div class="rec-sub">\u{1F4DD} ${esc(r.note)}</div>`:''));
+  }
+  return `<div class="rec-legend">行を押すと手直しできます。\u270D は手で直した記録です。</div>`
+    +rows.join('')
+    +`<div class="rec-add"><button class="btn sm" onclick="openRecEdit('${inst.id}',null)">＋ 記録を足す</button></div>`;
+}
+
+// ── 編集の器 ────────────────────────────────────────────
+let _recInstId=null,_recDate=null;
+function openRecEdit(instId,date){
+  const inst=UD.instances.find(i=>i.id===instId);if(!inst)return;
+  _recInstId=instId;_recDate=date;
+  const rec=date?(inst.history||[]).find(h=>h.date===date):null;
+  const d=rec?rec.date:todayStr();
+  const box=document.getElementById('recModal');if(!box)return;
+  box.innerHTML=`<div class="modal-title">${rec?fmtDate(rec.date)+' の記録':'記録を足す'}</div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div><div class="flabel">日付</div><div class="cal-wrapper" style="width:150px"><button type="button" class="cal-pick-btn" onclick="openCalPicker('rec-date',this)"><span id="rec-date-text">${d}</span><span style="font-size:11px;opacity:.5">\u{1F4C5}</span></button><input type="hidden" id="rec-date" value="${d}"></div></div>
+      <div><div class="flabel">レベル</div><input class="finput" id="rec-lv" type="number" min="1" max="199" value="${rec?(rec.level||1):(inst.level||1)}" style="width:82px;text-align:center"></div>
+    </div>
+    <div><div class="flabel">累積経験値</div><div class="num-wrap"><input class="finput" id="rec-exp" type="text" ${currentIsMobile()?'inputmode="numeric"':''} value="${rec&&rec.cumExp?rec.cumExp.toLocaleString('ja-JP'):''}" placeholder="ゲーム内の値を入力" lang="ja" oninput="fmtN(this,event);recExpHint()" oncompositionend="fmtN(this);recExpHint()"></div><div class="rec-hint" id="rec-hint"></div></div>
+    <div><div class="flabel">メモ</div><input class="finput" id="rec-note" lang="ja" value="${rec&&rec.note?esc(rec.note):''}" placeholder="なくても大丈夫です" style="width:100%"></div>
+  </div>
+  <div class="mact" style="margin-top:16px;gap:8px;justify-content:space-between">
+    <div>${rec?`<button class="btn danger" onclick="askDelRec()">\u{1F5D1} 削除</button>`:''}</div>
+    <div style="display:flex;gap:8px"><button class="btn" onclick="closeRecEdit()">やめる</button><button class="btn on" onclick="saveRecEdit()">保存</button></div>
+  </div>`;
+  document.getElementById('recOverlay').classList.remove('hidden');
+  recExpHint();
+}
+function closeRecEdit(){
+  const o=document.getElementById('recOverlay');if(o)o.classList.add('hidden');
+  closeGenCal();_recInstId=null;_recDate=null;
+}
+// 累積経験値からレベルを推し量って見せるだけ。レベル欄は書き換えない
+//（過去のレベルを直したいのに上書きされたら本末転倒なため）
+function recExpHint(){
+  const hint=document.getElementById('rec-hint');if(!hint)return;
+  const el=document.getElementById('rec-exp');
+  const inst=UD.instances.find(i=>i.id===_recInstId);
+  const exp=el?(parseInt(el.value.replace(/[^\d]/g,''))||0):0;
+  if(!inst||!exp){hint.textContent='';return;}
+  // 極と初では経験値の表が別。どちらの表で数えたかを必ず書く。
+  // 修行して極になった刀は、修行より前の記録も「今の状態＝極」の表で数えてしまうため、
+  // 書いておかないと「なぜ合わないのか」が読む人に分からなくなる。
+  // 呼び名は刀編集の表示（⚡ 極（修行済み）／初（通常〜特））に合わせる。
+  const ki=!!inst.isKiwame;
+  const lv=expToLv(getInstType(inst)||'打刀',exp,ki,!!inst.kiUchi2Slot);
+  hint.textContent=(ki?'極':'初（通常〜特）')+'でこの経験値なら Lv.'+lv+' くらいです';
+}
+function saveRecEdit(){
+  const inst=UD.instances.find(i=>i.id===_recInstId);if(!inst)return;
+  const date=document.getElementById('rec-date').value;
+  const exp=parseInt((document.getElementById('rec-exp').value||'').replace(/[^\d]/g,''))||0;
+  const lv=parseInt(document.getElementById('rec-lv').value)||1;
+  const note=document.getElementById('rec-note').value.trim();
+  if(!date){toast('日付を入れてください');return;}
+  if(!exp){toast('累積経験値を入れてください');return;}
+  const id=_recInstId,old=_recDate;
+  // 日付を変えたとき、移動先に別の記録があれば知らせる（黙って消さない）
+  if(old&&date!==old&&(inst.history||[]).some(h=>h.date===date)){
+    toast(fmtDate(date)+' にはすでに記録があります');return;
+  }
+  if(!old&&(inst.history||[]).some(h=>h.date===date)){
+    toast(fmtDate(date)+' にはすでに記録があります');return;
+  }
+  if(old&&date!==old)inst.history=inst.history.filter(h=>h.date!==old); // 日付を移す
+  closeRecEdit();
+  _commitHistRec(id,date,exp,lv,note,true);
+}
+function askDelRec(){
+  const box=document.getElementById('recModal');if(!box)return;
+  box.innerHTML=`<div class="modal-title">記録を削除しますか</div>
+  <div style="font-size:12px;color:var(--text2);line-height:1.6">${fmtDate(_recDate)} の記録を消します。<br>刀の現在の経験値は、残った記録のいちばん新しいものに合わせ直します。</div>
+  <div class="mact" style="margin-top:16px;gap:8px"><button class="btn" onclick="openRecEdit('${_recInstId}','${_recDate}')">やめる</button><button class="btn danger" onclick="doDelRec()">削除する</button></div>`;
+}
+function doDelRec(){
+  const id=_recInstId,date=_recDate;
+  closeRecEdit();
+  delHistRec(id,date,true);
 }
 
 function setIgPeriod(p){_igPeriod=p;_igPanMin=null;_igPanMax=null;renderInstGraph();}
-function setIgAxisMode(m){_igAxisMode=m;if(_igInstId)renderInstGraph();else if(_igCustomCid)renderCustomGraph();}
 function igHlNote(d){hlNote=(hlNote===d)?null:d;if(_igChart)_igChart.update();renderInstGraph();}
 function igHlInstNote(nid){igHlInst=(igHlInst===nid)?null:nid;if(_igChart)_igChart.update();renderInstGraph();}
 
@@ -2550,7 +2961,8 @@ function impD(inp){
       if(!UD.notes)UD.notes=[];
       if(!UD.saniwaLog)UD.saniwaLog=[];
       if(!UD.graphSelIds)UD.graphSelIds=[];
-      if(!UD.graphPresets||!UD.graphPresets.length)UD.graphPresets=[{name:'第一部隊',selIds:[]}];
+      if(!UD.graphPresets||!UD.graphPresets.length)UD.graphPresets=[mkPreset('第一部隊',[])];
+      ensurePresetIds(); // 取り込んだデータに id が無いことがある
       save();cM();ra();toast('インポートしました（直前の状態はバックアップ済み）');
     });
     inp.value='';
@@ -2570,7 +2982,8 @@ function restoreBak(){
     if(!UD.notes)UD.notes=[];
     if(!UD.saniwaLog)UD.saniwaLog=[];
     if(!UD.graphSelIds)UD.graphSelIds=[];
-    if(!UD.graphPresets||!UD.graphPresets.length)UD.graphPresets=[{name:'第一部隊',selIds:[]}];
+    if(!UD.graphPresets||!UD.graphPresets.length)UD.graphPresets=[mkPreset('第一部隊',[])];
+    ensurePresetIds(); // 古いバックアップには id が無いことがある
     save();cM();ra();toast('インポート直前の状態に復元しました');
   });
 }
@@ -2631,7 +3044,7 @@ function impEvents(inp){
     }catch(err){toast('ファイルの形式が正しくありません');}
   };r.readAsText(f);
 }
-function clearAll(){showCF('全ての所持データを削除しますか？','全削除',()=>{UD={instances:[],customSwords:[],events:[],notes:[],graphSelIds:[],graphPresets:[{name:'第一部隊',selIds:[]}],saniwaLog:[]};save();cM();ra();toast('データを削除しました');});}
+function clearAll(){showCF('全ての所持データを削除しますか？','全削除',()=>{UD={instances:[],customSwords:[],events:[],notes:[],graphSelIds:[],graphPresets:[mkPreset('第一部隊',[])],saniwaLog:[]};save();cM();ra();toast('データを削除しました');});}
 
 // ── カスタム刀剣 ───────────────────────────────────────
 function newCustom(){
@@ -2778,9 +3191,16 @@ function renderCustomGraph(){
   if(perEl)perEl.innerHTML=PERIODS.map(p=>`<button class="btn sm ${_igPeriod===p.k?'on':''}" onclick="_igPeriod='${p.k}';_igPanMin=null;_igPanMax=null;renderCustomGraph()">${p.l}</button>`).join('')
     +(_igPanMin!==null?`<button class="btn sm" onclick="_igPanMin=null;_igPanMax=null;renderCustomGraph()" title="ズームリセット" style="margin-left:4px">🔍×</button>`:'');
   const igAxisBtns=document.getElementById('ig-axis-btns');
-  if(igAxisBtns)igAxisBtns.innerHTML=[{k:'both',l:'両方'},{k:'exp',l:'累積経験値'},{k:'lv',l:'レベル'},{k:'gain',l:'増加経験値'}].map(a=>`<button class="btn sm ${_igAxisMode===a.k?'on':''}" onclick="setIgAxisMode('${a.k}')">${a.l}</button>`).join('');
+  if(igAxisBtns)igAxisBtns.innerHTML=[{k:'both',l:'両方'},{k:'exp',l:'累積経験値'},{k:'lv',l:'レベル'},{k:'gain',l:'増加経験値'}].map(a=>`<button class="btn sm ${_gAxisMode===a.k?'on':''}" onclick="setGAxisMode('${a.k}')">${a.l}</button>`).join('');
+  // 期間メモの表示スタイル切替ボタン（帯／ガント／ブラケット）
+  const igPsBtns2=document.getElementById('ig-period-style-btns');
+  if(igPsBtns2)igPsBtns2.innerHTML=[{k:'band',l:'帯'},{k:'gantt',l:'ガント'},{k:'bracket',l:'ブラケット'}].map(m=>`<button class="btn sm ${_gPeriodStyle===m.k?'on':''}" onclick="setPeriodStyle('${m.k}')">${m.l}</button>`).join('');
+  // ラベルは帯のときだけ意味を持つので、それ以外では押せなくする
+  const igLblOff2=_gPeriodStyle!=='band';
   const igEvtLabelBtns2=document.getElementById('ig-evt-label-btns');
-  if(igEvtLabelBtns2)igEvtLabelBtns2.innerHTML=[{k:'normal',l:'通常'},{k:'none',  l:'非表示'},{k:'vertical',l:'縦書き'}].map(m=>`<button class="btn sm ${_gEvtLabelMode===m.k?'on':''}" onclick="setEvtLabelMode('${m.k}')">${m.l}</button>`).join('');
+  if(igEvtLabelBtns2)igEvtLabelBtns2.innerHTML=[{k:'normal',l:'通常'},{k:'vertical',l:'縦書き'},{k:'none',l:'なし'}].map(m=>`<button class="btn sm ${(!igLblOff2&&_gEvtLabelMode===m.k)?'on':''}"${igLblOff2?' disabled':''} onclick="setEvtLabelMode('${m.k}')">${m.l}</button>`).join('');
+  const igLblHint2=document.getElementById('ig-label-hint');
+  if(igLblHint2)igLblHint2.style.display=igLblOff2?'inline':'none';
   if(!c.history||!c.history.length){
     const canvas=document.getElementById('igCanvas');if(canvas)canvas.style.display='none';
     const evnote=document.getElementById('ig-evnote');
@@ -2809,7 +3229,10 @@ function renderCustomGraph(){
   const igEvtPlugin={id:'igEvt',beforeDraw(chart){
     const{ctx,chartArea,scales}=chart;if(!scales.x||!chartArea)return;
     ctx.save();
-    const events=activeEVS();
+    // ガント／ブラケットのときは、期間メモの帯は選択中のものだけをグラフに出す。
+    // （日メモの縦線は表示スタイルに関係なく、いつも描く）
+    const bandMode=_gPeriodStyle==='band';
+    const events=bandMode?activeEVS():activeEVS().filter(ev=>hlEvent.includes(ev.id));
     const LABEL_ZONE_TOP=60,LABEL_ROW_H=13;
     ctx.font='10px sans-serif';
     const rowEnds=new Array(8).fill(-Infinity);
@@ -2827,10 +3250,14 @@ function renderCustomGraph(){
       return{ev,cx1,cx2,lx,row,x1,x2};
     }).filter(Boolean);
     evMeta.forEach(({ev,cx1,cx2,lx,row,x1,x2})=>{
-      ctx.fillStyle=ev.color+'22';ctx.fillRect(cx1,chartArea.top,cx2-cx1,chartArea.bottom-chartArea.top);
-      ctx.strokeStyle=ev.color+'88';ctx.lineWidth=1;ctx.setLineDash([]);
+      const hl=hlEvent.includes(ev.id);
+      // 帯モードの薄さ22はそのまま。ガント／ブラケットのときは資源帳と同じ28
+      ctx.fillStyle=bandMode?(hl?ev.color+'50':ev.color+'22'):ev.color+'28';ctx.fillRect(cx1,chartArea.top,cx2-cx1,chartArea.bottom-chartArea.top);
+      ctx.strokeStyle=bandMode?(hl?ev.color+'cc':ev.color+'88'):ev.color+'99';ctx.lineWidth=bandMode?(hl?2:1):1.5;ctx.setLineDash([]);
       if(x1!=null&&x1>=chartArea.left&&x1<=chartArea.right){ctx.beginPath();ctx.moveTo(cx1,chartArea.top);ctx.lineTo(cx1,chartArea.bottom);ctx.stroke();}
       if(x2!=null&&x2>=chartArea.left&&x2<=chartArea.right){ctx.beginPath();ctx.moveTo(cx2,chartArea.top);ctx.lineTo(cx2,chartArea.bottom);ctx.stroke();}
+      // ラベルは帯モードのときだけ。ガント／ブラケットでは名前を下のバーで見る
+      if(!bandMode)return;
       const ly=chartArea.top-LABEL_ZONE_TOP+12+(row*LABEL_ROW_H);
       ctx.fillStyle=ev.color+'cc';ctx.font='10px sans-serif';ctx.textAlign='left';
       if(_gEvtLabelMode==='normal'){
@@ -2851,17 +3278,17 @@ function renderCustomGraph(){
     });
     ctx.restore();
   }};
-  const igShowExp=_igAxisMode==='both'||_igAxisMode==='exp';
-  const igShowLv=_igAxisMode==='both'||_igAxisMode==='lv';
-  const igShowGain=_igAxisMode==='gain';
+  const igShowExp=_gAxisMode==='both'||_gAxisMode==='exp';
+  const igShowLv=_gAxisMode==='both'||_gAxisMode==='lv';
+  const igShowGain=_gAxisMode==='gain';
   const igDatasets=[];
   if(igShowGain){const g=buildGainData(sorted,allDates);igDatasets.push({type:'bar',label:'増加Exp（万）',data:g.data,_gainMeta:g.meta,backgroundColor:col+'aa',borderColor:col,borderWidth:1,yAxisID:'yGain'});}
-  if(igShowExp)igDatasets.push({label:'累積Exp（万）',data:allDates.map(d=>{const h=sorted.find(x=>x.date===d);return h?Math.round(h.cumExp/10000):null;}),borderColor:col,backgroundColor:col+'22',borderWidth:2.5,pointBackgroundColor:col,pointBorderColor:col,pointHoverBackgroundColor:col,pointHoverBorderColor:col,tension:ST.smoothLine?0.3:0,pointRadius:ptRadiusArr(sorted,allDates,ST.alwaysShowPoints?4:0),pointHoverRadius:6,yAxisID:'yExp',fill:false,spanGaps:true});
-  if(igShowLv){const lvCol=ST.subtleLv?col+'88':col;igDatasets.push({label:'Lv',data:allDates.map(d=>{const h=sorted.find(x=>x.date===d);return h?h.level:null;}),borderColor:lvCol,pointBackgroundColor:lvCol,pointBorderColor:lvCol,pointHoverBackgroundColor:lvCol,pointHoverBorderColor:lvCol,borderDash:[5,4],borderWidth:ST.subtleLv?1:2,tension:ST.smoothLine?0.3:0,pointRadius:ptRadiusArr(sorted,allDates,ST.alwaysShowPoints?(ST.subtleLv?2:3):0),pointHoverRadius:5,yAxisID:'yLv',fill:false,spanGaps:true});}
+  if(igShowExp)igDatasets.push({label:'累積Exp（万）',data:allDates.map(d=>{const h=sorted.find(x=>x.date===d);return h?Math.round(h.cumExp/10000):null;}),borderColor:col,backgroundColor:col+'22',borderWidth:2.5,pointBackgroundColor:col,pointBorderColor:col,pointHoverBackgroundColor:col,pointHoverBorderColor:col,tension:ST.smoothLine?0.3:0,pointRadius:ptRadiusArr(sorted,allDates,ST.alwaysShowPoints?4:0),pointHoverRadius:6,yAxisID:'yExp',fill:false,spanGaps:true,clip:8});
+  if(igShowLv){const lvCol=ST.subtleLv?col+'88':col;igDatasets.push({label:'Lv',data:allDates.map(d=>{const h=sorted.find(x=>x.date===d);return h?h.level:null;}),borderColor:lvCol,pointBackgroundColor:lvCol,pointBorderColor:lvCol,pointHoverBackgroundColor:lvCol,pointHoverBorderColor:lvCol,borderDash:[5,4],borderWidth:ST.subtleLv?1:2,tension:ST.smoothLine?0.3:0,pointRadius:ptRadiusArr(sorted,allDates,ST.alwaysShowPoints?(ST.subtleLv?2:3):0),pointHoverRadius:5,yAxisID:'yLv',fill:false,spanGaps:true,clip:8});}
   const canvas=document.getElementById('igCanvas');if(!canvas)return;
   canvas.style.display='block';
-  _igChart=new Chart(canvas,{type:'line',data:{labels,datasets:igDatasets},plugins:[igEvtPlugin],
-    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:60}},interaction:{mode:'index',intersect:false},
+  _igChart=new Chart(canvas,{type:'line',data:{labels,datasets:igDatasets},plugins:[igEvtPlugin,makePeriodBarPlugin('igPeriodBar',igX)],
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:(_gPeriodStyle==='band'&&_gEvtLabelMode==='normal')?60:8}},interaction:{mode:'index',intersect:false},
       onClick(event,elements,chart){
         const rect=canvas.getBoundingClientRect();const x=event.native?event.native.clientX-rect.left:event.x;
         let nearest=null,minDist=14;
@@ -2947,13 +3374,15 @@ let _saniwaPanMin=null;
 let _saniwaPanMax=null;
 let _gSelIds=[];          // 選択順を保持するArray（現在のプリセットと同期）
 let _gPresetIdx=0;        // 現在のプリセットインデックス
-let _gEvtLabelMode=ST.evtLabelMode||'normal'; // 期間メモ表示モード: normal/number/vertical
+let _gEvtLabelMode=ST.evtLabelMode||'normal'; // 期間メモ表示モード: normal/vertical/none
+let _gPeriodStyle=ST.periodStyle||'band';     // 期間メモの表示スタイル: band/gantt/bracket
+// ↑ここでSTを読んでも、この行はload()より先に走るので既定値にしかならない。
+//   保存した値の復元はload()の「グラフの表示状態をSTから復元」でまとめてやっている
 let _gAllDates=[];        // タッチ操作用
 let _gPanMin=null;        // パン/ズーム状態（nullなら全表示）
 let _gPanMax=null;
 let _evColIdx=0;
-let _gAxisMode='both';
-let _igAxisMode='both';
+let _gAxisMode=ST.axisMode||'both'; // 軸モード: both/exp/lv/gain（稽古録グラフとあゆみで共有。復元はload()）
 let _gRecentInstId=null;
 let _gChipOpen=true;      // チップエリアの折り畳み状態
 let _gChipSort='updated'; // チップエリアのソート: 'updated'|'no'|'type'
@@ -2971,7 +3400,7 @@ function showGraph(){
   _gChipKiwame=null;
   _gHiddenDatasets=new Set();
   // プリセットから復元（存在チェック付き）
-  if(!UD.graphPresets||!UD.graphPresets.length)UD.graphPresets=[{name:'第一部隊',selIds:[]}];
+  if(!UD.graphPresets||!UD.graphPresets.length)UD.graphPresets=[mkPreset('第一部隊',[])];
   if(_gPresetIdx>=UD.graphPresets.length)_gPresetIdx=0;
   _gSelIds=(UD.graphPresets[_gPresetIdx].selIds||[]).filter(id=>UD.instances.some(i=>i.id===id));
   renderGraphBody();
@@ -3016,6 +3445,7 @@ function sortInsts(insts,sortKey){
       const la=a.level??0, lb=b.level??0;
       return la!==lb ? lb-la : Number(a.masterBaseNo)-Number(b.masterBaseNo);
     }
+    if(sortKey==='manual')return 0; // 手動順：渡された配列（_gSelIds）の順をそのまま保つ
     return Number(a.masterBaseNo)-Number(b.masterBaseNo);
   });
 }
@@ -3029,6 +3459,7 @@ function closeGraph(){
     UD.graphPresets[_gPresetIdx].selIds=[..._gSelIds];
   }
   save();
+  ra(); // 隊の中身・名前・増減を絞り込みに反映する（消えた隊なら絞り込みも外れる）
 }
 function onGOverlayClick(e){
   // graph-modal またはその子要素以外をクリックしたら閉じる
@@ -3088,40 +3519,54 @@ function renderGChart(body){
   const axisBtns=[{k:'both',l:'両方'},{k:'exp',l:'累積経験値'},{k:'lv',l:'レベル'},{k:'gain',l:'増加経験値'}].map(a=>`<button class="btn sm ${_gAxisMode===a.k?'on':''}" onclick="setGAxisMode('${a.k}')">${a.l}</button>`).join('');
   const noData=!allInsts.length?`<div class="no-data">📝 まだ記録がありません。<br>男士の設定画面で累積経験値を入力して保存すると記録されます。</div>`:'';
 
-  // ── 期間メモ表示切替 ──
+  // ── 期間メモ表示切替（スタイル行＋ラベル行の2段）──
+  // ラベルは帯のときだけ意味を持つので、ガント／ブラケットでは押せなくする。
+  const psBtns=[
+    {k:'band',   l:'帯'},
+    {k:'gantt',  l:'ガント'},
+    {k:'bracket',l:'ブラケット'},
+  ].map(m=>`<button class="btn sm ${_gPeriodStyle===m.k?'on':''}" onclick="setPeriodStyle('${m.k}')">${m.l}</button>`).join('');
+  const lblOff=_gPeriodStyle!=='band';
   const evtLabelBtns=[
     {k:'normal',  l:'通常'},
-    {k:'none',    l:'非表示'},
     {k:'vertical',l:'縦書き'},
-  ].map(m=>`<button class="btn sm ${_gEvtLabelMode===m.k?'on':''}" onclick="setEvtLabelMode('${m.k}')">${m.l}</button>`).join('');
-  const evtLabelRow=`<div style="display:flex;align-items:center;gap:4px;margin-bottom:4px"><span style="font-size:10px;color:var(--text3);margin-right:2px">期間メモ表示：</span>${evtLabelBtns}</div>`;
+    {k:'none',    l:'なし'},
+  ].map(m=>`<button class="btn sm ${(!lblOff&&_gEvtLabelMode===m.k)?'on':''}"${lblOff?' disabled':''} onclick="setEvtLabelMode('${m.k}')">${m.l}</button>`).join('');
+  const evtLabelRow=`<div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;flex-wrap:wrap"><span style="font-size:10px;color:var(--text3);margin-right:2px">表示スタイル：</span>${psBtns}</div>`
+    +`<div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;flex-wrap:wrap"><span style="font-size:10px;color:var(--text3);margin-right:2px">ラベル：</span>${evtLabelBtns}${lblOff?`<span style="font-size:10px;color:var(--text2);margin-left:4px">（帯のときだけ使えます）</span>`:''}</div>`;
 
   // ── プリセットタブ ──
   const presetTabs=UD.graphPresets.map((p,i)=>{
     const active=i===_gPresetIdx;
-    return`<div style="display:inline-flex;align-items:center;gap:3px;padding:4px 8px 4px 10px;border-radius:6px 6px 0 0;margin-right:2px;cursor:pointer;font-size:12px;font-weight:${active?700:400};background:${active?'var(--bg)':'var(--bg2)'};border:1px solid var(--border);border-bottom:${active?'1px solid var(--bg)':'1px solid var(--border)'};color:${active?'var(--accent)':'var(--text3)'};position:relative;top:1px;touch-action:manipulation" onclick="switchPreset(${i})">
+    return`<div style="display:inline-flex;align-items:center;gap:3px;padding:4px 8px 4px 10px;border-radius:6px 6px 0 0;margin-right:2px;cursor:pointer;font-size:12px;font-weight:${active?700:400};background:${active?'var(--bg)':'var(--bg2)'};border:1px solid var(--border);border-bottom:${active?'1px solid var(--bg)':'1px solid var(--border)'};color:${active?'var(--accent)':'var(--text3)'};position:relative;top:1px;touch-action:manipulation" data-dnd-pi="${i}" onclick="if(!dndBusy())switchPreset(${i})">
       ${active&&i>0?`<span onclick="event.stopPropagation();movePreset(${i},-1)" title="左に移動" style="font-size:11px;opacity:.5;cursor:pointer">◀</span>`:''}
       <span data-name>${p.name}</span>
       ${active&&i<UD.graphPresets.length-1?`<span onclick="event.stopPropagation();movePreset(${i},1)" title="右に移動" style="font-size:11px;opacity:.5;cursor:pointer">▶</span>`:''}
       ${active?`<span onclick="event.stopPropagation();startRenamePreset(${i},this.closest('div').querySelector('span[data-name]'))" title="名前を変更" style="font-size:10px;opacity:.6;cursor:pointer;margin-left:1px">✏️</span>`:''}
-      ${UD.graphPresets.length>1?`<span onclick="event.stopPropagation();deletePreset(${i})" style="margin-left:2px;font-size:10px;opacity:.5;cursor:pointer" title="このプリセットを削除">×</span>`:''}
+      ${UD.graphPresets.length>1?`<span onclick="event.stopPropagation();deletePreset(${i})" style="margin-left:2px;font-size:10px;opacity:.5;cursor:pointer" title="この部隊タブを削除">×</span>`:''}
     </div>`;
   }).join('');
   const presetTabsHtml=`
-  <div style="display:flex;align-items:flex-end;margin-bottom:0;flex-wrap:wrap;gap:0">
+  <div id="gPresetTabs" style="display:flex;align-items:flex-end;margin-bottom:0;flex-wrap:wrap;gap:0">
     ${presetTabs}
-    <button onclick="addPreset()" title="プリセットを追加" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px 6px 0 0;border:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);color:var(--text3);font-size:16px;cursor:pointer;margin-bottom:0;position:relative;top:1px">＋</button>
+    <button onclick="addPreset()" title="部隊タブを追加" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px 6px 0 0;border:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);color:var(--text3);font-size:16px;cursor:pointer;margin-bottom:0;position:relative;top:1px">＋</button>
     <button onclick="openImportFromShitakubeya()" title="出陣支度部屋から部隊を読み込む" style="display:inline-flex;align-items:center;gap:3px;padding:0 8px;height:28px;border-radius:6px 6px 0 0;border:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);color:var(--text3);font-size:11px;cursor:pointer;margin-bottom:0;position:relative;top:1px;margin-left:4px">⇄ 支度部屋と同期</button>
   </div>`;
 
   // チップエリア：選択中 → ソート・フィルター適用して表示
-  const chipSortBtns=[
+  // D&D設定OFFのときは「手動順」を出さない（順番データ自体は_gSelIdsに残る）
+  if(!ST.dndSort&&_gChipSort==='manual')_gChipSort='updated';
+  const _dndOn=!!ST.dndSort;
+  const _chipFiltered=(_gChipTypes!==null||_gChipKiwame!==null);
+  const chipSortDefs=[
     {k:'updated',l:'更新順'},
     {k:'type',   l:'種類順'},
     {k:'no',     l:'No順'},
     {k:'lvAsc',  l:'Lv↑'},
     {k:'lvDesc', l:'Lv↓'},
-  ].map(s=>`<button class="btn sm ${_gChipSort===s.k?'on':''}" onclick="setGChipSort('${s.k}')">${s.l}</button>`).join('');
+  ];
+  if(_dndOn)chipSortDefs.push({k:'manual',l:'手動順'});
+  const chipSortBtns=chipSortDefs.map(s=>`<button class="btn sm ${_gChipSort===s.k?'on':''}" onclick="setGChipSort('${s.k}')">${s.l}</button>`).join('');
   const kiwameBtns=
     `<button class="btn sm ${_gChipKiwame===null?'on':''}" onclick="setGChipKiwame(null)">全て</button>`
    +`<button class="btn sm ${_gChipKiwame==='sho'?'on':''}" onclick="setGChipKiwame('sho')">初のみ</button>`
@@ -3153,7 +3598,7 @@ function renderGChart(body){
     const b=BM[inst.masterBaseNo];
     const nm=(inst.nickname||(b?b[1]:'?'))+(inst.isKiwame?' 極':'');
     const col=getInstColor(inst.id);
-    return`<span class="inst-chip sel" style="background:${col};border-color:${col}"><span style="width:8px;height:8px;border-radius:50%;background:${col};filter:brightness(1.3);display:inline-block;flex-shrink:0"></span><span style="cursor:pointer" onclick="toggleGSel('${inst.id}')">${nm}</span><span onclick="event.stopPropagation();toggleGSel('${inst.id}')" style="margin-left:2px;opacity:.8;cursor:pointer;font-size:10px">×</span></span>`;
+    return`<span class="inst-chip sel" data-dnd-id="${inst.id}" style="background:${col};border-color:${col}"><span style="width:8px;height:8px;border-radius:50%;background:${col};filter:brightness(1.3);display:inline-block;flex-shrink:0"></span><span style="cursor:pointer" onclick="if(!dndBusy())toggleGSel('${inst.id}')">${nm}</span><span onclick="event.stopPropagation();if(!dndBusy())toggleGSel('${inst.id}')" style="margin-left:2px;opacity:.8;cursor:pointer;font-size:10px">×</span></span>`;
   }).join('');
 
   const chipArea=`
@@ -3170,7 +3615,8 @@ function renderGChart(body){
       <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:5px">${chipSortBtns}</div>
       <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:4px">${kiwameBtns}</div>
       <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px">${chipTypeBtns}</div>
-      <div style="display:flex;flex-wrap:wrap;gap:5px;min-height:56px;padding:4px 0;align-content:flex-start">${chips||'<span style="font-size:11px;color:var(--text3)">「選ぶ」から男士を追加してください</span>'}</div>
+      ${_dndOn?`<div style="font-size:10px;color:var(--text3);margin:-2px 0 5px">${_chipFiltered?'絞り込み中は並べ替えできません（「全選択」に戻すと並べ替えられます）':'チップを長押ししてドラッグすると並べ替えられます'}</div>`:''}
+      <div id="gChipWrap" style="display:flex;flex-wrap:wrap;gap:5px;min-height:56px;padding:4px 0;align-content:flex-start">${chips||'<span style="font-size:11px;color:var(--text3)">「選ぶ」から男士を追加してください</span>'}</div>
     </div>`:''}
   </div>`;
 
@@ -3178,7 +3624,9 @@ function renderGChart(body){
     chipArea
     +`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;flex-wrap:wrap;gap:4px"><div style="display:flex;gap:3px;flex-wrap:wrap">${periodBtns}</div><div style="display:flex;gap:3px">${axisBtns}</div></div>`
     +`<div class="graph-chart-wrap">${noData}<canvas id="gCanvas" style="display:${allInsts.length?'block':'none'}"></canvas></div>`
-    +`<div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><div class="gsect" style="margin-bottom:4px">期間メモ</div>${(()=>{if(!activeEVS().length)return `<div style="font-size:11px;color:var(--text3)">期間メモなし</div>`;let evs=[...activeEVS()];evs.sort((a,b)=>{const f=_evSort.field,d=_evSort.dir;const va=f==='name'?a.name:f==='end'?a.endDate:a.startDate;const vb=f==='name'?b.name:f==='end'?b.endDate:b.startDate;return(f==='name'?va.localeCompare(vb,'ja'):va.localeCompare(vb))*d;});const row=ev=>{const hl=hlEvent.includes(ev.id);return`<div data-evid="${ev.id}" onclick="setHlEventChart('${ev.id}')" style="display:flex;align-items:center;gap:6px;padding:4px 2px;font-size:11px;border-bottom:1px solid var(--border);cursor:pointer;background:${hl?ev.color+'18':'transparent'};border-radius:3px"><div class="ev-dot" style="width:10px;height:10px;border-radius:2px;background:${ev.color};flex-shrink:0;${hl?'box-shadow:0 0 0 2px '+ev.color+'55':''}"></div><div class="ev-lbl" style="flex:1;font-weight:${hl?700:500};color:var(--text)">${esc(ev.name)}</div><div style="color:var(--text3)">${fmtDate(ev.startDate)}〜${fmtDate(ev.endDate)}</div></div>`;};const actv=evs.filter(e=>evPhase(e)!=='ended');const ended=evs.filter(e=>evPhase(e)==='ended');let html=actv.length?actv.map(row).join(''):`<div style="font-size:11px;color:var(--text3)">開催中・予定なし</div>`;if(ended.length){const op=!isFolded('sideEndedEv',true);html+=`<details class="fold" ${op?'open':''} ontoggle="saveFold('sideEndedEv',this.open)"><summary>終了した期間メモ（${ended.length}）</summary>${ended.map(row).join('')}</details>`;}return html;})()}</div><div><div class="gsect" style="margin-bottom:4px">メモ（タップで強調）</div>${(()=>{const ntList=activeNTS().length?(()=>{const sorted=(()=>{let nts=[...activeNTS()];nts.sort((a,b)=>a.date.localeCompare(b.date)*_noteSort.dir);return nts;})();return sorted.map(n=>{const hl=hlNote===n.date;return`<div data-ntdate="${n.date}" onclick="setHlNoteChart('${n.date}')" style="display:flex;align-items:center;gap:6px;padding:4px 2px;font-size:11px;border-bottom:1px solid var(--border);cursor:pointer;background:${hl?'rgba(180,180,255,.12)':'transparent'};border-radius:3px"><div class="nt-dot" style="width:8px;height:8px;border-radius:50%;background:${hl?'#aaaaff':'rgba(140,135,160,.5)'};flex-shrink:0"></div><div class="nt-date" style="min-width:54px;color:${hl?'var(--accent)':'var(--text3)'};font-weight:${hl?700:400}">${fmtDate(n.date)}</div><div class="nt-text" style="flex:1;color:${hl?'var(--text)':'var(--text2)'}">${esc(n.text)}</div></div>`;}).join('');})():`<div style="font-size:11px;color:var(--text3)">メモなし</div>`;return ntList;})()}</div></div>`;
+    +`<div id="gPeriodBar" style="padding:0 10px"></div>`
+    +`<div style="margin-top:10px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:12px"><div>${foldSect('foldEvSec','期間メモ',`<div style="font-size:10px;color:var(--text3);margin-bottom:4px;line-height:1.5">※ タップすると印が付きます。終了した分は自動で開き、画面内へ送ります（サイドバーの「操作」でオフにできます）</div>${(()=>{if(!activeEVS().length)return `<div style="font-size:11px;color:var(--text3)">期間メモなし</div>`;let evs=[...activeEVS()];evs.sort((a,b)=>{const f=_evSort.field,d=_evSort.dir;const va=f==='name'?a.name:f==='end'?a.endDate:a.startDate;const vb=f==='name'?b.name:f==='end'?b.endDate:b.startDate;return(f==='name'?va.localeCompare(vb,'ja'):va.localeCompare(vb))*d;});const row=ev=>{const hl=hlEvent.includes(ev.id);return`<div data-evid="${ev.id}" onclick="setHlEventChart('${ev.id}')" style="${memoRowSty(hl,ev.color)}">${memoDot(ev.color,1)}${evCells(esc(ev.name),fmtDate(ev.startDate)+'〜'+fmtDate(ev.endDate),hl)}</div>`;};const actv=evs.filter(e=>evPhase(e)!=='ended');const ended=evs.filter(e=>evPhase(e)==='ended');let html=actv.length?actv.map(row).join(''):`<div style="font-size:11px;color:var(--text3)">開催中・予定なし</div>`;if(ended.length){const op=!isFolded('sideEndedEv',true);html+=`<details class="fold" ${op?'open':''} ontoggle="saveFold('sideEndedEv',this.open)"><summary>終了した期間メモ（${ended.length}）</summary>${ended.map(row).join('')}</details>`;}return html;})()}`)}</div><div>${foldSect('foldNtSec','日メモ',`<div style="font-size:10px;color:var(--text3);margin-bottom:4px;line-height:1.5">※ タップすると印が付きます</div>${(()=>{const ntList=activeNTS().length?(()=>{const sorted=(()=>{let nts=[...activeNTS()];nts.sort((a,b)=>a.date.localeCompare(b.date)*_noteSort.dir);return nts;})();return sorted.map(n=>{const hl=hlNote===n.date;return`<div data-ntdate="${n.date}" onclick="setHlNoteChart('${n.date}')" style="${memoRowSty(hl,'#aaaaff')}">${memoDot(ntMk(hl),0)}${ntCells(fmtDate(n.date),esc(n.text),hl)}</div>`;}).join('');})():`<div style="font-size:11px;color:var(--text3)">メモなし</div>`;return ntList;})()}`)}</div></div>`;
+  setTimeout(bindDndSort,0);
   if(selInsts.length&&allInsts.length) setTimeout(()=>drawChart(selInsts),10);
   }catch(e){console.error('renderGChart error:',e);if(body)body.innerHTML='<div style="padding:12px;color:var(--text2);font-size:12px">表示エラーが発生しました。再度お試しください。</div>';}
 }
@@ -3187,6 +3635,273 @@ function toggleGChipOpen(){_gChipOpen=!_gChipOpen;renderGraphBody();}
 function setGChipSort(s){_gChipSort=s;renderGraphBody();}
 function setGChipKiwame(v){_gChipKiwame=v;renderGraphBody();}
 function setGChipTypesAll(){_gChipTypes=null;renderGraphBody();}
+
+// ══ D&D 並べ替え（グラフのチップ／プリセットタブ）═══════════════
+// ST.dndSort が true のときだけ有効。長押し(約420ms)でドラッグ開始。
+// 短いタップは従来どおり（チップ＝選択解除／タブ＝切り替え）。
+let _dndJustDragged=false;  // ドラッグ直後のclickを1回だけ握りつぶすためのフラグ
+let _dnd=null;              // 進行中のドラッグ状態（null=非ドラッグ）
+const DND_HOLD_MS=420;      // 長押し判定
+const DND_SLOP=8;           // 長押し成立前に許容する指のブレ(px)
+
+function dndBusy(){return _dndJustDragged;}
+
+function dndCleanup(){
+  if(_dnd){
+    if(_dnd.timer)clearTimeout(_dnd.timer);
+    if(_dnd.el)_dnd.el.classList.remove('dnd-dragging');
+  }
+  document.body.style.userSelect='';
+  document.body.style.webkitUserSelect='';
+  _dnd=null;
+}
+
+// container 内の itemSel 要素を長押しD&Dで並べ替え可能にする
+// opts: {attr, blocked, blockedMsg, onDrop(idsInNewOrder)}
+function initDndList(container,itemSel,opts){
+  if(!container)return;
+  const items=Array.from(container.querySelectorAll(itemSel));
+  if(items.length<2)return;
+  items.forEach(el=>{
+    el.addEventListener('pointerdown',ev=>{
+      if(ev.button!==undefined&&ev.button!==0)return; // 左ボタン／タッチのみ
+      if(_dnd)return;                                  // 二重開始の防止
+      _dnd={el,container,itemSel,opts,sx:ev.clientX,sy:ev.clientY,active:false,timer:null};
+      _dnd.timer=setTimeout(()=>{
+        if(!_dnd||_dnd.el!==el)return;
+        if(opts.blocked){ // 絞り込み中など、並べ替えを受け付けない状態
+          if(typeof toast==='function')toast(opts.blockedMsg||'いまは並べ替えできません');
+          dndCleanup();
+          return;
+        }
+        _dnd.active=true;
+        el.classList.add('dnd-dragging');
+        document.body.style.userSelect='none';
+        document.body.style.webkitUserSelect='none';
+        try{if(navigator.vibrate)navigator.vibrate(12);}catch(e){}
+      },DND_HOLD_MS);
+    });
+  });
+}
+
+// 指／マウスの移動：長押し成立前に動いたら「スクロール or タップ」とみなして中止
+document.addEventListener('pointermove',ev=>{
+  if(!_dnd)return;
+  if(!_dnd.active){
+    if(Math.abs(ev.clientX-_dnd.sx)>DND_SLOP||Math.abs(ev.clientY-_dnd.sy)>DND_SLOP)dndCleanup();
+    return;
+  }
+  const tgt=document.elementFromPoint(ev.clientX,ev.clientY);
+  if(!tgt||!tgt.closest)return;
+  const over=tgt.closest(_dnd.itemSel);
+  if(!over||over===_dnd.el||!_dnd.container.contains(over))return;
+  const items=Array.from(_dnd.container.querySelectorAll(_dnd.itemSel));
+  const from=items.indexOf(_dnd.el),to=items.indexOf(over);
+  if(from<0||to<0)return;
+  if(from<to)over.after(_dnd.el); else over.before(_dnd.el); // その場でDOMを入れ替え
+},{passive:true});
+
+// ドラッグ中だけスクロールを止める（長押し成立前は普通にスクロールできる）
+document.addEventListener('touchmove',ev=>{
+  if(_dnd&&_dnd.active&&ev.cancelable)ev.preventDefault();
+},{passive:false});
+
+// ドラッグ中の長押しメニューを抑止
+document.addEventListener('contextmenu',ev=>{if(_dnd&&_dnd.active)ev.preventDefault();});
+
+function dndEnd(){
+  if(!_dnd)return;
+  if(!_dnd.active){dndCleanup();return;} // 長押し不成立＝ただのタップ。何もしない
+  const attr=_dnd.opts.attr,cb=_dnd.opts.onDrop;
+  const ids=Array.from(_dnd.container.querySelectorAll(_dnd.itemSel)).map(el=>el.getAttribute(attr));
+  _dndJustDragged=true;                                  // 直後のclickを抑止
+  setTimeout(()=>{_dndJustDragged=false;},500);
+  dndCleanup();
+  if(cb)cb(ids);
+}
+document.addEventListener('pointerup',dndEnd);
+document.addEventListener('pointercancel',dndEnd);
+
+// チップの並べ替え確定：_gSelIds をDOMの順に置き換えて「手動順」に切り替える
+function dndDropChips(ids){
+  const valid=ids.filter(id=>id&&_gSelIds.includes(id));
+  // 取りこぼし・重複があれば書き換えず再描画のみ（安全側）
+  if(valid.length!==_gSelIds.length||new Set(valid).size!==valid.length){renderGraphBody();return;}
+  _gSelIds=valid;
+  _gChipSort='manual';
+  saveCurrentPreset();
+  renderGraphBody();
+}
+
+// プリセットタブの並べ替え確定：UD.graphPresets をDOMの順に組み替える
+function dndDropPresets(ids){
+  const order=ids.map(n=>Number(n));
+  const len=UD.graphPresets.length;
+  const ng=order.length!==len
+        ||order.some(n=>!Number.isInteger(n)||n<0||n>=len)
+        ||new Set(order).size!==order.length;
+  if(ng){renderGraphBody();return;} // 想定外は書き換えず再描画のみ（安全側）
+  saveCurrentPreset();              // 先に現在のプリセットへ_gSelIdsを保存
+  const activeObj=UD.graphPresets[_gPresetIdx];
+  UD.graphPresets=order.map(n=>UD.graphPresets[n]);
+  const ni=UD.graphPresets.indexOf(activeObj);
+  _gPresetIdx=ni>=0?ni:0;           // アクティブタブは同じプリセットに追従
+  save();
+  renderGraphBody();
+}
+
+// renderGraphBody のたびにDOMが作り直されるので、描画後に毎回バインドし直す
+function bindDndSort(){
+  if(!ST.dndSort)return;
+  const chipWrap=document.getElementById('gChipWrap');
+  if(chipWrap){
+    initDndList(chipWrap,'[data-dnd-id]',{
+      attr:'data-dnd-id',
+      blocked:(_gChipTypes!==null||_gChipKiwame!==null),
+      blockedMsg:'絞り込み中は並べ替えできません',
+      onDrop:dndDropChips
+    });
+  }
+  const tabWrap=document.getElementById('gPresetTabs');
+  if(tabWrap){
+    initDndList(tabWrap,'[data-dnd-pi]',{
+      attr:'data-dnd-pi',
+      blocked:false,
+      onDrop:dndDropPresets
+    });
+  }
+}
+
+// ── 期間メモの表示スタイル（帯／ガント／ブラケット）───────────────
+function setPeriodStyle(s){
+  _gPeriodStyle=s;ST.periodStyle=s;saveST();
+  // 稽古録グラフ（審神者タブを含む）が開いていれば再描画
+  if(!document.getElementById('graphOverlay').classList.contains('hidden'))renderGraphBody();
+  // この刀のあゆみが開いていれば再描画
+  if(!document.getElementById('igOverlay').classList.contains('hidden')){
+    if(_igInstId)renderInstGraph();
+    else if(_igCustomCid)renderCustomGraph();
+  }
+}
+
+// バーに入れる文字を幅で決める。入るなら「名前 5/8〜5/20」、入らなければ名前だけ。
+// 年は省く（一覧と長押しの吹き出しにはフル日付が出る）。
+let _gBarMeas=null;
+function gBarLabel(ev,barPx){
+  if(!_gBarMeas)_gBarMeas=document.createElement('canvas').getContext('2d');
+  _gBarMeas.font="10px 'Noto Sans JP', sans-serif";
+  const sd=d=>{const p=d.split('-');return Number(p[1])+'/'+Number(p[2]);};
+  const withDate=`${ev.name} ${sd(ev.startDate)}〜${sd(ev.endDate)}`;
+  const avail=barPx-12-2; // 左右padding 5+5 と border-left 2 のぶん
+  return _gBarMeas.measureText(withDate).width<=avail?withDate:ev.name;
+}
+
+// バーの登録簿。器のid（pbId）ごとに、いま描いているチャートと座標変換関数を控える。
+// 期間メモをタップしたときなど、チャートの外から描き直すために使う。
+const _pbRegs=new Map();
+function pbAlive(chart){
+  return !!(chart&&chart.canvas&&typeof Chart!=='undefined'&&Chart.getChart&&Chart.getChart(chart.canvas)===chart);
+}
+function renderAllPeriodBars(){
+  [..._pbRegs.keys()].forEach(pbId=>{
+    const r=_pbRegs.get(pbId);
+    if(!document.getElementById(pbId)||!pbAlive(r.chart)){_pbRegs.delete(pbId);return;}
+    try{renderPeriodBar(r.chart,pbId,r.xOf);}catch(e){console.error('periodBar:',e);}
+  });
+}
+
+// 描画のたびに位置を合わせ直す。位置も強調も変わっていなければ何もしない。
+// チャートごとに1つ作る（pbId＝バーを入れる器のid、xOf＝日付→x座標の変換関数）。
+// afterRender で例外を出すと Chart.js のアニメーションループごと止まるため、必ず握りつぶす。
+function makePeriodBarPlugin(pbId,xOf){
+  let key='';
+  return{
+    id:'periodBar_'+pbId,
+    afterRender(chart){
+      try{
+        const ca=chart.chartArea;if(!ca)return;
+        _pbRegs.set(pbId,{chart,xOf});
+        const k=[_gPeriodStyle,ca.left,ca.right,chart.width,hlEvent.join(',')].join('|');
+        if(k===key)return;
+        key=k;
+        renderPeriodBar(chart,pbId,xOf);
+      }catch(e){console.error('periodBar:',e);}
+    }
+  };
+}
+
+// ガント／ブラケットをグラフの外（下）に描く。帯のときは何も描かない。
+// 器（pbId）の内側の幅は canvas と同じなので、%指定がそのまま噛み合う。
+// xOf は日付→x座標の変換関数。グラフごとに allDates が違うので、呼ぶ側から渡してもらう。
+function renderPeriodBar(chart,pbId,xOf){
+  const pb=document.getElementById(pbId);
+  if(!pb)return;
+  if(_gPeriodStyle==='band'||!chart||!chart.chartArea||!chart.scales.x){
+    pb.style.display='none';pb.innerHTML='';return;
+  }
+  const evs=activeEVS();
+  if(!evs.length){pb.style.display='none';pb.innerHTML='';return;}
+  const ca=chart.chartArea;
+  const caW=ca.right-ca.left;
+  if(caW<=0){pb.style.display='none';pb.innerHTML='';return;}
+  const caLeftPct=(ca.left/chart.width*100).toFixed(2)+'%';
+  const caRightPct=((chart.width-ca.right)/chart.width*100).toFixed(2)+'%';
+
+  // レーン割り当て：期間が重ならないものは同じ行にまとめる
+  const lanes=[],laneMap={};
+  evs.forEach(ev=>{
+    let placed=false;
+    for(let li=0;li<lanes.length;li++){
+      if(lanes[li].every(q=>q.endDate<ev.startDate||q.startDate>ev.endDate)){
+        lanes[li].push(ev);laneMap[ev.id]=li;placed=true;break;
+      }
+    }
+    if(!placed){laneMap[ev.id]=lanes.length;lanes.push([ev]);}
+  });
+
+  const pct=d=>{const px=xOf(chart,d);return px==null?null:(px-ca.left)/caW*100;};
+  pb.innerHTML='';
+
+  if(_gPeriodStyle==='gantt'){
+    pb.style.cssText='display:block;margin-top:4px;padding:0 10px';
+    lanes.forEach(lane=>{
+      const row=document.createElement('div');
+      row.style.cssText=`position:relative;height:20px;margin-bottom:3px;background:var(--bg2);border-radius:3px;overflow:hidden;margin-left:${caLeftPct};margin-right:${caRightPct}`;
+      lane.forEach(ev=>{
+        const p1=pct(ev.startDate),p2=pct(ev.endDate);
+        if(p1==null||p2==null)return;
+        const bL=Math.max(0,p1),bR=Math.min(100,p2);
+        if(bR<=0||bL>=100)return;
+        const wPct=Math.max(bR-bL,0.3);
+        const hl=hlEvent.includes(ev.id);
+        const el=document.createElement('div');
+        el.title=`${ev.name} ${fmtDate(ev.startDate)} 〜 ${fmtDate(ev.endDate)}`;
+        el.style.cssText=`position:absolute;top:2px;height:16px;border-radius:3px;display:flex;align-items:center;padding:0 5px;font-size:10px;white-space:nowrap;overflow:hidden;cursor:pointer;left:${bL.toFixed(2)}%;width:${wPct.toFixed(2)}%;background:${ev.color}${hl?'55':'22'};color:var(--text);border-left:2px solid ${ev.color}${hl?`;font-weight:700;box-shadow:0 0 0 1px ${ev.color}`:''}`;
+        el.textContent=gBarLabel(ev,wPct/100*caW);
+        el.onclick=()=>setHlEventChart(ev.id);
+        row.appendChild(el);
+      });
+      pb.appendChild(row);
+    });
+  }else{
+    pb.style.cssText='display:block;position:relative;margin-top:3px;padding:0 10px';
+    const wrap=document.createElement('div');
+    wrap.style.cssText=`position:relative;height:${lanes.length*10+2}px;overflow:hidden;margin-left:${caLeftPct};margin-right:${caRightPct}`;
+    evs.forEach(ev=>{
+      const p1=pct(ev.startDate),p2=pct(ev.endDate);
+      if(p1==null||p2==null)return;
+      const bL=Math.max(0,p1),bR=Math.min(100,p2);
+      if(bR<=0||bL>=100)return;
+      const hl=hlEvent.includes(ev.id);
+      const el=document.createElement('div');
+      el.title=`${ev.name} ${fmtDate(ev.startDate)} 〜 ${fmtDate(ev.endDate)}`;
+      el.style.cssText=`position:absolute;height:7px;border-radius:2px;cursor:pointer;left:${bL.toFixed(2)}%;width:${Math.max(bR-bL,0.3).toFixed(2)}%;top:${laneMap[ev.id]*10}px;background:${ev.color}${hl?'cc':'66'}${hl?`;box-shadow:0 0 0 1.5px ${ev.color}`:''}`;
+      el.onclick=()=>setHlEventChart(ev.id);
+      wrap.appendChild(el);
+    });
+    pb.appendChild(wrap);
+  }
+}
 
 // ── 期間メモ表示モード ─────────────────────────────────
 function setEvtLabelMode(m){
@@ -3223,7 +3938,7 @@ function addPreset(){
   const n=UD.graphPresets.length+1;
   const names=['第一部隊','第二部隊','第三部隊','第四部隊','第五部隊','第六部隊'];
   const name=names[n-1]||`第${n}部隊`;
-  UD.graphPresets.push({name,selIds:[]});
+  UD.graphPresets.push(mkPreset(name,[]));
   save();
   switchPreset(UD.graphPresets.length-1);
 }
@@ -3241,9 +3956,15 @@ function movePreset(idx,dir){
 // deletePreset: × ボタン
 function deletePreset(idx){
   if(UD.graphPresets.length<=1)return; // 最後の1つは削除不可
+  saveCurrentPreset();                 // 開いていた隊の未保存の変更を落とさない
+  // 番号ではなく「今見ている隊そのもの」を追いかける（dndDropPresets と同じやり方）。
+  // 番号のままだと、自分より前にある隊を消したときに選択が別の隊へずれる。
+  const activeObj=UD.graphPresets[_gPresetIdx];
+  const removingActive=(idx===_gPresetIdx);
   UD.graphPresets.splice(idx,1);
+  const ni=UD.graphPresets.indexOf(activeObj);
+  const newIdx=(!removingActive&&ni>=0)?ni:Math.min(idx,UD.graphPresets.length-1);
   save();
-  const newIdx=Math.min(_gPresetIdx,UD.graphPresets.length-1);
   _gPresetIdx=newIdx;
   _gSelIds=(UD.graphPresets[newIdx].selIds||[]).filter(id=>UD.instances.some(i=>i.id===id));
   _gChipKiwame=null;
@@ -3276,7 +3997,7 @@ function openImportFromShitakubeya(){
     const box=document.createElement('div');
     box.style.cssText='background:var(--bg);border-radius:12px;padding:20px;min-width:260px;max-width:90vw;max-height:80vh;overflow-y:auto';
     box.innerHTML=`<div style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text)">⚔️ 支度部屋から読み込む</div>`
-      +`<div style="font-size:11px;color:var(--text3);margin-bottom:10px">選んだ部隊を新しいプリセットとして追加します</div>`
+      +`<div style="font-size:11px;color:var(--text3);margin-bottom:10px">選んだ部隊を新しい部隊タブとして追加します</div>`
       +parties.map(p=>{
         const validMembers=p.members.filter(Boolean).filter(id=>UD.instances.some(i=>i.id===id));
         const names=validMembers.map(id=>{
@@ -3301,13 +4022,13 @@ function importFromShitakubeya(partyId){
     const party=getSBParties().find(p=>p.id===partyId);
     if(!party)return;
     const selIds=party.members.filter(Boolean).filter(id=>UD.instances.some(i=>i.id===id));
-    const newPreset={name:party.name||'支度部屋から読込',selIds};
+    const newPreset=mkPreset(party.name||'支度部屋から読込',selIds);
     UD.graphPresets.push(newPreset);
     _gPresetIdx=UD.graphPresets.length-1;
     _gSelIds=[...selIds];
     save();
     renderGraphBody();
-    toast(`「${party.name}」を新しいプリセットとして追加しました`);
+    toast(`「${party.name}」を新しい部隊タブとして追加しました`);
   }catch(e){toast('読み込み失敗：'+e.message);}
 }
 function setGChipTypesNone(){_gChipTypes=[];renderGraphBody();}
@@ -3441,7 +4162,10 @@ function drawChart(selectedInsts){
       if(!scales.x||!chartArea)return;
       ctx.save();
 
-      const events=activeEVS();
+      // ガント／ブラケットのときは、期間メモの帯は選択中のものだけをグラフに出す。
+      // （日メモの縦線は表示スタイルに関係なく、いつも描く）
+      const bandMode=_gPeriodStyle==='band';
+      const events=bandMode?activeEVS():activeEVS().filter(ev=>hlEvent.includes(ev.id));
         const LABEL_ZONE_TOP=60;
       const LABEL_ROW_H=13;
       // measureText用にフォントを先に設定（正確な文字幅を取得するため）
@@ -3471,15 +4195,16 @@ function drawChart(selectedInsts){
       // ── 2パス目：帯とラベルを描画 ──
       evMeta.forEach(({ev,cx1,cx2,lx,row,x1,x2})=>{
         const hl=hlEvent.includes(ev.id);
-        // 帯
-        ctx.fillStyle=hl?ev.color+'50':ev.color+'28';
+        // 帯（ガント／ブラケットのときは資源帳と同じ薄さで、強調による濃淡は付けない）
+        ctx.fillStyle=bandMode?(hl?ev.color+'50':ev.color+'28'):ev.color+'28';
         ctx.fillRect(cx1,chartArea.top,cx2-cx1,chartArea.bottom-chartArea.top);
         // 枠線
-        ctx.strokeStyle=hl?ev.color+'cc':ev.color+'88';
-        ctx.lineWidth=hl?2:1;ctx.setLineDash([]);
+        ctx.strokeStyle=bandMode?(hl?ev.color+'cc':ev.color+'88'):ev.color+'99';
+        ctx.lineWidth=bandMode?(hl?2:1):1.5;ctx.setLineDash([]);
         if(x1>=chartArea.left&&x1<=chartArea.right){ctx.beginPath();ctx.moveTo(cx1,chartArea.top);ctx.lineTo(cx1,chartArea.bottom);ctx.stroke();}
         if(x2>=chartArea.left&&x2<=chartArea.right){ctx.beginPath();ctx.moveTo(cx2,chartArea.top);ctx.lineTo(cx2,chartArea.bottom);ctx.stroke();}
-        // ラベル（paddingゾーン＝折れ線エリア上）
+        // ラベルは帯モードのときだけ。ガント／ブラケットでは名前を下のバーと一覧で見る
+        if(!bandMode)return;
         const ly=chartArea.top-LABEL_ZONE_TOP+12+(row*LABEL_ROW_H);
         ctx.fillStyle=hl?ev.color:ev.color+'cc';
         ctx.font=(hl?'bold ':'')+'10px sans-serif';
@@ -3549,7 +4274,7 @@ function drawChart(selectedInsts){
         borderColor:col,backgroundColor:col+'22',borderWidth:2.5,
         pointBackgroundColor:col,pointBorderColor:col,
         pointHoverBackgroundColor:col,pointHoverBorderColor:col,
-        tension:tension,pointRadius:ptRExp,pointHoverRadius:6,yAxisID:'yExp',fill:false,spanGaps:true,
+        tension:tension,pointRadius:ptRExp,pointHoverRadius:6,yAxisID:'yExp',fill:false,spanGaps:true,clip:8,
       });
       datasets.push({
         label:nm+' Lv',
@@ -3559,7 +4284,7 @@ function drawChart(selectedInsts){
         pointHoverBackgroundColor:lvCol,pointHoverBorderColor:lvCol,
         borderDash:[5,4],borderWidth:ST.subtleLv?1:2,
         tension:tension,pointRadius:ptRLv,pointHoverRadius:5,
-        yAxisID:'yLv',fill:false,spanGaps:true,
+        yAxisID:'yLv',fill:false,spanGaps:true,clip:8,
       });
     }
   });
@@ -3577,10 +4302,12 @@ function drawChart(selectedInsts){
   });
 
   _gChart=new Chart(canvas,{
-    type:'line',data:{labels,datasets},plugins:[evtPlugin,hoverHighlightPlugin],
+    type:'line',data:{labels,datasets},plugins:[evtPlugin,hoverHighlightPlugin,makePeriodBarPlugin('gPeriodBar',gX)],
     options:{
       responsive:true,maintainAspectRatio:false,
-      layout:{padding:{top:60}}, // 期間メモラベル専用ゾーン（折れ線と完全分離）
+      // 期間メモラベル専用ゾーン。ラベルを上に出すのは「帯かつ通常」のときだけなので、
+      // 縦書き・ラベルなし・ガント・ブラケットでは詰めてグラフを広く使う。
+      layout:{padding:{top:(_gPeriodStyle==='band'&&_gEvtLabelMode==='normal')?60:8}},
       interaction:{mode:ST.tooltipNearest?'nearest':'index',intersect:false},
       onHover(event,elements,chart){
         const nearestEls=chart.getElementsAtEventForMode(event,'nearest',{intersect:false},true);
@@ -3790,8 +4517,12 @@ function renderGSaniwa(body){
   const curDate=latest?fmtDate(latest.date):'';
   const periodBtns=PERIODS.map(p=>`<button class="btn sm ${_gPeriod===p.k?'on':''}" onclick="setSaniwaPeriod('${p.k}')">${p.l}</button>`).join('')
     +(_saniwaPanMin!==null?`<button class="btn sm" onclick="_saniwaPanMin=null;_saniwaPanMax=null;renderGraphBody()" title="ズームリセット" style="margin-left:4px">🔍×</button>`:'');
-  const evtLabelBtns=[{k:'normal',l:'通常'},{k:'none',l:'非表示'},{k:'vertical',l:'縦書き'}]
-    .map(m=>`<button class="btn sm ${_gEvtLabelMode===m.k?'on':''}" onclick="setEvtLabelMode('${m.k}')">${m.l}</button>`).join('');
+  const snPsBtns=[{k:'band',l:'帯'},{k:'gantt',l:'ガント'},{k:'bracket',l:'ブラケット'}]
+    .map(m=>`<button class="btn sm ${_gPeriodStyle===m.k?'on':''}" onclick="setPeriodStyle('${m.k}')">${m.l}</button>`).join('');
+  // ラベルは帯のときだけ意味を持つので、それ以外では押せなくする
+  const snLblOff=_gPeriodStyle!=='band';
+  const evtLabelBtns=[{k:'normal',l:'通常'},{k:'vertical',l:'縦書き'},{k:'none',l:'なし'}]
+    .map(m=>`<button class="btn sm ${(!snLblOff&&_gEvtLabelMode===m.k)?'on':''}"${snLblOff?' disabled':''} onclick="setEvtLabelMode('${m.k}')">${m.l}</button>`).join('');
 
   const header=`
   <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:12px">
@@ -3820,9 +4551,11 @@ function renderGSaniwa(body){
 
   body.innerHTML=
     header
-    +`<div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;flex-wrap:wrap"><span style="font-size:10px;color:var(--text3);margin-right:2px">期間メモ表示：</span>${evtLabelBtns}</div>`
+    +`<div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;flex-wrap:wrap"><span style="font-size:10px;color:var(--text3);margin-right:2px">表示スタイル：</span>${snPsBtns}</div>`
+    +`<div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;flex-wrap:wrap"><span style="font-size:10px;color:var(--text3);margin-right:2px">ラベル：</span>${evtLabelBtns}${snLblOff?`<span style="font-size:10px;color:var(--text2);margin-left:4px">（帯のときだけ使えます）</span>`:''}</div>`
     +`<div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:4px">${periodBtns}</div>`
     +`<div class="saniwa-chart-wrap">${noData}<canvas id="snCanvas" style="display:${log.length?'block':'none'}"></canvas></div>`
+    +`<div id="snPeriodBar"></div>`
     +`<div style="margin-top:10px"><div class="gsect" style="margin-bottom:4px">記録一覧（同じ日に記録すると上書き）</div>${listRows}</div>`
     +`<div style="font-size:11px;color:var(--text3);margin-top:8px">💡 期間メモ・日メモは刀グラフと共通です。「期間メモ・日メモ」タブから追加・編集できます。</div>`;
 
@@ -3873,7 +4606,10 @@ function drawSaniwaChart(){
       const{ctx,chartArea,scales}=chart;
       if(!scales.x||!chartArea)return;
       ctx.save();
-      const events=activeEVS();
+      // ガント／ブラケットのときは、期間メモの帯は選択中のものだけをグラフに出す。
+      // （日メモの縦線は表示スタイルに関係なく、いつも描く）
+      const bandMode=_gPeriodStyle==='band';
+      const events=bandMode?activeEVS():activeEVS().filter(ev=>hlEvent.includes(ev.id));
       const LABEL_ZONE_TOP=60,LABEL_ROW_H=13;
       ctx.font='10px sans-serif';
       const rowEnds=new Array(8).fill(-Infinity);
@@ -3892,12 +4628,14 @@ function drawSaniwaChart(){
       }).filter(Boolean);
       evMeta.forEach(({ev,cx1,cx2,lx,row,x1,x2})=>{
         const hl=hlEvent.includes(ev.id);
-        ctx.fillStyle=hl?ev.color+'50':ev.color+'28';
+        ctx.fillStyle=bandMode?(hl?ev.color+'50':ev.color+'28'):ev.color+'28';
         ctx.fillRect(cx1,chartArea.top,cx2-cx1,chartArea.bottom-chartArea.top);
-        ctx.strokeStyle=hl?ev.color+'cc':ev.color+'88';
-        ctx.lineWidth=hl?2:1;ctx.setLineDash([]);
+        ctx.strokeStyle=bandMode?(hl?ev.color+'cc':ev.color+'88'):ev.color+'99';
+        ctx.lineWidth=bandMode?(hl?2:1):1.5;ctx.setLineDash([]);
         if(x1>=chartArea.left&&x1<=chartArea.right){ctx.beginPath();ctx.moveTo(cx1,chartArea.top);ctx.lineTo(cx1,chartArea.bottom);ctx.stroke();}
         if(x2>=chartArea.left&&x2<=chartArea.right){ctx.beginPath();ctx.moveTo(cx2,chartArea.top);ctx.lineTo(cx2,chartArea.bottom);ctx.stroke();}
+        // ラベルは帯モードのときだけ。ガント／ブラケットでは名前を下のバーで見る
+        if(!bandMode)return;
         const ly=chartArea.top-LABEL_ZONE_TOP+12+(row*LABEL_ROW_H);
         ctx.fillStyle=hl?ev.color:ev.color+'cc';
         ctx.font=(hl?'bold ':'')+'10px sans-serif';ctx.textAlign='left';
@@ -3935,12 +4673,12 @@ function drawSaniwaChart(){
       label:'審神者 Lv',data,
       borderColor:accent,backgroundColor:accent+'22',borderWidth:2.5,
       pointBackgroundColor:accent,pointBorderColor:accent,pointHoverBackgroundColor:accent,pointHoverBorderColor:accent,
-      tension:tension,pointRadius:ptR,pointHoverRadius:6,fill:false,spanGaps:true,
+      tension:tension,pointRadius:ptR,pointHoverRadius:6,fill:false,spanGaps:true,clip:8,
     }]},
-    plugins:[evtPlugin],
+    plugins:[evtPlugin,makePeriodBarPlugin('snPeriodBar',gX)],
     options:{
       responsive:true,maintainAspectRatio:false,
-      layout:{padding:{top:60}},
+      layout:{padding:{top:(_gPeriodStyle==='band'&&_gEvtLabelMode==='normal')?60:8}},
       interaction:{mode:'index',intersect:false},
       plugins:{
         legend:{display:false},
@@ -3957,12 +4695,20 @@ function drawSaniwaChart(){
 }
 
 function setGAxisMode(m){
-  _gAxisMode=m;
+  _gAxisMode=m;ST.axisMode=m;saveST();
   // 軸モードによる一時的な表示／非表示は、renderGChart側のmodeHiddenで処理する。
   // 凡例を手動でOFFにした状態だけを保持する_gHiddenDatasetsには書き込まない。
   // ここへ書き込むと「レベル→増加経験値→累積」の順で、増加経験値画面には
   // Expデータセットがないため非表示状態を解除できず、累積線が全て消えてしまう。
-  renderGraphBody();
+  // 稽古録グラフが開いていれば再描画
+  if(!document.getElementById('graphOverlay').classList.contains('hidden'))renderGraphBody();
+  // この刀のあゆみが開いていれば再描画。あゆみはグラフの上に重なって開き、
+  // closeInstGraph()は後ろを描き直さないので、ここで直しておかないと
+  // あゆみを閉じたときにメイングラフだけ古い表示のまま残る
+  if(!document.getElementById('igOverlay').classList.contains('hidden')){
+    if(_igInstId)renderInstGraph();
+    else if(_igCustomCid)renderCustomGraph();
+  }
 }
 
 // ── タッチ操作（スワイプ/ピンチ）共通ハンドラ ─────────────────
@@ -4232,7 +4978,7 @@ function addHistRec(){
   }
   _commitHistRec(id,date,exp,lv,note);
 }
-function _commitHistRec(id,date,exp,lv,note){
+function _commitHistRec(id,date,exp,lv,note,fromIg){
   const inst=UD.instances.find(i=>i.id===id);if(!inst)return;
   if(!inst.history)inst.history=[];
   const existing=inst.history.findIndex(h=>h.date===date);
@@ -4244,6 +4990,8 @@ function _commitHistRec(id,date,exp,lv,note){
   // 最新値をinstに反映
   const latest=inst.history[inst.history.length-1];
   inst.cumExp=latest.cumExp;inst.level=latest.level;
+  // あゆみの記録一覧から呼ばれたときは、裏のグラフタブを動かさずその場を描き直す
+  if(fromIg){save();rc();igRefresh();toast('記録を直しました');return;}
   _gSelIds.push(id); // グラフに自動選択（重複回避）
   if(_gSelIds.filter(x=>x===id).length>1)_gSelIds.splice(_gSelIds.indexOf(id),1);
   _gRecentInstId=id; // 最近記録した刀として記録
@@ -4253,15 +5001,22 @@ function _commitHistRec(id,date,exp,lv,note){
   renderGraphBody();
   toast('記録を追加しました');
 }
+// あゆみが開いていれば描き直す（閉じているときは何もしない）
+function igRefresh(){
+  const o=document.getElementById('igOverlay');
+  if(o&&!o.classList.contains('hidden')&&_igInstId)renderInstGraph();
+}
 
-function delHistRec(instId,date){
+function delHistRec(instId,date,fromIg){
   const inst=UD.instances.find(i=>i.id===instId);if(!inst)return;
   inst.history=inst.history.filter(h=>h.date!==date);
   if(inst.history.length){
     const latest=inst.history[inst.history.length-1];
     inst.cumExp=latest.cumExp;inst.level=latest.level;
   }
-  save();renderGraphBody();toast('記録を削除しました');
+  save();
+  if(fromIg){rc();igRefresh();toast('記録を削除しました');return;}
+  renderGraphBody();toast('記録を削除しました');
 }
 
 // ══ イベントタブ ════════════════════════════════════════
@@ -4285,8 +5040,8 @@ function renderGEvent(body){
 
   const evRow=ev=>{
     const hl=hlEvent.includes(ev.id);
-    return`<div class="evt-row${hl?' evt-hl':''}" onclick="setHlEvent('${ev.id}')" style="cursor:pointer;background:${hl?ev.color+'18':'transparent'};border-radius:var(--r);transition:background .15s">
-      <div class="evt-cdot" style="background:${ev.color};${hl?'box-shadow:0 0 0 2px '+ev.color+'55':''}"></div>
+    return`<div class="evt-row${hl?' evt-hl':''}" onclick="setHlEvent('${ev.id}')" style="cursor:pointer;background:${hl?'var(--hl-row)':'transparent'};${hl?`border-left-color:${ev.color};`:''}border-radius:var(--r);transition:background .15s">
+      <div class="evt-cdot" style="background:${ev.color}"></div>
       <div style="flex:1;font-weight:${hl?'700':'500'};color:${hl?'var(--text)':'var(--text2)'}">${esc(ev.name)}</div>
       <div style="color:var(--text2);font-size:11px">${fmtDate(ev.startDate)} 〜 ${fmtDate(ev.endDate)}</div>
       <button class="btn sm" onclick="event.stopPropagation();editEvt('${ev.id}')" title="編集">✏</button>
@@ -4303,10 +5058,12 @@ function renderGEvent(body){
 
   const noteRow=n=>{
     const hl=hlNote===n.date;
-    return`<div class="evt-row" onclick="setHlNote('${n.date}')" style="cursor:pointer;background:${hl?'rgba(180,180,255,.12)':'transparent'};border-radius:var(--r);transition:background .15s">
-      <span style="width:9px;height:9px;border-radius:50%;background:${hl?'#aaaaff':'rgba(140,135,160,.5)'};flex-shrink:0;display:inline-block"></span>
-      <div style="font-size:11px;color:${hl?'var(--accent)':'var(--text2)'};min-width:72px;font-weight:${hl?'700':'400'}">${fmtDate(n.date)}</div>
-      <div style="flex:1;color:${hl?'var(--text)':'var(--text2)'}">${esc(n.text)}</div>
+    const dl=!!ST.ntDateLeft;
+    const dcell=`<div style="font-size:11px;color:${(dl&&hl)?'var(--accent)':'var(--text3)'};${dl?'min-width:72px;':''}flex-shrink:0;font-weight:${(dl&&hl)?'700':'400'}">${fmtDate(n.date)}</div>`;
+    const tcell=`<div style="flex:1;color:var(--text);font-weight:${hl?'700':'500'}">${esc(n.text)}</div>`;
+    return`<div class="evt-row${hl?' evt-hl':''}" onclick="setHlNote('${n.date}')" style="cursor:pointer;background:${hl?'var(--hl-row)':'transparent'};${hl?'border-left-color:#aaaaff;':''}border-radius:var(--r);transition:background .15s">
+      <div class="evt-cdot" style="border-radius:50%;background:${hl?'#aaaaff':'rgba(140,135,160,.5)'}"></div>
+      ${dl?dcell+tcell:tcell+dcell}
       <button class="btn sm" onclick="event.stopPropagation();editNote('${n.id}')" title="編集">✏</button>
       <button class="btn sm danger" onclick="event.stopPropagation();delNote('${n.id}')">×</button>
     </div>`;
@@ -4344,9 +5101,10 @@ function renderGEvent(body){
     <div style="margin-top:8px"><div class="flabel">色見本（ワンタップ）</div><div class="col-palette" id="ev-color-palette">${swatchesHTML('ev-color')}</div></div>
   </div>
   <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
-    <div class="gsect" style="margin-bottom:0;flex:1">登録済み期間メモ（タップで強調）</div>
+    <div class="gsect" style="margin-bottom:0;flex:1">登録済み期間メモ</div>
     ${evSortBtns()}
   </div>
+  <div style="font-size:10px;color:var(--text3);margin-bottom:4px;line-height:1.5">※ タップすると印が付きます</div>
   ${evRows}
   <div style="height:12px"></div>
   <div style="background:var(--bg2);border-radius:var(--r);padding:10px 12px;margin-bottom:10px;margin-top:4px">
@@ -4358,9 +5116,10 @@ function renderGEvent(body){
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
-    <div class="gsect" style="margin-bottom:0;flex:1">登録済み日メモ（タップで強調）</div>
+    <div class="gsect" style="margin-bottom:0;flex:1">登録済み日メモ</div>
     ${noteSortBtn()}
   </div>
+  <div style="font-size:10px;color:var(--text3);margin-bottom:4px;line-height:1.5">※ タップすると印が付きます</div>
   ${noteRows}`;
 
   syncSwatchSel('ev-color');
@@ -4459,34 +5218,56 @@ function setHlNoteChart(d){
   hlNote=(hlNote===d)?null:d;
   if(_gChart)_gChart.update();
   // グラフタブ下のリストのみ再描画（行の色だけ更新）
+  // ここは innerHTML を作り直さず style を直接書き換えるので、
+  // 一覧を作っている側（renderGEvent）と同じ色・同じ形にしておくこと。
   const body=document.getElementById('graphBody');
   if(!body)return;
+  const dl=!!ST.ntDateLeft;
   body.querySelectorAll('[data-ntdate]').forEach(el=>{
     const hl=hlNote===el.dataset.ntdate;
-    el.style.background=hl?'rgba(180,180,255,.12)':'transparent';
-    const dot=el.querySelector('.nt-dot');if(dot)dot.style.background=hl?'#aaaaff':'rgba(140,135,160,.5)';
-    const dt=el.querySelector('.nt-date');if(dt){dt.style.color=hl?'var(--accent)':'var(--text3)';dt.style.fontWeight=hl?'700':'400';}
-    const tx=el.querySelector('.nt-text');if(tx)tx.style.color=hl?'var(--text)':'var(--text2)';
+    el.style.background=hl?'var(--hl-row)':'transparent';
+    el.style.borderLeft='3px solid '+(hl?'#aaaaff':'transparent');
+    const dot=el.querySelector('.nt-dot');if(dot)dot.style.background=ntMk(hl);
+    const dt=el.querySelector('.nt-date');if(dt){dt.style.color=(dl&&hl)?'var(--accent)':'var(--text3)';dt.style.fontWeight=(dl&&hl)?'700':'400';}
+    const tx=el.querySelector('.nt-text');if(tx){tx.style.color='var(--text)';tx.style.fontWeight=hl?'700':'500';}
   });
 }
 function setHlEventChart(id){
   const idx=hlEvent.indexOf(id);
+  const turningOn=idx<0;
   if(idx>=0)hlEvent.splice(idx,1);else hlEvent.push(id);
-  if(_gChart)_gChart.update();
-  // グラフタブ下のリストのみ再描画
-  const body=document.getElementById('graphBody');
-  if(!body)return;
-  // hlEvent強調状態だけ反映（innerHTML全体は触らず行の背景だけ更新）
-  body.querySelectorAll('[data-evid]').forEach(el=>{
+  // 開いているグラフを全部描き直す（メイン／この刀のあゆみ・カスタム／審神者）
+  [_gChart,_igChart,_saniwaChart].forEach(c=>{if(c&&pbAlive(c))c.update();});
+  renderAllPeriodBars(); // ガント／ブラケットのバーにも強調を反映
+  // 期間メモ一覧の強調を更新。一覧はグラフタブとこの刀のあゆみの2箇所にあり得る。
+  // innerHTML全体は触らず、行の背景と左端の色棒だけ差し替える
+  document.querySelectorAll('[data-evid]').forEach(el=>{
     const eid=el.dataset.evid;
     const hl=hlEvent.includes(eid);
     const ev=(UD.events||[]).find(e=>e.id===eid);
-    el.style.background=hl&&ev?ev.color+'18':'transparent';
-    const dot=el.querySelector('.ev-dot');
-    if(dot)dot.style.boxShadow=hl&&ev?`0 0 0 2px ${ev.color}55`:'';
+    el.style.background=hl&&ev?'var(--hl-row)':'transparent';
+    el.style.borderLeft=`3px solid ${hl&&ev?ev.color:'transparent'}`;
     const lbl=el.querySelector('.ev-lbl');
     if(lbl)lbl.style.fontWeight=hl?'700':'500';
   });
+  // 設定「期間メモをタップしたら一覧の該当行まで案内する」がONなら、
+  // 畳まれた「終了した期間メモ」を開き、画面の外にある行を画面内へ送る。
+  if(turningOn&&ST.evTapGuide!==false){
+    const rows=[...document.querySelectorAll(`[data-evid="${id}"]`)];
+    // 先に畳みを開く（開かないと隠れたままで、見えているかどうかも判定できない）
+    rows.forEach(row=>{
+      // 畳みは入れ子になり得る（「終了した期間メモ」が「期間メモ」セクションの中にある）ので、
+      // いちばん近いものだけでなく、先祖の details を全部開く
+      let fold=row.closest('details');
+      while(fold){
+        if(!fold.open)fold.open=true;
+        fold=fold.parentElement?fold.parentElement.closest('details'):null;
+      }
+    });
+    // そのうえで、実際に画面に出ている行だけを画面内へ送る
+    const shown=rows.find(row=>row.offsetParent!==null);
+    if(shown)shown.scrollIntoView({block:'nearest',behavior:'smooth'});
+  }
 }
 function setEvSort(field){
   if(_evSort.field===field)_evSort.dir*=-1;else _evSort={field,dir:1};
@@ -4634,9 +5415,12 @@ function showSettings(){
   </div>
   <div class="mact"><button class="btn on" onclick="cM()">閉じる</button></div>`);
 }
-function setPalette(p){ST.palette=p;applyTheme();saveST();showSettings();}
-function setMode(m){ST.mode=m;applyTheme();saveST();showSettings();}
-function setTheme(key){ST.palette=key;applyTheme();saveST();showSettings();}
+// テーマを変えたら刀の一覧・カードも描き直す（rc）。
+// 刀種バッジの色は tc() が inline style に焼き込むので、
+// data-theme を書き換えるだけでは前のテーマの色が残ってしまう。
+function setPalette(p){ST.palette=p;applyTheme();saveST();rc();showSettings();}
+function setMode(m){ST.mode=m;applyTheme();saveST();rc();showSettings();}
+function setTheme(key){ST.palette=key;applyTheme();saveST();rc();showSettings();}
 function setMobileMode(m){ST.mobileMode=m;ST.mobile=(m==='mobile');applyMode();saveST();showSettings();}
 
 
@@ -4728,7 +5512,7 @@ function renderCloudPopup(){
   <div style="font-size:11px;color:${state==='in'?'var(--kiwame)':(state==='reconnect'?'var(--warn)':'var(--text3)')};margin-bottom:6px">${state==='in'?'● ログイン中':(state==='reconnect'?'⚠ 接続が切れています':'○ 未ログイン')}</div>
   ${state==='in'?`
   <div class="cp-row">
-    <button class="btn sm" onclick="gdSyncUp();closeCloudPopup()" style="flex:1;justify-content:center">⬆ 保存する</button>
+    <button class="btn sm" onclick="gdSyncUpWithCheck();closeCloudPopup()" style="flex:1;justify-content:center">⬆ 保存する</button>
     <button class="btn sm" onclick="gdSyncDown();closeCloudPopup()" style="flex:1;justify-content:center">⬇ 読み込む</button>
   </div>
   <button class="btn sm danger" onclick="gdSignOut();closeCloudPopup();updateMobileHdr2Sync()" style="width:100%;justify-content:center;margin-top:2px">ログアウト</button>
@@ -4889,15 +5673,20 @@ function gdSignOut(){
 // タイムアウトは「呼び出し元が待つのをやめる」ためだけのもので、受け取り口は締め切らない。
 // タイムアウト後に遅れて届いたトークンは _gdLateRecover() で受領し、ログインを復帰させる。
 let _gdRefreshP=null; // 実行中のサイレント更新（多重起動＝窓の連発を防止）
+// 印を消すのは Promise の「外」で行う。中で _gdRefreshP=null と書くと、
+// 実行部が同期で終わったとき（ライブラリ未読込など）に外側の代入があとから
+// 上書きしてしまい、印が残ったままになる。そうなると以後ずっと失敗済みの
+// Promise に相乗りして、401のやり直しも自動復帰も効かなくなる。
+function _gdClearRefresh(p){if(_gdRefreshP===p)_gdRefreshP=null;}
 function gdSilentRefresh(){
   if(_gdRefreshP)return _gdRefreshP; // すでに実行中なら相乗り
-  _gdRefreshP=new Promise((resolve,reject)=>{
+  const p=new Promise((resolve,reject)=>{
     if(!window.google||!window.google.accounts||!window.google.accounts.oauth2){
-      _gdRefreshP=null;reject(new Error('Library not loaded'));return;
+      reject(new Error('Library not loaded'));return;
     }
     let settled=false; // 呼び出し元へ返答済みか（トークンの受け取りとは独立）
     const timer=setTimeout(()=>{
-      if(!settled){settled=true;_gdRefreshP=null;reject(new Error('timeout'));}
+      if(!settled){settled=true;reject(new Error('timeout'));}
     },10000);
     try{
       const client=google.accounts.oauth2.initTokenClient({
@@ -4906,25 +5695,27 @@ function gdSilentRefresh(){
         callback:(resp)=>{
           clearTimeout(timer);
           if(resp.error){
-            if(!settled){settled=true;_gdRefreshP=null;reject(new Error(resp.error));}
+            if(!settled){settled=true;reject(new Error(resp.error));}
             return;
           }
           _gdAcceptToken(resp.access_token);
           if(settled){_gdLateRecover();} // タイムアウト後に選択が完了→遅着復帰
-          else{settled=true;_gdRefreshP=null;resolve(_gdToken);}
+          else{settled=true;resolve(_gdToken);}
         },
         error_callback:(err)=>{
           clearTimeout(timer);
-          if(!settled){settled=true;_gdRefreshP=null;reject(new Error((err&&err.type)||'silent_failed'));}
+          if(!settled){settled=true;reject(new Error((err&&err.type)||'silent_failed'));}
         }
       });
       client.requestAccessToken({prompt:''});
     }catch(e){
       clearTimeout(timer);
-      if(!settled){settled=true;_gdRefreshP=null;reject(e);}
+      if(!settled){settled=true;reject(e);}
     }
   });
-  return _gdRefreshP;
+  _gdRefreshP=p;
+  p.then(function(){_gdClearRefresh(p);},function(){_gdClearRefresh(p);});
+  return p;
 }
 
 async function gdFetch(url,opts,isRetry){
@@ -4955,22 +5746,36 @@ async function gdFetch(url,opts,isRetry){
   }
 }
 
+// 返すのは「見つかったファイルのid」か「無かった＝null」の2つだけ。
+// 探せなかったとき（通信の失敗・HTTPエラー）は必ず例外にする。
+// ここで null を返すと、呼び出し側が「まだ無い＝初回」と読んで
+// 同じ名前のファイルをもう1つ作ってしまい、以後どちらが本物か分からなくなる。
+// 同名がすでに2つ以上あるときは、更新のいちばん新しいものを使う。
 async function gdFindFile(){
+  let res;
   try{
-    const res=await gdFetch(
-      `https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name='${GD_FILENAME}'&fields=files(id,name)`,
+    res=await gdFetch(
+      `https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name='${GD_FILENAME}'&fields=files(id,name,modifiedTime)`,
       {headers:{}}
     );
-    if(!res.ok){
-      console.error('[gdFindFile] HTTP Error:',res.status,res.statusText);
-      return null;
-    }
-    const d=await res.json();
-    return d.files&&d.files.length?d.files[0].id:null;
   }catch(e){
     console.error('[gdFindFile] Error:',e);
-    return null;
+    throw new Error('クラウドを探せませんでした（通信に失敗した可能性があります）');
   }
+  if(!res.ok){
+    console.error('[gdFindFile] HTTP Error:',res.status,res.statusText);
+    throw new Error('クラウドを探せませんでした（通信に失敗した可能性があります）');
+  }
+  let d;
+  try{d=await res.json();}catch(pe){
+    console.error('[gdFindFile] JSON parse error:',pe);
+    throw new Error('クラウドを探せませんでした（応答を読み取れませんでした）');
+  }
+  const files=(d&&d.files)||[];
+  if(!files.length)return null;
+  if(files.length===1)return files[0].id;
+  console.warn('[gdFindFile] 同名ファイルが'+files.length+'件あります。更新の新しいものを使います');
+  return files.slice().sort((a,b)=>(Date.parse(b.modifiedTime)||0)-(Date.parse(a.modifiedTime)||0))[0].id;
 }
 
 async function gdSyncDown(fromLogin=false){
@@ -5146,6 +5951,7 @@ function applyCloudData(d){
   if(!UD.notes)UD.notes=[];
   if(!UD.saniwaLog)UD.saniwaLog=[];
   loadShared();
+  ensurePresetIds(); // idを知らない端末から降りてきたデータには id が無い
   // save()は_appReady時にupdatedAtをDate.now()で上書きし、自動同期も走らせてしまうため
   // ここでは直接localStorageへ保存（クラウドのupdatedAtをそのまま維持）
   localStorage.setItem(SK,JSON.stringify(UD));
@@ -5295,7 +6101,7 @@ function updatePcSyncHdr(){
     area.innerHTML=`
       ${timeStr}
       <div style="display:flex;gap:4px">
-        <button class="btn sm" onclick="gdSyncUp()" style="${syncing?'color:var(--gold);border-color:var(--gold)':'color:var(--kiwame);border-color:var(--kiwame)'}">☁ ${syncing?'同期中…':'同期済'}</button>
+        <button class="btn sm" onclick="gdSyncUpWithCheck()" style="${syncing?'color:var(--gold);border-color:var(--gold)':'color:var(--kiwame);border-color:var(--kiwame)'}">☁ ${syncing?'同期中…':'同期済'}</button>
         <button class="btn sm" onclick="gdSignOut()" style="border-color:rgba(255,100,100,.5);color:rgba(255,160,160,.9)">ログアウト</button>
       </div>`;
   }else{
@@ -5351,10 +6157,42 @@ async function gdGetCloudModified(){
   }catch{return null;}
 }
 
+/* ── 手元が空のまま上書きするのを止める ──────────────
+   機種変更・ブラウザの乗り換え・サイトデータの削除・アプリ内ブラウザなどで
+   この端末の記録が空になっていることがある。その状態で保存すると
+   クラウドの記録まで空で塗りつぶされ、元に戻せない。
+   最終同期の時刻が残っていない人ほど危ないので、
+   syncWarnDisabled の判定より手前に置く。 */
+function gdLocalEmpty(){
+  return !(UD.instances||[]).length;
+}
+function gdForceSaveAnyway(){
+  cM();
+  gdSyncUp();
+}
+async function gdAskIfEmpty(){
+  if(!gdLocalEmpty())return false;
+  let fid=null;
+  try{ fid=_gdFileId||await gdFindFile(); }catch(e){ return false; }
+  if(!fid)return false;   /* クラウドに何も無いなら、空を保存しても失うものが無い */
+  showM(`<div class="modal-title">手元に記録がありません</div>
+  <div style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.8">このまま保存すると、クラウドに残っている記録が空の状態で上書きされます。元に戻せません。<br><br>以前この道具に記録していた場合は、先に「⬇ 読み込む」を押してください。</div>
+  <div class="mact" style="gap:8px">
+    <button class="btn" onclick="cM()">やめる</button>
+    <button class="btn primary" onclick="cM();gdSyncDown()">⬇ 読み込む</button>
+  </div>
+  <div style="text-align:center;margin-top:12px">
+    <a href="#" onclick="gdForceSaveAnyway();return false;"
+       style="font-size:11px;color:var(--text3);text-decoration:underline">それでも保存する</a>
+  </div>`);
+  return true;
+}
+
 async function gdSyncUpWithCheck(){
   if(!_gdToken){toast('先にGoogleログインしてください');return;}
   // ①トークンが古ければ先に取り直してから同期（クリック起点なので窓が通りやすい）
   if(gdTokenStale()){try{await gdSilentRefresh();}catch(e){_gdEnterReconnect();return;}}
+  if(await gdAskIfEmpty())return;
   if(ST.syncWarnDisabled){await gdSyncUp();return;}
   const cloudMod=await gdGetCloudModified();
   if(cloudMod&&_lastSyncTime&&cloudMod>_lastSyncTime){
